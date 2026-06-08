@@ -1,0 +1,21 @@
+Options -Indexes
+RewriteEngine On
+
+# Log&Play public hosts are served by the multisite front controller.
+# This file belongs in D:/UwAmp/www/.htaccess when UwAmp keeps D:/UwAmp/www
+# as its active DocumentRoot.
+
+RewriteCond %{HTTP_HOST} ^(www\.)?logandplay\.(org|localhost)$ [NC,OR]
+RewriteCond %{HTTP_HOST} ^demo\.logandplay\.(org|localhost)$ [NC,OR]
+RewriteCond %{HTTP_HOST} ^maestro\.logandplay\.(org|localhost)$ [NC]
+RewriteRule ^LogAndPlay\.org/www/(.*)$ /LogAndPlay.org/www/$1 [L,QSA]
+
+RewriteCond %{HTTP_HOST} ^(www\.)?logandplay\.(org|localhost)$ [NC,OR]
+RewriteCond %{HTTP_HOST} ^demo\.logandplay\.(org|localhost)$ [NC,OR]
+RewriteCond %{HTTP_HOST} ^maestro\.logandplay\.(org|localhost)$ [NC]
+RewriteRule ^LogAndPlay\.org/(.*)$ /LogAndPlay.org/www/$1 [L,QSA]
+
+RewriteCond %{HTTP_HOST} ^(www\.)?logandplay\.(org|localhost)$ [NC,OR]
+RewriteCond %{HTTP_HOST} ^demo\.logandplay\.(org|localhost)$ [NC,OR]
+RewriteCond %{HTTP_HOST} ^maestro\.logandplay\.(org|localhost)$ [NC]
+RewriteRule ^(.*)$ /LogAndPlay.org/www/$1 [L,QSA]

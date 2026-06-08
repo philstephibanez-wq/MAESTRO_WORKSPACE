@@ -1,0 +1,193 @@
+<?php
+$UWAMPFOLDER = "../";
+
+/*
+    UwAmp index.php original-like red diagnostic version.
+    Objectif : garder une page d'accueil UwAmp reconnaissable,
+    mais en dominante rouge pour identifier immédiatement
+    que la requête tombe encore sur l'index UwAmp local.
+*/
+
+if (isset($_REQUEST['getimg']))
+{
+    $type = (string) $_GET['getimg'];
+
+    if ($type === 'title') {
+        header("Content-type: image/svg+xml; charset=utf-8");
+        echo '<svg xmlns="http://www.w3.org/2000/svg" width="900" height="70" viewBox="0 0 900 70">
+            <defs>
+                <linearGradient id="g" x1="0" x2="1" y1="0" y2="0">
+                    <stop offset="0" stop-color="#7A0000"/>
+                    <stop offset="1" stop-color="#D00000"/>
+                </linearGradient>
+            </defs>
+            <rect width="900" height="70" rx="8" fill="#fff5f5"/>
+            <text x="22" y="48" font-family="Trebuchet MS, Verdana, Arial, sans-serif" font-size="44" font-weight="700" fill="url(#g)">UwAmp</text>
+            <text x="190" y="48" font-family="Trebuchet MS, Verdana, Arial, sans-serif" font-size="18" fill="#8A0000">Apache PHP MySQL PHPMyAdmin serveur</text>
+        </svg>';
+        exit();
+    }
+
+    if ($type === 'folder') {
+        header("Content-type: image/svg+xml; charset=utf-8");
+        echo '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
+            <path d="M1 4.2C1 3.5 1.5 3 2.2 3h4l1.3 1.5h6.3c.7 0 1.2.5 1.2 1.2v6.1c0 .7-.5 1.2-1.2 1.2H2.2C1.5 13 1 12.5 1 11.8V4.2z" fill="#C00000"/>
+            <path d="M1 6h14v5.8c0 .7-.5 1.2-1.2 1.2H2.2C1.5 13 1 12.5 1 11.8V6z" fill="#E05A5A"/>
+        </svg>';
+        exit();
+    }
+
+    if ($type === 'favicon') {
+        header("Content-type: image/svg+xml; charset=utf-8");
+        echo '<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+            <rect width="32" height="32" rx="6" fill="#A00000"/>
+            <text x="6" y="23" font-family="Trebuchet MS, Verdana, Arial, sans-serif" font-size="18" font-weight="700" fill="#ffffff">U</text>
+        </svg>';
+        exit();
+    }
+
+    http_response_code(404);
+    exit();
+}
+?>
+<html>
+<head>
+<title>UwAmp</title>
+<link rel="shortcut icon" type="image/svg+xml" href="./?getimg=favicon" />
+<style type="text/css">
+body
+{
+    position:relative;
+    background-color: #FFFFFF;
+    font-family:"Trebuchet MS", Verdana;
+    font-size: 10pt;
+    text-align: left;
+    margin: 0px;
+    padding: 0px;
+}
+
+.mainblock
+{
+    padding:50px;
+    border : solid 1px #D9A6A6;
+    background-color: #FFF5F5;
+    width:798px;
+    text-align:left;
+}
+
+a
+{
+    color: #A00000;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+a:hover
+{
+    color: #D00000;
+}
+
+.afolder
+{
+    color: #A00000;
+    font-weight:bold;
+    text-decoration: none;
+    background: url(./?getimg=folder) no-repeat left;
+    padding-left:30px;
+}
+
+h2
+{
+    color: #8A0000;
+}
+
+hr
+{
+    color: #D9A6A6;
+    background-color: #D9A6A6;
+    height: 1px;
+    border: 0;
+}
+</style>
+</head>
+<body>
+<center>
+
+<img src="./?getimg=title" />
+<div class="mainblock">
+
+<h2>Apache Work Fine!!!</h2>
+<hr>
+<h2>Configuration Setting</h2>
+<li>Apache version : <?php echo $_SERVER['SERVER_SOFTWARE']; ?></li>
+<li><a href="/mysql/">PHPMyAdmin</a></li>
+<li><a href="/uwamp/phpinfo.php">PHP Info</a></li>
+<br><br><hr>
+
+<h2>Alias</h2>
+<?php
+echo '<pre style="background:#300;color:#fff;padding:20px;font-size:16px">';
+echo 'HTTP_HOST = ' . ($_SERVER['HTTP_HOST'] ?? '') . PHP_EOL;
+echo 'SERVER_NAME = ' . ($_SERVER['SERVER_NAME'] ?? '') . PHP_EOL;
+echo 'DOCUMENT_ROOT = ' . ($_SERVER['DOCUMENT_ROOT'] ?? '') . PHP_EOL;
+echo 'SCRIPT_FILENAME = ' . ($_SERVER['SCRIPT_FILENAME'] ?? '') . PHP_EOL;
+echo '</pre>';
+exit;
+$apacheconffile = $UWAMPFOLDER . "bin/apache/conf/httpd.conf";
+if (!file_exists($apacheconffile))
+{
+    echo "Can't find Apache config file (httpd.conf)";
+}
+else
+{
+    $fp = fopen($apacheconffile, 'r');
+    $data = fread($fp, filesize($apacheconffile));
+    fclose($fp);
+
+    preg_match_all("/Alias[\\t ]*\"([^\"\']+)\"[\\t ]\"([^\"\']+)\"/i", $data, $matches, PREG_SET_ORDER);
+
+    foreach ($matches as $val)
+    {
+        echo "<li><a class=\"afolder\" href=\"$val[1]\">$val[1]</a></li>";
+    }
+}
+?>
+
+<h2>Virtual Host</h2>
+<?php
+$wwwdir = $UWAMPFOLDER . "www";
+$count = 0;
+
+if (is_dir($wwwdir))
+{
+    $handle = opendir($wwwdir);
+
+    while ($file = readdir($handle))
+    {
+        if ($file == "." || $file == "..") continue;
+
+        if (is_dir($wwwdir . "/" . $file))
+        {
+            $count++;
+            echo "<li><a class=\"afolder\" href=\"/$file\">$file</a></li>";
+        }
+    }
+
+    closedir($handle);
+}
+
+if ($count == 0)
+{
+    echo "No project found";
+}
+?>
+
+<br><br>
+<hr>
+<center><a href="http://www.uwamp.com">UwAmp Home</a></center>
+
+</div>
+</center>
+
+</body>
+</html>

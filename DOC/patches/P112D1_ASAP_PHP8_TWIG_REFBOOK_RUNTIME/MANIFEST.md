@@ -1,0 +1,36 @@
+# MANIFEST — P112D1
+
+- `ASAP/DOC/P112D1_ASAP_PHP8_TWIG_REFBOOK_RUNTIME.md`
+- `ASAP/composer.json`
+- `ASAP/framework/ASAP/Application/Application.php`
+- `ASAP/framework/ASAP/Application/ApplicationPaths.php`
+- `ASAP/framework/ASAP/Contract/ContractException.php`
+- `ASAP/framework/ASAP/Documentation/MarkdownHtmlRenderer.php`
+- `ASAP/framework/ASAP/Documentation/MarkdownPage.php`
+- `ASAP/framework/ASAP/Documentation/MarkdownPageRepository.php`
+- `ASAP/framework/ASAP/Http/Request.php`
+- `ASAP/framework/ASAP/Http/Response.php`
+- `ASAP/framework/ASAP/Routing/RouteDefinition.php`
+- `ASAP/framework/ASAP/Routing/RouteMatch.php`
+- `ASAP/framework/ASAP/Routing/Router.php`
+- `ASAP/framework/ASAP/Site/SiteDefinition.php`
+- `ASAP/framework/ASAP/Site/SiteResolver.php`
+- `ASAP/framework/ASAP/Template/TemplateRendererInterface.php`
+- `ASAP/framework/ASAP/Template/TwigTemplateRenderer.php`
+- `ASAP_REF_BOOK/DOC/P112D1_ASAP_PHP8_TWIG_REFBOOK_RUNTIME.md`
+- `ASAP_REF_BOOK/application/Reference/IndexController.php`
+- `ASAP_REF_BOOK/application/Reference/Service/ReferenceContentService.php`
+- `ASAP_REF_BOOK/application/reference/templates/layout.twig`
+- `ASAP_REF_BOOK/application/reference/templates/page.twig`
+- `ASAP_REF_BOOK/composer.json`
+- `ASAP_REF_BOOK/content/markdown/acl.md`
+- `ASAP_REF_BOOK/content/markdown/architecture.md`
+- `ASAP_REF_BOOK/content/markdown/fsm.md`
+- `ASAP_REF_BOOK/content/markdown/index.md`
+- `ASAP_REF_BOOK/public/assets/css/asap-ref-book.css`
+- `ASAP_REF_BOOK/public/index.php`
+- `ASAP_REF_BOOK/sites/asap-reference/routes.xml`
+- `ASAP_REF_BOOK/tools/smoke/p112d1_refbook_render_smoke.php`
+- `CHANGELOG.md`
+- `PATCH.md`
+- `TODO.md`

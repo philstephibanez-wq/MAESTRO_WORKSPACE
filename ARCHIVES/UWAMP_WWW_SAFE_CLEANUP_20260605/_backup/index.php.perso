@@ -1,0 +1,216 @@
+<?php
+$year = date('Y');
+?>
+<!doctype html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Log&Play — Framework ASAP, Maestro v5 et outils de création musicale</title>
+    <meta name="description" content="Log&Play présente ASAP, un framework PHP moderne avec routes multilingues, URLs accentuées, REST, FSM, ACL et démonstrations techniques, ainsi que Maestro v5 pour REAPER.">
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+    <meta name="author" content="Log&Play">
+    <meta name="theme-color" content="#7c3aed">
+    <link rel="canonical" href="https://logandplay.org/">
+    <link rel="icon" href="/favicon.ico">
+
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="fr_FR">
+    <meta property="og:site_name" content="Log&Play">
+    <meta property="og:title" content="Log&Play — ASAP Framework & Maestro v5">
+    <meta property="og:description" content="Portail de démonstration ASAP Framework, Maestro v5 et outils de création musicale.">
+    <meta property="og:url" content="https://logandplay.org/">
+
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Log&Play — ASAP Framework & Maestro v5">
+    <meta name="twitter:description" content="Framework PHP, routes UTF-8 accentuées, REST, FSM, ACL et outils de création musicale.">
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "Log&Play",
+      "url": "https://logandplay.org/",
+      "inLanguage": "fr-FR",
+      "description": "Portail Log&Play : ASAP Framework, Maestro v5 et outils de création musicale.",
+      "publisher": {
+        "@type": "Organization",
+        "name": "Log&Play",
+        "url": "https://logandplay.org/"
+      }
+    }
+    </script>
+
+    <style>
+        :root {
+            --bg: #0f1020;
+            --panel: rgba(255,255,255,.08);
+            --panel-strong: rgba(255,255,255,.13);
+            --text: #f7f4ff;
+            --muted: #c9c2df;
+            --accent: #9b5cff;
+            --accent2: #00d1ff;
+            --border: rgba(255,255,255,.18);
+            --shadow: 0 24px 70px rgba(0,0,0,.35);
+        }
+        * { box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            margin: 0;
+            min-height: 100vh;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            color: var(--text);
+            background:
+                radial-gradient(circle at top left, rgba(155,92,255,.34), transparent 34rem),
+                radial-gradient(circle at top right, rgba(0,209,255,.24), transparent 32rem),
+                linear-gradient(135deg, #0b0d18 0%, #17142c 54%, #0b0d18 100%);
+        }
+        a { color: inherit; }
+        .wrap { width: min(1120px, calc(100% - 40px)); margin: 0 auto; }
+        header { padding: 34px 0 18px; }
+        nav { display: flex; align-items: center; justify-content: space-between; gap: 18px; }
+        .brand { display: flex; align-items: center; gap: 12px; text-decoration: none; font-weight: 800; letter-spacing: .02em; }
+        .logo {
+            width: 42px; height: 42px; border-radius: 14px;
+            display: grid; place-items: center;
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            box-shadow: 0 12px 28px rgba(0, 209, 255, .18);
+        }
+        .navlinks { display: flex; gap: 10px; flex-wrap: wrap; justify-content: flex-end; }
+        .navlinks a {
+            color: var(--muted); text-decoration: none; padding: 10px 12px; border-radius: 999px;
+            border: 1px solid transparent;
+        }
+        .navlinks a:hover { border-color: var(--border); color: var(--text); background: rgba(255,255,255,.06); }
+        .hero { padding: 72px 0 42px; }
+        .badge {
+            display: inline-flex; gap: 8px; align-items: center; color: #efe9ff;
+            border: 1px solid var(--border); background: rgba(255,255,255,.07);
+            padding: 8px 12px; border-radius: 999px; font-size: .95rem;
+        }
+        h1 { font-size: clamp(2.4rem, 7vw, 5.4rem); line-height: .96; margin: 20px 0 18px; max-width: 980px; }
+        .lead { color: var(--muted); font-size: clamp(1.05rem, 2vw, 1.35rem); line-height: 1.65; max-width: 800px; margin: 0 0 30px; }
+        .actions { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 28px; }
+        .btn {
+            display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+            min-height: 46px; padding: 0 18px; border-radius: 999px;
+            text-decoration: none; font-weight: 760; border: 1px solid var(--border);
+            background: rgba(255,255,255,.08);
+        }
+        .btn.primary { background: linear-gradient(135deg, var(--accent), #6d5dfc); border: 0; box-shadow: 0 20px 42px rgba(124,58,237,.28); }
+        .btn:hover { transform: translateY(-1px); }
+        .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; padding: 28px 0 68px; }
+        .card {
+            border: 1px solid var(--border); border-radius: 26px; padding: 26px;
+            background: linear-gradient(180deg, var(--panel-strong), var(--panel));
+            box-shadow: var(--shadow); min-height: 260px;
+        }
+        .card h2 { margin: 0 0 12px; font-size: 1.45rem; }
+        .card p { margin: 0 0 18px; color: var(--muted); line-height: 1.65; }
+        .tags { display: flex; flex-wrap: wrap; gap: 8px; margin: 20px 0 24px; }
+        .tag { color: #e8e0ff; border: 1px solid var(--border); background: rgba(255,255,255,.06); padding: 6px 10px; border-radius: 999px; font-size: .9rem; }
+        .section { padding: 14px 0 70px; }
+        .section h2 { margin: 0 0 16px; font-size: clamp(1.7rem, 4vw, 2.8rem); }
+        .section p { color: var(--muted); max-width: 760px; line-height: 1.7; }
+        .links { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin-top: 22px; }
+        .linkbox {
+            border: 1px solid var(--border); border-radius: 18px; padding: 16px;
+            background: rgba(255,255,255,.06); text-decoration: none;
+        }
+        .linkbox strong { display: block; margin-bottom: 6px; }
+        .linkbox span { color: var(--muted); font-size: .95rem; }
+        footer { border-top: 1px solid var(--border); padding: 28px 0 42px; color: var(--muted); }
+        @media (max-width: 820px) {
+            nav { align-items: flex-start; flex-direction: column; }
+            .grid, .links { grid-template-columns: 1fr; }
+            .hero { padding-top: 46px; }
+        }
+    </style>
+</head>
+<body>
+<header class="wrap">
+    <nav aria-label="Navigation principale">
+        <a class="brand" href="https://logandplay.org/" aria-label="Accueil Log&Play">
+            <span class="logo" aria-hidden="true">♪</span>
+            <span>Log&Play</span>
+        </a>
+        <div class="navlinks">
+            <a href="https://demo.logandplay.org/">ASAP Framework</a>
+            <a href="https://maestro.logandplay.org/">Maestro v5</a>
+            <a href="https://demo.logandplay.org/fr/contact">Contact</a>
+        </div>
+    </nav>
+</header>
+
+<main>
+    <section class="hero wrap">
+        <span class="badge">Framework PHP • musique • expérimentation web</span>
+        <h1>Log&Play, laboratoire web et musical.</h1>
+        <p class="lead">
+            Portail public des projets Log&Play : une vitrine technique autour du framework ASAP,
+            des démonstrations PHP modernes, et Maestro v5, un environnement d’aide à la création musicale pour REAPER.
+        </p>
+        <div class="actions">
+            <a class="btn primary" href="https://demo.logandplay.org/">Découvrir ASAP</a>
+            <a class="btn" href="https://maestro.logandplay.org/">Voir Maestro v5</a>
+        </div>
+    </section>
+
+    <section class="grid wrap" aria-label="Projets principaux">
+        <article class="card">
+            <h2>ASAP Framework</h2>
+            <p>
+                Démo d’un framework PHP modernisé : routes multilingues, URLs accentuées UTF-8,
+                REST, FSM, ACL, mail local via Mailpit et architecture modulaire.
+            </p>
+            <div class="tags">
+                <span class="tag">PHP 8</span>
+                <span class="tag">REST</span>
+                <span class="tag">FSM</span>
+                <span class="tag">ACL</span>
+                <span class="tag">URLs accentuées</span>
+            </div>
+            <a class="btn" href="https://demo.logandplay.org/fr">Ouvrir la démo</a>
+        </article>
+
+        <article class="card">
+            <h2>Maestro v5</h2>
+            <p>
+                Documentation et vitrine autour de Maestro v5, projet d’outillage pour REAPER orienté workflow musical,
+                composants UI, moteurs officiels et architecture data-driven.
+            </p>
+            <div class="tags">
+                <span class="tag">REAPER</span>
+                <span class="tag">Lua</span>
+                <span class="tag">Workflow musicien</span>
+                <span class="tag">Documentation</span>
+            </div>
+            <a class="btn" href="https://maestro.logandplay.org/">Ouvrir Maestro</a>
+        </article>
+    </section>
+
+    <section class="section wrap">
+        <h2>Liens rapides</h2>
+        <p>Quelques entrées utiles pour les moteurs de recherche et les visiteurs qui arrivent directement sur le portail.</p>
+        <div class="links">
+            <a class="linkbox" href="https://demo.logandplay.org/fr/urls-accentuées">
+                <strong>URLs accentuées</strong>
+                <span>Démo de routes UTF-8 lisibles en français.</span>
+            </a>
+            <a class="linkbox" href="https://demo.logandplay.org/fr/rest">
+                <strong>REST ASAP</strong>
+                <span>Endpoints JSON et contrôleur REST.</span>
+            </a>
+            <a class="linkbox" href="https://demo.logandplay.org/fr/fsm">
+                <strong>FSM</strong>
+                <span>Diagrammes et workflow piloté par états.</span>
+            </a>
+        </div>
+    </section>
+</main>
+
+<footer class="wrap">
+    <p>© <?php echo htmlspecialchars((string) $year, ENT_QUOTES, 'UTF-8'); ?> Log&Play. Portail public indexable.</p>
+</footer>
+</body>
+</html>
