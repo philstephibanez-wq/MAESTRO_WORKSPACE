@@ -1,0 +1,152 @@
+<?php
+declare(strict_types=1);
+
+namespace ASAPRefBook\Reference\Controller;
+
+use ASAP\Application\ApplicationPaths;
+use ASAP\Renderer\ViewModel;
+use ASAP\Template\TemplateRendererInterface;
+use ASAPRefBook\Reference\Service\ReferenceAsapRootLocator;
+use ASAPRefBook\Reference\Service\ReferenceCatalogService;
+use ASAPRefBook\Reference\Service\ReferenceContentService;
+use ASAPRefBook\Reference\Service\ReferenceFsmRunner;
+use ASAPRefBook\Reference\Service\ReferencePublicSiteService;
+use ASAPRefBook\Reference\Service\ReferenceRuntimeSnapshotRepository;
+use ASAPRefBook\Reference\Service\ReferenceSearchService;
+use ASAPRefBook\Reference\Service\ReferenceThemeService;
+use RuntimeException;
+
+/**
+ * INTERNAL CONTROLLER BASE
+ *
+ * Role:
+ *   Share RefBook controller dependencies.
+ *
+ * Contract:
+ *   Controller helper only. Business preparation stays in services.
+ */
+abstract class AbstractRefBookController
+{
+    private ?ReferenceContentService $contentCache = null;
+    private ?ReferenceThemeService $themeCache = null;
+    private ?ReferenceFsmRunner $runtimeCache = null;
+    private ?ReferenceCatalogService $catalogCache = null;
+    private ?ReferenceSearchService $searchCache = null;
+    private ?ReferencePublicSiteService $publicSiteCache = null;
+
+    public function __construct(
+        protected readonly ApplicationPaths $paths,
+        protected readonly TemplateRendererInterface $templateRenderer
+    ) {
+    }
+
+    protected function language(): string
+    {
+        $language = (string) ($_GET['lang'] ?? ReferenceContentService::DEFAULT_LANGUAGE);
+
+        if (!in_array($language, ReferenceContentService::SUPPORTED_LANGUAGES, true)) {
+            throw new RuntimeException('ASAP_REFBOOK_LANG_UNSUPPORTED=' . $language);
+        }
+
+        return $language;
+    }
+
+    protected function content(): ReferenceContentService
+    {
+        if ($this->contentCache === null) {
+            $this->contentCache = new ReferenceContentService($this->paths->appRoot . '/content/refbook/i18n', $this->language());
+        }
+
+        return $this->contentCache;
+    }
+
+    protected function theme(): ReferenceThemeService
+    {
+        if ($this->themeCache === null) {
+            $theme = (string) ($_GET['theme'] ?? ReferenceThemeService::DEFAULT_THEME);
+            $this->themeCache = new ReferenceThemeService($theme);
+        }
+
+        return $this->themeCache;
+    }
+
+    protected function refBookRuntime(): ReferenceFsmRunner
+    {
+        if ($this->runtimeCache === null) {
+            $this->runtimeCache = new ReferenceFsmRunner(
+                new ReferenceRuntimeSnapshotRepository(ReferenceAsapRootLocator::fromEnvironment(), $this->language())
+            );
+        }
+
+        return $this->runtimeCache;
+    }
+
+    protected function catalog(): ReferenceCatalogService
+    {
+        if ($this->catalogCache === null) {
+            $this->catalogCache = new ReferenceCatalogService(
+                $this->refBookRuntime(),
+                $this->content()
+            );
+        }
+
+        return $this->catalogCache;
+    }
+
+    protected function search(): ReferenceSearchService
+    {
+        if ($this->searchCache === null) {
+            $this->searchCache = new ReferenceSearchService($this->catalog(), $this->content());
+        }
+
+        return $this->searchCache;
+    }
+
+
+    protected function publicSite(): ReferencePublicSiteService
+    {
+        if ($this->publicSiteCache === null) {
+            $this->publicSiteCache = new ReferencePublicSiteService();
+        }
+
+        return $this->publicSiteCache;
+    }
+
+    /**
+     * @param array<string,mixed> $data
+     */
+    protected function view(string $template, array $data, int $status = 200): ViewModel
+    {
+        $overview = $this->catalog()->overview();
+        $content = $this->content();
+        $theme = $this->theme();
+        $publicSite = $this->publicSite();
+        $pageSlug = (string) ($data['pageSlug'] ?? ($_GET['page'] ?? ''));
+
+        $data['basePath'] = $publicSite->basePath();
+        $data['canonicalBaseUrl'] = $publicSite->publicBaseUrl();
+        $data['site'] = $publicSite->branding();
+        $data['lang'] = $content->language();
+        $data['languages'] = $content->supportedLanguages();
+        $data['languageOptions'] = $content->languageOptions();
+        $data['languageState'] = $content->languageState();
+        $data['isPartialLanguage'] = $content->isPartialLanguage();
+        $data['sourceLanguage'] = $data['languageState']['source_language'];
+        $data['theme'] = $theme->theme();
+        $data['themeClass'] = $theme->bodyClass();
+        $data['themes'] = $theme->supportedThemes();
+        $data['pageSlug'] = $pageSlug;
+        $data['searchQuery'] = trim((string) ($_GET['q'] ?? ''));
+        $data['breadcrumbTitle'] = (string) ($data['title'] ?? $content->t('breadcrumb.home'));
+        $data['ui'] = $content->labels();
+        $data['moduleTitle'] = (string) ($content->module()['title'] ?? 'ASAP Reference Book');
+        $data['module'] = $content->module();
+        $data['navigationDomains'] = $overview['domains'];
+        $data['navigationGuides'] = $content->guideNavigation();
+        $data['runtime'] = $overview['runtime'];
+        $data['assetIntegrity'] = $overview['asset_integrity'];
+        $data['seo'] = $publicSite->seo($data);
+
+        return new ViewModel($template, $data, $status);
+    }
+}

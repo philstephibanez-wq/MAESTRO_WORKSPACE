@@ -1,0 +1,8 @@
+MM application/reference/Controller/AbstractRefBookController.php
+A  application/reference/Service/ReferenceApiCallService.php
+M  application/reference/Service/ReferenceCatalogService.php
+M  application/reference/Service/ReferenceContentService.php
+ M application/reference/Service/ReferenceRuntimeSnapshotRepository.php
+M  application/reference/templates/layout.twig
+M  application/reference/templates/pages/symbol.twig
+M  public/assets/css/refbook.css

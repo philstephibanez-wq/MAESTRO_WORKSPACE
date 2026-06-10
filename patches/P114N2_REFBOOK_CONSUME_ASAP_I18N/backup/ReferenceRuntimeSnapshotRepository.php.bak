@@ -1,0 +1,334 @@
+<?php
+declare(strict_types=1);
+
+namespace ASAPRefBook\Reference\Service;
+
+use ASAP\RefBook\Api\RefBookRestSnapshotProvider;
+use RuntimeException;
+
+/**
+ * PUBLIC SERVICE
+ *
+ * Role:
+ *   Build the RefBook read model from the shared ASAP RefBook provider.
+ *
+ * Contract:
+ *   ASAP remains the source of technical truth. Missing documentation assets are
+ *   reported explicitly as diagnostics; no placeholder content is generated.
+ */
+final class ReferenceRuntimeSnapshotRepository implements ReferenceSnapshotRepositoryInterface
+{
+    public function __construct(private readonly string $asapRoot)
+    {
+    }
+
+    /**
+     * @return array<string,mixed>
+     */
+    public function load(): array
+    {
+        if (!class_exists(RefBookRestSnapshotProvider::class)) {
+            throw new RuntimeException('ASAP_REFBOOK_SHARED_PROVIDER_CLASS_MISSING=' . RefBookRestSnapshotProvider::class);
+        }
+
+        $provider = new RefBookRestSnapshotProvider($this->asapRoot);
+        $snapshot = $provider->snapshot();
+
+        return $this->normalize($snapshot);
+    }
+
+    /**
+     * @param array<string,mixed> $snapshot
+     * @return array<string,mixed>
+     */
+    private function normalize(array $snapshot): array
+    {
+        if (($snapshot['schema_version'] ?? null) !== 'asap-refbook-snapshot/v1') {
+            throw new RuntimeException('ASAP_REFBOOK_REST_SCHEMA_INVALID=' . (string) ($snapshot['schema_version'] ?? 'missing'));
+        }
+
+        $api = $this->arrayValue($snapshot['api'] ?? []);
+        if (($api['read_only'] ?? null) !== true) {
+            throw new RuntimeException('ASAP_REFBOOK_REST_API_NOT_READ_ONLY');
+        }
+
+        $documentationAssets = $this->arrayValue($snapshot['documentation_assets'] ?? []);
+        $assetIndex = $this->assetIndex($documentationAssets);
+        $assetDiagnostics = [];
+        $symbols = [];
+
+        foreach ($this->listValue($snapshot['classes'] ?? []) as $classIndex => $class) {
+            if (!is_array($class)) {
+                continue;
+            }
+
+            $metadata = $this->arrayValue($class['metadata'] ?? []);
+            $symbolName = (string) ($class['name'] ?? '');
+            if ($symbolName === '') {
+                throw new RuntimeException('ASAP_REFBOOK_REST_CLASS_NAME_MISSING_AT=' . (string) $classIndex);
+            }
+
+            $shortName = (string) ($class['short_name'] ?? $this->shortName($symbolName));
+            $methods = [];
+
+            foreach ($this->listValue($class['methods'] ?? []) as $method) {
+                if (!is_array($method)) {
+                    continue;
+                }
+
+                $methodMetadata = $this->arrayValue($method['metadata'] ?? []);
+                $methodName = (string) ($method['name'] ?? '');
+
+                $methods[] = [
+                    'name' => $methodName,
+                    'signature' => $this->methodSignature($method),
+                    'visibility' => (string) ($method['visibility'] ?? 'public'),
+                    'role' => (string) ($methodMetadata['role'] ?? ''),
+                    'behavior' => (string) ($methodMetadata['behavior'] ?? ''),
+                    'preconditions' => $this->stringList($methodMetadata['preconditions'] ?? []),
+                    'postconditions' => $this->stringList($methodMetadata['postconditions'] ?? []),
+                    'side_effects' => $this->stringList($methodMetadata['side_effects'] ?? []),
+                    'errors' => $this->stringList($methodMetadata['errors'] ?? []),
+                    'examples' => $this->stringList($methodMetadata['examples'] ?? []),
+                    'diagrams' => $this->stringList($methodMetadata['diagrams'] ?? []),
+                ];
+
+                $this->collectMissingAssets($assetIndex, $assetDiagnostics, $methodMetadata, $symbolName, $methodName);
+            }
+
+            $symbol = [
+                'symbol' => $symbolName,
+                'name' => $shortName,
+                'short_name' => $shortName,
+                'kind' => (string) ($class['kind'] ?? 'class'),
+                'type' => (string) ($class['kind'] ?? 'class'),
+                'namespace' => $this->namespaceName($symbolName),
+                'file' => (string) ($class['file'] ?? ''),
+                'domain' => $this->domain($metadata),
+                'role' => (string) ($metadata['role'] ?? ''),
+                'responsibility' => (string) ($metadata['responsibility'] ?? ''),
+                'visibility' => (string) ($metadata['visibility'] ?? ''),
+                'contract' => $this->stringList($metadata['contracts'] ?? []),
+                'examples' => $this->stringList($metadata['examples'] ?? []),
+                'diagrams' => $this->stringList($metadata['diagrams'] ?? []),
+                'example_assets' => $this->resolvedAssets('examples', $metadata['examples'] ?? [], $assetIndex),
+                'diagram_assets' => $this->resolvedAssets('diagrams', $metadata['diagrams'] ?? [], $assetIndex),
+                'methods' => $methods,
+            ];
+
+            $this->collectMissingAssets($assetIndex, $assetDiagnostics, $metadata, $symbolName, '');
+            $symbols[] = $symbol;
+        }
+
+        return [
+            'schema' => 'ASAP_REFBOOK_RUNTIME_MANIFEST_V1',
+            'schema_version' => (string) ($snapshot['schema_version'] ?? ''),
+            'generated_at' => (string) ($snapshot['generated_at'] ?? ''),
+            'source_root' => (string) ($snapshot['source_root'] ?? ''),
+            'producer' => (string) ($snapshot['producer'] ?? ''),
+            'summary' => $this->arrayValue($snapshot['summary'] ?? []),
+            'api' => $api,
+            'validation' => $this->arrayValue($snapshot['validation'] ?? []),
+            'documentation_assets' => $documentationAssets,
+            'asset_integrity' => [
+                'ok' => $assetDiagnostics === [],
+                'missing_count' => count($assetDiagnostics),
+                'missing' => $assetDiagnostics,
+            ],
+            'runtime' => [
+                'source' => 'shared-asap-provider',
+                'asap_root' => $this->asapRoot,
+                'read_only' => true,
+            ],
+            'symbols' => $symbols,
+        ];
+    }
+
+    /**
+     * @param array<string,mixed> $documentationAssets
+     * @return array{examples:array<string,array<string,mixed>>,diagrams:array<string,array<string,mixed>>}
+     */
+    private function assetIndex(array $documentationAssets): array
+    {
+        $index = ['examples' => [], 'diagrams' => []];
+
+        foreach (['examples', 'diagrams'] as $type) {
+            foreach ($this->listValue($documentationAssets[$type] ?? []) as $asset) {
+                if (!is_array($asset)) {
+                    continue;
+                }
+
+                $id = (string) ($asset['id'] ?? '');
+                if ($id !== '') {
+                    $index[$type][$id] = $asset;
+                }
+            }
+        }
+
+        return $index;
+    }
+
+    /**
+     * @param array{examples:array<string,array<string,mixed>>,diagrams:array<string,array<string,mixed>>} $assetIndex
+     * @param list<array<string,string>> $diagnostics
+     * @param array<string,mixed> $metadata
+     */
+    private function collectMissingAssets(array $assetIndex, array &$diagnostics, array $metadata, string $symbol, string $method): void
+    {
+        foreach (['examples' => 'example', 'diagrams' => 'diagram'] as $field => $label) {
+            foreach ($this->stringList($metadata[$field] ?? []) as $id) {
+                if (!isset($assetIndex[$field][$id])) {
+                    $diagnostics[] = [
+                        'type' => $label,
+                        'id' => $id,
+                        'symbol' => $symbol,
+                        'method' => $method,
+                    ];
+                }
+            }
+        }
+    }
+
+    /**
+     * @param array{examples:array<string,array<string,mixed>>,diagrams:array<string,array<string,mixed>>} $assetIndex
+     * @param mixed $ids
+     * @return list<array<string,mixed>>
+     */
+    private function resolvedAssets(string $type, mixed $ids, array $assetIndex): array
+    {
+        $assets = [];
+
+        foreach ($this->stringList($ids) as $id) {
+            if (isset($assetIndex[$type][$id])) {
+                $assets[] = $assetIndex[$type][$id];
+            }
+        }
+
+        return $assets;
+    }
+
+    /**
+     * @param array<string,mixed> $class
+     */
+    private function methodSignature(array $class): string
+    {
+        $visibility = (string) ($class['visibility'] ?? 'public');
+        $static = ($class['is_static'] ?? false) === true ? ' static' : '';
+        $name = (string) ($class['name'] ?? 'method');
+        $params = [];
+
+        foreach ($this->listValue($class['parameters'] ?? []) as $parameter) {
+            if (!is_array($parameter)) {
+                continue;
+            }
+
+            $params[] = $this->parameterSignature($parameter);
+        }
+
+        $returnType = $class['return_type'] ?? null;
+        $return = is_string($returnType) && $returnType !== '' ? ': ' . $returnType : '';
+
+        return $visibility . $static . ' function ' . $name . '(' . implode(', ', $params) . ')' . $return;
+    }
+
+    /**
+     * @param array<string,mixed> $parameter
+     */
+    private function parameterSignature(array $parameter): string
+    {
+        $name = (string) ($parameter['name'] ?? 'param');
+        $type = (string) ($parameter['type'] ?? '');
+        $allowsNull = ($parameter['allows_null'] ?? false) === true;
+
+        if ($allowsNull && $type !== '' && $type !== 'mixed' && !str_starts_with($type, '?')) {
+            $type = '?' . $type;
+        }
+
+        $prefix = $type !== '' ? $type . ' ' : '';
+        $variadic = ($parameter['is_variadic'] ?? false) === true ? '...' : '';
+        $reference = ($parameter['is_by_reference'] ?? false) === true ? '&' : '';
+        $default = '';
+
+        if (($parameter['has_default'] ?? false) === true) {
+            $default = ' = ' . $this->defaultValue($parameter['default'] ?? null);
+        }
+
+        return $prefix . $reference . $variadic . '$' . $name . $default;
+    }
+
+    private function defaultValue(mixed $value): string
+    {
+        if ($value === null) {
+            return 'null';
+        }
+
+        if (is_bool($value)) {
+            return $value ? 'true' : 'false';
+        }
+
+        if (is_int($value) || is_float($value)) {
+            return (string) $value;
+        }
+
+        if (is_array($value)) {
+            return '[]';
+        }
+
+        return var_export($value, true);
+    }
+
+    /**
+     * @param array<string,mixed> $metadata
+     */
+    private function domain(array $metadata): string
+    {
+        $domain = trim((string) ($metadata['domain'] ?? 'UNCLASSIFIED'));
+
+        return $domain === '' ? 'UNCLASSIFIED' : $domain;
+    }
+
+    private function shortName(string $fqcn): string
+    {
+        $parts = explode('\\', $fqcn);
+
+        return (string) end($parts);
+    }
+
+    private function namespaceName(string $fqcn): string
+    {
+        $position = strrpos($fqcn, '\\');
+
+        return $position === false ? '' : substr($fqcn, 0, $position);
+    }
+
+    /**
+     * @return list<mixed>
+     */
+    private function listValue(mixed $value): array
+    {
+        return is_array($value) ? array_values($value) : [];
+    }
+
+    /**
+     * @return array<string,mixed>
+     */
+    private function arrayValue(mixed $value): array
+    {
+        return is_array($value) ? $value : [];
+    }
+
+    /**
+     * @return list<string>
+     */
+    private function stringList(mixed $value): array
+    {
+        if (!is_array($value)) {
+            return [];
+        }
+
+        return array_values(array_filter(array_map(
+            static fn(mixed $item): string => trim((string) $item),
+            $value
+        ), static fn(string $item): bool => $item !== ''));
+    }
+}
