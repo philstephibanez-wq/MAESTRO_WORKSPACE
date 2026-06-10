@@ -1,0 +1,47 @@
+{
+  "schema": "MAESTRO_WORKSPACE_PROJECTS_REGISTRY_V1",
+  "final_goals": {
+    "MAESTRO": {
+      "role": "Final assistant/product goal",
+      "workspace": "10_FINAL_GOALS/MAESTRO"
+    },
+    "KP": {
+      "role": "Final KP/K2000/private sound project goal",
+      "workspace": "10_FINAL_GOALS/KP"
+    },
+    "VSTI": {
+      "role": "Final VSTi/plugin goal",
+      "workspace": "10_FINAL_GOALS/VSTI"
+    },
+    "MO_KB": {
+      "role": "Final music knowledge base goal",
+      "workspace": "10_FINAL_GOALS/MO_KB"
+    }
+  },
+  "technical_foundations": {
+    "ASAP": {
+      "root": "H:\\ASAP",
+      "workspace": "20_TECHNICAL_FOUNDATIONS/ASAP"
+    },
+    "ASAP_REF_BOOK": {
+      "root": "H:\\ASAP_REF_BOOK",
+      "workspace": "20_TECHNICAL_FOUNDATIONS/ASAP_REF_BOOK"
+    },
+    "MAESTRO_V5_REAPER": {
+      "root": "D:\\REAPER_Roaming\\REAPER\\Scripts\\MAESTRO_v5",
+      "workspace": "20_TECHNICAL_FOUNDATIONS/MAESTRO_V5_REAPER"
+    },
+    "MO_KB_DAEMON": {
+      "root": "H:\\MO_KB_DAEMON",
+      "workspace": "20_TECHNICAL_FOUNDATIONS/MO_KB_DAEMON"
+    },
+    "MO_KB_FRONT_ASAP": {
+      "root": "H:\\MO_KB_FRONT_ASAP",
+      "workspace": "20_TECHNICAL_FOUNDATIONS/MO_KB_FRONT_ASAP"
+    },
+    "SERVER_LINUX": {
+      "root": "future",
+      "workspace": "20_TECHNICAL_FOUNDATIONS/SERVER_LINUX"
+    }
+  }
+}

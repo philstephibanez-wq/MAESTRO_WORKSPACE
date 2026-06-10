@@ -1,0 +1,11 @@
+{
+  "name": "P115A_WORKSPACE_BASELINE_ORGANIZATION",
+  "target": "H:\\MAESTRO_WORKSPACE",
+  "policy": "preserve history; archive instead of delete; do not touch source roots",
+  "source_roots_not_touched": [
+    "H:\\ASAP",
+    "H:\\ASAP_REF_BOOK",
+    "H:\\MO_KB_DAEMON",
+    "H:\\MO_KB_FRONT_ASAP"
+  ]
+}

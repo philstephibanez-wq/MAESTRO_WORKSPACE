@@ -1,0 +1,3 @@
+P115A2_WORKSPACE_GIT_CANONICALIZE_MANUAL_DONE
+P115A history preserved in 99_ARCHIVES/history_preserved
+MAESTRO_WORKSPACE.code-workspace preserved at root

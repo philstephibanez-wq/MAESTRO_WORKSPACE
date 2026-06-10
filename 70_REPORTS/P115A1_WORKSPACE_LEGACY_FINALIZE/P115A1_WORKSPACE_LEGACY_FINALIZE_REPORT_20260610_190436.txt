@@ -1,0 +1,108 @@
+P115A1_WORKSPACE_LEGACY_FINALIZE_START
+WORKSPACE=H:\MAESTRO_WORKSPACE
+PACKAGE_DIR=H:\MAESTRO_WORKSPACE\80_DOWNLOAD_INBOX\P115A1_WORKSPACE_LEGACY_FINALIZE\
+ARCHIVE_DIR=H:\MAESTRO_WORKSPACE\99_ARCHIVES\history_preserved\P115A1_20260610_190436
+
+BEFORE_ROOT_LIST
+.git
+00_COMMON_CONTRACTS
+01_REGISTRY
+10_FINAL_GOALS
+20_TECHNICAL_FOUNDATIONS
+30_PATCHES
+40_AUDITS
+50_HANDOFFS
+60_TOOLS
+70_REPORTS
+80_BACKUPS
+80_DOWNLOAD_INBOX
+90_ARCHIVES
+99_ARCHIVES
+ARCHIVES
+CONTEXT
+DOC
+INBOX
+MAESTRO_WORKSPACE.code-workspace
+OUTBOX
+SECTORS
+tmp
+
+BEFORE_GIT_STATUS
+## master...origin/master [ahead 1]
+ D CHANGELOG.md
+ D P111_DISTRIBUTION_POLICY.md
+ D P111_SOURCE_OF_TRUTH_SECTORS.md
+ D PATCH.md
+ D README.md
+ D README_P111.md
+ D TODO.md
+ D TOOLS/OPENAI_ASSISTANT/README.md
+ D TOOLS/OPENAI_ASSISTANT/README_LAUNCHERS.md
+ D TOOLS/OPENAI_ASSISTANT/ask_maestro.py
+ D TOOLS/OPENAI_ASSISTANT/maestro_ask.cmd
+ D TOOLS/OPENAI_ASSISTANT/maestro_ask_all_status.cmd
+ D TOOLS/OPENAI_ASSISTANT/maestro_ask_daemon_status.cmd
+ D TOOLS/OPENAI_ASSISTANT/maestro_ask_dry_run.cmd
+ D TOOLS/OPENAI_ASSISTANT/maestro_ask_front_status.cmd
+ D TOOLS/OPENAI_ASSISTANT/maestro_ask_maestro_v5_status.cmd
+ D p111_bootstrap_maestro_workspace.py
+ D p111_live_git_audit.py
+ D p111_update_distribution_policy_v2.py
+ D patches/P114N2_REFBOOK_CONSUME_ASAP_I18N/backup/AbstractRefBookController.php.bak
+ D patches/P114N2_REFBOOK_CONSUME_ASAP_I18N/backup/ReferenceRuntimeSnapshotRepository.php.bak
+ D patches/P114N2_REFBOOK_CONSUME_ASAP_I18N/runner/README.txt
+ D patches/P114N2_REFBOOK_CONSUME_ASAP_I18N/runner/apply_p114n2_refbook_consume_asap_i18n.cmd
+ D patches/P114N2_REFBOOK_CONSUME_ASAP_I18N/runner/p114n2_refbook_consume_asap_i18n.php
+ D patches/P114N2_REFBOOK_CONSUME_ASAP_I18N/runner/p114n2_refbook_consume_asap_i18n_smoke.php
+ D patches/P114N2_REFBOOK_CONSUME_ASAP_I18N/runner/rollback_p114n2_refbook_consume_asap_i18n.cmd
+ D patches/P114N3_REFBOOK_CONSUME_ASAP_I18N/backup/AbstractRefBookController.php.bak
+ D patches/P114N3_REFBOOK_CONSUME_ASAP_I18N/backup/ReferenceRuntimeSnapshotRepository.php.bak
+ D patches/P114N3_REFBOOK_CONSUME_ASAP_I18N/reports/asap_status_after.txt
+ D patches/P114N3_REFBOOK_CONSUME_ASAP_I18N/reports/refbook_status_after.txt
+ D patches/P114N3_REFBOOK_CONSUME_ASAP_I18N/runner/README.txt
+ D patches/P114N3_REFBOOK_CONSUME_ASAP_I18N/runner/apply_p114n3_refbook_consume_asap_i18n.cmd
+ D patches/P114N3_REFBOOK_CONSUME_ASAP_I18N/runner/p114n3_refbook_consume_asap_i18n.php
+ D patches/P114N3_REFBOOK_CONSUME_ASAP_I18N/runner/p114n3_refbook_consume_asap_i18n_smoke.php
+ D patches/P114N3_REFBOOK_CONSUME_ASAP_I18N/runner/rollback_p114n3_refbook_consume_asap_i18n.cmd
+ D patches/P114N4_REFBOOK_LOCALIZE_NORMALIZED_RUNTIME/backup/ReferenceRuntimeSnapshotRepository.php.bak
+ D patches/P114N4_REFBOOK_LOCALIZE_NORMALIZED_RUNTIME/runner/README.txt
+ D patches/P114N4_REFBOOK_LOCALIZE_NORMALIZED_RUNTIME/runner/apply_p114n4_refbook_localize_normalized_runtime.cmd
+ D patches/P114N4_REFBOOK_LOCALIZE_NORMALIZED_RUNTIME/runner/p114n4_refbook_localize_normalized_runtime.php
+ D patches/P114N4_REFBOOK_LOCALIZE_NORMALIZED_RUNTIME/runner/p114n4_refbook_localize_normalized_runtime_smoke.php
+ D patches/P114N4_REFBOOK_LOCALIZE_NORMALIZED_RUNTIME/runner/rollback_p114n4_refbook_localize_normalized_runtime.cmd
+ D patches/P114O_REFBOOK_LOCALIZE_DISPLAY_FIELDS/backup/ReferenceCatalogService.php.bak
+ D patches/P114O_REFBOOK_LOCALIZE_DISPLAY_FIELDS/reports/asap_status_after.txt
+ D patches/P114O_REFBOOK_LOCALIZE_DISPLAY_FIELDS/reports/refbook_status_after.txt
+ D patches/P114O_REFBOOK_LOCALIZE_DISPLAY_FIELDS/runner/README.txt
+ D patches/P114O_REFBOOK_LOCALIZE_DISPLAY_FIELDS/runner/apply_p114o_refbook_localize_display_fields.cmd
+ D patches/P114O_REFBOOK_LOCALIZE_DISPLAY_FIELDS/runner/p114o_refbook_localize_display_fields.php
+ D patches/P114O_REFBOOK_LOCALIZE_DISPLAY_FIELDS/runner/p114o_refbook_localize_display_fields_smoke.php
+ D patches/P114O_REFBOOK_LOCALIZE_DISPLAY_FIELDS/runner/rollback_p114o_refbook_localize_display_fields.cmd
+?? 00_COMMON_CONTRACTS/
+?? 01_REGISTRY/
+?? 10_FINAL_GOALS/
+?? 20_TECHNICAL_FOUNDATIONS/
+?? 30_PATCHES/
+?? 40_AUDITS/
+?? 50_HANDOFFS/
+?? 60_TOOLS/
+?? 70_REPORTS/
+?? 80_BACKUPS/
+?? 80_DOWNLOAD_INBOX/
+?? 90_ARCHIVES/
+?? 99_ARCHIVES/
+
+NORMALIZED_ARCHIVE_NAME P115A_202600We_170013 -> P115A_20260610_170013
+        1 r‚pertoires d‚plac‚s.
+MOVED_LEGACY_ROOT_FOLDER ARCHIVES
+AccŠs refus‚.
+        0 r‚pertoires d‚plac‚s.
+MOVE_FAILED CONTEXT
+        1 r‚pertoires d‚plac‚s.
+MOVED_LEGACY_ROOT_FOLDER DOC
+        1 r‚pertoires d‚plac‚s.
+MOVED_LEGACY_ROOT_FOLDER INBOX
+        1 r‚pertoires d‚plac‚s.
+MOVED_LEGACY_ROOT_FOLDER OUTBOX
+        1 r‚pertoires d‚plac‚s.
+MOVED_LEGACY_ROOT_FOLDER SECTORS

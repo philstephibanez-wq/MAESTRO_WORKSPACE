@@ -1,0 +1,273 @@
+P115B_SERVER_LINUX_DOC_BASELINE_START
+ROOT=H:\MAESTRO_WORKSPACE
+TARGET_DIR=H:\MAESTRO_WORKSPACE\20_TECHNICAL_FOUNDATIONS\SERVER_LINUX
+BACKUP_DIR=H:\MAESTRO_WORKSPACE\80_BACKUPS\P115B_SERVER_LINUX_DOC_BASELINE\SERVER_LINUX_20260610_192622
+
+BACKUP_EXISTING_SERVER_LINUX
+
+-------------------------------------------------------------------------------
+   ROBOCOPY   ::   Copie de fichiers robuste pour Windows     
+-------------------------------------------------------------------------------
+
+  DÇmarrageˇ: Wednesday, June 10, 2026 19:26:22
+   Source : H:\MAESTRO_WORKSPACE\20_TECHNICAL_FOUNDATIONS\SERVER_LINUX\
+     Dest : H:\MAESTRO_WORKSPACE\80_BACKUPS\P115B_SERVER_LINUX_DOC_BASELINE\SERVER_LINUX_20260610_192622\
+
+    Fichiers : *.*
+	    
+  Options : *.* /S /E /DCOPY:DA /COPY:DAT /R:1 /W:1 
+
+-------------------------------------------------------------------------------
+
+	                   2	H:\MAESTRO_WORKSPACE\20_TECHNICAL_FOUNDATIONS\SERVER_LINUX\
+	  Nouveau fichier		      87	CURRENT_STATE.md100%  
+	  Nouveau fichier		     202	PROJECT_CONTRACT.md100%  
+	Nouveau rÇp.       1	H:\MAESTRO_WORKSPACE\20_TECHNICAL_FOUNDATIONS\SERVER_LINUX\audits\
+	  Nouveau fichier		      48	README.md100%  
+	Nouveau rÇp.       1	H:\MAESTRO_WORKSPACE\20_TECHNICAL_FOUNDATIONS\SERVER_LINUX\handoffs\
+	  Nouveau fichier		      52	README.md100%  
+	Nouveau rÇp.       1	H:\MAESTRO_WORKSPACE\20_TECHNICAL_FOUNDATIONS\SERVER_LINUX\patches\
+	  Nouveau fichier		      50	README.md100%  
+	Nouveau rÇp.       1	H:\MAESTRO_WORKSPACE\20_TECHNICAL_FOUNDATIONS\SERVER_LINUX\reports\
+	  Nouveau fichier		      50	README.md100%  
+
+-------------------------------------------------------------------------------
+
+               Total     CopiÇ    IgnorÇDiscordance     êCHEC    Extras
+     RÇpˇ:         5         4         1         0         0         0
+Fichiersˇ:         6         6         0         0         0         0
+  Octetsˇ:       489       489         0         0         0         0
+   Heures:   0:00:00   0:00:00                       0:00:00   0:00:00
+
+
+   DÇbitˇ:              37,615 Octets/sec.
+   DÇbitˇ:               2.152 MÇga-octets/min.
+   Fin : Wednesday, June 10, 2026 19:26:22
+
+APPLY_TEMPLATES
+
+-------------------------------------------------------------------------------
+   ROBOCOPY   ::   Copie de fichiers robuste pour Windows     
+-------------------------------------------------------------------------------
+
+  DÇmarrageˇ: Wednesday, June 10, 2026 19:26:22
+   Source : H:\MAESTRO_WORKSPACE\80_DOWNLOAD_INBOX\P115B_SERVER_LINUX_DOC_BASELINE\templates\20_TECHNICAL_FOUNDATIONS\SERVER_LINUX\
+     Dest : H:\MAESTRO_WORKSPACE\20_TECHNICAL_FOUNDATIONS\SERVER_LINUX\
+
+    Fichiers : *.*
+	    
+  Options : *.* /S /E /DCOPY:DA /COPY:DAT /R:1 /W:1 
+
+-------------------------------------------------------------------------------
+
+	                   9	H:\MAESTRO_WORKSPACE\80_DOWNLOAD_INBOX\P115B_SERVER_LINUX_DOC_BASELINE\templates\20_TECHNICAL_FOUNDATIONS\SERVER_LINUX\
+	*RÇp. SUPPL.      -1	H:\MAESTRO_WORKSPACE\20_TECHNICAL_FOUNDATIONS\SERVER_LINUX\audits\
+	*RÇp. SUPPL.      -1	H:\MAESTRO_WORKSPACE\20_TECHNICAL_FOUNDATIONS\SERVER_LINUX\handoffs\
+	*RÇp. SUPPL.      -1	H:\MAESTRO_WORKSPACE\20_TECHNICAL_FOUNDATIONS\SERVER_LINUX\patches\
+	*RÇp. SUPPL.      -1	H:\MAESTRO_WORKSPACE\20_TECHNICAL_FOUNDATIONS\SERVER_LINUX\reports\
+	   Plus rÇcent		     587	CURRENT_STATE.md100%  
+	  Nouveau fichier		     849	DNS_HTTPS_PUBLICATION.md100%  
+	  Nouveau fichier		    1718	INSTALLATION_DECISIONS.md100%  
+	  Nouveau fichier		    1718	INSTALLATION_PLAN.md100%  
+	  Nouveau fichier		    1000	MAINTENANCE_RUNBOOK.md100%  
+	   Plus rÇcent		    1027	PROJECT_CONTRACT.md100%  
+	  Nouveau fichier		     695	README.md100%  
+	  Nouveau fichier		    1168	REMOTE_ACCESS.md100%  
+	  Nouveau fichier		    1347	WEB_STACK_APACHE_PHP.md100%  
+
+-------------------------------------------------------------------------------
+
+               Total     CopiÇ    IgnorÇDiscordance     êCHEC    Extras
+     RÇpˇ:         1         0         1         0         0         4
+Fichiersˇ:         9         9         0         0         0         0
+  Octetsˇ:     9.8 k     9.8 k         0         0         0         0
+   Heures:   0:00:00   0:00:00                       0:00:00   0:00:00
+
+
+   DÇbitˇ:             631,812 Octets/sec.
+   DÇbitˇ:              36.153 MÇga-octets/min.
+   Fin : Wednesday, June 10, 2026 19:26:22
+
+
+AFTER_TARGET_LIST
+ Le volume dans le lecteur H s'appelle Matestro_KB
+ Le numÇro de sÇrie du volume est 7876-CB81
+
+ RÇpertoire de H:\MAESTRO_WORKSPACE\20_TECHNICAL_FOUNDATIONS\SERVER_LINUX
+
+06/10/2026  19:26    <DIR>          .
+06/10/2026  17:00    <DIR>          ..
+06/10/2026  14:57    <DIR>          audits
+06/10/2026  17:24               587 CURRENT_STATE.md
+06/10/2026  17:24               849 DNS_HTTPS_PUBLICATION.md
+06/10/2026  14:57    <DIR>          handoffs
+06/10/2026  17:24             1,718 INSTALLATION_DECISIONS.md
+06/10/2026  17:24             1,718 INSTALLATION_PLAN.md
+06/10/2026  17:24             1,000 MAINTENANCE_RUNBOOK.md
+06/10/2026  14:57    <DIR>          patches
+06/10/2026  17:24             1,027 PROJECT_CONTRACT.md
+06/10/2026  17:24               695 README.md
+06/10/2026  17:24             1,168 REMOTE_ACCESS.md
+06/10/2026  14:57    <DIR>          reports
+06/10/2026  17:24             1,347 WEB_STACK_APACHE_PHP.md
+               9 fichier(s)           10,109 octets
+               6 RÇp(s)  3,988,192,387,072 octets libres
+
+GIT_STATUS_AFTER
+## master...origin/master [ahead 1]
+ D ARCHIVES/UWAMP_WWW_SAFE_CLEANUP_20260605/.htaccess.OFF
+ D ARCHIVES/UWAMP_WWW_SAFE_CLEANUP_20260605/_backup/index.php.bak
+ D ARCHIVES/UWAMP_WWW_SAFE_CLEANUP_20260605/_backup/index.php.perso
+ D ARCHIVES/UWAMP_WWW_SAFE_CLEANUP_20260605/_backup/~index.php
+ D CHANGELOG.md
+ D CONTEXT/CONTRACTS/MAESTRO_WORKSPACE_CONTRACT_AMENDMENT_P112C_REFERENCE_BOOKS.md
+ D CONTEXT/CONTRACTS/MAESTRO_WORKSPACE_CONTRACT_AMENDMENT_P112Q3E0_DELIVERY_TEST_RECIPE.md
+ D CONTEXT/CONTRACTS/MAESTRO_WORKSPACE_ULTIMATE_CONTRACT.md
+ D CONTEXT/DECISIONS/P111_DISTRIBUTION_POLICY.md
+ D CONTEXT/DECISIONS/P111_SOURCE_OF_TRUTH_SECTORS.md
+ D CONTEXT/HANDOFFS/ASAP_HANDOFFS/ASAP_REF_BOOK_HANDOFF_20260608_121431_P113B3.zip
+ D CONTEXT/HANDOFFS/ASAP_HANDOFFS/DOC/patches/P113D3B_ASAP_REFBOOK_DOC_ASSETS/PATCH.md
+ D CONTEXT/HANDOFFS/ASAP_HANDOFFS/DOC/patches/P113D3B_ASAP_REFBOOK_DOC_ASSETS/TESTS.md
+ D CONTEXT/HANDOFFS/ASAP_HANDOFFS/DOC/patches/P113D3B_ASAP_REFBOOK_DOC_ASSETS/TODO.md
+ D CONTEXT/HANDOFFS/ASAP_HANDOFFS/DOC/refbook/diagrams/acl-runtime.mmd
+ D CONTEXT/HANDOFFS/ASAP_HANDOFFS/DOC/refbook/diagrams/fsm-runtime.mmd
+ D CONTEXT/HANDOFFS/ASAP_HANDOFFS/DOC/refbook/diagrams/http-runtime.mmd
+ D CONTEXT/HANDOFFS/ASAP_HANDOFFS/DOC/refbook/diagrams/routing-runtime.mmd
+ D CONTEXT/HANDOFFS/ASAP_HANDOFFS/DOC/refbook/diagrams/secure-dispatch-runtime.mmd
+ D CONTEXT/HANDOFFS/ASAP_HANDOFFS/DOC/refbook/examples/acl-condition.php
+ D CONTEXT/HANDOFFS/ASAP_HANDOFFS/DOC/refbook/examples/acl-error.php
+ D CONTEXT/HANDOFFS/ASAP_HANDOFFS/DOC/refbook/examples/acl-overview.php
+ D CONTEXT/HANDOFFS/ASAP_HANDOFFS/DOC/refbook/examples/acl-refbook-domain.php
+ D CONTEXT/HANDOFFS/ASAP_HANDOFFS/DOC/refbook/examples/attribute-routing.php
+ D CONTEXT/HANDOFFS/ASAP_HANDOFFS/DOC/refbook/examples/fsm-action.php
+ D CONTEXT/HANDOFFS/ASAP_HANDOFFS/DOC/refbook/examples/fsm-basic-transition.php
+ D CONTEXT/HANDOFFS/ASAP_HANDOFFS/DOC/refbook/examples/fsm-definition.php
+ D CONTEXT/HANDOFFS/ASAP_HANDOFFS/DOC/refbook/examples/fsm-error.php
+ D CONTEXT/HANDOFFS/ASAP_HANDOFFS/DOC/refbook/examples/fsm-refbook-domain.php
+ D CONTEXT/HANDOFFS/ASAP_HANDOFFS/DOC/refbook/examples/http-refbook-domain.php
+ D CONTEXT/HANDOFFS/ASAP_HANDOFFS/DOC/refbook/examples/response-html.php
+ D CONTEXT/HANDOFFS/ASAP_HANDOFFS/DOC/refbook/examples/response-overview.php
+ D CONTEXT/HANDOFFS/ASAP_HANDOFFS/DOC/refbook/examples/response-send.php
+ D CONTEXT/HANDOFFS/ASAP_HANDOFFS/DOC/refbook/examples/routing-refbook-domain.php
+ D CONTEXT/HANDOFFS/ASAP_HANDOFFS/DOC/refbook/examples/secure-dispatch-gate.php
+ D CONTEXT/HANDOFFS/ASAP_HANDOFFS/tools/smoke/p113d3b_asap_refbook_doc_assets_live_smoke.php
+ D CONTEXT/HANDOFFS/ASAP_HANDOFFS/tools/smoke/p113d3b_asap_refbook_doc_assets_static_smoke.php
+ D CONTEXT/HANDOFFS/ASAP_HANDOFFS/tools/smoke/run_p113d3b_asap_refbook_doc_assets_live_smoke.cmd
+ D CONTEXT/HANDOFFS/ASAP_HANDOFFS/tools/smoke/run_p113d3b_asap_refbook_doc_assets_static_smoke.cmd
+ D CONTEXT/HANDOFFS/MAESTRO_HANDOFF_P111_API_20260605_010350.md
+ D CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_GLOBAL_HANDOFF_20260608_234600/CHECK_COMMANDS.md
+ D CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_GLOBAL_HANDOFF_20260608_234600/HANDOFF.md
+ D CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_GLOBAL_HANDOFF_20260608_234600/MANIFEST.md
+ D CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_GLOBAL_HANDOFF_20260608_234600/NEXT_ACTIONS.md
+ D CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_GLOBAL_HANDOFF_20260609_004000.zip
+ D CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_20260609_P113D1_ASAP_REFBOOK_REST_API.zip
+ D CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_20260609_P114C_ASAP_REFBOOK.zip
+ D CONTEXT/HANDOFFS/P114G_ASAP_DOC_I18N_SOURCE.zip
+ D CONTEXT/HANDOFFS/P114G_ASAP_DOC_I18N_SOURCE/DOC/reports/P114D3_REFBOOK_DOC_I18N/refbook_doc_i18n_candidate_catalog.php
+ D CONTEXT/HANDOFFS/P114G_ASAP_DOC_I18N_SOURCE/DOC/reports/P114D3_REFBOOK_DOC_I18N/refbook_doc_i18n_missing_source_texts.json
+ D CONTEXT/HANDOFFS/P114G_ASAP_DOC_I18N_SOURCE/DOC/reports/P114D3_REFBOOK_DOC_I18N/refbook_doc_i18n_summary.txt
+ D CONTEXT/HANDOFFS/P114G_ASAP_DOC_I18N_SOURCE/framework/Asap/RefBook/Api/LocalizedRefBookDocumentationProvider.php
+ D CONTEXT/HANDOFFS/P114G_ASAP_DOC_I18N_SOURCE/framework/Asap/RefBook/Api/RefBookDocumentationAssetRepository.php
+ D CONTEXT/HANDOFFS/P114G_ASAP_DOC_I18N_SOURCE/framework/Asap/RefBook/Api/RefBookDocumentationI18nRestRouter.php
+ D CONTEXT/HANDOFFS/P114G_ASAP_DOC_I18N_SOURCE/framework/Asap/RefBook/Api/RefBookRestApi.php
+ D CONTEXT/HANDOFFS/P114G_ASAP_DOC_I18N_SOURCE/framework/Asap/RefBook/I18n/RefBookDocumentationI18nCatalog.php
+ D CONTEXT/HANDOFFS/P114G_ASAP_DOC_I18N_SOURCE/framework/Asap/RefBook/I18n/RefBookDocumentationLocale.php
+ D CONTEXT/HANDOFFS/P114G_ASAP_DOC_I18N_SOURCE/framework/Asap/RefBook/I18n/RefBookDocumentationTranslationMissingException.php
+ D CONTEXT/HANDOFFS/P114G_ASAP_DOC_I18N_SOURCE/public/api/refbook.php
+ D CONTEXT/HANDOFFS/P114G_ASAP_DOC_I18N_SOURCE/tools/i18n/p114d3_refbook_doc_i18n_missing_extractor.php
+ D CONTEXT/HANDOFFS/P114G_ASAP_DOC_I18N_SOURCE/tools/smoke/p114d1_refbook_doc_i18n_rest_lang_provider_smoke.php
+ D CONTEXT/HANDOFFS/P114G_ASAP_DOC_I18N_SOURCE/tools/smoke/p114d3_refbook_doc_i18n_missing_extractor_smoke.php
+ D CONTEXT/PLANS/P112A_ASAP_FRONT_BACKOFFICE_ARCHITECTURE_PLAN.md
+ D CONTEXT/PLANS/P112B_ORIGINAL_ASAP_FSM_ACL_AUDIT.md
+ D CONTEXT/PLANS/P112C2_ASAP_FSM_ACL_MODERN_CONTRACT.md
+ D CONTEXT/REPORTS/CLEAN_GITHUB_REPO_PLAN.md
+ D CONTEXT/REPORTS/FRONT_ASAP_STRUCTURE_AUDIT_20260605_010717.md
+ D CONTEXT/REPORTS/GIT_DIFFS/MAESTRO_V5_staged.diff
+ D CONTEXT/REPORTS/GIT_DIFFS/MAESTRO_V5_working_tree.diff
+ D CONTEXT/REPORTS/GIT_DIFFS/MO_KB_DAEMON_staged.diff
+ D CONTEXT/REPORTS/GIT_DIFFS/MO_KB_DAEMON_working_tree.diff
+ D CONTEXT/REPORTS/GIT_DIFFS/MO_KB_FRONT_staged.diff
+ D CONTEXT/REPORTS/GIT_DIFFS/MO_KB_FRONT_working_tree.diff
+ D CONTEXT/REPORTS/GIT_READINESS.md
+ D CONTEXT/REPORTS/P111_LIVE_GIT_AUDIT.md
+ D CONTEXT/REPORTS/P112B_ASAP_EXTRACTION_AUDIT_20260605_021614.md
+ D CONTEXT/REPORTS/P112B_ORIGINAL_ASAP_FSM_ACL_AUDIT.md
+ D CONTEXT/REPORTS/P112C1_ORIGINAL_ASAP_FSM_ACL_FILE_AUDIT.md
+ D CONTEXT/REPORTS/PROJECT_MAP.md
+ D CONTEXT/REPORTS/SCORIES_REPORT.md
+ D CONTEXT/REPORTS/_archives/P112B_ORIGINAL_ASAP_FSM_ACL_AUDIT.zip
+ D CONTEXT/REPORTS/_archives/P112C1_ORIGINAL_ASAP_FSM_ACL_FILE_AUDIT.zip
+ D "CONTEXT/install linux server.pdf"
+ D DOC/DELIVERY_RULES/P112Q3E0_DELIVERY_TEST_RECIPE_GATE.md
+ D DOC/patches/P112D1_ASAP_PHP8_TWIG_REFBOOK_RUNTIME/CHANGELOG.md
+ D DOC/patches/P112D1_ASAP_PHP8_TWIG_REFBOOK_RUNTIME/MANIFEST.md
+ D DOC/patches/P112D1_ASAP_PHP8_TWIG_REFBOOK_RUNTIME/PATCH.md
+ D DOC/patches/P112D1_ASAP_PHP8_TWIG_REFBOOK_RUNTIME/TODO.md
+ D INBOX/OPENAI_ASSISTANT_LAUNCHERS.zip
+ D OUTBOX/FRONT_ASAP_STRUCTURE_AUDIT_20260605_010717.zip
+ D OUTBOX/OPENAI_ASSISTANT/OPENAI_ASSISTANT_DRY_RUN_20260605_001519.txt
+ D OUTBOX/OPENAI_ASSISTANT/OPENAI_ASSISTANT_DRY_RUN_20260605_010006.txt
+ D OUTBOX/OPENAI_ASSISTANT/OPENAI_ASSISTANT_RESPONSE_20260605_003021.md
+ D OUTBOX/OPENAI_ASSISTANT/OPENAI_ASSISTANT_RESPONSE_20260605_010026.md
+ D OUTBOX/P111_LIVE_AUDIT_EXPORT_20260604_233408.zip
+ D P111_DISTRIBUTION_POLICY.md
+ D P111_SOURCE_OF_TRUTH_SECTORS.md
+ D PATCH.md
+ D README.md
+ D README_P111.md
+ D TODO.md
+ D TOOLS/OPENAI_ASSISTANT/README.md
+ D TOOLS/OPENAI_ASSISTANT/README_LAUNCHERS.md
+ D TOOLS/OPENAI_ASSISTANT/ask_maestro.py
+ D TOOLS/OPENAI_ASSISTANT/maestro_ask.cmd
+ D TOOLS/OPENAI_ASSISTANT/maestro_ask_all_status.cmd
+ D TOOLS/OPENAI_ASSISTANT/maestro_ask_daemon_status.cmd
+ D TOOLS/OPENAI_ASSISTANT/maestro_ask_dry_run.cmd
+ D TOOLS/OPENAI_ASSISTANT/maestro_ask_front_status.cmd
+ D TOOLS/OPENAI_ASSISTANT/maestro_ask_maestro_v5_status.cmd
+ D p111_bootstrap_maestro_workspace.py
+ D p111_live_git_audit.py
+ D p111_update_distribution_policy_v2.py
+ D patches/P114N2_REFBOOK_CONSUME_ASAP_I18N/backup/AbstractRefBookController.php.bak
+ D patches/P114N2_REFBOOK_CONSUME_ASAP_I18N/backup/ReferenceRuntimeSnapshotRepository.php.bak
+ D patches/P114N2_REFBOOK_CONSUME_ASAP_I18N/runner/README.txt
+ D patches/P114N2_REFBOOK_CONSUME_ASAP_I18N/runner/apply_p114n2_refbook_consume_asap_i18n.cmd
+ D patches/P114N2_REFBOOK_CONSUME_ASAP_I18N/runner/p114n2_refbook_consume_asap_i18n.php
+ D patches/P114N2_REFBOOK_CONSUME_ASAP_I18N/runner/p114n2_refbook_consume_asap_i18n_smoke.php
+ D patches/P114N2_REFBOOK_CONSUME_ASAP_I18N/runner/rollback_p114n2_refbook_consume_asap_i18n.cmd
+ D patches/P114N3_REFBOOK_CONSUME_ASAP_I18N/backup/AbstractRefBookController.php.bak
+ D patches/P114N3_REFBOOK_CONSUME_ASAP_I18N/backup/ReferenceRuntimeSnapshotRepository.php.bak
+ D patches/P114N3_REFBOOK_CONSUME_ASAP_I18N/reports/asap_status_after.txt
+ D patches/P114N3_REFBOOK_CONSUME_ASAP_I18N/reports/refbook_status_after.txt
+ D patches/P114N3_REFBOOK_CONSUME_ASAP_I18N/runner/README.txt
+ D patches/P114N3_REFBOOK_CONSUME_ASAP_I18N/runner/apply_p114n3_refbook_consume_asap_i18n.cmd
+ D patches/P114N3_REFBOOK_CONSUME_ASAP_I18N/runner/p114n3_refbook_consume_asap_i18n.php
+ D patches/P114N3_REFBOOK_CONSUME_ASAP_I18N/runner/p114n3_refbook_consume_asap_i18n_smoke.php
+ D patches/P114N3_REFBOOK_CONSUME_ASAP_I18N/runner/rollback_p114n3_refbook_consume_asap_i18n.cmd
+ D patches/P114N4_REFBOOK_LOCALIZE_NORMALIZED_RUNTIME/backup/ReferenceRuntimeSnapshotRepository.php.bak
+ D patches/P114N4_REFBOOK_LOCALIZE_NORMALIZED_RUNTIME/runner/README.txt
+ D patches/P114N4_REFBOOK_LOCALIZE_NORMALIZED_RUNTIME/runner/apply_p114n4_refbook_localize_normalized_runtime.cmd
+ D patches/P114N4_REFBOOK_LOCALIZE_NORMALIZED_RUNTIME/runner/p114n4_refbook_localize_normalized_runtime.php
+ D patches/P114N4_REFBOOK_LOCALIZE_NORMALIZED_RUNTIME/runner/p114n4_refbook_localize_normalized_runtime_smoke.php
+ D patches/P114N4_REFBOOK_LOCALIZE_NORMALIZED_RUNTIME/runner/rollback_p114n4_refbook_localize_normalized_runtime.cmd
+ D patches/P114O_REFBOOK_LOCALIZE_DISPLAY_FIELDS/backup/ReferenceCatalogService.php.bak
+ D patches/P114O_REFBOOK_LOCALIZE_DISPLAY_FIELDS/reports/asap_status_after.txt
+ D patches/P114O_REFBOOK_LOCALIZE_DISPLAY_FIELDS/reports/refbook_status_after.txt
+ D patches/P114O_REFBOOK_LOCALIZE_DISPLAY_FIELDS/runner/README.txt
+ D patches/P114O_REFBOOK_LOCALIZE_DISPLAY_FIELDS/runner/apply_p114o_refbook_localize_display_fields.cmd
+ D patches/P114O_REFBOOK_LOCALIZE_DISPLAY_FIELDS/runner/p114o_refbook_localize_display_fields.php
+ D patches/P114O_REFBOOK_LOCALIZE_DISPLAY_FIELDS/runner/p114o_refbook_localize_display_fields_smoke.php
+ D patches/P114O_REFBOOK_LOCALIZE_DISPLAY_FIELDS/runner/rollback_p114o_refbook_localize_display_fields.cmd
+?? 00_COMMON_CONTRACTS/
+?? 01_REGISTRY/
+?? 10_FINAL_GOALS/
+?? 20_TECHNICAL_FOUNDATIONS/
+?? 30_PATCHES/
+?? 40_AUDITS/
+?? 50_HANDOFFS/
+?? 60_TOOLS/
+?? 70_REPORTS/
+?? 80_BACKUPS/
+?? 80_DOWNLOAD_INBOX/
+?? 90_ARCHIVES/
+?? 99_ARCHIVES/

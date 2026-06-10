@@ -1,0 +1,12 @@
+{
+  "schema": "MAESTRO_WORKSPACE_ROOTS_REGISTRY_V1",
+  "workspace_root": "H:\\MAESTRO_WORKSPACE",
+  "source_roots": [
+    "H:\\ASAP",
+    "H:\\ASAP_REF_BOOK",
+    "H:\\MO_KB_DAEMON",
+    "H:\\MO_KB_FRONT_ASAP",
+    "D:\\REAPER_Roaming\\REAPER\\Scripts\\MAESTRO_v5"
+  ],
+  "rule": "Do not place patch runners, temporary reports or archive noise inside source roots."
+}

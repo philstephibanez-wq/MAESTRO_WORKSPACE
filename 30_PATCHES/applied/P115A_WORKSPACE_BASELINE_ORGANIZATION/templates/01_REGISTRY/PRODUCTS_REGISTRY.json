@@ -1,0 +1,9 @@
+{
+  "schema": "MAESTRO_WORKSPACE_PRODUCTS_REGISTRY_V1",
+  "products": {
+    "MAESTRO": "Music assistant controlled by the user.",
+    "KP": "Private KP/K2000 sound/sampling knowledge and asset goal.",
+    "VSTI": "Future DAW plugin/instrument target.",
+    "MO_KB": "Music knowledge base and daemon ecosystem."
+  }
+}

@@ -1,0 +1,124 @@
+{
+    "folders": [
+        {
+            "name": "MAESTRO_WORKSPACE",
+            "path": "H:\\MAESTRO_WORKSPACE"
+        },
+        {
+            "name": "MAESTRO_V5",
+            "path": "D:\\REAPER_Roaming\\REAPER\\Scripts\\MAESTRO_v5"
+        },
+        {
+            "name": "MO_KB_DAEMON",
+            "path": "H:\\MO_KB_DAEMON"
+        },
+        {
+            "name": "MO_KB_FRONT",
+            "path": "H:\\MO_KB_FRONT"
+        },
+        {
+            "name": "ASAP",
+            "path": "H:\\ASAP"
+        },
+        {
+            "name": "ASAP_REF_BOOK",
+            "path": "H:\\ASAP_REF_BOOK"
+        }
+    ],
+    "settings": {
+        "files.encoding": "utf8",
+        "files.eol": "auto",
+        "editor.formatOnSave": false,
+        "editor.formatOnPaste": false,
+        "git.autofetch": false,
+        "python.defaultInterpreterPath": "H:\\MO_KB_VENDOR\\python\\python.exe",
+        "php.validate.executablePath": "H:\\UwAmp\\bin\\php\\php-8.5.6\\php.exe",
+        "search.exclude": {
+            "**/.git/**": true,
+            "**/__pycache__/**": true,
+            "**/.pytest_cache/**": true,
+            "**/.mypy_cache/**": true,
+            "**/.ruff_cache/**": true,
+            "**/node_modules/**": true,
+            "**/vendor/**": true,
+            "**/MO_KB_STORE/**": true,
+            "**/MO_KB_VENDOR/**": true,
+            "**/MO_KB_BACKUPS/**": true,
+            "**/MO_KB_SNAPSHOTS/**": true,
+            "**/DEPENDENCIES/python_runtime/Lib/site-packages/**": true
+        },
+        "files.watcherExclude": {
+            "**/.git/**": true,
+            "**/__pycache__/**": true,
+            "**/.pytest_cache/**": true,
+            "**/.mypy_cache/**": true,
+            "**/.ruff_cache/**": true,
+            "**/node_modules/**": true,
+            "**/vendor/**": true,
+            "**/MO_KB_STORE/**": true,
+            "**/MO_KB_VENDOR/**": true,
+            "**/MO_KB_BACKUPS/**": true,
+            "**/MO_KB_SNAPSHOTS/**": true,
+            "**/DEPENDENCIES/python_runtime/Lib/site-packages/**": true
+        }
+    },
+    "tasks": {
+        "version": "2.0.0",
+        "tasks": [
+            {
+                "label": "P111 · Git status MAESTRO_V5",
+                "type": "shell",
+                "command": "git -C D:\\REAPER_Roaming\\REAPER\\Scripts\\MAESTRO_v5 status --short --branch",
+                "problemMatcher": []
+            },
+            {
+                "label": "P111 · Git status MO_KB_DAEMON",
+                "type": "shell",
+                "command": "git -C H:\\MO_KB_DAEMON status --short --branch",
+                "problemMatcher": []
+            },
+            {
+                "label": "P111 · Git status MO_KB_FRONT",
+                "type": "shell",
+                "command": "git -C H:\\MO_KB_FRONT status --short --branch",
+                "problemMatcher": []
+            },
+            {
+                "label": "P111 · Check UwAmp front junction",
+                "type": "shell",
+                "command": "cmd /c dir /AL H:\\UwAmp\\www",
+                "problemMatcher": []
+            },
+            {
+                "label": "MO_KB · Python vendor version",
+                "type": "shell",
+                "command": "H:\\MO_KB_VENDOR\\python\\python.exe -c \\\"import sys, sqlite3; print(sys.executable); print(sys.version); print(sqlite3.sqlite_version)\\\"",
+                "problemMatcher": []
+            },
+            {
+                "label": "MO_KB_FRONT · PHP version UwAmp",
+                "type": "shell",
+                "command": "H:\\UwAmp\\bin\\php\\php-8.5.6\\php.exe -v",
+                "problemMatcher": []
+            },
+            {
+                "label": "P112 · ASAP_REF_BOOK smoke D3",
+                "type": "shell",
+                "command": "H:\\UwAmp\\bin\\php\\php-8.5.6\\php.exe H:\\ASAP_REF_BOOK\\tools\\smoke\\p112d3_reference_book_api_pages_smoke.php",
+                "problemMatcher": []
+            },
+            {
+                "label": "P112 · Test ASAP_REF_BOOK application page",
+                "type": "shell",
+                "command": "curl.exe -s http://127.0.0.1/ASAP_REF_BOOK/application",
+                "problemMatcher": []
+            },
+            {
+                "label": "P112 · Test ASAP_REF_BOOK security page",
+                "type": "shell",
+                "command": "curl.exe -s http://127.0.0.1/ASAP_REF_BOOK/security",
+                "problemMatcher": []
+            }
+        ]
+    }
+}

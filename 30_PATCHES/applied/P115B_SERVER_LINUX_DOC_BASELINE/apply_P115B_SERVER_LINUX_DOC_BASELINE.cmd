@@ -1,0 +1,75 @@
+@echo off
+setlocal EnableExtensions EnableDelayedExpansion
+
+set "ROOT=H:\MAESTRO_WORKSPACE"
+set "PATCH_NAME=P115B_SERVER_LINUX_DOC_BASELINE"
+set "PACKAGE_DIR=%ROOT%\80_DOWNLOAD_INBOX\%PATCH_NAME%"
+set "TEMPLATE_DIR=%PACKAGE_DIR%\templates"
+set "TARGET_DIR=%ROOT%\20_TECHNICAL_FOUNDATIONS\SERVER_LINUX"
+set "REPORT_DIR=%ROOT%\70_REPORTS\%PATCH_NAME%"
+set "BACKUP_ROOT=%ROOT%\80_BACKUPS\%PATCH_NAME%"
+
+if not exist "%ROOT%\.git" (
+  echo ERROR=WORKSPACE_GIT_ROOT_NOT_FOUND
+  exit /b 1
+)
+
+if not exist "%ROOT%\MAESTRO_WORKSPACE.code-workspace" (
+  echo ERROR=MAESTRO_WORKSPACE_CODE_WORKSPACE_MISSING
+  exit /b 1
+)
+
+for /f %%I in ('powershell -NoProfile -Command "Get-Date -Format yyyyMMdd_HHmmss"') do set "TS=%%I"
+
+if "%TS%"=="" (
+  echo ERROR=TIMESTAMP_GENERATION_FAILED
+  exit /b 1
+)
+
+set "REPORT_FILE=%REPORT_DIR%\%PATCH_NAME%_REPORT_%TS%.txt"
+set "BACKUP_DIR=%BACKUP_ROOT%\SERVER_LINUX_%TS%"
+
+mkdir "%REPORT_DIR%" 2>nul
+mkdir "%BACKUP_DIR%" 2>nul
+
+echo %PATCH_NAME%_START>"%REPORT_FILE%"
+echo ROOT=%ROOT%>>"%REPORT_FILE%"
+echo TARGET_DIR=%TARGET_DIR%>>"%REPORT_FILE%"
+echo BACKUP_DIR=%BACKUP_DIR%>>"%REPORT_FILE%"
+echo.>>"%REPORT_FILE%"
+
+if not exist "%TEMPLATE_DIR%\20_TECHNICAL_FOUNDATIONS\SERVER_LINUX" (
+  echo ERROR=TEMPLATE_DIR_NOT_FOUND>>"%REPORT_FILE%"
+  echo ERROR=%REPORT_FILE%
+  exit /b 1
+)
+
+if exist "%TARGET_DIR%" (
+  echo BACKUP_EXISTING_SERVER_LINUX>>"%REPORT_FILE%"
+  robocopy "%TARGET_DIR%" "%BACKUP_DIR%" /E /COPY:DAT /DCOPY:DA /R:1 /W:1 >>"%REPORT_FILE%"
+)
+
+mkdir "%TARGET_DIR%" 2>nul
+
+echo APPLY_TEMPLATES>>"%REPORT_FILE%"
+robocopy "%TEMPLATE_DIR%\20_TECHNICAL_FOUNDATIONS\SERVER_LINUX" "%TARGET_DIR%" /E /COPY:DAT /DCOPY:DA /R:1 /W:1 >>"%REPORT_FILE%"
+set "RC=%ERRORLEVEL%"
+
+if %RC% GEQ 8 (
+  echo ERROR=ROBOCOPY_TEMPLATE_COPY_FAILED RC=%RC%>>"%REPORT_FILE%"
+  echo ERROR=%REPORT_FILE%
+  exit /b 1
+)
+
+echo.>>"%REPORT_FILE%"
+echo AFTER_TARGET_LIST>>"%REPORT_FILE%"
+dir "%TARGET_DIR%" /a >>"%REPORT_FILE%"
+
+echo.>>"%REPORT_FILE%"
+echo GIT_STATUS_AFTER>>"%REPORT_FILE%"
+cd /d "%ROOT%"
+git --no-pager status --short --branch >>"%REPORT_FILE%"
+
+echo REPORT=%REPORT_FILE%
+echo %PATCH_NAME%_OK
+exit /b 0
