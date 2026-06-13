@@ -23,6 +23,14 @@ Le workspace ne doit pas embarquer de `vendor/`, de cache runtime, de secret, de
 - Dépôt actuel : `philstephibanez-wq/ASAP`
 - Dépôt cible à prévoir : `philstephibanez-wq/Concerto` ou renommage contrôlé du dépôt existant
 
+## Nom de release
+
+- Release courante / cible de transition : `Berlioz`
+- Nom complet recommandé : `Concerto Berlioz`
+- Rôle : nom de release/version du framework Concerto, pas nom d'application.
+- `Berlioz` ne remplace pas `ScoreTemplate` et ne désigne pas le projet applicatif.
+- Les futures documentations peuvent employer la formule : `Concerto Framework - Release Berlioz`.
+
 ## Source de vérité actuelle
 
 - Dépôt actuel : `philstephibanez-wq/ASAP`
@@ -41,12 +49,13 @@ Le workspace ne doit pas embarquer de `vendor/`, de cache runtime, de secret, de
 
 1. Concerto est référencé comme framework externe mutualisable.
 2. Le nom `ASAP` reste un alias historique tant que la migration n'est pas effectuée.
-3. MAESTRO_WORKSPACE ne devient pas propriétaire du code framework Concerto/ASAP.
-4. Les applications consomment le framework comme dépendance contrôlée.
-5. Le code métier ScoreTemplate ne doit pas être mélangé au framework.
-6. Les documentations générées / Reference Books doivent documenter les APIs publiques sans dupliquer la logique applicative.
-7. Toute montée de version ou migration de nom doit mettre à jour ce fichier avec : nom, version Composer, commit source, date, motif, impacts et tests.
-8. Aucun renommage de namespaces, chemins, package Composer ou dépôt ne doit être simulé par fallback silencieux.
+3. `Berlioz` est un nom de release/version du framework Concerto, pas un nom d'application.
+4. MAESTRO_WORKSPACE ne devient pas propriétaire du code framework Concerto/ASAP.
+5. Les applications consomment le framework comme dépendance contrôlée.
+6. Le code métier ScoreTemplate ne doit pas être mélangé au framework.
+7. Les documentations générées / Reference Books doivent documenter les APIs publiques sans dupliquer la logique applicative.
+8. Toute montée de version ou migration de nom doit mettre à jour ce fichier avec : nom, release, version Composer, commit source, date, motif, impacts et tests.
+9. Aucun renommage de namespaces, chemins, package Composer ou dépôt ne doit être simulé par fallback silencieux.
 
 ## Migration à prévoir
 
