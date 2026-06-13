@@ -1,0 +1,190 @@
+cs SAME_AS_EN schema = ASAP_REFBOOK_I18N_V1
+cs SAME_AS_EN labels.domain.table_symbol = Symbol
+cs SAME_AS_EN labels.domain.table_role = Role
+cs SAME_AS_EN labels.symbol.fallback_kind = symbol
+cs SAME_AS_EN labels.symbol.fallback_name = Symbol
+cs SAME_AS_EN labels.symbol.namespace_label = Namespace
+cs SAME_AS_EN labels.not_found.kicker = 404
+cs SAME_AS_EN labels.search.type_symbol = Symbol
+cs SAME_AS_EN module.title = ASAP Reference Book
+cs SAME_AS_EN module.pipeline.3 = ViewModel
+cs SAME_AS_EN module.pipeline.4 = Twig
+cs SAME_AS_EN guides.0.slug = guide-architecture
+cs SAME_AS_EN guides.1.slug = guide-mvc
+cs SAME_AS_EN guides.1.kicker = MVC
+cs SAME_AS_EN guides.1.sections.0.title = Controller
+cs SAME_AS_EN guides.1.sections.2.title = Twig
+cs SAME_AS_EN guides.2.slug = guide-source-tags
+cs SAME_AS_EN guides.3.slug = guide-routing
+cs SAME_AS_EN guides.3.kicker = HTTP
+cs SAME_AS_EN guides.4.slug = guide-lstsa
+cs SAME_AS_EN guides.5.slug = guide-tests
+cs SAME_AS_EN guides.5.sections.0.items.1 = PHP lint.
+cs SAME_AS_EN guides.5.sections.0.items.2 = CLI smoke.
+de SAME_AS_EN schema = ASAP_REFBOOK_I18N_V1
+de SAME_AS_EN labels.domain.table_symbol = Symbol
+de SAME_AS_EN labels.symbol.fallback_name = Symbol
+de SAME_AS_EN labels.symbol.namespace_label = Namespace
+de SAME_AS_EN labels.not_found.kicker = 404
+de SAME_AS_EN labels.breadcrumb.label = Breadcrumb
+de SAME_AS_EN labels.search.type_symbol = Symbol
+de SAME_AS_EN module.title = ASAP Reference Book
+de SAME_AS_EN module.pipeline.3 = ViewModel
+de SAME_AS_EN module.pipeline.4 = Twig
+de SAME_AS_EN guides.0.slug = guide-architecture
+de SAME_AS_EN guides.1.slug = guide-mvc
+de SAME_AS_EN guides.1.kicker = MVC
+de SAME_AS_EN guides.1.sections.0.title = Controller
+de SAME_AS_EN guides.1.sections.1.title = Service
+de SAME_AS_EN guides.1.sections.2.title = Twig
+de SAME_AS_EN guides.2.slug = guide-source-tags
+de SAME_AS_EN guides.3.slug = guide-routing
+de SAME_AS_EN guides.3.kicker = HTTP
+de SAME_AS_EN guides.4.slug = guide-lstsa
+de SAME_AS_EN guides.5.slug = guide-tests
+es SAME_AS_EN schema = ASAP_REFBOOK_I18N_V1
+es SAME_AS_EN labels.domain.interfaces = interfaces
+es SAME_AS_EN labels.symbol.namespace_label = Namespace
+es SAME_AS_EN labels.not_found.kicker = 404
+es SAME_AS_EN module.title = ASAP Reference Book
+es SAME_AS_EN module.pipeline.3 = ViewModel
+es SAME_AS_EN module.pipeline.4 = Twig
+es SAME_AS_EN guides.0.slug = guide-architecture
+es SAME_AS_EN guides.1.slug = guide-mvc
+es SAME_AS_EN guides.1.kicker = MVC
+es SAME_AS_EN guides.1.sections.2.title = Twig
+es SAME_AS_EN guides.2.slug = guide-source-tags
+es SAME_AS_EN guides.3.slug = guide-routing
+es SAME_AS_EN guides.3.kicker = HTTP
+es SAME_AS_EN guides.4.slug = guide-lstsa
+es SAME_AS_EN guides.4.title = LSTSA — Load Store Transform Secure Archive
+es SAME_AS_EN guides.4.sections.2.title = Logging
+es SAME_AS_EN guides.5.slug = guide-tests
+fr SAME_AS_EN schema = ASAP_REFBOOK_I18N_V1
+fr SAME_AS_EN labels.sidebar.guides = Guides
+fr SAME_AS_EN labels.domain.table_source = Source
+fr SAME_AS_EN labels.domain.classes = classes
+fr SAME_AS_EN labels.domain.interfaces = interfaces
+fr SAME_AS_EN labels.symbol.source_title = Source
+fr SAME_AS_EN labels.symbol.table_signature = Signature
+fr SAME_AS_EN labels.symbol.namespace_label = Namespace
+fr SAME_AS_EN labels.not_found.kicker = 404
+fr SAME_AS_EN labels.guide.sections = sections
+fr SAME_AS_EN labels.search.type_guide = Guide
+fr SAME_AS_EN module.title = ASAP Reference Book
+fr SAME_AS_EN module.pipeline.3 = ViewModel
+fr SAME_AS_EN module.pipeline.4 = Twig
+fr SAME_AS_EN guides.0.slug = guide-architecture
+fr SAME_AS_EN guides.0.kicker = Architecture
+fr SAME_AS_EN guides.1.slug = guide-mvc
+fr SAME_AS_EN guides.1.kicker = MVC
+fr SAME_AS_EN guides.1.sections.1.title = Service
+fr SAME_AS_EN guides.1.sections.2.title = Twig
+fr SAME_AS_EN guides.2.slug = guide-source-tags
+fr SAME_AS_EN guides.3.slug = guide-routing
+fr SAME_AS_EN guides.3.kicker = HTTP
+fr SAME_AS_EN guides.3.sections.1.title = Validation
+fr SAME_AS_EN guides.4.slug = guide-lstsa
+fr SAME_AS_EN guides.4.title = LSTSA — Load Store Transform Secure Archive
+fr SAME_AS_EN guides.5.slug = guide-tests
+it SAME_AS_EN schema = ASAP_REFBOOK_I18N_V1
+it SAME_AS_EN labels.symbol.namespace_label = Namespace
+it SAME_AS_EN labels.not_found.kicker = 404
+it SAME_AS_EN labels.breadcrumb.home = Home
+it SAME_AS_EN module.title = ASAP Reference Book
+it SAME_AS_EN module.pipeline.3 = ViewModel
+it SAME_AS_EN module.pipeline.4 = Twig
+it SAME_AS_EN guides.0.slug = guide-architecture
+it SAME_AS_EN guides.1.slug = guide-mvc
+it SAME_AS_EN guides.1.kicker = MVC
+it SAME_AS_EN guides.1.sections.0.title = Controller
+it SAME_AS_EN guides.1.sections.2.title = Twig
+it SAME_AS_EN guides.2.slug = guide-source-tags
+it SAME_AS_EN guides.3.slug = guide-routing
+it SAME_AS_EN guides.3.kicker = HTTP
+it SAME_AS_EN guides.4.slug = guide-lstsa
+it SAME_AS_EN guides.4.sections.2.title = Logging
+it SAME_AS_EN guides.5.slug = guide-tests
+pl SAME_AS_EN schema = ASAP_REFBOOK_I18N_V1
+pl SAME_AS_EN labels.domain.table_symbol = Symbol
+pl SAME_AS_EN labels.symbol.fallback_kind = symbol
+pl SAME_AS_EN labels.symbol.fallback_name = Symbol
+pl SAME_AS_EN labels.symbol.namespace_label = Namespace
+pl SAME_AS_EN labels.not_found.kicker = 404
+pl SAME_AS_EN labels.theme.short.ocean = Ocean
+pl SAME_AS_EN labels.search.type_symbol = Symbol
+pl SAME_AS_EN module.title = ASAP Reference Book
+pl SAME_AS_EN module.pipeline.3 = ViewModel
+pl SAME_AS_EN module.pipeline.4 = Twig
+pl SAME_AS_EN guides.0.slug = guide-architecture
+pl SAME_AS_EN guides.1.slug = guide-mvc
+pl SAME_AS_EN guides.1.kicker = MVC
+pl SAME_AS_EN guides.1.sections.2.title = Twig
+pl SAME_AS_EN guides.2.slug = guide-source-tags
+pl SAME_AS_EN guides.3.slug = guide-routing
+pl SAME_AS_EN guides.3.kicker = HTTP
+pl SAME_AS_EN guides.4.slug = guide-lstsa
+pl SAME_AS_EN guides.5.slug = guide-tests
+uk SAME_AS_EN schema = ASAP_REFBOOK_I18N_V1
+uk SAME_AS_EN labels.symbol.namespace_label = Namespace
+uk SAME_AS_EN labels.not_found.kicker = 404
+uk SAME_AS_EN module.title = ASAP Reference Book
+uk SAME_AS_EN module.pipeline.3 = ViewModel
+uk SAME_AS_EN module.pipeline.4 = Twig
+uk SAME_AS_EN guides.0.slug = guide-architecture
+uk SAME_AS_EN guides.1.slug = guide-mvc
+uk SAME_AS_EN guides.1.kicker = MVC
+uk SAME_AS_EN guides.1.sections.2.title = Twig
+uk SAME_AS_EN guides.2.slug = guide-source-tags
+uk SAME_AS_EN guides.3.slug = guide-routing
+uk SAME_AS_EN guides.3.kicker = HTTP
+uk SAME_AS_EN guides.4.slug = guide-lstsa
+uk SAME_AS_EN guides.5.slug = guide-tests
+uk SAME_AS_EN guides.5.sections.0.items.1 = PHP lint.
+uk SAME_AS_EN guides.5.sections.0.items.2 = CLI smoke.
+application/reference/Controller/AbstractRefBookController.php:15:use ASAPRefBook\Reference\Service\ReferenceSearchService;
+application/reference/Controller/AbstractRefBookController.php:34:    private ?ReferenceSearchService $searchCache = null;
+application/reference/Controller/AbstractRefBookController.php:96:    protected function search(): ReferenceSearchService
+application/reference/Controller/AbstractRefBookController.php:99:            $this->searchCache = new ReferenceSearchService($this->catalog(), $this->content());
+application/reference/Service/ReferenceContentService.php:270:                'sidebar' => ['assets_docs' => 'Assets docs', 'legal' => 'Legal'],
+application/reference/Service/ReferenceContentService.php:273:                'legal' => ['kicker' => 'ASAP Framework · Legal', 'title' => 'ASAP Framework · source-available · double licence', 'intro' => 'ASAP Framework est documenté publiquement par ce RefBook. Le RefBook est une surface documentaire publique ; ce n’est pas le paquet de distribution téléchargeable.', 'copyright_kicker' => 'Copyright', 'author_title' => 'Attribution de l’auteur', 'original_author' => 'Auteur original', 'licensing_kicker' => 'Modèle de licence', 'licensing_title' => 'Double licence ASAP', 'personal_free' => 'Usage personnel, éducatif et non commercial gratuit.', 'commercial_required' => 'Usage professionnel, commercial, SaaS, redistribution ou intégration produit sous licence commerciale.', 'rights_reserved' => 'Tous droits réservés sauf autorisation explicite par la licence ASAP applicable.', 'note' => 'Cette page décrit la position de licence publique affichée par le RefBook. Le futur paquet ASAP distribuable portera les fichiers de licence détaillés adaptés à son canal de distribution.', 'distribution_kicker' => 'Distribution RefBook', 'distribution_title' => 'Documentation publique, dépôt d’implémentation privé', 'distribution_body_1' => 'Le RefBook est destiné à être consultable publiquement comme documentation et indexable par les moteurs de recherche.', 'distribution_body_2' => 'Le dépôt source RefBook peut rester privé. ASAP est le framework destiné à la future distribution package.'],
+application/reference/Service/ReferenceContentService.php:280:                'sidebar' => ['assets_docs' => 'Doc assets', 'legal' => 'Legal'],
+application/reference/Service/ReferenceContentService.php:282:                'assets' => ['kicker' => 'ASAP_REF_BOOK documentation quality', 'title' => 'Documentation asset diagnostics', 'intro' => 'This page turns missing references into an action plan. RefBook does not generate replacement content.', 'snapshot_state' => 'Snapshot state', 'complete' => 'Assets complete', 'incomplete' => 'Assets incomplete', 'asset_count' => 'asset(s)', 'missing_refs' => 'missing references', 'unique_missing' => 'unique assets to create', 'example_refs' => 'example references', 'diagram_refs' => 'diagram references', 'truth_source' => 'The source of truth remains', 'truth_suffix' => 'Files to create belong to the shared ASAP framework, not to RefBook.', 'correction_rule' => 'Correction rule', 'create_examples' => 'Create official examples in', 'create_diagrams' => 'Create official diagrams in', 'no_placeholder' => 'Do not generate silent placeholders in RefBook.', 'rerun_smoke' => 'Run the API smoke again after each asset batch.', 'inventory_kicker' => 'Actionable inventory', 'inventory_title' => 'Unique missing assets', 'none_missing' => 'No missing asset.', 'references' => 'References', 'first_usage' => 'First usage', 'useful_endpoints' => 'Useful endpoints', 'short_warning' => 'Documentation assets incomplete', 'see_diagnostic' => 'See diagnostic.', 'type' => 'Type', 'id' => 'ID', 'top_limit' => 'top 120'],
+application/reference/Service/ReferenceContentService.php:283:                'legal' => ['kicker' => 'ASAP Framework · Legal', 'title' => 'ASAP Framework · source-available · dual licensed', 'intro' => 'ASAP Framework is publicly documented through this RefBook. The RefBook is a public documentation surface; it is not the downloadable distribution package.', 'copyright_kicker' => 'Copyright', 'author_title' => 'Author attribution', 'original_author' => 'Original author', 'licensing_kicker' => 'Licensing model', 'licensing_title' => 'ASAP dual license', 'personal_free' => 'Free for personal, educational and non-commercial use.', 'commercial_required' => 'Professional, commercial, SaaS, redistribution or product integration use requires a commercial license.', 'rights_reserved' => 'All rights reserved except as expressly granted by the applicable ASAP license.', 'note' => 'This page describes the public licensing position displayed by the RefBook. The final downloadable ASAP package will carry the detailed license files appropriate to its distribution channel.', 'distribution_kicker' => 'RefBook distribution', 'distribution_title' => 'Public documentation, private implementation repository', 'distribution_body_1' => 'The RefBook is intended to be publicly accessible as documentation and discoverable by search engines.', 'distribution_body_2' => 'The RefBook source repository may remain private. ASAP itself is the framework intended for future package distribution.'],
+application/reference/Service/ReferenceContentService.php:313:            'es' => ['Idioma','Francés','Inglés','Español','Alemán','Ucraniano','Italiano','Polaco','Checo','Aplicar','Assets docs','Legal','API interna controlada por FSM','Fuente','Solo lectura','sí','no','Endpoints expuestos por RefBook','Método','Ruta','Descripción','Diagnóstico de assets documentales','El snapshot ASAP referencia ejemplos o diagramas ausentes. RefBook muestra el diagnóstico sin inventar contenido de reemplazo.','ASAP_REF_BOOK calidad documental','Diagnóstico de assets documentales','Esta página transforma referencias ausentes en un plan de acción. RefBook no genera contenido de reemplazo.','Estado del snapshot','Assets completos','Assets incompletos','referencias ausentes','assets únicos por crear','referencias de ejemplo','referencias de diagrama','La fuente de verdad sigue siendo','Los archivos por crear pertenecen al framework ASAP compartido, no a RefBook.','Regla de corrección','Crear los ejemplos oficiales en','Crear los diagramas oficiales en','No generar placeholders silenciosos en RefBook.','Relanzar el smoke API después de cada lote de assets.','Inventario accionable','Assets únicos ausentes','Ningún asset ausente.','Referencias','Primer uso','Endpoints útiles','Assets documentales incompletos','Ver diagnóstico.','Tipo','ASAP Framework · Legal','ASAP Framework · source-available · doble licencia','ASAP Framework se documenta públicamente mediante este RefBook. RefBook es una superficie pública de documentación; no es el paquete descargable de distribución.','Atribución del autor','Autor original','Modelo de licencia','Doble licencia ASAP','Uso personal, educativo y no comercial gratuito.','El uso profesional, comercial, SaaS, redistribución o integración en producto requiere una licencia comercial.','Todos los derechos reservados salvo autorización expresa por la licencia ASAP aplicable.','Esta página describe la posición pública de licencia mostrada por RefBook. El paquete descargable final de ASAP incluirá los archivos de licencia detallados adecuados a su canal de distribución.','Distribución RefBook','Documentación pública, repositorio de implementación privado','RefBook está destinado a ser accesible públicamente como documentación e indexable por motores de búsqueda.','El repositorio fuente de RefBook puede permanecer privado. ASAP es el framework destinado a la futura distribución como paquete.','símbolo','Símbolo','Rol de fuente por enriquecer en las etiquetas ASAP_REFBOOK.','Contrato','Contrato de fuente por enriquecer en las etiquetas ASAP_REFBOOK.','Fuente por resolver','Métodos públicos','Ningún método público detectado.','Firma','Identidad fuente','Ficha del símbolo','Tipo','Dominio','Namespace no declarado','API pública','Ejemplos relacionados','Diagramas relacionados','Responsabilidad','Rol','Referencias declaradas, pero los assets no están disponibles en el snapshot.','Referencias declaradas, pero los diagramas no están disponibles en el snapshot.','Diagrama Mermaid','Fuente Mermaid','Renderer dedicado no disponible'],
+application/reference/Service/ReferenceContentService.php:314:            'de' => ['Sprache','Französisch','Englisch','Spanisch','Deutsch','Ukrainisch','Italienisch','Polnisch','Tschechisch','Anwenden','Dokumentationsassets','Rechtliches','FSM-gesteuerte interne API','Quelle','Schreibgeschützt','ja','nein','Von RefBook bereitgestellte Endpoints','Methode','Pfad','Beschreibung','Diagnose der Dokumentationsassets','Der ASAP-Snapshot verweist auf fehlende Beispiele oder Diagramme. RefBook zeigt die Diagnose an, ohne Ersatzinhalte zu erfinden.','ASAP_REF_BOOK Dokumentationsqualität','Diagnose der Dokumentationsassets','Diese Seite wandelt fehlende Referenzen in einen Aktionsplan um. RefBook erzeugt keine Ersatzinhalte.','Snapshot-Status','Assets vollständig','Assets unvollständig','fehlende Referenzen','einzigartige zu erstellende Assets','Beispielreferenzen','Diagrammreferenzen','Die Quelle der Wahrheit bleibt','Die zu erstellenden Dateien gehören zum gemeinsamen ASAP-Framework, nicht zu RefBook.','Korrekturregel','Offizielle Beispiele erstellen in','Offizielle Diagramme erstellen in','Keine stillen Platzhalter in RefBook erzeugen.','Nach jedem Asset-Paket den API-Smoke erneut ausführen.','Umsetzbares Inventar','Einzigartige fehlende Assets','Kein fehlendes Asset.','Referenzen','Erste Verwendung','Nützliche Endpoints','Dokumentationsassets unvollständig','Diagnose ansehen.','Typ','ASAP Framework · Rechtliches','ASAP Framework · source-available · dual lizenziert','ASAP Framework wird öffentlich über dieses RefBook dokumentiert. Das RefBook ist eine öffentliche Dokumentationsfläche; es ist nicht das herunterladbare Distributionspaket.','Autorenangabe','Ursprünglicher Autor','Lizenzmodell','ASAP-Doppellizenz','Kostenlose persönliche, bildungsbezogene und nicht kommerzielle Nutzung.','Professionelle, kommerzielle, SaaS-, Weiterverteilungs- oder Produktintegrationsnutzung erfordert eine kommerzielle Lizenz.','Alle Rechte vorbehalten, sofern sie nicht ausdrücklich durch die anwendbare ASAP-Lizenz gewährt werden.','Diese Seite beschreibt die öffentliche Lizenzposition, die RefBook anzeigt. Das endgültige herunterladbare ASAP-Paket wird die detaillierten Lizenzdateien für seinen Vertriebskanal enthalten.','RefBook-Verteilung','Öffentliche Dokumentation, privates Implementierungsrepository','RefBook soll als Dokumentation öffentlich zugänglich und durch Suchmaschinen auffindbar sein.','Das RefBook-Quellrepository kann privat bleiben. ASAP selbst ist das Framework für eine zukünftige Paketdistribution.','Symbol','Symbol','Quellrolle zur Ergänzung in ASAP_REFBOOK-Tags.','Vertrag','Quellvertrag zur Ergänzung in ASAP_REFBOOK-Tags.','Quelle zu klären','Öffentliche Methoden','Keine öffentliche Methode erkannt.','Signatur','Quellidentität','Symbolprofil','Typ','Domäne','Namespace nicht angegeben','Öffentliche API','Verknüpfte Beispiele','Verknüpfte Diagramme','Verantwortung','Rolle','Referenzen sind deklariert, aber die Assets sind im Snapshot nicht verfügbar.','Referenzen sind deklariert, aber die Diagramme sind im Snapshot nicht verfügbar.','Mermaid-Diagramm','Mermaid-Quelle','Dedizierter Renderer nicht verfügbar'],
+application/reference/Service/ReferenceContentService.php:315:            'uk' => ['Мова','Французька','Англійська','Іспанська','Німецька','Українська','Італійська','Польська','Чеська','Застосувати','Документаційні assets','Правова інформація','Внутрішній API під керуванням FSM','Джерело','Лише читання','так','ні','Endpoints, відкриті RefBook','Метод','Шлях','Опис','Діагностика документаційних assets','Snapshot ASAP посилається на відсутні приклади або діаграми. RefBook показує діагностику без вигаданого вмісту.','ASAP_REF_BOOK якість документації','Діагностика документаційних assets','Ця сторінка перетворює відсутні посилання на план дій. RefBook не створює замінний вміст.','Стан snapshot','Assets повні','Assets неповні','відсутні посилання','унікальні assets для створення','посилання на приклади','посилання на діаграми','Джерелом істини залишається','Файли для створення належать спільному framework ASAP, а не RefBook.','Правило виправлення','Створити офіційні приклади в','Створити офіційні діаграми в','Не створювати мовчазні placeholders у RefBook.','Повторно запускати API smoke після кожного пакета assets.','Практичний інвентар','Унікальні відсутні assets','Немає відсутніх assets.','Посилання','Перше використання','Корисні endpoints','Документаційні assets неповні','Переглянути діагностику.','Тип','ASAP Framework · Правова інформація','ASAP Framework · source-available · подвійна ліцензія','ASAP Framework публічно документується через цей RefBook. RefBook є публічною документаційною поверхнею; це не завантажуваний дистрибутивний пакет.','Атрибуція автора','Оригінальний автор','Модель ліцензування','Подвійна ліцензія ASAP','Безкоштовне особисте, освітнє та некомерційне використання.','Професійне, комерційне, SaaS, повторне розповсюдження або інтеграція в продукт потребує комерційної ліцензії.','Усі права захищено, крім явно наданих відповідною ліцензією ASAP.','Ця сторінка описує публічну позицію ліцензування, яку показує RefBook. Остаточний завантажуваний пакет ASAP міститиме детальні ліцензійні файли для свого каналу розповсюдження.','Розповсюдження RefBook','Публічна документація, приватний репозиторій реалізації','RefBook призначений бути публічно доступною документацією та індексуватися пошуковими системами.','Вихідний репозиторій RefBook може залишатися приватним. Сам ASAP є framework для майбутнього пакетного розповсюдження.','символ','Символ','Роль джерела для доповнення в тегах ASAP_REFBOOK.','Контракт','Контракт джерела для доповнення в тегах ASAP_REFBOOK.','Джерело для уточнення','Публічні методи','Публічний метод не виявлено.','Сигнатура','Ідентичність джерела','Профіль символу','Тип','Домен','Namespace не вказано','Публічне API','Пов’язані приклади','Пов’язані діаграми','Відповідальність','Роль','Посилання оголошені, але assets недоступні в snapshot.','Посилання оголошені, але діаграми недоступні в snapshot.','Діаграма Mermaid','Джерело Mermaid','Спеціалізований renderer недоступний'],
+application/reference/Service/ReferenceContentService.php:316:            'it' => ['Lingua','Francese','Inglese','Spagnolo','Tedesco','Ucraino','Italiano','Polacco','Ceco','Applica','Assets docs','Legale','API interna pilotata da FSM','Sorgente','Sola lettura','sì','no','Endpoint esposti da RefBook','Metodo','Percorso','Descrizione','Diagnostica degli assets documentali','Lo snapshot ASAP fa riferimento a esempi o diagrammi mancanti. RefBook mostra la diagnostica senza inventare contenuti sostitutivi.','ASAP_REF_BOOK qualità documentale','Diagnostica degli assets documentali','Questa pagina trasforma i riferimenti mancanti in un piano di azione. RefBook non genera contenuti sostitutivi.','Stato dello snapshot','Assets completi','Assets incompleti','riferimenti mancanti','assets unici da creare','riferimenti esempio','riferimenti diagramma','La fonte di verità resta','I file da creare appartengono al framework ASAP condiviso, non a RefBook.','Regola di correzione','Creare gli esempi ufficiali in','Creare i diagrammi ufficiali in','Non generare placeholder silenziosi in RefBook.','Rilanciare lo smoke API dopo ogni lotto di assets.','Inventario azionabile','Assets unici mancanti','Nessun asset mancante.','Riferimenti','Primo uso','Endpoint utili','Assets documentali incompleti','Vedi diagnostica.','Tipo','ASAP Framework · Legale','ASAP Framework · source-available · doppia licenza','ASAP Framework è documentato pubblicamente attraverso questo RefBook. Il RefBook è una superficie di documentazione pubblica; non è il pacchetto di distribuzione scaricabile.','Attribuzione autore','Autore originale','Modello di licenza','Doppia licenza ASAP','Uso personale, educativo e non commerciale gratuito.','Uso professionale, commerciale, SaaS, redistribuzione o integrazione in prodotto richiede una licenza commerciale.','Tutti i diritti riservati salvo quanto espressamente concesso dalla licenza ASAP applicabile.','Questa pagina descrive la posizione pubblica di licenza mostrata da RefBook. Il pacchetto ASAP scaricabile finale includerà i file di licenza dettagliati adatti al suo canale di distribuzione.','Distribuzione RefBook','Documentazione pubblica, repository di implementazione privato','RefBook è destinato a essere accessibile pubblicamente come documentazione e indicizzabile dai motori di ricerca.','Il repository sorgente di RefBook può rimanere privato. ASAP è il framework destinato alla futura distribuzione come pacchetto.','simbolo','Simbolo','Ruolo sorgente da arricchire nei tag ASAP_REFBOOK.','Contratto','Contratto sorgente da arricchire nei tag ASAP_REFBOOK.','Sorgente da risolvere','Metodi pubblici','Nessun metodo pubblico rilevato.','Firma','Identità sorgente','Profilo del simbolo','Tipo','Dominio','Namespace non dichiarato','API pubblica','Esempi collegati','Diagrammi collegati','Responsabilità','Ruolo','Riferimenti dichiarati, ma assets non disponibili nello snapshot.','Riferimenti dichiarati, ma diagrammi non disponibili nello snapshot.','Diagramma Mermaid','Sorgente Mermaid','Renderer dedicato non disponibile'],
+application/reference/Service/ReferenceContentService.php:317:            'pl' => ['Język','Francuski','Angielski','Hiszpański','Niemiecki','Ukraiński','Włoski','Polski','Czeski','Zastosuj','Zasoby dokumentacji','Informacje prawne','Wewnętrzne API sterowane przez FSM','Źródło','Tylko do odczytu','tak','nie','Endpointy udostępnione przez RefBook','Metoda','Ścieżka','Opis','Diagnostyka zasobów dokumentacji','Snapshot ASAP odwołuje się do brakujących przykładów lub diagramów. RefBook pokazuje diagnostykę bez tworzenia zastępczej treści.','ASAP_REF_BOOK jakość dokumentacji','Diagnostyka zasobów dokumentacji','Ta strona zamienia brakujące referencje w plan działania. RefBook nie generuje treści zastępczej.','Stan snapshotu','Zasoby kompletne','Zasoby niekompletne','brakujące referencje','unikalne zasoby do utworzenia','referencje przykładów','referencje diagramów','Źródłem prawdy pozostaje','Pliki do utworzenia należą do współdzielonego frameworka ASAP, nie do RefBook.','Reguła korekty','Utwórz oficjalne przykłady w','Utwórz oficjalne diagramy w','Nie generować cichych placeholderów w RefBook.','Uruchom ponownie API smoke po każdej partii assets.','Inwentarz do działania','Unikalne brakujące zasoby','Brak brakujących zasobów.','Referencje','Pierwsze użycie','Przydatne endpointy','Zasoby dokumentacji niekompletne','Zobacz diagnostykę.','Typ','ASAP Framework · Informacje prawne','ASAP Framework · source-available · podwójna licencja','ASAP Framework jest publicznie dokumentowany przez ten RefBook. RefBook jest publiczną powierzchnią dokumentacji; nie jest pakietem dystrybucyjnym do pobrania.','Atrybucja autora','Oryginalny autor','Model licencjonowania','Podwójna licencja ASAP','Bezpłatne użycie osobiste, edukacyjne i niekomercyjne.','Użycie profesjonalne, komercyjne, SaaS, redystrybucja lub integracja z produktem wymaga licencji komercyjnej.','Wszelkie prawa zastrzeżone z wyjątkiem praw wyraźnie przyznanych przez właściwą licencję ASAP.','Ta strona opisuje publiczne stanowisko licencyjne prezentowane przez RefBook. Ostateczny pakiet ASAP do pobrania będzie zawierał szczegółowe pliki licencji odpowiednie dla kanału dystrybucji.','Dystrybucja RefBook','Publiczna dokumentacja, prywatne repozytorium implementacji','RefBook ma być publicznie dostępny jako dokumentacja i indeksowalny przez wyszukiwarki.','Repozytorium źródłowe RefBook może pozostać prywatne. Sam ASAP jest frameworkiem przeznaczonym do przyszłej dystrybucji jako pakiet.','symbol','Symbol','Rola źródłowa do uzupełnienia w tagach ASAP_REFBOOK.','Kontrakt','Kontrakt źródłowy do uzupełnienia w tagach ASAP_REFBOOK.','Źródło do rozwiązania','Metody publiczne','Nie wykryto metody publicznej.','Sygnatura','Tożsamość źródła','Profil symbolu','Rodzaj','Domena','Namespace nie zadeklarowany','Publiczne API','Powiązane przykłady','Powiązane diagramy','Odpowiedzialność','Rola','Referencje są zadeklarowane, ale assets nie są dostępne w snapshocie.','Referencje są zadeklarowane, ale diagramy nie są dostępne w snapshocie.','Diagram Mermaid','Źródło Mermaid','Dedykowany renderer niedostępny'],
+application/reference/Service/ReferenceContentService.php:318:            'cs' => ['Jazyk','Francouzština','Angličtina','Španělština','Němčina','Ukrajinština','Italština','Polština','Čeština','Použít','Dokumentační assets','Právní informace','Interní API řízené FSM','Zdroj','Pouze pro čtení','ano','ne','Endpointy zveřejněné RefBookem','Metoda','Cesta','Popis','Diagnostika dokumentačních assets','Snapshot ASAP odkazuje na chybějící příklady nebo diagramy. RefBook zobrazí diagnostiku bez vytváření náhradního obsahu.','ASAP_REF_BOOK kvalita dokumentace','Diagnostika dokumentačních assets','Tato stránka převádí chybějící odkazy na akční plán. RefBook nevytváří náhradní obsah.','Stav snapshotu','Assets kompletní','Assets nekompletní','chybějící odkazy','jedinečné assets k vytvoření','odkazy na příklady','odkazy na diagramy','Zdrojem pravdy zůstává','Soubory k vytvoření patří do sdíleného frameworku ASAP, ne do RefBooku.','Pravidlo opravy','Vytvořit oficiální příklady v','Vytvořit oficiální diagramy v','Nevytvářet tiché placeholders v RefBooku.','Po každé dávce assets znovu spustit API smoke.','Akční inventář','Jedinečné chybějící assets','Žádný chybějící asset.','Odkazy','První použití','Užitečné endpointy','Dokumentační assets nejsou kompletní','Zobrazit diagnostiku.','Typ','ASAP Framework · Právní informace','ASAP Framework · source-available · dvojí licence','ASAP Framework je veřejně dokumentován tímto RefBookem. RefBook je veřejná dokumentační plocha; není to stažitelný distribuční balíček.','Atribuce autora','Původní autor','Licenční model','Dvojí licence ASAP','Bezplatné osobní, vzdělávací a nekomerční použití.','Profesionální, komerční, SaaS, redistribuce nebo integrace do produktu vyžaduje komerční licenci.','Všechna práva vyhrazena kromě práv výslovně udělených příslušnou licencí ASAP.','Tato stránka popisuje veřejnou licenční pozici zobrazenou RefBookem. Konečný stažitelný balíček ASAP bude obsahovat detailní licenční soubory odpovídající jeho distribučnímu kanálu.','Distribuce RefBooku','Veřejná dokumentace, soukromý implementační repozitář','RefBook má být veřejně dostupný jako dokumentace a indexovatelný vyhledávači.','Zdrojový repozitář RefBooku může zůstat soukromý. Samotný ASAP je framework určený pro budoucí distribuci jako balíček.','symbol','Symbol','Zdrojová role k doplnění v tagách ASAP_REFBOOK.','Kontrakt','Zdrojový kontrakt k doplnění v tagách ASAP_REFBOOK.','Zdroj k dořešení','Veřejné metody','Nebyla nalezena žádná veřejná metoda.','Signatura','Identita zdroje','Profil symbolu','Druh','Doména','Namespace není deklarován','Veřejné API','Související příklady','Související diagramy','Odpovědnost','Role','Odkazy jsou deklarované, ale assets nejsou ve snapshotu dostupné.','Odkazy jsou deklarované, ale diagramy nejsou ve snapshotu dostupné.','Diagram Mermaid','Zdroj Mermaid','Dedikovaný renderer není dostupný'],
+application/reference/Service/ReferenceContentService.php:328:            'legal' => ['kicker' => $legalKicker, 'title' => $legalTitle, 'intro' => $legalIntro, 'copyright_kicker' => 'Copyright', 'author_title' => $authorTitle, 'original_author' => $originalAuthor, 'licensing_kicker' => $licensingKicker, 'licensing_title' => $licensingTitle, 'personal_free' => $personalFree, 'commercial_required' => $commercialRequired, 'rights_reserved' => $rightsReserved, 'note' => $legalNote, 'distribution_kicker' => $distributionKicker, 'distribution_title' => $distributionTitle, 'distribution_body_1' => $distributionBody1, 'distribution_body_2' => $distributionBody2],
+application/reference/Service/ReferencePublicSiteService.php:64:            'copyright' => 'Copyright © 2026 Steve Ibanez / Log&Play.',
+application/reference/Service/ReferencePublicSiteService.php:65:            'powered_by' => 'Powered by ASAP Framework',
+application/reference/Service/ReferencePublicSiteService.php:69:            'legal_short' => 'ASAP Framework · source-available · dual licensed',
+application/reference/Service/ReferencePublicSiteService.php:201:            return 'ASAP Framework source-available dual licensing, copyright and author attribution.';
+application/reference/Service/ReferenceSearchService.php:15: *   Search guides, domains and source symbols without touching routing,
+application/reference/Service/ReferenceSearchService.php:39:final class ReferenceSearchService
+application/reference/Service/ReferenceSearchService.php:51:     * Search RefBook guides, domains and symbols.
+application/reference/templates/layout.twig:10:  <meta name="copyright" content="{{ site.copyright|default('Copyright © 2026 Steve Ibanez / Log&Play.') }}">
+application/reference/templates/layout.twig:78:  {% set isSearchPage = pageSlug == 'search' %}
+application/reference/templates/layout.twig:80:  {% set isLegalPage = pageSlug == 'legal' %}
+application/reference/templates/layout.twig:95:          <a href="{{ basePath }}/?lang={{ lang }}&theme={{ theme }}&page=search"{% if isSearchPage %} class="active"{% endif %}>{{ ui.sidebar.search }}</a>
+application/reference/templates/layout.twig:98:          <a href="{{ basePath }}/?lang={{ lang }}&theme={{ theme }}&page=legal"{% if isLegalPage %} class="active"{% endif %}>{{ ui.sidebar.legal }}</a>
+application/reference/templates/layout.twig:102:        <details class="nav-group" data-refbook-nav-group="guides" {% if pageSlug is empty or pageSlug == 'api-reference' or isGuidePage or isSearchPage or isAssetDiagnosticsPage %}open{% endif %}>
+application/reference/templates/layout.twig:136:    <span class="footer-powered">{{ site.powered_by|default(ui.footer.powered_by|default('Powered by ASAP Framework')) }}</span>
+application/reference/templates/layout.twig:138:    <span class="footer-copyright">{{ site.copyright|default(ui.footer.copyright|default('Copyright © 2026 Steve Ibanez / Log&Play.')) }}</span>
+application/reference/templates/layout.twig:140:    <a href="{{ basePath }}/?lang={{ lang }}&theme={{ theme }}&page=legal">{{ site.legal_short|default(ui.footer.legal_short|default('ASAP Framework · source-available · dual licensed')) }}</a>
+content/refbook/download-install.json:53:      "nav_label": "Download / install",
+content/refbook/download-install.json:56:      "intro": "This page explains how to install ASAP Framework. RefBook remains a public consultation website: it is not installed by end users.",
+content/refbook/i18n/en.json:18:                                   "api_reference":  "API Reference",
+content/refbook/i18n/en.json:22:                                   "search":  "Search",
+content/refbook/i18n/en.json:23:                                   "assets_docs":  "Doc assets",
+content/refbook/i18n/en.json:24:                                   "legal":  "Legal information",
+content/refbook/i18n/en.json:25:                                   "download_install":  "Download / install"
+content/refbook/i18n/en.json:35:                               "title":  "API Reference",
+content/refbook/i18n/en.json:36:                               "kicker":  "API Reference",
+content/refbook/i18n/en.json:115:                                  "title":  "Search",
+content/refbook/i18n/en.json:117:                                  "form_label":  "Search the RefBook",
+content/refbook/i18n/en.json:118:                                  "input_label":  "Search term",
+content/refbook/i18n/en.json:119:                                  "placeholder":  "Search…",
+content/refbook/i18n/en.json:122:                                  "help":  "Search scans indexed guides, domains, symbols, namespaces, files, contracts and public methods.",

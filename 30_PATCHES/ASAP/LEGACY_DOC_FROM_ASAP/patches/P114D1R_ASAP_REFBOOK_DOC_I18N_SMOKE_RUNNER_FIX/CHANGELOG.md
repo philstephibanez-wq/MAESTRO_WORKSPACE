@@ -1,0 +1,1 @@
+- Fixed smoke runner root directory from `..` to `..\..`.
