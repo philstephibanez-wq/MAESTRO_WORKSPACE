@@ -1,42 +1,42 @@
-# CONCERTO_VERSION
+# OPUS_VERSION
 
 ## Rôle
 
 Ce fichier pose la version du framework PHP actuellement rattachée au workspace MAESTRO.
 
-Le framework est renommé de `ASAP` vers `Concerto`.
+Le framework est renommé de `ASAP` vers `Opus`.
 
 `ASAP` reste le nom historique du framework tant que le dépôt, les namespaces, le package Composer et les références de code n'ont pas été migrés officiellement.
 
-`Concerto` devient le nom fonctionnel cible du framework : un socle PHP mutualisable, indépendant des projets applicatifs, chargé de coordonner routes, modules, controllers, services, templates, I18N, ACL et accès data sans mélanger les responsabilités.
+`Opus` devient le nom fonctionnel cible du framework : un socle PHP mutualisable, indépendant des projets applicatifs, chargé de coordonner routes, modules, controllers, services, templates, I18N, ACL et accès data sans mélanger les responsabilités.
 
 Le workspace ne doit pas embarquer de `vendor/`, de cache runtime, de secret, de chemin absolu projet, ni de fallback silencieux.
 
 ## Renommage officiel
 
 - Ancien nom : `ASAP`
-- Nouveau nom cible : `Concerto`
-- Nom long recommandé : `Concerto Framework`
-- Nom court recommandé : `Concerto`
+- Nouveau nom cible : `Opus`
+- Nom long recommandé : `Opus Framework`
+- Nom court recommandé : `Opus`
 - Package actuel : `logandplay/asap`
-- Package cible à prévoir : `logandplay/concerto`
+- Package cible à prévoir : `logandplay/opus`
 - Dépôt actuel : `philstephibanez-wq/ASAP`
-- Dépôt cible à prévoir : `philstephibanez-wq/Concerto` ou renommage contrôlé du dépôt existant
+- Dépôt cible à prévoir : `philstephibanez-wq/Opus` ou renommage contrôlé du dépôt existant
 
 ## Convention de version publique
 
-- Forme recommandée : `Concerto PHP 8.1.0 "Berlioz"`
-- Le préfixe `PHP 8.x` indique la génération/runtime PHP ciblée, pas la maturité fonctionnelle du framework.
+- Forme recommandée : `Opus 8.1.0 "Berlioz"`
+- Le préfixe `8.x` indique la génération/runtime PHP ciblée, pas la maturité fonctionnelle du framework.
 - La version Composer technique actuelle reste séparée et continue d'être documentée dans la source de vérité.
-- Exemple de lecture : `Concerto PHP 8.1.0 "Berlioz"` = framework Concerto pour génération PHP 8, release nommée Berlioz.
+- Exemple de lecture : `Opus 8.1.0 "Berlioz"` = framework Opus pour génération PHP 8, release nommée Berlioz.
 
 ## Nom de release
 
 - Release courante / cible de transition : `Berlioz`
-- Nom complet recommandé : `Concerto PHP 8.1.0 "Berlioz"`
-- Rôle : nom de release/version du framework Concerto, pas nom d'application.
+- Nom complet recommandé : `Opus 8.1.0 "Berlioz"`
+- Rôle : nom de release/version du framework Opus, pas nom d'application.
 - `Berlioz` ne remplace pas `ScoreTemplate` et ne désigne pas le projet applicatif.
-- Les futures documentations peuvent employer la formule : `Concerto Framework - PHP 8.1.0 "Berlioz"`.
+- Les futures documentations peuvent employer la formule : `Opus Framework - 8.1.0 "Berlioz"`.
 
 ## Source de vérité actuelle
 
@@ -54,11 +54,11 @@ Le workspace ne doit pas embarquer de `vendor/`, de cache runtime, de secret, de
 
 ## Contrat d'utilisation dans MAESTRO_WORKSPACE
 
-1. Concerto est référencé comme framework externe mutualisable.
+1. Opus est référencé comme framework externe mutualisable.
 2. Le nom `ASAP` reste un alias historique tant que la migration n'est pas effectuée.
-3. `Berlioz` est un nom de release/version du framework Concerto, pas un nom d'application.
-4. La mention `PHP 8.x` dans le nom public indique la génération/runtime PHP ciblée, pas une version majeure métier du framework.
-5. MAESTRO_WORKSPACE ne devient pas propriétaire du code framework Concerto/ASAP.
+3. `Berlioz` est un nom de release/version du framework Opus, pas un nom d'application.
+4. La mention `8.x` dans le nom public indique la génération/runtime PHP ciblée, pas une version majeure métier du framework.
+5. MAESTRO_WORKSPACE ne devient pas propriétaire du code framework Opus/ASAP.
 6. Les applications consomment le framework comme dépendance contrôlée.
 7. Le code métier ScoreTemplate ne doit pas être mélangé au framework.
 8. Les documentations générées / Reference Books doivent documenter les APIs publiques sans dupliquer la logique applicative.
@@ -67,7 +67,7 @@ Le workspace ne doit pas embarquer de `vendor/`, de cache runtime, de secret, de
 
 ## Migration à prévoir
 
-La migration réelle `ASAP -> Concerto` devra être faite en palier dédié, avec contrôle explicite de :
+La migration réelle `ASAP -> Opus` devra être faite en palier dédié, avec contrôle explicite de :
 
 1. dépôt GitHub ;
 2. nom Composer ;
@@ -80,4 +80,4 @@ La migration réelle `ASAP -> Concerto` devra être faite en palier dédié, ave
 
 ## Prochaine étape prévue
 
-Après pose de cette version Concerto/ASAP : démarrer `ScoreTemplate` comme projet/applicatif séparé, consommateur du framework, sans modifier le framework tant qu'un besoin contractuel réel n'est pas démontré.
+Après pose de cette version Opus/ASAP : démarrer `ScoreTemplate` comme projet/applicatif séparé, consommateur du framework, sans modifier le framework tant qu'un besoin contractuel réel n'est pas démontré.
