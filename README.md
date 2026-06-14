@@ -9,13 +9,22 @@ Ce dépôt sert à garder les contrats, décisions, handoffs et cartes de repris
 | Projet | Rôle | État |
 |---|---|---|
 | OPUS | Framework PHP OPUS 8.1.0 "Lysenko" | Prioritaire |
-| OPUS RefBook | Site officiel de documentation OPUS, livré avec OPUS | À migrer dans OPUS |
+| OPUS RefBook | Site officiel de documentation OPUS, package optionnel | À migrer dans OPUS |
+| OPUS_USER_GUIDE | Guide utilisateur optionnel futur | À cadrer |
 | OPUS_REF_BOOK | Dépôt transitoire du RefBook actuel | À nettoyer |
 | MAESTRO_V5 | Assistant musical REAPER/Lua | Actif |
 | MO_KB_DAEMON | Backend KB musicale, workers master/slaves | Actif |
 | MO_KB_FRONT | Front/backoffice KB | À aligner |
 | Log&Play | Publication web, domaines, bastion/gateway | À cadrer |
 | MAESTRO_WORKSPACE | Contexte global et décisions | Source de contexte |
+
+## Packaging OPUS cible
+
+| Package | Statut | Contrat |
+|---|---|---|
+| OPUS | Obligatoire | Core clean, livrable, sans résidus RefBook/Twig |
+| OPUS_REF_BOOK | Optionnel officiel | Site OPUS offline-first et publiable online |
+| OPUS_USER_GUIDE | Optionnel futur | Guide utilisateur séparé du RefBook technique |
 
 ## Raccourcis
 
@@ -32,3 +41,4 @@ Ce dépôt sert à garder les contrats, décisions, handoffs et cartes de repris
 - Pas de code mort dans les livrables.
 - RefBook cible : zéro Twig actif, zéro archive legacy, zéro backup.
 - Le RefBook OPUS doit rester un vrai site OPUS offline et publiable online.
+- À la livraison : proposer OPUS clean en package principal, OPUS_REF_BOOK en option officielle, OPUS_USER_GUIDE en option envisagée.
