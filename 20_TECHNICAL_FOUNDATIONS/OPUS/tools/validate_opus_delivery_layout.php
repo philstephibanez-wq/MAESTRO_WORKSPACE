@@ -7,8 +7,9 @@
  * Arguments: --root=<path> [--mode=dev|delivery]
  * Returns: process exit code 0 when the topology passes, 1 on contract failure.
  * Side effects: none; prints deterministic status/errors.
- * Business contract: useful delivery roots may be empty, tests are dev-only, no silent fallback,
- *                    no secrets, no runtime payloads in delivered var/.
+ * Business contract: useful delivery roots may be empty, tools are workspace-only,
+ *                    tests are dev-only, no silent fallback, no secrets,
+ *                    no runtime payloads in delivered var/.
  */
 final class OpusDeliveryLayoutValidator
 {
@@ -85,7 +86,6 @@ final class OpusDeliveryLayoutValidator
             'framework' . DIRECTORY_SEPARATOR . 'Opus',
             'packages',
             'sites',
-            'tools',
             'config',
             'var',
             'var' . DIRECTORY_SEPARATOR . 'cache',
@@ -167,6 +167,10 @@ final class OpusDeliveryLayoutValidator
 
     private function scanForbiddenDirectory(string $relative, string $name, string $mode): void
     {
+        if ($relative === 'tools') {
+            $this->error('Workspace-only directory forbidden in OPUS root: tools');
+        }
+
         if ($mode === 'delivery' && in_array($relative, ['tests', '.git', '.github'], true)) {
             $this->error('Development-only directory forbidden in delivery: ' . $relative);
         }
