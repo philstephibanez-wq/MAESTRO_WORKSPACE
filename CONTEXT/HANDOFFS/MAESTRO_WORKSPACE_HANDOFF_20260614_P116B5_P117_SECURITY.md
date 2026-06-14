@@ -2,7 +2,7 @@
 
 ## Scope
 
-This handoff records the current OPUS / RefBook / Security orientation discussed on 2026-06-14.
+This handoff records the current OPUS / RefBook / KB / Security orientation discussed on 2026-06-14.
 
 It is documentation only. No source code, runtime configuration, database schema, secret, key, or infrastructure file is modified by this handoff.
 
@@ -35,13 +35,15 @@ Observed / accepted state:
 
 ## RefBook status and next execution priority
 
-Execution priority remains RefBook before implementing the full security layer.
+Execution priority remains RefBook before resuming KB work and before implementing the full security layer.
 
 Reason:
 
 - RefBook rendering is still unstable / incomplete.
+- RefBook is the documentation surface expected to reflect OPUS live state.
+- KB work should not resume on top of an unclear documentation/reference layer.
 - Security should be designed now, but not implemented deeply on a UI/documentation surface that is still moving.
-- Avoid mixing two problem layers: RefBook rendering migration + cross-cutting security enforcement.
+- Avoid mixing three problem layers: RefBook rendering migration + KB work + cross-cutting security enforcement.
 
 Recommended next sequence:
 
@@ -50,7 +52,9 @@ P116C3_REAL_SCORE_REFBOOK
 ↓
 P116C4_LIVE_REFBOOK_RECIPE
 ↓
-Stable handoff
+Stable RefBook handoff
+↓
+Resume KB / MO_KB work
 ↓
 P117A_IDENTITY_AUTHORITY_CONTRACT
 ↓
@@ -80,7 +84,7 @@ Expected work:
 
 ## P117 — Security orientation
 
-Security must be designed immediately, then implemented after RefBook is stable.
+Security must be designed immediately, then implemented after RefBook is stable and KB resume state is clear.
 
 The user validated the direction: secure-by-design, with a self-hosted trust authority and bastions to minimize the attack surface.
 
@@ -93,6 +97,7 @@ OPUS_POLICY_ENGINE
 OPUS_PUBLIC_BASTION
 OPUS_ADMIN_BASTION
 OPUS_WORKER_BASTION
+LSTSAR
 ```
 
 ### Trust Authority
@@ -118,6 +123,7 @@ Responsibilities:
 Target compatibility:
 
 - OAuth/OIDC-compatible design.
+- SSO-like user flow direction.
 - Do not build a full homemade SSO first.
 - Start with a strict OPUS contract and progressively implement only what is needed.
 
@@ -222,11 +228,49 @@ Rules:
 - Bastions contain minimal code and no business data.
 - Bastions must fail closed.
 
+### Physical Linux bastion target
+
+The user confirmed that a dedicated HP Elite 8300 Linux server is ready and Webmin is already installed.
+
+This changes the deployment target:
+
+```text
+Internet
+  ↓ HTTPS 443 only when public
+HP_ELITE_8300_LINUX_BASTION
+  ↓ controlled reverse proxy / firewall / gateway path
+Windows H: internal services
+  OPUS / OPUS_REF_BOOK / MO_KB / Maestro / KB / development data
+```
+
+Target role:
+
+```text
+HP_ELITE_8300_LINUX_BASTION
+- physical bastion host
+- reverse proxy
+- TLS termination
+- firewall boundary
+- security logs
+- fail2ban / rate limiting candidate
+- future API gateway host candidate
+- future Identity Authority host candidate, if isolation and backup policy are validated
+```
+
+Strict rule for Webmin:
+
+```text
+Webmin must remain LAN/VPN/admin-only.
+Webmin must not be exposed directly to the public Internet.
+```
+
 ### VM decision
 
 VMs are not mandatory for dev/local work.
 
-Development/local minimum:
+The dedicated HP Elite 8300 Linux server can serve as the first real bastion without requiring an initial VM layer.
+
+Development/local minimum remains:
 
 ```text
 single Windows host
@@ -236,25 +280,53 @@ Windows firewall / Bitdefender rules
 no direct daemon/public DB exposure
 ```
 
-Recommended for serious public exposure:
+Recommended first serious public exposure model is now:
 
 ```text
-one lightweight public bastion VM
+HP_ELITE_8300_LINUX_BASTION
 +
-internal OPUS services kept behind it
+internal OPUS / RefBook / MO_KB services kept behind it
 +
-no business data on the bastion
+no business data or KB stored on the bastion
++
+Webmin LAN/VPN only
 ```
 
-Longer-term stronger model:
+Longer-term stronger model remains possible:
 
 ```text
-VM_PUBLIC_BASTION
-VM_API_GATEWAY
-VM_IDENTITY_AUTHORITY
+PHYSICAL_PUBLIC_BASTION or VM_PUBLIC_BASTION
+VM_API_GATEWAY or dedicated gateway service
+VM_IDENTITY_AUTHORITY or dedicated authority service
 VM_APP_SERVICES
 protected DATA / KB storage
 ```
+
+### LSTSAR orientation
+
+`LSTSAR` is retained as a future secure data-flow layer, not as the immediate priority.
+
+Working meaning:
+
+```text
+Load
+Store
+Transform
+Security
+Audit
+Replay-control
+```
+
+Constraints:
+
+- not a catch-all engine,
+- no silent fallback,
+- strict input/output contracts,
+- typed validation,
+- explicit transformation policy,
+- auditable execution,
+- replay protection where relevant,
+- no direct bypass of the API gateway / trust authority model.
 
 ## Proposed P117 sequence
 
@@ -264,6 +336,7 @@ P117A_IDENTITY_AUTHORITY_CONTRACT
 
 P117B_BASTION_SECURITY_MODEL
   Zones, allowed flows, forbidden ports, public/user/service/worker/admin profiles.
+  Include HP Elite 8300 Linux bastion deployment notes.
 
 P117C_API_GATEWAY_PEP
   OPUS middleware/gateway as Policy Enforcement Point.
@@ -280,7 +353,10 @@ P117F_USER_SSO_PROFILE
 P117G_WORKER_ENROLLMENT
   Workers/slaves: machine identity, keys, rotation, revocation, signed leases.
 
-P117H_SECURITY_RECIPES
+P117H_LSTSAR_CONTRACT
+  Secure Load / Store / Transform / Security / Audit / Replay-control contract.
+
+P117I_SECURITY_RECIPES
   Recipes proving rejection of expired tokens, replayed nonces, missing scopes, invalid ownership, direct access, and unsigned sensitive requests.
 ```
 
@@ -291,8 +367,9 @@ Proceed with:
 ```text
 1. P116C3_REAL_SCORE_REFBOOK
 2. P116C4_LIVE_REFBOOK_RECIPE
-3. Stable handoff
-4. P117A_IDENTITY_AUTHORITY_CONTRACT
+3. Stable RefBook handoff
+4. Resume KB / MO_KB work
+5. P117A_IDENTITY_AUTHORITY_CONTRACT
 ```
 
-Security is conceptually first, but RefBook should be finished first in execution to avoid securing an unstable rendering layer.
+Security is conceptually first, and the Linux bastion target is now known, but RefBook should be finished first in execution to avoid securing an unstable rendering layer.
