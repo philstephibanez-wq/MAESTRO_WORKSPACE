@@ -26,6 +26,15 @@ Ce dépôt sert à garder les contrats, décisions, handoffs et cartes de repris
 | OPUS_REF_BOOK | Optionnel officiel | Site OPUS offline-first et publiable online |
 | OPUS_USER_GUIDE | Optionnel futur | Guide utilisateur séparé du RefBook technique |
 
+## Licence OPUS cible
+
+| Sujet | Décision |
+|---|---|
+| Copyright | Philippe Stéphane Ibanez |
+| Modèle | Source-available, libre d'utilisation non commerciale |
+| Commercial | Licence commerciale payante avec royalties obligatoires |
+| Open source OSI | Non, sauf décision future contraire |
+
 ## Raccourcis
 
 - Index projets : CONTEXT/PROJECTS/PROJECT_INDEX.md
@@ -42,3 +51,4 @@ Ce dépôt sert à garder les contrats, décisions, handoffs et cartes de repris
 - RefBook cible : zéro Twig actif, zéro archive legacy, zéro backup.
 - Le RefBook OPUS doit rester un vrai site OPUS offline et publiable online.
 - À la livraison : proposer OPUS clean en package principal, OPUS_REF_BOOK en option officielle, OPUS_USER_GUIDE en option envisagée.
+- Licence OPUS cible : copyright Philippe Stéphane Ibanez, usage non commercial libre, usage commercial sous licence payante avec royalties.
