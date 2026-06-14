@@ -26,6 +26,16 @@ Ce dépôt sert à garder les contrats, décisions, handoffs et cartes de repris
 | OPUS_REF_BOOK | Optionnel officiel | Site OPUS offline-first et publiable online |
 | OPUS_USER_GUIDE | Optionnel futur | Guide utilisateur séparé du RefBook technique |
 
+## Topologie OPUS cible
+
+```text
+Un seul framework OPUS partagé.
+Plusieurs sites/packages OPUS optionnels.
+Aucune duplication du framework par site.
+```
+
+Le RefBook peut être livré séparément comme package/site optionnel, mais il doit dépendre d'un OPUS core partagé et déclaré explicitement.
+
 ## Licence OPUS cible
 
 | Sujet | Décision |
@@ -51,4 +61,5 @@ Ce dépôt sert à garder les contrats, décisions, handoffs et cartes de repris
 - RefBook cible : zéro Twig actif, zéro archive legacy, zéro backup.
 - Le RefBook OPUS doit rester un vrai site OPUS offline et publiable online.
 - À la livraison : proposer OPUS clean en package principal, OPUS_REF_BOOK en option officielle, OPUS_USER_GUIDE en option envisagée.
+- Topologie cible : OPUS core unique partagé, packages optionnels sans copie du framework.
 - Licence OPUS cible : copyright Philippe Stéphane Ibanez, usage non commercial libre, usage commercial sous licence payante avec royalties.
