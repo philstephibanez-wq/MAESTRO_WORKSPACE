@@ -28,6 +28,9 @@ P116C4 — OPUS packaging and RefBook migration foundation.
 - OPUS_REF_BOOK is an official optional package/site, not a duplicated framework.
 - OPUS_USER_GUIDE is a future optional package separate from the technical RefBook.
 - OPUS core is shared once; packages/sites must not copy `framework/Opus`.
+- OPUS may live under a readable local web root such as `H:\UwAmp\www\OPUS`, but only `sites/*/public/` may be exposed by Apache.
+- OPUS delivered core keeps useful roots such as `sites/`, `packages/`, `config/`, `var/` even when they are mostly empty.
+- `tests/` is development-only and must not be included in delivery artifacts.
 - OPUS licensing intent: copyright Philippe Stéphane Ibanez, source-available, free non-commercial use, commercial license with royalties, not OSI open source unless future decision changes it.
 - License/usage metering may exist only as RGPD-by-design license authority / usage meter / royalty engine, with no hidden telemetry.
 - Every delivery must update this workspace handoff when project state changes.
@@ -42,12 +45,20 @@ P116C4 — OPUS packaging and RefBook migration foundation.
 - `931ae7572fbe313fbaba61aa7d946af31383f6dd` — `P116C4B_ADD_OPUS_PACKAGE_MANIFEST_CONTRACT`
 - `3775263daa474e54cae32b4dae44454a34695a66` — `P116C4B_ADD_OPUS_PACKAGE_SCHEMA`
 - `844079472871135c8bc21dcbcc06ec4e076c9659` — `P116C4B_ADD_OPUS_PACKAGE_VALIDATOR`
-- `cdc9daf574b22a48b45243a6525bcd61bd0179cc` — `P116C4B_UPDATE_PACKAGES_README_MANIFEST_VALIDATION`
-- `274a43f8b2fc9c6f57c94f96a484d45f9b27af90` — `P116C4B_UPDATE_OPUS_README_PACKAGE_VALIDATION`
 - `c5e6ad57c66e0d4a639c255fe1c902d7eb4522ec` — `P116C4D_ADD_OPUS_PACKAGE_INSTALLER`
 - `e5d258d51fca6fa0a936be40074699e77dde65f1` — `P116C4D_ADD_OPUS_PACKAGE_INSTALL_CONTRACT`
-- `bee6b2396de731927645f693bc663d3eaa53c773` — `P116C4D_UPDATE_OPUS_README_PACKAGE_INSTALLER`
-- `3515e075a1f67d9a96acb52fb0b2e1d59b8b59b2` — `P116C4D_UPDATE_PACKAGES_README_INSTALLER`
+- `e8b6eb5f932178f9d58e4407cb030ab97d69da95` — `P116C4E_ADD_OPUS_SITES_ROOT_README`
+- `0e36bf0957869e1ad1c82873ce4d9a002eea31cc` — `P116C4E_ADD_OPUS_CONFIG_README`
+- `84bb4e9c2feaccf730cf607539ff88d930a6b07f` — `P116C4E_ADD_OPUS_EXAMPLE_CONFIG`
+- `b35ad68f4cfa0b72d886de2a01006a8d19adada2` — `P116C4E_ADD_OPUS_VAR_README`
+- `0f3e857c2f18bfb7398aa88add264af173b5d33f` — `P116C4E_ADD_OPUS_VAR_CACHE_PLACEHOLDER`
+- `d0af0392669bbe5a6206b593726f9dbdb6d7797a` — `P116C4E_ADD_OPUS_VAR_LOGS_PLACEHOLDER`
+- `846d3571ac0ed88995dcbd7449161035326f0a1a` — `P116C4E_ADD_OPUS_VAR_TMP_PLACEHOLDER`
+- `db605c2972a05fd8aea205a4d707911dff6212a8` — `P116C4E_ADD_OPUS_DELIVERY_PROFILE`
+- `9db03f2fcead3647f116100bd3a2f747d8953b42` — `P116C4E_ADD_OPUS_DELIVERY_LAYOUT_VALIDATOR`
+- `dfbd10c3e4eeffdbcfe6f272768b8f00994174cc` — `P116C4E_UPDATE_OPUS_README_DELIVERY_TOPOLOGY`
+- `41dba27519bc91c4f47a21ada4a81a59eaab3725` — `P116C4E_UPDATE_PACKAGE_INSTALL_CONTRACT_SITES_ROOT`
+- `01a0f63652400cf590abbd1a6040a2bb7867fa8a` — `P116C4E_UPDATE_PACKAGES_README_SITES_ROOT`
 
 ## Latest relevant MAESTRO_WORKSPACE commits
 
@@ -58,6 +69,7 @@ P116C4 — OPUS packaging and RefBook migration foundation.
 - `c09107e96682b4a45e76f2abf6c54e04eb0bfce6` — `P116C4C_ADD_CURRENT_WORKSPACE_HANDOFF`
 - `5735ddda62fc611d2164192626402f83acd764c9` — `P116C4C_UPDATE_README_MANDATORY_HANDOFF`
 - `97376d36c233a50e04a10500113062924e1b3f89` — `P116C4C_UPDATE_PROJECT_INDEX_MANDATORY_HANDOFF`
+- `9f390b8424411fedb75a04fdd67e596a713e3321` — `P116C4D_UPDATE_HANDOFF_OPUS_PACKAGE_INSTALLER`
 
 ## Next safe step
 
@@ -66,10 +78,11 @@ Run local verification on OPUS, then continue with scorie audits before importin
 Recommended local checks:
 
 ```cmd
-cd /d H:\path\to\OPUS
+cd /d H:\UwAmp\www\OPUS
 git pull --ff-only
 php tools\validate_opus_packages.php
-php tools\install_opus_package.php --package=opus-refbook --target=H:\UwAmp\www\OPUS_REF_BOOK --opus-root=H:\OPUS --dry-run
+php tools\validate_opus_delivery_layout.php --root=H:\UwAmp\www\OPUS --mode=dev
+php tools\install_opus_package.php --package=opus-refbook --target=H:\UwAmp\www\OPUS\sites\opus-refbook --opus-root=H:\UwAmp\www\OPUS --dry-run
 ```
 
 Then audit `OPUS_REF_BOOK` for Twig, backups, legacy names, CSS overrides, and broken i18n before migration.
@@ -77,6 +90,7 @@ Then audit `OPUS_REF_BOOK` for Twig, backups, legacy names, CSS overrides, and b
 ## Explicit blockers / unknowns
 
 - The OPUS package validator has not been executed on the user's local clone by the assistant.
+- The OPUS delivery layout validator has not been executed on the user's local clone by the assistant.
 - The OPUS package installer dry-run has not been executed on the user's local clone by the assistant.
 - The current `OPUS_REF_BOOK` repository is transitional and known to contain broken/scorie state from prior attempts.
 - The final legal `LICENSE` and `COMMERCIAL_LICENSE` texts are not drafted/finalized yet; only `LICENSE_INTENT.md` and workspace ADRs exist.
