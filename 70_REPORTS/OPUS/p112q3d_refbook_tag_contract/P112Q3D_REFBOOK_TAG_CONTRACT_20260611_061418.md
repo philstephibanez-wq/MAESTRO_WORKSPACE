@@ -1,0 +1,660 @@
+# P112Q3D — Opus RefBook Tag Contract
+
+Generated at: `2026-06-11T06:14:18+00:00`
+
+## Contract
+
+- Every public class/interface/trait/enum must have an `OPUS_REFBOOK` block.
+- Every public method must have its own local `OPUS_REFBOOK` block.
+- A class-level tag never silently covers all methods.
+
+## Summary
+
+| Metric | Count |
+|---|---:|
+| Symbols | 206 |
+| Public methods | 580 |
+| Class tags OK | 156 |
+| Class tags missing | 50 |
+| Method tags OK | 0 |
+| Method tags missing | 580 |
+
+## Missing class tags
+
+| Domain | Symbol | File |
+|---|---|---|
+| ACL | `Opus\Acl\AccessConditionInterface` | `framework/Opus/Acl/AccessConditionInterface.php:51` |
+| ACL | `Opus\Acl\AccessContext` | `framework/Opus/Acl/AccessContext.php:52` |
+| ACL | `Opus\Acl\AccessControl` | `framework/Opus/Acl/AccessControl.php:52` |
+| ACL | `Opus\Acl\AccessControlException` | `framework/Opus/Acl/AccessControlException.php:53` |
+| ACL | `Opus\Acl\AccessDecision` | `framework/Opus/Acl/AccessDecision.php:52` |
+| ACL | `Opus\Acl\AccessDeniedException` | `framework/Opus/Acl/AccessDeniedException.php:50` |
+| ACL | `Opus\Acl\AccessRule` | `framework/Opus/Acl/AccessRule.php:52` |
+| ACL | `Opus\Acl\Acl` | `framework/Opus/Acl/Acl.php:51` |
+| ACL | `Opus\Acl\PrivilegeDefinition` | `framework/Opus/Acl/PrivilegeDefinition.php:52` |
+| ACL | `Opus\Acl\ResourceDefinition` | `framework/Opus/Acl/ResourceDefinition.php:52` |
+| ACL | `Opus\Acl\RoleDefinition` | `framework/Opus/Acl/RoleDefinition.php:52` |
+| FSM | `Opus\Fsm\Fsm` | `framework/Opus/Fsm/Fsm.php:48` |
+| FSM | `Opus\Fsm\SignalDefinition` | `framework/Opus/Fsm/SignalDefinition.php:50` |
+| FSM | `Opus\Fsm\StateActionInterface` | `framework/Opus/Fsm/StateActionInterface.php:49` |
+| FSM | `Opus\Fsm\StateDefinition` | `framework/Opus/Fsm/StateDefinition.php:50` |
+| FSM | `Opus\Fsm\StateMachine` | `framework/Opus/Fsm/StateMachine.php:51` |
+| FSM | `Opus\Fsm\StateMachineException` | `framework/Opus/Fsm/StateMachineException.php:51` |
+| FSM | `Opus\Fsm\StateMemory` | `framework/Opus/Fsm/StateMemory.php:50` |
+| FSM | `Opus\Fsm\TransitionDefinition` | `framework/Opus/Fsm/TransitionDefinition.php:50` |
+| FSM | `Opus\Fsm\TransitionResult` | `framework/Opus/Fsm/TransitionResult.php:50` |
+| HTTP | `Opus\Http\Request` | `framework/Opus/Http/Request.php:54` |
+| HTTP | `Opus\Http\Response` | `framework/Opus/Http/Response.php:56` |
+| LSTSA | `Opus\Lstsa\LstsaRunnerTimeoutException` | `framework/Opus/Lstsa/LstsaRunner.php:109` |
+| REFBOOK | `Opus\RefBook\Api\LocalizedRefBookDocumentationProvider` | `framework/Opus/RefBook/Api/LocalizedRefBookDocumentationProvider.php:23` |
+| REFBOOK | `Opus\RefBook\Api\RefBookDocumentationAssetRepository` | `framework/Opus/RefBook/Api/RefBookDocumentationAssetRepository.php:41` |
+| REFBOOK | `Opus\RefBook\Api\RefBookDocumentationI18nRestRouter` | `framework/Opus/RefBook/Api/RefBookDocumentationI18nRestRouter.php:27` |
+| REFBOOK | `Opus\RefBook\Api\RefBookRestApi` | `framework/Opus/RefBook/Api/RefBookRestApi.php:39` |
+| REFBOOK | `Opus\RefBook\Api\RefBookRestSnapshotProvider` | `framework/Opus/RefBook/Api/RefBookRestSnapshotProvider.php:39` |
+| REFBOOK | `Opus\RefBook\Attribute\OpusRefBookClass` | `framework/Opus/RefBook/Attribute/OpusRefBookClass.php:23` |
+| REFBOOK | `Opus\RefBook\Attribute\OpusRefBookMethod` | `framework/Opus/RefBook/Attribute/OpusRefBookMethod.php:23` |
+| REFBOOK | `Opus\RefBook\Contract\RefBookInspectableInterface` | `framework/Opus/RefBook/Contract/RefBookInspectableInterface.php:19` |
+| REFBOOK | `Opus\RefBook\I18n\RefBookDocumentationI18nCatalog` | `framework/Opus/RefBook/I18n/RefBookDocumentationI18nCatalog.php:19` |
+| REFBOOK | `Opus\RefBook\I18n\RefBookDocumentationLocale` | `framework/Opus/RefBook/I18n/RefBookDocumentationLocale.php:20` |
+| REFBOOK | `Opus\RefBook\I18n\RefBookDocumentationTranslationMissingException` | `framework/Opus/RefBook/I18n/RefBookDocumentationTranslationMissingException.php:20` |
+| REFBOOK | `Opus\RefBook\Model\RefBookClassEntry` | `framework/Opus/RefBook/Model/RefBookClassEntry.php:14` |
+| REFBOOK | `Opus\RefBook\Model\RefBookMethodEntry` | `framework/Opus/RefBook/Model/RefBookMethodEntry.php:14` |
+| REFBOOK | `Opus\RefBook\Model\RefBookScanResult` | `framework/Opus/RefBook/Model/RefBookScanResult.php:14` |
+| REFBOOK | `Opus\RefBook\RefBookContractValidator` | `framework/Opus/RefBook/RefBookContractValidator.php:18` |
+| REFBOOK | `Opus\RefBook\RefBookReflectionScanner` | `framework/Opus/RefBook/RefBookReflectionScanner.php:36` |
+| REFBOOK | `Opus\RefBook\RefBookSnapshotBuilder` | `framework/Opus/RefBook/RefBookSnapshotBuilder.php:16` |
+| ROUTING | `Opus\Routing\AttributeRouteProvider` | `framework/Opus/Routing/AttributeRouteProvider.php:57` |
+| ROUTING | `Opus\Routing\ClassIndex` | `framework/Opus/Routing/ClassIndex.php:56` |
+| ROUTING | `Opus\Routing\Route` | `framework/Opus/Routing/Route.php:62` |
+| ROUTING | `Opus\Routing\RouteCompilerException` | `framework/Opus/Routing/RouteCompilerException.php:55` |
+| ROUTING | `Opus\Routing\RouteDefinition` | `framework/Opus/Routing/RouteDefinition.php:61` |
+| ROUTING | `Opus\Routing\RouteManifestCompiler` | `framework/Opus/Routing/RouteManifestCompiler.php:55` |
+| ROUTING | `Opus\Routing\RouteMatch` | `framework/Opus/Routing/RouteMatch.php:60` |
+| ROUTING | `Opus\Routing\Router` | `framework/Opus/Routing/Router.php:66` |
+| COMPATIBILITY | `OPUS_SimpleXMLElementExtended` | `framework/Opus/Compatibility/LegacySimpleXMLElementExtended.php:8` |
+| COMPATIBILITY | `OPUS_Singleton` | `framework/Opus/Compatibility/LegacySingleton.php:9` |
+
+## Missing method tags
+
+| Domain | Symbol | Method | File |
+|---|---|---|---|
+| ACL | `Opus\Acl\AccessConditionInterface` | `allows` | `framework/Opus/Acl/AccessConditionInterface.php:74` |
+| ACL | `Opus\Acl\AccessContext` | `__construct` | `framework/Opus/Acl/AccessContext.php:91` |
+| ACL | `Opus\Acl\AccessContext` | `get` | `framework/Opus/Acl/AccessContext.php:141` |
+| ACL | `Opus\Acl\AccessContext` | `has` | `framework/Opus/Acl/AccessContext.php:115` |
+| ACL | `Opus\Acl\AccessContext` | `refBookDomain` | `framework/Opus/Acl/AccessContext.php:69` |
+| ACL | `Opus\Acl\AccessControl` | `__construct` | `framework/Opus/Acl/AccessControl.php:113` |
+| ACL | `Opus\Acl\AccessControl` | `decide` | `framework/Opus/Acl/AccessControl.php:186` |
+| ACL | `Opus\Acl\AccessControl` | `refBookDomain` | `framework/Opus/Acl/AccessControl.php:78` |
+| ACL | `Opus\Acl\AccessControlException` | `contract` | `framework/Opus/Acl/AccessControlException.php:100` |
+| ACL | `Opus\Acl\AccessControlException` | `refBookDomain` | `framework/Opus/Acl/AccessControlException.php:75` |
+| ACL | `Opus\Acl\AccessDecision` | `__construct` | `framework/Opus/Acl/AccessDecision.php:92` |
+| ACL | `Opus\Acl\AccessDecision` | `allowed` | `framework/Opus/Acl/AccessDecision.php:115` |
+| ACL | `Opus\Acl\AccessDecision` | `reason` | `framework/Opus/Acl/AccessDecision.php:137` |
+| ACL | `Opus\Acl\AccessDecision` | `refBookDomain` | `framework/Opus/Acl/AccessDecision.php:69` |
+| ACL | `Opus\Acl\AccessRule` | `__construct` | `framework/Opus/Acl/AccessRule.php:103` |
+| ACL | `Opus\Acl\AccessRule` | `allows` | `framework/Opus/Acl/AccessRule.php:159` |
+| ACL | `Opus\Acl\AccessRule` | `condition` | `framework/Opus/Acl/AccessRule.php:181` |
+| ACL | `Opus\Acl\AccessRule` | `key` | `framework/Opus/Acl/AccessRule.php:137` |
+| ACL | `Opus\Acl\AccessRule` | `refBookDomain` | `framework/Opus/Acl/AccessRule.php:72` |
+| ACL | `Opus\Acl\Acl` | `canView` | `framework/Opus/Acl/Acl.php:82` |
+| ACL | `Opus\Acl\Acl` | `refBookDomain` | `framework/Opus/Acl/Acl.php:65` |
+| ACL | `Opus\Acl\PrivilegeDefinition` | `__construct` | `framework/Opus/Acl/PrivilegeDefinition.php:92` |
+| ACL | `Opus\Acl\PrivilegeDefinition` | `id` | `framework/Opus/Acl/PrivilegeDefinition.php:120` |
+| ACL | `Opus\Acl\PrivilegeDefinition` | `refBookDomain` | `framework/Opus/Acl/PrivilegeDefinition.php:68` |
+| ACL | `Opus\Acl\ResourceDefinition` | `__construct` | `framework/Opus/Acl/ResourceDefinition.php:92` |
+| ACL | `Opus\Acl\ResourceDefinition` | `id` | `framework/Opus/Acl/ResourceDefinition.php:120` |
+| ACL | `Opus\Acl\ResourceDefinition` | `refBookDomain` | `framework/Opus/Acl/ResourceDefinition.php:68` |
+| ACL | `Opus\Acl\RoleDefinition` | `__construct` | `framework/Opus/Acl/RoleDefinition.php:92` |
+| ACL | `Opus\Acl\RoleDefinition` | `id` | `framework/Opus/Acl/RoleDefinition.php:120` |
+| ACL | `Opus\Acl\RoleDefinition` | `refBookDomain` | `framework/Opus/Acl/RoleDefinition.php:68` |
+| ACTION | `Opus\Action\Action` | `__construct` | `framework/Opus/Action/Action.php:25` |
+| APPLICATION | `Opus\Application\Application` | `__construct` | `framework/Opus/Application/Application.php:61` |
+| APPLICATION | `Opus\Application\Application` | `run` | `framework/Opus/Application/Application.php:83` |
+| APPLICATION | `Opus\Application\ApplicationFacade` | `__construct` | `framework/Opus/Application/ApplicationFacade.php:44` |
+| APPLICATION | `Opus\Application\ApplicationFacade` | `run` | `framework/Opus/Application/ApplicationFacade.php:49` |
+| APPLICATION | `Opus\Application\ApplicationPaths` | `__construct` | `framework/Opus/Application/ApplicationPaths.php:47` |
+| ASSET | `Opus\Asset\Asset` | `__construct` | `framework/Opus/Asset/Asset.php:44` |
+| ASSET | `Opus\Asset\Asset` | `css` | `framework/Opus/Asset/Asset.php:58` |
+| ASSET | `Opus\Asset\Asset` | `image` | `framework/Opus/Asset/Asset.php:68` |
+| ASSET | `Opus\Asset\Asset` | `isCss` | `framework/Opus/Asset/Asset.php:73` |
+| ASSET | `Opus\Asset\Asset` | `isImage` | `framework/Opus/Asset/Asset.php:83` |
+| ASSET | `Opus\Asset\Asset` | `isJs` | `framework/Opus/Asset/Asset.php:78` |
+| ASSET | `Opus\Asset\Asset` | `js` | `framework/Opus/Asset/Asset.php:63` |
+| ASSET | `Opus\Asset\AssetDefinition` | `__construct` | `framework/Opus/Asset/AssetDefinition.php:37` |
+| ASSET | `Opus\Asset\AssetRegistry` | `add` | `framework/Opus/Asset/AssetRegistry.php:48` |
+| ASSET | `Opus\Asset\AssetRegistry` | `byType` | `framework/Opus/Asset/AssetRegistry.php:60` |
+| AUTOLOAD | `Opus\Autoload\AutoloadCache` | `__construct` | `framework/Opus/Autoload/AutoloadCache.php:40` |
+| AUTOLOAD | `Opus\Autoload\AutoloadCache` | `defaultCacheFile` | `framework/Opus/Autoload/AutoloadCache.php:46` |
+| AUTOLOAD | `Opus\Autoload\AutoloadCache` | `load` | `framework/Opus/Autoload/AutoloadCache.php:59` |
+| AUTOLOAD | `Opus\Autoload\AutoloadCache` | `register` | `framework/Opus/Autoload/AutoloadCache.php:83` |
+| AUTOLOAD | `Opus\Autoload\ClassMapBuilder` | `build` | `framework/Opus/Autoload/ClassMapBuilder.php:49` |
+| AUTOLOAD | `Opus\Autoload\ClassMapBuilder` | `write` | `framework/Opus/Autoload/ClassMapBuilder.php:110` |
+| CACHE | `Opus\Cache\Cache` | `all` | `framework/Opus/Cache/Cache.php:84` |
+| CACHE | `Opus\Cache\Cache` | `clear` | `framework/Opus/Cache/Cache.php:71` |
+| CACHE | `Opus\Cache\Cache` | `count` | `framework/Opus/Cache/Cache.php:76` |
+| CACHE | `Opus\Cache\Cache` | `get` | `framework/Opus/Cache/Cache.php:47` |
+| CACHE | `Opus\Cache\Cache` | `getOrDefault` | `framework/Opus/Cache/Cache.php:56` |
+| CACHE | `Opus\Cache\Cache` | `has` | `framework/Opus/Cache/Cache.php:61` |
+| CACHE | `Opus\Cache\Cache` | `remove` | `framework/Opus/Cache/Cache.php:66` |
+| CACHE | `Opus\Cache\Cache` | `set` | `framework/Opus/Cache/Cache.php:41` |
+| COMPATIBILITY | `Opus\Compatibility\SimpleXMLElementExtended` | `getAttribute` | `framework/Opus/Compatibility/SimpleXMLElementExtended.php:37` |
+| COMPATIBILITY | `Opus\Compatibility\SimpleXMLElementExtended` | `getAttributeCount` | `framework/Opus/Compatibility/SimpleXMLElementExtended.php:48` |
+| COMPATIBILITY | `Opus\Compatibility\SimpleXMLElementExtended` | `getAttributeNames` | `framework/Opus/Compatibility/SimpleXMLElementExtended.php:56` |
+| COMPATIBILITY | `Opus\Compatibility\SimpleXMLElementExtended` | `getAttributesArray` | `framework/Opus/Compatibility/SimpleXMLElementExtended.php:64` |
+| COMPATIBILITY | `Opus\Compatibility\SimpleXMLElementExtended` | `getChildrenCount` | `framework/Opus/Compatibility/SimpleXMLElementExtended.php:80` |
+| COMPATIBILITY | `Opus\Compatibility\Singleton` | `__call` | `framework/Opus/Compatibility/Singleton.php:59` |
+| COMPATIBILITY | `Opus\Compatibility\Singleton` | `getInstance` | `framework/Opus/Compatibility/Singleton.php:42` |
+| CONFIG | `Opus\Config\ConfigBag` | `__construct` | `framework/Opus/Config/ConfigBag.php:41` |
+| CONFIG | `Opus\Config\ConfigBag` | `boolean` | `framework/Opus/Config/ConfigBag.php:67` |
+| CONFIG | `Opus\Config\ConfigBag` | `integer` | `framework/Opus/Config/ConfigBag.php:56` |
+| CONFIG | `Opus\Config\ConfigBag` | `string` | `framework/Opus/Config/ConfigBag.php:45` |
+| CONFIG | `Opus\Config\ConfigException` | `because` | `framework/Opus/Config/ConfigException.php:34` |
+| CONFIG | `Opus\Config\ConfigLoader` | `__construct` | `framework/Opus/Config/ConfigLoader.php:43` |
+| CONFIG | `Opus\Config\ConfigLoader` | `getConfig` | `framework/Opus/Config/ConfigLoader.php:81` |
+| CONFIG | `Opus\Config\ConfigLoader` | `load` | `framework/Opus/Config/ConfigLoader.php:50` |
+| CONFIG | `Opus\Config\Configuration` | `__construct` | `framework/Opus/Config/Configuration.php:47` |
+| CONFIG | `Opus\Config\Configuration` | `all` | `framework/Opus/Config/Configuration.php:116` |
+| CONFIG | `Opus\Config\Configuration` | `get` | `framework/Opus/Config/Configuration.php:57` |
+| CONFIG | `Opus\Config\Configuration` | `getDatabase` | `framework/Opus/Config/Configuration.php:75` |
+| CONFIG | `Opus\Config\Configuration` | `getEnv` | `framework/Opus/Config/Configuration.php:80` |
+| CONFIG | `Opus\Config\Configuration` | `getRoutes` | `framework/Opus/Config/Configuration.php:94` |
+| CONFIG | `Opus\Config\Configuration` | `get_browser` | `framework/Opus/Config/Configuration.php:99` |
+| CONFIG | `Opus\Config\Configuration` | `get_os` | `framework/Opus/Config/Configuration.php:106` |
+| CONFIG | `Opus\Config\Configuration` | `has` | `framework/Opus/Config/Configuration.php:52` |
+| CONFIG | `Opus\Config\Configuration` | `set` | `framework/Opus/Config/Configuration.php:66` |
+| CONFIG | `Opus\Config\Configuration` | `setEnv` | `framework/Opus/Config/Configuration.php:85` |
+| CONFIG | `Opus\Config\XmlConfigReader` | `read` | `framework/Opus/Config/XmlConfigReader.php:40` |
+| CONTRACT | `Opus\Contract\ContractException` | `because` | `framework/Opus/Contract/ContractException.php:48` |
+| CONTROLLER | `Opus\Controller\Controller` | `__construct` | `framework/Opus/Controller/Controller.php:43` |
+| CONTROLLER | `Opus\Controller\ControllerDispatcher` | `__construct` | `framework/Opus/Controller/ControllerDispatcher.php:53` |
+| CONTROLLER | `Opus\Controller\ControllerDispatcher` | `dispatch` | `framework/Opus/Controller/ControllerDispatcher.php:60` |
+| CONTROLLER | `Opus\Controller\ControllerException` | `because` | `framework/Opus/Controller/ControllerException.php:37` |
+| COOKIE | `Opus\Cookie\Cookie` | `__construct` | `framework/Opus/Cookie/Cookie.php:25` |
+| CORE | `Opus\Core\Bootstrap` | `run` | `framework/Opus/Core/Bootstrap.php:39` |
+| CORE | `Opus\Core\Kernel` | `__construct` | `framework/Opus/Core/Kernel.php:35` |
+| CORE | `Opus\Core\Kernel` | `apiUrl` | `framework/Opus/Core/Kernel.php:59` |
+| CORE | `Opus\Core\Kernel` | `assetUrl` | `framework/Opus/Core/Kernel.php:64` |
+| CORE | `Opus\Core\Kernel` | `getPackage` | `framework/Opus/Core/Kernel.php:49` |
+| CORE | `Opus\Core\Kernel` | `handle` | `framework/Opus/Core/Kernel.php:76` |
+| CORE | `Opus\Core\Kernel` | `packageUrl` | `framework/Opus/Core/Kernel.php:69` |
+| CORE | `Opus\Core\Kernel` | `pageUrl` | `framework/Opus/Core/Kernel.php:54` |
+| CORE | `Opus\Core\Kernel` | `rootDir` | `framework/Opus/Core/Kernel.php:44` |
+| CSS | `Opus\Css\Css` | `__construct` | `framework/Opus/Css/Css.php:25` |
+| DATABASE | `Opus\Database\Database` | `__construct` | `framework/Opus/Database/Database.php:40` |
+| DATABASE | `Opus\Database\Database` | `pdo` | `framework/Opus/Database/Database.php:44` |
+| DATABASE | `Opus\Database\DatabaseConfigLoader` | `fromXml` | `framework/Opus/Database/DatabaseConfigLoader.php:51` |
+| DATABASE | `Opus\Database\DatabaseConfigLoader` | `loadXmlFile` | `framework/Opus/Database/DatabaseConfigLoader.php:36` |
+| DATABASE | `Opus\Database\DatabaseConnectionConfig` | `__construct` | `framework/Opus/Database/DatabaseConnectionConfig.php:37` |
+| DATABASE | `Opus\Database\DatabaseConnectionConfig` | `normalizedProvider` | `framework/Opus/Database/DatabaseConnectionConfig.php:52` |
+| DATABASE | `Opus\Database\DatabaseConnectionConfig` | `optionalParameter` | `framework/Opus/Database/DatabaseConnectionConfig.php:72` |
+| DATABASE | `Opus\Database\DatabaseConnectionConfig` | `parameter` | `framework/Opus/Database/DatabaseConnectionConfig.php:57` |
+| DATABASE | `Opus\Database\DatabaseConnectionsConfig` | `__construct` | `framework/Opus/Database/DatabaseConnectionsConfig.php:38` |
+| DATABASE | `Opus\Database\DatabaseConnectionsConfig` | `all` | `framework/Opus/Database/DatabaseConnectionsConfig.php:116` |
+| DATABASE | `Opus\Database\DatabaseConnectionsConfig` | `assertValidName` | `framework/Opus/Database/DatabaseConnectionsConfig.php:59` |
+| DATABASE | `Opus\Database\DatabaseConnectionsConfig` | `count` | `framework/Opus/Database/DatabaseConnectionsConfig.php:74` |
+| DATABASE | `Opus\Database\DatabaseConnectionsConfig` | `defaultName` | `framework/Opus/Database/DatabaseConnectionsConfig.php:93` |
+| DATABASE | `Opus\Database\DatabaseConnectionsConfig` | `get` | `framework/Opus/Database/DatabaseConnectionsConfig.php:84` |
+| DATABASE | `Opus\Database\DatabaseConnectionsConfig` | `has` | `framework/Opus/Database/DatabaseConnectionsConfig.php:79` |
+| DATABASE | `Opus\Database\DatabaseConnectionsConfig` | `names` | `framework/Opus/Database/DatabaseConnectionsConfig.php:69` |
+| DATABASE | `Opus\Database\DatabaseDsnFactory` | `build` | `framework/Opus/Database/DatabaseDsnFactory.php:32` |
+| DATABASE | `Opus\Database\DatabaseException` | `because` | `framework/Opus/Database/DatabaseException.php:34` |
+| DATABASE | `Opus\Database\DatabaseMultiConfigLoader` | `fromXml` | `framework/Opus/Database/DatabaseMultiConfigLoader.php:62` |
+| DATABASE | `Opus\Database\DatabaseMultiConfigLoader` | `loadXmlFile` | `framework/Opus/Database/DatabaseMultiConfigLoader.php:47` |
+| DATABASE | `Opus\Database\DatabaseProvider` | `assertSupported` | `framework/Opus/Database/DatabaseProvider.php:70` |
+| DATABASE | `Opus\Database\DatabaseProvider` | `normalize` | `framework/Opus/Database/DatabaseProvider.php:57` |
+| DATABASE | `Opus\Database\DatabaseProvider` | `pdoDriver` | `framework/Opus/Database/DatabaseProvider.php:81` |
+| DATABASE | `Opus\Database\DatabaseProvider` | `supported` | `framework/Opus/Database/DatabaseProvider.php:44` |
+| DATABASE | `Opus\Database\Mysql` | `connect` | `framework/Opus/Database/Mysql.php:32` |
+| DATABASE | `Opus\Database\Odbc` | `connect` | `framework/Opus/Database/Odbc.php:26` |
+| DATABASE | `Opus\Database\Oracle` | `connect` | `framework/Opus/Database/Oracle.php:26` |
+| DATABASE | `Opus\Database\PdoDatabaseConnector` | `__construct` | `framework/Opus/Database/PdoDatabaseConnector.php:35` |
+| DATABASE | `Opus\Database\PdoDatabaseConnector` | `connect` | `framework/Opus/Database/PdoDatabaseConnector.php:39` |
+| DATABASE | `Opus\Database\Postgresql` | `connect` | `framework/Opus/Database/Postgresql.php:26` |
+| DATABASE | `Opus\Database\SqlServer` | `connect` | `framework/Opus/Database/SqlServer.php:26` |
+| DATABASE | `Opus\Database\Sqlite` | `connect` | `framework/Opus/Database/Sqlite.php:26` |
+| DATE | `Opus\Date\Date` | `now` | `framework/Opus/Date/Date.php:26` |
+| DATE | `Opus\Date\Date` | `parse` | `framework/Opus/Date/Date.php:27` |
+| DEBUG | `Opus\Debug\Debug` | `add` | `framework/Opus/Debug/Debug.php:59` |
+| DEBUG | `Opus\Debug\Debug` | `addClasses` | `framework/Opus/Debug/Debug.php:74` |
+| DEBUG | `Opus\Debug\Debug` | `addDump` | `framework/Opus/Debug/Debug.php:86` |
+| DEBUG | `Opus\Debug\Debug` | `dump` | `framework/Opus/Debug/Debug.php:49` |
+| DEBUG | `Opus\Debug\Debug` | `get` | `framework/Opus/Debug/Debug.php:101` |
+| DEBUG | `Opus\Debug\Debug` | `setDebug` | `framework/Opus/Debug/Debug.php:54` |
+| DIRECTORY | `Opus\Directory\Directory` | `__construct` | `framework/Opus/Directory/Directory.php:25` |
+| DIRECTORY | `Opus\Directory\Directory` | `files` | `framework/Opus/Directory/Directory.php:26` |
+| DOCUMENTATION | `Opus\Documentation\MarkdownHtmlRenderer` | `render` | `framework/Opus/Documentation/MarkdownHtmlRenderer.php:45` |
+| DOCUMENTATION | `Opus\Documentation\MarkdownPage` | `__construct` | `framework/Opus/Documentation/MarkdownPage.php:40` |
+| DOCUMENTATION | `Opus\Documentation\MarkdownPageRepository` | `__construct` | `framework/Opus/Documentation/MarkdownPageRepository.php:40` |
+| DOCUMENTATION | `Opus\Documentation\MarkdownPageRepository` | `get` | `framework/Opus/Documentation/MarkdownPageRepository.php:54` |
+| EVENT | `Opus\Event\Event` | `__construct` | `framework/Opus/Event/Event.php:25` |
+| EXCEPTION | `Opus\Exception\Exception` | `because` | `framework/Opus/Exception/Exception.php:40` |
+| FILE | `Opus\File\File` | `__construct` | `framework/Opus/File/File.php:25` |
+| FILE | `Opus\File\File` | `read` | `framework/Opus/File/File.php:26` |
+| FORM | `Opus\Form\FormDefinition` | `__construct` | `framework/Opus/Form/FormDefinition.php:41` |
+| FORM | `Opus\Form\FormDefinition` | `fields` | `framework/Opus/Form/FormDefinition.php:59` |
+| FORM | `Opus\Form\FormError` | `__construct` | `framework/Opus/Form/FormError.php:32` |
+| FORM | `Opus\Form\FormException` | `because` | `framework/Opus/Form/FormException.php:34` |
+| FORM | `Opus\Form\FormField` | `__construct` | `framework/Opus/Form/FormField.php:35` |
+| FORM | `Opus\Form\FormValidationResult` | `__construct` | `framework/Opus/Form/FormValidationResult.php:35` |
+| FORM | `Opus\Form\FormValidationResult` | `isValid` | `framework/Opus/Form/FormValidationResult.php:39` |
+| FORM | `Opus\Form\FormValidator` | `validate` | `framework/Opus/Form/FormValidator.php:38` |
+| FORM | `Opus\Form\SubmittedForm` | `__construct` | `framework/Opus/Form/SubmittedForm.php:38` |
+| FORM | `Opus\Form\SubmittedForm` | `value` | `framework/Opus/Form/SubmittedForm.php:44` |
+| FSM | `Opus\Fsm\Fsm` | `demoFlow` | `framework/Opus/Fsm/Fsm.php:83` |
+| FSM | `Opus\Fsm\Fsm` | `refBookDomain` | `framework/Opus/Fsm/Fsm.php:62` |
+| FSM | `Opus\Fsm\SignalDefinition` | `__construct` | `framework/Opus/Fsm/SignalDefinition.php:93` |
+| FSM | `Opus\Fsm\SignalDefinition` | `id` | `framework/Opus/Fsm/SignalDefinition.php:121` |
+| FSM | `Opus\Fsm\SignalDefinition` | `refBookDomain` | `framework/Opus/Fsm/SignalDefinition.php:66` |
+| FSM | `Opus\Fsm\StateActionInterface` | `execute` | `framework/Opus/Fsm/StateActionInterface.php:85` |
+| FSM | `Opus\Fsm\StateDefinition` | `__construct` | `framework/Opus/Fsm/StateDefinition.php:95` |
+| FSM | `Opus\Fsm\StateDefinition` | `id` | `framework/Opus/Fsm/StateDefinition.php:124` |
+| FSM | `Opus\Fsm\StateDefinition` | `label` | `framework/Opus/Fsm/StateDefinition.php:146` |
+| FSM | `Opus\Fsm\StateDefinition` | `refBookDomain` | `framework/Opus/Fsm/StateDefinition.php:67` |
+| FSM | `Opus\Fsm\StateMachine` | `__construct` | `framework/Opus/Fsm/StateMachine.php:108` |
+| FSM | `Opus\Fsm\StateMachine` | `apply` | `framework/Opus/Fsm/StateMachine.php:218` |
+| FSM | `Opus\Fsm\StateMachine` | `currentState` | `framework/Opus/Fsm/StateMachine.php:151` |
+| FSM | `Opus\Fsm\StateMachine` | `memory` | `framework/Opus/Fsm/StateMachine.php:173` |
+| FSM | `Opus\Fsm\StateMachine` | `refBookDomain` | `framework/Opus/Fsm/StateMachine.php:74` |
+| FSM | `Opus\Fsm\StateMachineException` | `contract` | `framework/Opus/Fsm/StateMachineException.php:111` |
+| FSM | `Opus\Fsm\StateMachineException` | `refBookDomain` | `framework/Opus/Fsm/StateMachineException.php:74` |
+| FSM | `Opus\Fsm\StateMemory` | `export` | `framework/Opus/Fsm/StateMemory.php:152` |
+| FSM | `Opus\Fsm\StateMemory` | `get` | `framework/Opus/Fsm/StateMemory.php:126` |
+| FSM | `Opus\Fsm\StateMemory` | `refBookDomain` | `framework/Opus/Fsm/StateMemory.php:67` |
+| FSM | `Opus\Fsm\StateMemory` | `set` | `framework/Opus/Fsm/StateMemory.php:94` |
+| FSM | `Opus\Fsm\TransitionDefinition` | `__construct` | `framework/Opus/Fsm/TransitionDefinition.php:103` |
+| FSM | `Opus\Fsm\TransitionDefinition` | `action` | `framework/Opus/Fsm/TransitionDefinition.php:202` |
+| FSM | `Opus\Fsm\TransitionDefinition` | `fromState` | `framework/Opus/Fsm/TransitionDefinition.php:136` |
+| FSM | `Opus\Fsm\TransitionDefinition` | `key` | `framework/Opus/Fsm/TransitionDefinition.php:224` |
+| FSM | `Opus\Fsm\TransitionDefinition` | `refBookDomain` | `framework/Opus/Fsm/TransitionDefinition.php:69` |
+| FSM | `Opus\Fsm\TransitionDefinition` | `signal` | `framework/Opus/Fsm/TransitionDefinition.php:158` |
+| FSM | `Opus\Fsm\TransitionDefinition` | `toState` | `framework/Opus/Fsm/TransitionDefinition.php:180` |
+| FSM | `Opus\Fsm\TransitionResult` | `__construct` | `framework/Opus/Fsm/TransitionResult.php:92` |
+| FSM | `Opus\Fsm\TransitionResult` | `fromState` | `framework/Opus/Fsm/TransitionResult.php:116` |
+| FSM | `Opus\Fsm\TransitionResult` | `refBookDomain` | `framework/Opus/Fsm/TransitionResult.php:68` |
+| FSM | `Opus\Fsm\TransitionResult` | `signal` | `framework/Opus/Fsm/TransitionResult.php:138` |
+| FSM | `Opus\Fsm\TransitionResult` | `toState` | `framework/Opus/Fsm/TransitionResult.php:160` |
+| FTP | `Opus\Ftp\Ftp` | `__construct` | `framework/Opus/Ftp/Ftp.php:38` |
+| FTP | `Opus\Ftp\Ftp` | `host` | `framework/Opus/Ftp/Ftp.php:45` |
+| HELPER | `Opus\Helper\Helper` | `escape` | `framework/Opus/Helper/Helper.php:38` |
+| HELPER | `Opus\Helper\Helper` | `slug` | `framework/Opus/Helper/Helper.php:43` |
+| HELPER | `Opus\Helper\HtmlHelper` | `attributes` | `framework/Opus/Helper/HtmlHelper.php:43` |
+| HELPER | `Opus\Helper\HtmlHelper` | `escape` | `framework/Opus/Helper/HtmlHelper.php:35` |
+| HELPER | `Opus\Helper\TextHelper` | `slug` | `framework/Opus/Helper/TextHelper.php:35` |
+| HTTP | `Opus\Http\Request` | `__construct` | `framework/Opus/Http/Request.php:72` |
+| HTTP | `Opus\Http\Request` | `fromGlobals` | `framework/Opus/Http/Request.php:119` |
+| HTTP | `Opus\Http\Request` | `refBookDomain` | `framework/Opus/Http/Request.php:97` |
+| HTTP | `Opus\Http\Response` | `__construct` | `framework/Opus/Http/Response.php:75` |
+| HTTP | `Opus\Http\Response` | `html` | `framework/Opus/Http/Response.php:97` |
+| HTTP | `Opus\Http\Response` | `json` | `framework/Opus/Http/Response.php:115` |
+| HTTP | `Opus\Http\Response` | `send` | `framework/Opus/Http/Response.php:136` |
+| I18N | `Opus\I18n\I18n` | `__construct` | `framework/Opus/I18n/I18n.php:54` |
+| I18N | `Opus\I18n\I18n` | `dictionary` | `framework/Opus/I18n/I18n.php:115` |
+| I18N | `Opus\I18n\I18n` | `getAvalaibleLanguages` | `framework/Opus/I18n/I18n.php:74` |
+| I18N | `Opus\I18n\I18n` | `getDictionary` | `framework/Opus/I18n/I18n.php:121` |
+| I18N | `Opus\I18n\I18n` | `getInstance` | `framework/Opus/I18n/I18n.php:62` |
+| I18N | `Opus\I18n\I18n` | `loadDictionary` | `framework/Opus/I18n/I18n.php:126` |
+| I18N | `Opus\I18n\I18n` | `plural` | `framework/Opus/I18n/I18n.php:109` |
+| I18N | `Opus\I18n\I18n` | `t` | `framework/Opus/I18n/I18n.php:101` |
+| I18N | `Opus\I18n\I18n` | `translate` | `framework/Opus/I18n/I18n.php:93` |
+| I18N | `Opus\I18n\JsonTranslationCatalogLoader` | `load` | `framework/Opus/I18n/JsonTranslationCatalogLoader.php:47` |
+| I18N | `Opus\I18n\LocaleCode` | `__construct` | `framework/Opus/I18n/LocaleCode.php:40` |
+| I18N | `Opus\I18n\LocaleCode` | `toString` | `framework/Opus/I18n/LocaleCode.php:56` |
+| I18N | `Opus\I18n\PluralRuleInterface` | `select` | `framework/Opus/I18n/PluralRuleInterface.php:45` |
+| I18N | `Opus\I18n\Plural\EnglishPluralRule` | `select` | `framework/Opus/I18n/Plural/EnglishPluralRule.php:37` |
+| I18N | `Opus\I18n\Plural\FrenchPluralRule` | `select` | `framework/Opus/I18n/Plural/FrenchPluralRule.php:37` |
+| I18N | `Opus\I18n\Plural\RussianPluralRule` | `select` | `framework/Opus/I18n/Plural/RussianPluralRule.php:40` |
+| I18N | `Opus\I18n\Plural\SpanishPluralRule` | `select` | `framework/Opus/I18n/Plural/SpanishPluralRule.php:37` |
+| I18N | `Opus\I18n\TranslationCatalog` | `__construct` | `framework/Opus/I18n/TranslationCatalog.php:42` |
+| I18N | `Opus\I18n\TranslationCatalog` | `message` | `framework/Opus/I18n/TranslationCatalog.php:49` |
+| I18N | `Opus\I18n\TranslationCatalog` | `messages` | `framework/Opus/I18n/TranslationCatalog.php:78` |
+| I18N | `Opus\I18n\TranslationCatalog` | `plural` | `framework/Opus/I18n/TranslationCatalog.php:58` |
+| I18N | `Opus\I18n\TranslationCatalog` | `plurals` | `framework/Opus/I18n/TranslationCatalog.php:84` |
+| I18N | `Opus\I18n\TranslationCatalog` | `toArray` | `framework/Opus/I18n/TranslationCatalog.php:90` |
+| I18N | `Opus\I18n\TranslationException` | `because` | `framework/Opus/I18n/TranslationException.php:48` |
+| I18N | `Opus\I18n\Translator` | `__construct` | `framework/Opus/I18n/Translator.php:38` |
+| I18N | `Opus\I18n\Translator` | `plural` | `framework/Opus/I18n/Translator.php:66` |
+| I18N | `Opus\I18n\Translator` | `translate` | `framework/Opus/I18n/Translator.php:52` |
+| JAVASCRIPT | `Opus\Javascript\Javascript` | `__construct` | `framework/Opus/Javascript/Javascript.php:25` |
+| JSON | `Opus\Json\Json` | `decode` | `framework/Opus/Json/Json.php:57` |
+| JSON | `Opus\Json\Json` | `encode` | `framework/Opus/Json/Json.php:41` |
+| JSON | `Opus\Json\Json` | `pretty` | `framework/Opus/Json/Json.php:49` |
+| JSON | `Opus\Json\Json` | `readFile` | `framework/Opus/Json/Json.php:71` |
+| JSON | `Opus\Json\Json` | `writeFile` | `framework/Opus/Json/Json.php:83` |
+| LANGUAGE | `Opus\Language\Language` | `__construct` | `framework/Opus/Language/Language.php:25` |
+| LINK | `Opus\Link\Link` | `__construct` | `framework/Opus/Link/Link.php:45` |
+| LINK | `Opus\Link\Link` | `__toString` | `framework/Opus/Link/Link.php:56` |
+| LINK | `Opus\Link\Link` | `changeClass` | `framework/Opus/Link/Link.php:79` |
+| LINK | `Opus\Link\Link` | `changeId` | `framework/Opus/Link/Link.php:86` |
+| LINK | `Opus\Link\Link` | `getBlock` | `framework/Opus/Link/Link.php:93` |
+| LINK | `Opus\Link\Link` | `getMode` | `framework/Opus/Link/Link.php:98` |
+| LOG | `Opus\Log\Log` | `add` | `framework/Opus/Log/Log.php:26` |
+| LOG | `Opus\Log\Log` | `entries` | `framework/Opus/Log/Log.php:61` |
+| LOG | `Opus\Log\Log` | `error` | `framework/Opus/Log/Log.php:56` |
+| LOG | `Opus\Log\Log` | `info` | `framework/Opus/Log/Log.php:46` |
+| LOG | `Opus\Log\Log` | `messages` | `framework/Opus/Log/Log.php:66` |
+| LOG | `Opus\Log\Log` | `records` | `framework/Opus/Log/Log.php:71` |
+| LOG | `Opus\Log\Log` | `warning` | `framework/Opus/Log/Log.php:51` |
+| LSTSA | `Opus\Lstsa\LstsaArchivePhase` | `execute` | `framework/Opus/Lstsa/LstsaArchivePhase.php:32` |
+| LSTSA | `Opus\Lstsa\LstsaArchiveWriter` | `writeReport` | `framework/Opus/Lstsa/LstsaArchiveWriter.php:32` |
+| LSTSA | `Opus\Lstsa\LstsaBatchExecutor` | `__construct` | `framework/Opus/Lstsa/LstsaBatchExecutor.php:26` |
+| LSTSA | `Opus\Lstsa\LstsaBatchExecutor` | `execute` | `framework/Opus/Lstsa/LstsaBatchExecutor.php:31` |
+| LSTSA | `Opus\Lstsa\LstsaConfigLoader` | `fromXml` | `framework/Opus/Lstsa/LstsaConfigLoader.php:46` |
+| LSTSA | `Opus\Lstsa\LstsaConfigLoader` | `loadXmlFile` | `framework/Opus/Lstsa/LstsaConfigLoader.php:31` |
+| LSTSA | `Opus\Lstsa\LstsaDatabaseStagingExecutor` | `__construct` | `framework/Opus/Lstsa/LstsaDatabaseStagingExecutor.php:43` |
+| LSTSA | `Opus\Lstsa\LstsaDatabaseStagingExecutor` | `execute` | `framework/Opus/Lstsa/LstsaDatabaseStagingExecutor.php:56` |
+| LSTSA | `Opus\Lstsa\LstsaDefinition` | `__construct` | `framework/Opus/Lstsa/LstsaDefinition.php:36` |
+| LSTSA | `Opus\Lstsa\LstsaDefinition` | `archiveConnection` | `framework/Opus/Lstsa/LstsaDefinition.php:84` |
+| LSTSA | `Opus\Lstsa\LstsaDefinition` | `archiveMode` | `framework/Opus/Lstsa/LstsaDefinition.php:82` |
+| LSTSA | `Opus\Lstsa\LstsaDefinition` | `archivePath` | `framework/Opus/Lstsa/LstsaDefinition.php:83` |
+| LSTSA | `Opus\Lstsa\LstsaDefinition` | `archiveTable` | `framework/Opus/Lstsa/LstsaDefinition.php:85` |
+| LSTSA | `Opus\Lstsa\LstsaDefinition` | `assertConnections` | `framework/Opus/Lstsa/LstsaDefinition.php:96` |
+| LSTSA | `Opus\Lstsa\LstsaDefinition` | `id` | `framework/Opus/Lstsa/LstsaDefinition.php:75` |
+| LSTSA | `Opus\Lstsa\LstsaDefinition` | `loadConnection` | `framework/Opus/Lstsa/LstsaDefinition.php:77` |
+| LSTSA | `Opus\Lstsa\LstsaDefinition` | `loadFields` | `framework/Opus/Lstsa/LstsaDefinition.php:88` |
+| LSTSA | `Opus\Lstsa\LstsaDefinition` | `loadTable` | `framework/Opus/Lstsa/LstsaDefinition.php:78` |
+| LSTSA | `Opus\Lstsa\LstsaDefinition` | `mappings` | `framework/Opus/Lstsa/LstsaDefinition.php:91` |
+| LSTSA | `Opus\Lstsa\LstsaDefinition` | `runtime` | `framework/Opus/Lstsa/LstsaDefinition.php:94` |
+| LSTSA | `Opus\Lstsa\LstsaDefinition` | `storeConnection` | `framework/Opus/Lstsa/LstsaDefinition.php:79` |
+| LSTSA | `Opus\Lstsa\LstsaDefinition` | `storeMode` | `framework/Opus/Lstsa/LstsaDefinition.php:81` |
+| LSTSA | `Opus\Lstsa\LstsaDefinition` | `storeTable` | `framework/Opus/Lstsa/LstsaDefinition.php:80` |
+| LSTSA | `Opus\Lstsa\LstsaDefinition` | `version` | `framework/Opus/Lstsa/LstsaDefinition.php:76` |
+| LSTSA | `Opus\Lstsa\LstsaException` | `because` | `framework/Opus/Lstsa/LstsaException.php:31` |
+| LSTSA | `Opus\Lstsa\LstsaFieldConstraint` | `__construct` | `framework/Opus/Lstsa/LstsaFieldConstraint.php:38` |
+| LSTSA | `Opus\Lstsa\LstsaFieldConstraint` | `fromXml` | `framework/Opus/Lstsa/LstsaFieldConstraint.php:74` |
+| LSTSA | `Opus\Lstsa\LstsaFieldConstraint` | `supportedTypes` | `framework/Opus/Lstsa/LstsaFieldConstraint.php:69` |
+| LSTSA | `Opus\Lstsa\LstsaFieldConstraint` | `validate` | `framework/Opus/Lstsa/LstsaFieldConstraint.php:103` |
+| LSTSA | `Opus\Lstsa\LstsaFieldMapping` | `__construct` | `framework/Opus/Lstsa/LstsaFieldMapping.php:34` |
+| LSTSA | `Opus\Lstsa\LstsaFieldMapping` | `fromXml` | `framework/Opus/Lstsa/LstsaFieldMapping.php:55` |
+| LSTSA | `Opus\Lstsa\LstsaFsmController` | `apply` | `framework/Opus/Lstsa/LstsaFsmController.php:46` |
+| LSTSA | `Opus\Lstsa\LstsaFsmState` | `all` | `framework/Opus/Lstsa/LstsaFsmState.php:49` |
+| LSTSA | `Opus\Lstsa\LstsaIdentifier` | `quote` | `framework/Opus/Lstsa/LstsaIdentifier.php:33` |
+| LSTSA | `Opus\Lstsa\LstsaIdentifier` | `stageTable` | `framework/Opus/Lstsa/LstsaIdentifier.php:42` |
+| LSTSA | `Opus\Lstsa\LstsaLoadPhase` | `execute` | `framework/Opus/Lstsa/LstsaLoadPhase.php:33` |
+| LSTSA | `Opus\Lstsa\LstsaPhaseInterface` | `execute` | `framework/Opus/Lstsa/LstsaPhaseInterface.php:37` |
+| LSTSA | `Opus\Lstsa\LstsaPipelineContext` | `__construct` | `framework/Opus/Lstsa/LstsaPipelineContext.php:73` |
+| LSTSA | `Opus\Lstsa\LstsaPipelineContext` | `reject` | `framework/Opus/Lstsa/LstsaPipelineContext.php:87` |
+| LSTSA | `Opus\Lstsa\LstsaReport` | `__construct` | `framework/Opus/Lstsa/LstsaReport.php:45` |
+| LSTSA | `Opus\Lstsa\LstsaReport` | `addCounter` | `framework/Opus/Lstsa/LstsaReport.php:70` |
+| LSTSA | `Opus\Lstsa\LstsaReport` | `addMessage` | `framework/Opus/Lstsa/LstsaReport.php:83` |
+| LSTSA | `Opus\Lstsa\LstsaReport` | `create` | `framework/Opus/Lstsa/LstsaReport.php:59` |
+| LSTSA | `Opus\Lstsa\LstsaReport` | `finish` | `framework/Opus/Lstsa/LstsaReport.php:91` |
+| LSTSA | `Opus\Lstsa\LstsaReport` | `runId` | `framework/Opus/Lstsa/LstsaReport.php:102` |
+| LSTSA | `Opus\Lstsa\LstsaReport` | `toArray` | `framework/Opus/Lstsa/LstsaReport.php:108` |
+| LSTSA | `Opus\Lstsa\LstsaReport` | `toJson` | `framework/Opus/Lstsa/LstsaReport.php:123` |
+| LSTSA | `Opus\Lstsa\LstsaReport` | `toMarkdown` | `framework/Opus/Lstsa/LstsaReport.php:133` |
+| LSTSA | `Opus\Lstsa\LstsaReportCatalog` | `__construct` | `framework/Opus/Lstsa/LstsaReportCatalog.php:37` |
+| LSTSA | `Opus\Lstsa\LstsaReportCatalog` | `build` | `framework/Opus/Lstsa/LstsaReportCatalog.php:52` |
+| LSTSA | `Opus\Lstsa\LstsaReportCatalog` | `writeIndex` | `framework/Opus/Lstsa/LstsaReportCatalog.php:97` |
+| LSTSA | `Opus\Lstsa\LstsaReportPhase` | `execute` | `framework/Opus/Lstsa/LstsaReportPhase.php:33` |
+| LSTSA | `Opus\Lstsa\LstsaRunStatus` | `all` | `framework/Opus/Lstsa/LstsaRunStatus.php:33` |
+| LSTSA | `Opus\Lstsa\LstsaRunStatus` | `assertValid` | `framework/Opus/Lstsa/LstsaRunStatus.php:49` |
+| LSTSA | `Opus\Lstsa\LstsaRunStatus` | `isFinal` | `framework/Opus/Lstsa/LstsaRunStatus.php:56` |
+| LSTSA | `Opus\Lstsa\LstsaRunStore` | `__construct` | `framework/Opus/Lstsa/LstsaRunStore.php:25` |
+| LSTSA | `Opus\Lstsa\LstsaRunStore` | `acquirePendingRun` | `framework/Opus/Lstsa/LstsaRunStore.php:85` |
+| LSTSA | `Opus\Lstsa\LstsaRunStore` | `createRun` | `framework/Opus/Lstsa/LstsaRunStore.php:37` |
+| LSTSA | `Opus\Lstsa\LstsaRunStore` | `finish` | `framework/Opus/Lstsa/LstsaRunStore.php:231` |
+| LSTSA | `Opus\Lstsa\LstsaRunStore` | `heartbeat` | `framework/Opus/Lstsa/LstsaRunStore.php:124` |
+| LSTSA | `Opus\Lstsa\LstsaRunStore` | `listRunsByStatus` | `framework/Opus/Lstsa/LstsaRunStore.php:268` |
+| LSTSA | `Opus\Lstsa\LstsaRunStore` | `projectRoot` | `framework/Opus/Lstsa/LstsaRunStore.php:390` |
+| LSTSA | `Opus\Lstsa\LstsaRunStore` | `readRun` | `framework/Opus/Lstsa/LstsaRunStore.php:289` |
+| LSTSA | `Opus\Lstsa\LstsaRunStore` | `writeArchivePayload` | `framework/Opus/Lstsa/LstsaRunStore.php:173` |
+| LSTSA | `Opus\Lstsa\LstsaRunStore` | `writeCheckpoint` | `framework/Opus/Lstsa/LstsaRunStore.php:149` |
+| LSTSA | `Opus\Lstsa\LstsaRunStore` | `writeEventPayload` | `framework/Opus/Lstsa/LstsaRunStore.php:212` |
+| LSTSA | `Opus\Lstsa\LstsaRunStore` | `writeQuarantinePayload` | `framework/Opus/Lstsa/LstsaRunStore.php:193` |
+| LSTSA | `Opus\Lstsa\LstsaRunStore` | `writeReport` | `framework/Opus/Lstsa/LstsaRunStore.php:322` |
+| LSTSA | `Opus\Lstsa\LstsaRunStore` | `writeRun` | `framework/Opus/Lstsa/LstsaRunStore.php:306` |
+| LSTSA | `Opus\Lstsa\LstsaRunner` | `__construct` | `framework/Opus/Lstsa/LstsaRunner.php:24` |
+| LSTSA | `Opus\Lstsa\LstsaRunner` | `runOnce` | `framework/Opus/Lstsa/LstsaRunner.php:29` |
+| LSTSA | `Opus\Lstsa\LstsaScheduler` | `__construct` | `framework/Opus/Lstsa/LstsaScheduler.php:24` |
+| LSTSA | `Opus\Lstsa\LstsaScheduler` | `enqueue` | `framework/Opus/Lstsa/LstsaScheduler.php:29` |
+| LSTSA | `Opus\Lstsa\LstsaScheduler` | `enqueueDatabaseStagingSmokeRun` | `framework/Opus/Lstsa/LstsaScheduler.php:97` |
+| LSTSA | `Opus\Lstsa\LstsaScheduler` | `enqueueMemoryBatchSmokeRun` | `framework/Opus/Lstsa/LstsaScheduler.php:58` |
+| LSTSA | `Opus\Lstsa\LstsaScheduler` | `enqueueSmokeRun` | `framework/Opus/Lstsa/LstsaScheduler.php:36` |
+| LSTSA | `Opus\Lstsa\LstsaSecureInputPhase` | `execute` | `framework/Opus/Lstsa/LstsaSecureInputPhase.php:32` |
+| LSTSA | `Opus\Lstsa\LstsaSecureOutputPhase` | `execute` | `framework/Opus/Lstsa/LstsaSecureOutputPhase.php:32` |
+| LSTSA | `Opus\Lstsa\LstsaStorePhase` | `execute` | `framework/Opus/Lstsa/LstsaStorePhase.php:37` |
+| LSTSA | `Opus\Lstsa\LstsaTransformPhase` | `execute` | `framework/Opus/Lstsa/LstsaTransformPhase.php:32` |
+| MAIL | `Opus\Mail\Mail` | `__construct` | `framework/Opus/Mail/Mail.php:38` |
+| MAIL | `Opus\Mail\PhpMailer` | `send` | `framework/Opus/Mail/PhpMailer.php:38` |
+| MENU | `Opus\Menu\Menu` | `add` | `framework/Opus/Menu/Menu.php:41` |
+| MENU | `Opus\Menu\Menu` | `items` | `framework/Opus/Menu/Menu.php:53` |
+| MENU | `Opus\Menu\MenuException` | `because` | `framework/Opus/Menu/MenuException.php:34` |
+| MENU | `Opus\Menu\MenuItem` | `__construct` | `framework/Opus/Menu/MenuItem.php:38` |
+| MENU | `Opus\Menu\MenuTree` | `__construct` | `framework/Opus/Menu/MenuTree.php:38` |
+| MENU | `Opus\Menu\MenuTree` | `toArray` | `framework/Opus/Menu/MenuTree.php:48` |
+| MODEL | `Opus\Model\Model` | `__construct` | `framework/Opus/Model/Model.php:44` |
+| MODEL | `Opus\Model\Model` | `all` | `framework/Opus/Model/Model.php:70` |
+| MODEL | `Opus\Model\Model` | `get` | `framework/Opus/Model/Model.php:49` |
+| MODEL | `Opus\Model\Model` | `set` | `framework/Opus/Model/Model.php:58` |
+| MODULE | `Opus\Module\Module` | `__construct` | `framework/Opus/Module/Module.php:47` |
+| MODULE | `Opus\Module\Module` | `isEnabled` | `framework/Opus/Module/Module.php:62` |
+| MODULE | `Opus\Module\Module` | `option` | `framework/Opus/Module/Module.php:67` |
+| MODULE | `Opus\Module\ModuleDefinition` | `__construct` | `framework/Opus/Module/ModuleDefinition.php:37` |
+| MODULE | `Opus\Module\ModuleRegistry` | `__construct` | `framework/Opus/Module/ModuleRegistry.php:46` |
+| MODULE | `Opus\Module\ModuleRegistry` | `getEnabled` | `framework/Opus/Module/ModuleRegistry.php:53` |
+| PACKAGE | `Opus\Package\Package` | `__construct` | `framework/Opus/Package/Package.php:40` |
+| PACKAGE | `Opus\Package\Package` | `content` | `framework/Opus/Package/Package.php:77` |
+| PACKAGE | `Opus\Package\Package` | `hasLanguage` | `framework/Opus/Package/Package.php:66` |
+| PACKAGE | `Opus\Package\Package` | `id` | `framework/Opus/Package/Package.php:56` |
+| PACKAGE | `Opus\Package\Package` | `rootDir` | `framework/Opus/Package/Package.php:61` |
+| PACKAGE | `Opus\Package\Package` | `routes` | `framework/Opus/Package/Package.php:72` |
+| PACKAGE | `Opus\Package\PackageRepository` | `__construct` | `framework/Opus/Package/PackageRepository.php:39` |
+| PACKAGE | `Opus\Package\PackageRepository` | `all` | `framework/Opus/Package/PackageRepository.php:47` |
+| PACKAGE | `Opus\Package\PackageRepository` | `get` | `framework/Opus/Package/PackageRepository.php:52` |
+| PACKAGE | `Opus\Package\PackageRepository` | `resolve` | `framework/Opus/Package/PackageRepository.php:61` |
+| REFBOOK | `Opus\RefBook\Api\LocalizedRefBookDocumentationProvider` | `__construct` | `framework/Opus/RefBook/Api/LocalizedRefBookDocumentationProvider.php:36` |
+| REFBOOK | `Opus\RefBook\Api\LocalizedRefBookDocumentationProvider` | `localizeSnapshot` | `framework/Opus/RefBook/Api/LocalizedRefBookDocumentationProvider.php:44` |
+| REFBOOK | `Opus\RefBook\Api\LocalizedRefBookDocumentationProvider` | `localizeSymbol` | `framework/Opus/RefBook/Api/LocalizedRefBookDocumentationProvider.php:63` |
+| REFBOOK | `Opus\RefBook\Api\RefBookDocumentationAssetRepository` | `__construct` | `framework/Opus/RefBook/Api/RefBookDocumentationAssetRepository.php:61` |
+| REFBOOK | `Opus\RefBook\Api\RefBookDocumentationAssetRepository` | `diagram` | `framework/Opus/RefBook/Api/RefBookDocumentationAssetRepository.php:117` |
+| REFBOOK | `Opus\RefBook\Api\RefBookDocumentationAssetRepository` | `example` | `framework/Opus/RefBook/Api/RefBookDocumentationAssetRepository.php:100` |
+| REFBOOK | `Opus\RefBook\Api\RefBookDocumentationAssetRepository` | `index` | `framework/Opus/RefBook/Api/RefBookDocumentationAssetRepository.php:80` |
+| REFBOOK | `Opus\RefBook\Api\RefBookDocumentationAssetRepository` | `refBookDomain` | `framework/Opus/RefBook/Api/RefBookDocumentationAssetRepository.php:57` |
+| REFBOOK | `Opus\RefBook\Api\RefBookDocumentationI18nRestRouter` | `__construct` | `framework/Opus/RefBook/Api/RefBookDocumentationI18nRestRouter.php:32` |
+| REFBOOK | `Opus\RefBook\Api\RefBookDocumentationI18nRestRouter` | `handle` | `framework/Opus/RefBook/Api/RefBookDocumentationI18nRestRouter.php:44` |
+| REFBOOK | `Opus\RefBook\Api\RefBookRestApi` | `__construct` | `framework/Opus/RefBook/Api/RefBookRestApi.php:59` |
+| REFBOOK | `Opus\RefBook\Api\RefBookRestApi` | `handle` | `framework/Opus/RefBook/Api/RefBookRestApi.php:75` |
+| REFBOOK | `Opus\RefBook\Api\RefBookRestApi` | `refBookDomain` | `framework/Opus/RefBook/Api/RefBookRestApi.php:55` |
+| REFBOOK | `Opus\RefBook\Api\RefBookRestSnapshotProvider` | `__construct` | `framework/Opus/RefBook/Api/RefBookRestSnapshotProvider.php:61` |
+| REFBOOK | `Opus\RefBook\Api\RefBookRestSnapshotProvider` | `endpoints` | `framework/Opus/RefBook/Api/RefBookRestSnapshotProvider.php:119` |
+| REFBOOK | `Opus\RefBook\Api\RefBookRestSnapshotProvider` | `refBookDomain` | `framework/Opus/RefBook/Api/RefBookRestSnapshotProvider.php:56` |
+| REFBOOK | `Opus\RefBook\Api\RefBookRestSnapshotProvider` | `snapshot` | `framework/Opus/RefBook/Api/RefBookRestSnapshotProvider.php:80` |
+| REFBOOK | `Opus\RefBook\Attribute\OpusRefBookClass` | `__construct` | `framework/Opus/RefBook/Attribute/OpusRefBookClass.php:52` |
+| REFBOOK | `Opus\RefBook\Attribute\OpusRefBookClass` | `toArray` | `framework/Opus/RefBook/Attribute/OpusRefBookClass.php:77` |
+| REFBOOK | `Opus\RefBook\Attribute\OpusRefBookMethod` | `__construct` | `framework/Opus/RefBook/Attribute/OpusRefBookMethod.php:66` |
+| REFBOOK | `Opus\RefBook\Attribute\OpusRefBookMethod` | `toArray` | `framework/Opus/RefBook/Attribute/OpusRefBookMethod.php:97` |
+| REFBOOK | `Opus\RefBook\Contract\RefBookInspectableInterface` | `refBookDomain` | `framework/Opus/RefBook/Contract/RefBookInspectableInterface.php:26` |
+| REFBOOK | `Opus\RefBook\I18n\RefBookDocumentationI18nCatalog` | `all` | `framework/Opus/RefBook/I18n/RefBookDocumentationI18nCatalog.php:5547` |
+| REFBOOK | `Opus\RefBook\I18n\RefBookDocumentationI18nCatalog` | `translateSourceText` | `framework/Opus/RefBook/I18n/RefBookDocumentationI18nCatalog.php:5527` |
+| REFBOOK | `Opus\RefBook\I18n\RefBookDocumentationLocale` | `assertSupported` | `framework/Opus/RefBook/I18n/RefBookDocumentationLocale.php:30` |
+| REFBOOK | `Opus\RefBook\I18n\RefBookDocumentationLocale` | `supported` | `framework/Opus/RefBook/I18n/RefBookDocumentationLocale.php:25` |
+| REFBOOK | `Opus\RefBook\I18n\RefBookDocumentationTranslationMissingException` | `forSourceText` | `framework/Opus/RefBook/I18n/RefBookDocumentationTranslationMissingException.php:22` |
+| REFBOOK | `Opus\RefBook\Model\RefBookClassEntry` | `__construct` | `framework/Opus/RefBook/Model/RefBookClassEntry.php:23` |
+| REFBOOK | `Opus\RefBook\Model\RefBookClassEntry` | `hasMetadata` | `framework/Opus/RefBook/Model/RefBookClassEntry.php:70` |
+| REFBOOK | `Opus\RefBook\Model\RefBookClassEntry` | `methods` | `framework/Opus/RefBook/Model/RefBookClassEntry.php:80` |
+| REFBOOK | `Opus\RefBook\Model\RefBookClassEntry` | `name` | `framework/Opus/RefBook/Model/RefBookClassEntry.php:62` |
+| REFBOOK | `Opus\RefBook\Model\RefBookClassEntry` | `toArray` | `framework/Opus/RefBook/Model/RefBookClassEntry.php:90` |
+| REFBOOK | `Opus\RefBook\Model\RefBookMethodEntry` | `__construct` | `framework/Opus/RefBook/Model/RefBookMethodEntry.php:22` |
+| REFBOOK | `Opus\RefBook\Model\RefBookMethodEntry` | `hasMetadata` | `framework/Opus/RefBook/Model/RefBookMethodEntry.php:66` |
+| REFBOOK | `Opus\RefBook\Model\RefBookMethodEntry` | `name` | `framework/Opus/RefBook/Model/RefBookMethodEntry.php:58` |
+| REFBOOK | `Opus\RefBook\Model\RefBookMethodEntry` | `toArray` | `framework/Opus/RefBook/Model/RefBookMethodEntry.php:76` |
+| REFBOOK | `Opus\RefBook\Model\RefBookScanResult` | `__construct` | `framework/Opus/RefBook/Model/RefBookScanResult.php:23` |
+| REFBOOK | `Opus\RefBook\Model\RefBookScanResult` | `classes` | `framework/Opus/RefBook/Model/RefBookScanResult.php:34` |
+| REFBOOK | `Opus\RefBook\Model\RefBookScanResult` | `loadErrors` | `framework/Opus/RefBook/Model/RefBookScanResult.php:44` |
+| REFBOOK | `Opus\RefBook\Model\RefBookScanResult` | `summary` | `framework/Opus/RefBook/Model/RefBookScanResult.php:54` |
+| REFBOOK | `Opus\RefBook\Model\RefBookScanResult` | `toArray` | `framework/Opus/RefBook/Model/RefBookScanResult.php:85` |
+| REFBOOK | `Opus\RefBook\RefBookContractValidator` | `validate` | `framework/Opus/RefBook/RefBookContractValidator.php:25` |
+| REFBOOK | `Opus\RefBook\RefBookReflectionScanner` | `scan` | `framework/Opus/RefBook/RefBookReflectionScanner.php:49` |
+| REFBOOK | `Opus\RefBook\RefBookSnapshotBuilder` | `build` | `framework/Opus/RefBook/RefBookSnapshotBuilder.php:28` |
+| RENDERER | `Opus\Renderer\HtmlRenderer` | `__construct` | `framework/Opus/Renderer/HtmlRenderer.php:41` |
+| RENDERER | `Opus\Renderer\HtmlRenderer` | `render` | `framework/Opus/Renderer/HtmlRenderer.php:45` |
+| RENDERER | `Opus\Renderer\JsonRenderer` | `render` | `framework/Opus/Renderer/JsonRenderer.php:44` |
+| RENDERER | `Opus\Renderer\RenderException` | `because` | `framework/Opus/Renderer/RenderException.php:37` |
+| RENDERER | `Opus\Renderer\RendererInterface` | `render` | `framework/Opus/Renderer/RendererInterface.php:40` |
+| RENDERER | `Opus\Renderer\ViewModel` | `__construct` | `framework/Opus/Renderer/ViewModel.php:46` |
+| REQUEST | `Opus\Request\Request` | `__construct` | `framework/Opus/Request/Request.php:21` |
+| REQUEST | `Opus\Request\Request` | `toHttpRequest` | `framework/Opus/Request/Request.php:22` |
+| RESPONSE | `Opus\Response\Response` | `__construct` | `framework/Opus/Response/Response.php:21` |
+| RESPONSE | `Opus\Response\Response` | `toHttpResponse` | `framework/Opus/Response/Response.php:22` |
+| RESPONSE | `Opus\Response\ResponseFacade` | `html` | `framework/Opus/Response/ResponseFacade.php:37` |
+| RESPONSE | `Opus\Response\ResponseFacade` | `json` | `framework/Opus/Response/ResponseFacade.php:43` |
+| REST | `Opus\Rest\Rest` | `json` | `framework/Opus/Rest/Rest.php:43` |
+| ROUTER | `Opus\Router\Route` | `__construct` | `framework/Opus/Router/Route.php:20` |
+| ROUTER | `Opus\Router\Router` | `__construct` | `framework/Opus/Router/Router.php:47` |
+| ROUTER | `Opus\Router\Router` | `add` | `framework/Opus/Router/Router.php:54` |
+| ROUTER | `Opus\Router\Router` | `all` | `framework/Opus/Router/Router.php:99` |
+| ROUTER | `Opus\Router\Router` | `byName` | `framework/Opus/Router/Router.php:77` |
+| ROUTER | `Opus\Router\Router` | `hasName` | `framework/Opus/Router/Router.php:91` |
+| ROUTER | `Opus\Router\Router` | `hasPath` | `framework/Opus/Router/Router.php:86` |
+| ROUTING | `Opus\Routing\AttributeRouteProvider` | `__construct` | `framework/Opus/Routing/AttributeRouteProvider.php:88` |
+| ROUTING | `Opus\Routing\AttributeRouteProvider` | `refBookDomain` | `framework/Opus/Routing/AttributeRouteProvider.php:71` |
+| ROUTING | `Opus\Routing\AttributeRouteProvider` | `routes` | `framework/Opus/Routing/AttributeRouteProvider.php:105` |
+| ROUTING | `Opus\Routing\ClassIndex` | `__construct` | `framework/Opus/Routing/ClassIndex.php:93` |
+| ROUTING | `Opus\Routing\ClassIndex` | `classes` | `framework/Opus/Routing/ClassIndex.php:160` |
+| ROUTING | `Opus\Routing\ClassIndex` | `classesInNamespace` | `framework/Opus/Routing/ClassIndex.php:195` |
+| ROUTING | `Opus\Routing\ClassIndex` | `fromComposerClassMap` | `framework/Opus/Routing/ClassIndex.php:142` |
+| ROUTING | `Opus\Routing\ClassIndex` | `pathForClass` | `framework/Opus/Routing/ClassIndex.php:177` |
+| ROUTING | `Opus\Routing\ClassIndex` | `refBookDomain` | `framework/Opus/Routing/ClassIndex.php:73` |
+| ROUTING | `Opus\Routing\Route` | `__construct` | `framework/Opus/Routing/Route.php:96` |
+| ROUTING | `Opus\Routing\Route` | `normalizedMethods` | `framework/Opus/Routing/Route.php:143` |
+| ROUTING | `Opus\Routing\Route` | `refBookDomain` | `framework/Opus/Routing/Route.php:76` |
+| ROUTING | `Opus\Routing\RouteCompilerException` | `because` | `framework/Opus/Routing/RouteCompilerException.php:86` |
+| ROUTING | `Opus\Routing\RouteCompilerException` | `refBookDomain` | `framework/Opus/Routing/RouteCompilerException.php:69` |
+| ROUTING | `Opus\Routing\RouteDefinition` | `__construct` | `framework/Opus/Routing/RouteDefinition.php:79` |
+| ROUTING | `Opus\Routing\RouteDefinition` | `normalizedMethods` | `framework/Opus/Routing/RouteDefinition.php:149` |
+| ROUTING | `Opus\Routing\RouteDefinition` | `refBookDomain` | `framework/Opus/Routing/RouteDefinition.php:131` |
+| ROUTING | `Opus\Routing\RouteDefinition` | `toManifestRow` | `framework/Opus/Routing/RouteDefinition.php:173` |
+| ROUTING | `Opus\Routing\RouteManifestCompiler` | `compile` | `framework/Opus/Routing/RouteManifestCompiler.php:90` |
+| ROUTING | `Opus\Routing\RouteManifestCompiler` | `loadPhpManifest` | `framework/Opus/Routing/RouteManifestCompiler.php:184` |
+| ROUTING | `Opus\Routing\RouteManifestCompiler` | `refBookDomain` | `framework/Opus/Routing/RouteManifestCompiler.php:69` |
+| ROUTING | `Opus\Routing\RouteManifestCompiler` | `writePhpManifest` | `framework/Opus/Routing/RouteManifestCompiler.php:152` |
+| ROUTING | `Opus\Routing\RouteMatch` | `__construct` | `framework/Opus/Routing/RouteMatch.php:84` |
+| ROUTING | `Opus\Routing\RouteMatch` | `refBookDomain` | `framework/Opus/Routing/RouteMatch.php:106` |
+| ROUTING | `Opus\Routing\Router` | `__construct` | `framework/Opus/Routing/Router.php:83` |
+| ROUTING | `Opus\Routing\Router` | `fromXml` | `framework/Opus/Routing/Router.php:126` |
+| ROUTING | `Opus\Routing\Router` | `refBookDomain` | `framework/Opus/Routing/Router.php:102` |
+| SECURITY | `Opus\Security\AclGuard` | `assertAllowed` | `framework/Opus/Security/AclGuard.php:53` |
+| SECURITY | `Opus\Security\FsmGuard` | `assertAllowed` | `framework/Opus/Security/FsmGuard.php:50` |
+| SECURITY | `Opus\Security\SecureDispatchDecision` | `__construct` | `framework/Opus/Security/SecureDispatchDecision.php:50` |
+| SECURITY | `Opus\Security\SecureDispatchGate` | `assertAllowed` | `framework/Opus/Security/SecureDispatchGate.php:65` |
+| SECURITY | `Opus\Security\Security` | `__construct` | `framework/Opus/Security/Security.php:42` |
+| SECURITY | `Opus\Security\Security` | `allow` | `framework/Opus/Security/Security.php:48` |
+| SECURITY | `Opus\Security\Security` | `assertAllowed` | `framework/Opus/Security/Security.php:72` |
+| SECURITY | `Opus\Security\Security` | `deny` | `framework/Opus/Security/Security.php:53` |
+| SECURITY | `Opus\Security\Security` | `isAllowed` | `framework/Opus/Security/Security.php:62` |
+| SECURITY | `Opus\Security\Security` | `isDenied` | `framework/Opus/Security/Security.php:67` |
+| SECURITY | `Opus\Security\SiteSecurityPolicy` | `__construct` | `framework/Opus/Security/SiteSecurityPolicy.php:55` |
+| SECURITY | `Opus\Security\SiteSecurityPolicyLoader` | `load` | `framework/Opus/Security/SiteSecurityPolicyLoader.php:54` |
+| SESSION | `Opus\Session\Session` | `__construct` | `framework/Opus/Session/Session.php:44` |
+| SESSION | `Opus\Session\Session` | `all` | `framework/Opus/Session/Session.php:87` |
+| SESSION | `Opus\Session\Session` | `clear` | `framework/Opus/Session/Session.php:79` |
+| SESSION | `Opus\Session\Session` | `get` | `framework/Opus/Session/Session.php:49` |
+| SESSION | `Opus\Session\Session` | `getOrDefault` | `framework/Opus/Session/Session.php:58` |
+| SESSION | `Opus\Session\Session` | `has` | `framework/Opus/Session/Session.php:69` |
+| SESSION | `Opus\Session\Session` | `remove` | `framework/Opus/Session/Session.php:74` |
+| SESSION | `Opus\Session\Session` | `set` | `framework/Opus/Session/Session.php:63` |
+| SITE | `Opus\Site\SiteDefinition` | `__construct` | `framework/Opus/Site/SiteDefinition.php:37` |
+| SITE | `Opus\Site\SiteDefinition` | `hasDatabase` | `framework/Opus/Site/SiteDefinition.php:65` |
+| SITE | `Opus\Site\SiteDefinition` | `requireDatabaseFile` | `framework/Opus/Site/SiteDefinition.php:70` |
+| SITE | `Opus\Site\SiteResolver` | `__construct` | `framework/Opus/Site/SiteResolver.php:39` |
+| SITE | `Opus\Site\SiteResolver` | `resolve` | `framework/Opus/Site/SiteResolver.php:46` |
+| SMTP | `Opus\Smtp\Smtp` | `__construct` | `framework/Opus/Smtp/Smtp.php:38` |
+| SUPPORT | `Opus\Support\Support` | `e` | `framework/Opus/Support/Support.php:35` |
+| SUPPORT | `Opus\Support\Support` | `normalizePath` | `framework/Opus/Support/Support.php:40` |
+| SUPPORT | `Opus\Support\Support` | `startsWith` | `framework/Opus/Support/Support.php:87` |
+| SUPPORT | `Opus\Support\Support` | `trimSlashes` | `framework/Opus/Support/Support.php:92` |
+| TEMPLATE | `Opus\Template\Adapter` | `loadTemplate` | `framework/Opus/Template/Adapter.php:42` |
+| TEMPLATE | `Opus\Template\Adapter` | `render` | `framework/Opus/Template/Adapter.php:47` |
+| TEMPLATE | `Opus\Template\Smarty` | `assign` | `framework/Opus/Template/Smarty.php:46` |
+| TEMPLATE | `Opus\Template\Smarty` | `assignAll` | `framework/Opus/Template/Smarty.php:56` |
+| TEMPLATE | `Opus\Template\Smarty` | `loadTemplate` | `framework/Opus/Template/Smarty.php:68` |
+| TEMPLATE | `Opus\Template\Smarty` | `parse` | `framework/Opus/Template/Smarty.php:63` |
+| TEMPLATE | `Opus\Template\Smarty` | `render` | `framework/Opus/Template/Smarty.php:73` |
+| TEMPLATE | `Opus\Template\TemplateException` | `because` | `framework/Opus/Template/TemplateException.php:34` |
+| TEMPLATE | `Opus\Template\TemplateRendererInterface` | `render` | `framework/Opus/Template/TemplateRendererInterface.php:47` |
+| TEMPLATE | `Opus\Template\Twig` | `__construct` | `framework/Opus/Template/Twig.php:41` |
+| TEMPLATE | `Opus\Template\Twig` | `loadTemplate` | `framework/Opus/Template/Twig.php:45` |
+| TEMPLATE | `Opus\Template\Twig` | `render` | `framework/Opus/Template/Twig.php:50` |
+| TEMPLATE | `Opus\Template\TwigTemplateRenderer` | `__construct` | `framework/Opus/Template/TwigTemplateRenderer.php:45` |
+| TEMPLATE | `Opus\Template\TwigTemplateRenderer` | `render` | `framework/Opus/Template/TwigTemplateRenderer.php:68` |
+| TEMPLATE | `Opus\Template\X64` | `assign` | `framework/Opus/Template/X64.php:40` |
+| TEMPLATE | `Opus\Template\X64` | `assignAll` | `framework/Opus/Template/X64.php:50` |
+| TEMPLATE | `Opus\Template\X64` | `loadTemplate` | `framework/Opus/Template/X64.php:62` |
+| TEMPLATE | `Opus\Template\X64` | `parse` | `framework/Opus/Template/X64.php:57` |
+| TEMPLATE | `Opus\Template\X64` | `render` | `framework/Opus/Template/X64.php:67` |
+| THEME | `Opus\Theme\ThemeDefinition` | `__construct` | `framework/Opus/Theme/ThemeDefinition.php:41` |
+| URL | `Opus\Url\Url` | `__construct` | `framework/Opus/Url/Url.php:53` |
+| URL | `Opus\Url\Url` | `__toString` | `framework/Opus/Url/Url.php:109` |
+| URL | `Opus\Url\Url` | `asset` | `framework/Opus/Url/Url.php:94` |
+| URL | `Opus\Url\Url` | `getAnchor` | `framework/Opus/Url/Url.php:189` |
+| URL | `Opus\Url\Url` | `getArguments` | `framework/Opus/Url/Url.php:176` |
+| URL | `Opus\Url\Url` | `getHost` | `framework/Opus/Url/Url.php:147` |
+| URL | `Opus\Url\Url` | `getPath` | `framework/Opus/Url/Url.php:159` |
+| URL | `Opus\Url\Url` | `getProtocol` | `framework/Opus/Url/Url.php:131` |
+| URL | `Opus\Url\Url` | `route` | `framework/Opus/Url/Url.php:100` |
+| URL | `Opus\Url\Url` | `setAnchor` | `framework/Opus/Url/Url.php:194` |
+| URL | `Opus\Url\Url` | `setArguments` | `framework/Opus/Url/Url.php:182` |
+| URL | `Opus\Url\Url` | `setHost` | `framework/Opus/Url/Url.php:152` |
+| URL | `Opus\Url\Url` | `setPath` | `framework/Opus/Url/Url.php:164` |
+| URL | `Opus\Url\Url` | `setProtocol` | `framework/Opus/Url/Url.php:136` |
+| URL | `Opus\Url\Url` | `to` | `framework/Opus/Url/Url.php:78` |
+| URL | `Opus\Url\UrlException` | `because` | `framework/Opus/Url/UrlException.php:34` |
+| URL | `Opus\Url\UrlGenerator` | `__construct` | `framework/Opus/Url/UrlGenerator.php:38` |
+| URL | `Opus\Url\UrlGenerator` | `path` | `framework/Opus/Url/UrlGenerator.php:45` |
+| VALIDATION | `Opus\Validation\Validator` | `__construct` | `framework/Opus/Validation/Validator.php:47` |
+| VALIDATION | `Opus\Validation\Validator` | `email` | `framework/Opus/Validation/Validator.php:62` |
+| VALIDATION | `Opus\Validation\Validator` | `getMessages` | `framework/Opus/Validation/Validator.php:52` |
+| VALIDATION | `Opus\Validation\Validator` | `integer` | `framework/Opus/Validation/Validator.php:67` |
+| VALIDATION | `Opus\Validation\Validator` | `isAbsoluteUrl` | `framework/Opus/Validation/Validator.php:179` |
+| VALIDATION | `Opus\Validation\Validator` | `isAddress` | `framework/Opus/Validation/Validator.php:281` |
+| VALIDATION | `Opus\Validation\Validator` | `isBirthDate` | `framework/Opus/Validation/Validator.php:155` |
+| VALIDATION | `Opus\Validation\Validator` | `isBool` | `framework/Opus/Validation/Validator.php:119` |
+| VALIDATION | `Opus\Validation\Validator` | `isBoolean` | `framework/Opus/Validation/Validator.php:124` |
+| VALIDATION | `Opus\Validation\Validator` | `isCityName` | `framework/Opus/Validation/Validator.php:266` |
+| VALIDATION | `Opus\Validation\Validator` | `isCleanHtml` | `framework/Opus/Validation/Validator.php:316` |
+| VALIDATION | `Opus\Validation\Validator` | `isColor` | `framework/Opus/Validation/Validator.php:195` |
+| VALIDATION | `Opus\Validation\Validator` | `isCountryName` | `framework/Opus/Validation/Validator.php:271` |
+| VALIDATION | `Opus\Validation\Validator` | `isDate` | `framework/Opus/Validation/Validator.php:144` |
+| VALIDATION | `Opus\Validation\Validator` | `isEan13` | `framework/Opus/Validation/Validator.php:200` |
+| VALIDATION | `Opus\Validation\Validator` | `isEmail` | `framework/Opus/Validation/Validator.php:72` |
+| VALIDATION | `Opus\Validation\Validator` | `isFileName` | `framework/Opus/Validation/Validator.php:222` |
+| VALIDATION | `Opus\Validation\Validator` | `isFloat` | `framework/Opus/Validation/Validator.php:100` |
+| VALIDATION | `Opus\Validation\Validator` | `isGenderIsoCode` | `framework/Opus/Validation/Validator.php:246` |
+| VALIDATION | `Opus\Validation\Validator` | `isGenderName` | `framework/Opus/Validation/Validator.php:251` |
+| VALIDATION | `Opus\Validation\Validator` | `isGenericName` | `framework/Opus/Validation/Validator.php:261` |
+| VALIDATION | `Opus\Validation\Validator` | `isIcoFile` | `framework/Opus/Validation/Validator.php:231` |
+| VALIDATION | `Opus\Validation\Validator` | `isImgFile` | `framework/Opus/Validation/Validator.php:236` |
+| VALIDATION | `Opus\Validation\Validator` | `isInt` | `framework/Opus/Validation/Validator.php:77` |
+| VALIDATION | `Opus\Validation\Validator` | `isLanguageIsoCode` | `framework/Opus/Validation/Validator.php:241` |
+| VALIDATION | `Opus\Validation\Validator` | `isLinkRewrite` | `framework/Opus/Validation/Validator.php:306` |
+| VALIDATION | `Opus\Validation\Validator` | `isLoadedObject` | `framework/Opus/Validation/Validator.php:323` |
+| VALIDATION | `Opus\Validation\Validator` | `isMailName` | `framework/Opus/Validation/Validator.php:296` |
+| VALIDATION | `Opus\Validation\Validator` | `isMailSubject` | `framework/Opus/Validation/Validator.php:301` |
+| VALIDATION | `Opus\Validation\Validator` | `isMd5` | `framework/Opus/Validation/Validator.php:164` |
+| VALIDATION | `Opus\Validation\Validator` | `isName` | `framework/Opus/Validation/Validator.php:256` |
+| VALIDATION | `Opus\Validation\Validator` | `isNullOrUnsignedInt` | `framework/Opus/Validation/Validator.php:95` |
+| VALIDATION | `Opus\Validation\Validator` | `isOptFloat` | `framework/Opus/Validation/Validator.php:114` |
+| VALIDATION | `Opus\Validation\Validator` | `isPasswd` | `framework/Opus/Validation/Validator.php:337` |
+| VALIDATION | `Opus\Validation\Validator` | `isPhoneNumber` | `framework/Opus/Validation/Validator.php:291` |
+| VALIDATION | `Opus\Validation\Validator` | `isPostCode` | `framework/Opus/Validation/Validator.php:286` |
+| VALIDATION | `Opus\Validation\Validator` | `isProtocol` | `framework/Opus/Validation/Validator.php:190` |
+| VALIDATION | `Opus\Validation\Validator` | `isSha1` | `framework/Opus/Validation/Validator.php:169` |
+| VALIDATION | `Opus\Validation\Validator` | `isStateIsoCode` | `framework/Opus/Validation/Validator.php:276` |
+| VALIDATION | `Opus\Validation\Validator` | `isString` | `framework/Opus/Validation/Validator.php:139` |
+| VALIDATION | `Opus\Validation\Validator` | `isSubDomainName` | `framework/Opus/Validation/Validator.php:311` |
+| VALIDATION | `Opus\Validation\Validator` | `isUnsignedFloat` | `framework/Opus/Validation/Validator.php:109` |
+| VALIDATION | `Opus\Validation\Validator` | `isUnsignedInt` | `framework/Opus/Validation/Validator.php:86` |
+| VALIDATION | `Opus\Validation\Validator` | `isUrl` | `framework/Opus/Validation/Validator.php:174` |
+| VALIDATION | `Opus\Validation\Validator` | `isValidSearch` | `framework/Opus/Validation/Validator.php:332` |
+| VALIDATION | `Opus\Validation\Validator` | `isValide` | `framework/Opus/Validation/Validator.php:342` |
+| VALIDATION | `Opus\Validation\Validator` | `is_false` | `framework/Opus/Validation/Validator.php:134` |
+| VALIDATION | `Opus\Validation\Validator` | `is_true` | `framework/Opus/Validation/Validator.php:129` |
+| VALIDATION | `Opus\Validation\Validator` | `notEmpty` | `framework/Opus/Validation/Validator.php:57` |
+| VIEW | `Opus\View\Html` | `__construct` | `framework/Opus/View/Html.php:46` |
+| VIEW | `Opus\View\Html` | `toResponse` | `framework/Opus/View/Html.php:61` |
+| VIEW | `Opus\View\View` | `__construct` | `framework/Opus/View/View.php:38` |
+| VIEW | `Opus\View\View` | `render` | `framework/Opus/View/View.php:44` |
+| VIEW | `Opus\View\ViewException` | `because` | `framework/Opus/View/ViewException.php:34` |
+| XML | `Opus\Xml\Xml` | `fromFile` | `framework/Opus/Xml/Xml.php:22` |
+| XML | `Opus\Xml\Xml` | `fromString` | `framework/Opus/Xml/Xml.php:21` |

@@ -1,0 +1,16 @@
+{
+    "palier": "P112Q3E3",
+    "strict": true,
+    "domain": "ROUTING",
+    "snapshot_schema_version": "opus-refbook-snapshot/v1",
+    "summary": {
+        "classes": 8,
+        "public_methods": 28,
+        "class_metadata_missing": 0,
+        "method_metadata_missing": 0,
+        "load_errors": 0,
+        "violations": 0
+    },
+    "violations": [],
+    "snapshot_path": "H:\\Opus\\var\\refbook\\snapshot.routing.latest.json"
+}

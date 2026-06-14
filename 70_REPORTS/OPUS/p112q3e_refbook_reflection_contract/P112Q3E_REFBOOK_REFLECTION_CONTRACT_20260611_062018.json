@@ -1,0 +1,4559 @@
+{
+    "palier": "P112Q3E",
+    "strict": false,
+    "snapshot_schema_version": "opus-refbook-snapshot/v1",
+    "summary": {
+        "classes": 206,
+        "public_methods": 583,
+        "class_metadata_missing": 173,
+        "method_metadata_missing": 476,
+        "load_errors": 0,
+        "violations": 649
+    },
+    "violations": [
+        {
+            "scope": "class",
+            "symbol": "Opus\\Action\\Action",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Action\\Action",
+            "method": "__construct",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\Application\\Application",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Application\\Application",
+            "method": "__construct",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Application\\Application",
+            "method": "run",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\Application\\ApplicationFacade",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Application\\ApplicationFacade",
+            "method": "__construct",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Application\\ApplicationFacade",
+            "method": "run",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\Application\\ApplicationPaths",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Application\\ApplicationPaths",
+            "method": "__construct",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\Asset\\Asset",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Asset\\Asset",
+            "method": "__construct",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Asset\\Asset",
+            "method": "css",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Asset\\Asset",
+            "method": "image",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Asset\\Asset",
+            "method": "isCss",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Asset\\Asset",
+            "method": "isImage",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Asset\\Asset",
+            "method": "isJs",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Asset\\Asset",
+            "method": "js",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\Asset\\AssetDefinition",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Asset\\AssetDefinition",
+            "method": "__construct",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\Asset\\AssetRegistry",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Asset\\AssetRegistry",
+            "method": "add",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Asset\\AssetRegistry",
+            "method": "byType",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\Autoload\\AutoloadCache",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Autoload\\AutoloadCache",
+            "method": "__construct",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Autoload\\AutoloadCache",
+            "method": "defaultCacheFile",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Autoload\\AutoloadCache",
+            "method": "load",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Autoload\\AutoloadCache",
+            "method": "register",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\Autoload\\ClassMapBuilder",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Autoload\\ClassMapBuilder",
+            "method": "build",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Autoload\\ClassMapBuilder",
+            "method": "write",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\Cache\\Cache",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Cache\\Cache",
+            "method": "all",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Cache\\Cache",
+            "method": "clear",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Cache\\Cache",
+            "method": "count",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Cache\\Cache",
+            "method": "get",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Cache\\Cache",
+            "method": "getOrDefault",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Cache\\Cache",
+            "method": "has",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Cache\\Cache",
+            "method": "remove",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Cache\\Cache",
+            "method": "set",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\Compatibility\\SimpleXMLElementExtended",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Compatibility\\SimpleXMLElementExtended",
+            "method": "getAttribute",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Compatibility\\SimpleXMLElementExtended",
+            "method": "getAttributeCount",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Compatibility\\SimpleXMLElementExtended",
+            "method": "getAttributeNames",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Compatibility\\SimpleXMLElementExtended",
+            "method": "getAttributesArray",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Compatibility\\SimpleXMLElementExtended",
+            "method": "getChildrenCount",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\Compatibility\\Singleton",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Compatibility\\Singleton",
+            "method": "__call",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Compatibility\\Singleton",
+            "method": "getInstance",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\Config\\ConfigBag",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Config\\ConfigBag",
+            "method": "__construct",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Config\\ConfigBag",
+            "method": "boolean",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Config\\ConfigBag",
+            "method": "integer",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Config\\ConfigBag",
+            "method": "string",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\Config\\ConfigException",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Config\\ConfigException",
+            "method": "because",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\Config\\ConfigLoader",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Config\\ConfigLoader",
+            "method": "__construct",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Config\\ConfigLoader",
+            "method": "getConfig",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Config\\ConfigLoader",
+            "method": "load",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\Config\\Configuration",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Config\\Configuration",
+            "method": "__construct",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Config\\Configuration",
+            "method": "all",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Config\\Configuration",
+            "method": "get",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Config\\Configuration",
+            "method": "getDatabase",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Config\\Configuration",
+            "method": "getEnv",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Config\\Configuration",
+            "method": "getRoutes",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Config\\Configuration",
+            "method": "get_browser",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Config\\Configuration",
+            "method": "get_os",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Config\\Configuration",
+            "method": "has",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Config\\Configuration",
+            "method": "set",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Config\\Configuration",
+            "method": "setEnv",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\Config\\XmlConfigReader",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Config\\XmlConfigReader",
+            "method": "read",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\Contract\\ContractException",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Contract\\ContractException",
+            "method": "because",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\Controller\\AbstractController",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\Controller\\Controller",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Controller\\Controller",
+            "method": "__construct",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\Controller\\ControllerDispatcher",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Controller\\ControllerDispatcher",
+            "method": "__construct",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Controller\\ControllerDispatcher",
+            "method": "dispatch",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\Controller\\ControllerException",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Controller\\ControllerException",
+            "method": "because",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\Controller\\ControllerInterface",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\Cookie\\Cookie",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Cookie\\Cookie",
+            "method": "__construct",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\Core\\Bootstrap",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Core\\Bootstrap",
+            "method": "run",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\Core\\Kernel",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Core\\Kernel",
+            "method": "__construct",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Core\\Kernel",
+            "method": "apiUrl",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Core\\Kernel",
+            "method": "assetUrl",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Core\\Kernel",
+            "method": "getPackage",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Core\\Kernel",
+            "method": "handle",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Core\\Kernel",
+            "method": "packageUrl",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Core\\Kernel",
+            "method": "pageUrl",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Core\\Kernel",
+            "method": "rootDir",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\Css\\Css",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Css\\Css",
+            "method": "__construct",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\Database\\Database",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Database\\Database",
+            "method": "__construct",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Database\\Database",
+            "method": "pdo",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\Database\\DatabaseConfigLoader",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Database\\DatabaseConfigLoader",
+            "method": "fromXml",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Database\\DatabaseConfigLoader",
+            "method": "loadXmlFile",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\Database\\DatabaseConnectionConfig",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Database\\DatabaseConnectionConfig",
+            "method": "__construct",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Database\\DatabaseConnectionConfig",
+            "method": "normalizedProvider",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Database\\DatabaseConnectionConfig",
+            "method": "optionalParameter",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Database\\DatabaseConnectionConfig",
+            "method": "parameter",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\Database\\DatabaseConnectionsConfig",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Database\\DatabaseConnectionsConfig",
+            "method": "__construct",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Database\\DatabaseConnectionsConfig",
+            "method": "all",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Database\\DatabaseConnectionsConfig",
+            "method": "assertValidName",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Database\\DatabaseConnectionsConfig",
+            "method": "count",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Database\\DatabaseConnectionsConfig",
+            "method": "default",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Database\\DatabaseConnectionsConfig",
+            "method": "defaultName",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Database\\DatabaseConnectionsConfig",
+            "method": "get",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Database\\DatabaseConnectionsConfig",
+            "method": "has",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Database\\DatabaseConnectionsConfig",
+            "method": "names",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\Database\\DatabaseDsnFactory",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Database\\DatabaseDsnFactory",
+            "method": "build",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\Database\\DatabaseException",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Database\\DatabaseException",
+            "method": "because",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\Database\\DatabaseMultiConfigLoader",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Database\\DatabaseMultiConfigLoader",
+            "method": "fromXml",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Database\\DatabaseMultiConfigLoader",
+            "method": "loadXmlFile",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\Database\\DatabaseProvider",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Database\\DatabaseProvider",
+            "method": "assertSupported",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Database\\DatabaseProvider",
+            "method": "normalize",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Database\\DatabaseProvider",
+            "method": "pdoDriver",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Database\\DatabaseProvider",
+            "method": "supported",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\Database\\Mysql",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Database\\Mysql",
+            "method": "connect",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\Database\\Odbc",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Database\\Odbc",
+            "method": "connect",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\Database\\Oracle",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Database\\Oracle",
+            "method": "connect",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\Database\\PdoDatabaseConnector",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Database\\PdoDatabaseConnector",
+            "method": "__construct",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Database\\PdoDatabaseConnector",
+            "method": "connect",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\Database\\Postgresql",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Database\\Postgresql",
+            "method": "connect",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\Database\\SqlServer",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Database\\SqlServer",
+            "method": "connect",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\Database\\Sqlite",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Database\\Sqlite",
+            "method": "connect",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\Date\\Date",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Date\\Date",
+            "method": "now",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Date\\Date",
+            "method": "parse",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\Debug\\Debug",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Debug\\Debug",
+            "method": "add",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Debug\\Debug",
+            "method": "addClasses",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Debug\\Debug",
+            "method": "addDump",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Debug\\Debug",
+            "method": "dump",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Debug\\Debug",
+            "method": "get",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Debug\\Debug",
+            "method": "setDebug",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\Directory\\Directory",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Directory\\Directory",
+            "method": "__construct",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Directory\\Directory",
+            "method": "files",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\Documentation\\MarkdownHtmlRenderer",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Documentation\\MarkdownHtmlRenderer",
+            "method": "render",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\Documentation\\MarkdownPage",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Documentation\\MarkdownPage",
+            "method": "__construct",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\Documentation\\MarkdownPageRepository",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Documentation\\MarkdownPageRepository",
+            "method": "__construct",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Documentation\\MarkdownPageRepository",
+            "method": "get",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\Event\\Event",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Event\\Event",
+            "method": "__construct",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\Exception\\Exception",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Exception\\Exception",
+            "method": "because",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\File\\File",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\File\\File",
+            "method": "__construct",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\File\\File",
+            "method": "read",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\Form\\FormDefinition",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Form\\FormDefinition",
+            "method": "__construct",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Form\\FormDefinition",
+            "method": "fields",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\Form\\FormError",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Form\\FormError",
+            "method": "__construct",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\Form\\FormException",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Form\\FormException",
+            "method": "because",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\Form\\FormField",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Form\\FormField",
+            "method": "__construct",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\Form\\FormValidationResult",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Form\\FormValidationResult",
+            "method": "__construct",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Form\\FormValidationResult",
+            "method": "isValid",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\Form\\FormValidator",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Form\\FormValidator",
+            "method": "validate",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\Form\\SubmittedForm",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Form\\SubmittedForm",
+            "method": "__construct",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Form\\SubmittedForm",
+            "method": "value",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\Ftp\\Ftp",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Ftp\\Ftp",
+            "method": "__construct",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Ftp\\Ftp",
+            "method": "host",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\Helper\\Helper",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Helper\\Helper",
+            "method": "escape",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Helper\\Helper",
+            "method": "slug",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\Helper\\HtmlHelper",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Helper\\HtmlHelper",
+            "method": "attributes",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Helper\\HtmlHelper",
+            "method": "escape",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\Helper\\TextHelper",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Helper\\TextHelper",
+            "method": "slug",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\I18n\\I18n",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\I18n\\I18n",
+            "method": "__construct",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\I18n\\I18n",
+            "method": "dictionary",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\I18n\\I18n",
+            "method": "getAvalaibleLanguages",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\I18n\\I18n",
+            "method": "getDictionary",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\I18n\\I18n",
+            "method": "getInstance",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\I18n\\I18n",
+            "method": "loadDictionary",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\I18n\\I18n",
+            "method": "plural",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\I18n\\I18n",
+            "method": "t",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\I18n\\I18n",
+            "method": "translate",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\I18n\\JsonTranslationCatalogLoader",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\I18n\\JsonTranslationCatalogLoader",
+            "method": "load",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\I18n\\LocaleCode",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\I18n\\LocaleCode",
+            "method": "__construct",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\I18n\\LocaleCode",
+            "method": "toString",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\I18n\\PluralRuleInterface",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\I18n\\PluralRuleInterface",
+            "method": "select",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\I18n\\Plural\\EnglishPluralRule",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\I18n\\Plural\\EnglishPluralRule",
+            "method": "select",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\I18n\\Plural\\FrenchPluralRule",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\I18n\\Plural\\FrenchPluralRule",
+            "method": "select",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\I18n\\Plural\\RussianPluralRule",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\I18n\\Plural\\RussianPluralRule",
+            "method": "select",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\I18n\\Plural\\SpanishPluralRule",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\I18n\\Plural\\SpanishPluralRule",
+            "method": "select",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\I18n\\TranslationCatalog",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\I18n\\TranslationCatalog",
+            "method": "__construct",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\I18n\\TranslationCatalog",
+            "method": "message",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\I18n\\TranslationCatalog",
+            "method": "messages",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\I18n\\TranslationCatalog",
+            "method": "plural",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\I18n\\TranslationCatalog",
+            "method": "plurals",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\I18n\\TranslationCatalog",
+            "method": "toArray",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\I18n\\TranslationException",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\I18n\\TranslationException",
+            "method": "because",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\I18n\\Translator",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\I18n\\Translator",
+            "method": "__construct",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\I18n\\Translator",
+            "method": "plural",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\I18n\\Translator",
+            "method": "translate",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\Javascript\\Javascript",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Javascript\\Javascript",
+            "method": "__construct",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\Json\\Json",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Json\\Json",
+            "method": "decode",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Json\\Json",
+            "method": "encode",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Json\\Json",
+            "method": "pretty",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Json\\Json",
+            "method": "readFile",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Json\\Json",
+            "method": "writeFile",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\Language\\Language",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Language\\Language",
+            "method": "__construct",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\Link\\Link",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Link\\Link",
+            "method": "__construct",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Link\\Link",
+            "method": "__toString",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Link\\Link",
+            "method": "changeClass",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Link\\Link",
+            "method": "changeId",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Link\\Link",
+            "method": "getBlock",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Link\\Link",
+            "method": "getMode",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\Log\\Log",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Log\\Log",
+            "method": "add",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Log\\Log",
+            "method": "entries",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Log\\Log",
+            "method": "error",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Log\\Log",
+            "method": "info",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Log\\Log",
+            "method": "messages",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Log\\Log",
+            "method": "records",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Log\\Log",
+            "method": "warning",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\Lstsa\\LstsaArchivePhase",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Lstsa\\LstsaArchivePhase",
+            "method": "execute",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\Lstsa\\LstsaArchiveWriter",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Lstsa\\LstsaArchiveWriter",
+            "method": "writeReport",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\Lstsa\\LstsaBatchExecutor",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Lstsa\\LstsaBatchExecutor",
+            "method": "__construct",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Lstsa\\LstsaBatchExecutor",
+            "method": "execute",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\Lstsa\\LstsaConfigLoader",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Lstsa\\LstsaConfigLoader",
+            "method": "fromXml",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Lstsa\\LstsaConfigLoader",
+            "method": "loadXmlFile",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\Lstsa\\LstsaDatabaseStagingExecutor",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Lstsa\\LstsaDatabaseStagingExecutor",
+            "method": "__construct",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Lstsa\\LstsaDatabaseStagingExecutor",
+            "method": "execute",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\Lstsa\\LstsaDefinition",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Lstsa\\LstsaDefinition",
+            "method": "__construct",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Lstsa\\LstsaDefinition",
+            "method": "archiveConnection",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Lstsa\\LstsaDefinition",
+            "method": "archiveMode",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Lstsa\\LstsaDefinition",
+            "method": "archivePath",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Lstsa\\LstsaDefinition",
+            "method": "archiveTable",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Lstsa\\LstsaDefinition",
+            "method": "assertConnections",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Lstsa\\LstsaDefinition",
+            "method": "id",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Lstsa\\LstsaDefinition",
+            "method": "loadConnection",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Lstsa\\LstsaDefinition",
+            "method": "loadFields",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Lstsa\\LstsaDefinition",
+            "method": "loadTable",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Lstsa\\LstsaDefinition",
+            "method": "mappings",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Lstsa\\LstsaDefinition",
+            "method": "runtime",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Lstsa\\LstsaDefinition",
+            "method": "storeConnection",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Lstsa\\LstsaDefinition",
+            "method": "storeMode",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Lstsa\\LstsaDefinition",
+            "method": "storeTable",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Lstsa\\LstsaDefinition",
+            "method": "version",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\Lstsa\\LstsaException",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Lstsa\\LstsaException",
+            "method": "because",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\Lstsa\\LstsaFieldConstraint",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Lstsa\\LstsaFieldConstraint",
+            "method": "__construct",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Lstsa\\LstsaFieldConstraint",
+            "method": "fromXml",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Lstsa\\LstsaFieldConstraint",
+            "method": "supportedTypes",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Lstsa\\LstsaFieldConstraint",
+            "method": "validate",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\Lstsa\\LstsaFieldMapping",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Lstsa\\LstsaFieldMapping",
+            "method": "__construct",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Lstsa\\LstsaFieldMapping",
+            "method": "fromXml",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\Lstsa\\LstsaFsmController",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Lstsa\\LstsaFsmController",
+            "method": "apply",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\Lstsa\\LstsaFsmSignal",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\Lstsa\\LstsaFsmState",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Lstsa\\LstsaFsmState",
+            "method": "all",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\Lstsa\\LstsaIdentifier",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Lstsa\\LstsaIdentifier",
+            "method": "quote",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Lstsa\\LstsaIdentifier",
+            "method": "stageTable",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\Lstsa\\LstsaLoadPhase",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Lstsa\\LstsaLoadPhase",
+            "method": "execute",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\Lstsa\\LstsaPhaseInterface",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Lstsa\\LstsaPhaseInterface",
+            "method": "execute",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\Lstsa\\LstsaPipelineContext",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Lstsa\\LstsaPipelineContext",
+            "method": "__construct",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Lstsa\\LstsaPipelineContext",
+            "method": "reject",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\Lstsa\\LstsaReport",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Lstsa\\LstsaReport",
+            "method": "__construct",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Lstsa\\LstsaReport",
+            "method": "addCounter",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Lstsa\\LstsaReport",
+            "method": "addMessage",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Lstsa\\LstsaReport",
+            "method": "create",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Lstsa\\LstsaReport",
+            "method": "finish",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Lstsa\\LstsaReport",
+            "method": "runId",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Lstsa\\LstsaReport",
+            "method": "toArray",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Lstsa\\LstsaReport",
+            "method": "toJson",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Lstsa\\LstsaReport",
+            "method": "toMarkdown",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\Lstsa\\LstsaReportCatalog",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Lstsa\\LstsaReportCatalog",
+            "method": "__construct",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Lstsa\\LstsaReportCatalog",
+            "method": "build",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Lstsa\\LstsaReportCatalog",
+            "method": "writeIndex",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\Lstsa\\LstsaReportPhase",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Lstsa\\LstsaReportPhase",
+            "method": "execute",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\Lstsa\\LstsaRunStatus",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Lstsa\\LstsaRunStatus",
+            "method": "all",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Lstsa\\LstsaRunStatus",
+            "method": "assertValid",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Lstsa\\LstsaRunStatus",
+            "method": "isFinal",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\Lstsa\\LstsaRunStore",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Lstsa\\LstsaRunStore",
+            "method": "__construct",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Lstsa\\LstsaRunStore",
+            "method": "acquirePendingRun",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Lstsa\\LstsaRunStore",
+            "method": "createRun",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Lstsa\\LstsaRunStore",
+            "method": "finish",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Lstsa\\LstsaRunStore",
+            "method": "heartbeat",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Lstsa\\LstsaRunStore",
+            "method": "listRunsByStatus",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Lstsa\\LstsaRunStore",
+            "method": "projectRoot",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Lstsa\\LstsaRunStore",
+            "method": "readRun",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Lstsa\\LstsaRunStore",
+            "method": "writeArchivePayload",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Lstsa\\LstsaRunStore",
+            "method": "writeCheckpoint",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Lstsa\\LstsaRunStore",
+            "method": "writeEventPayload",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Lstsa\\LstsaRunStore",
+            "method": "writeQuarantinePayload",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Lstsa\\LstsaRunStore",
+            "method": "writeReport",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Lstsa\\LstsaRunStore",
+            "method": "writeRun",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\Lstsa\\LstsaRunner",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Lstsa\\LstsaRunner",
+            "method": "__construct",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Lstsa\\LstsaRunner",
+            "method": "runOnce",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\Lstsa\\LstsaRunnerTimeoutException",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\Lstsa\\LstsaScheduler",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Lstsa\\LstsaScheduler",
+            "method": "__construct",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Lstsa\\LstsaScheduler",
+            "method": "enqueue",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Lstsa\\LstsaScheduler",
+            "method": "enqueueDatabaseStagingSmokeRun",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Lstsa\\LstsaScheduler",
+            "method": "enqueueMemoryBatchSmokeRun",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Lstsa\\LstsaScheduler",
+            "method": "enqueueSmokeRun",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\Lstsa\\LstsaSecureInputPhase",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Lstsa\\LstsaSecureInputPhase",
+            "method": "execute",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\Lstsa\\LstsaSecureOutputPhase",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Lstsa\\LstsaSecureOutputPhase",
+            "method": "execute",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\Lstsa\\LstsaStorePhase",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Lstsa\\LstsaStorePhase",
+            "method": "execute",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\Lstsa\\LstsaTransformPhase",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Lstsa\\LstsaTransformPhase",
+            "method": "execute",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\Mail\\Mail",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Mail\\Mail",
+            "method": "__construct",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\Mail\\PhpMailer",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Mail\\PhpMailer",
+            "method": "send",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\Menu\\Menu",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Menu\\Menu",
+            "method": "add",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Menu\\Menu",
+            "method": "items",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\Menu\\MenuException",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Menu\\MenuException",
+            "method": "because",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\Menu\\MenuItem",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Menu\\MenuItem",
+            "method": "__construct",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\Menu\\MenuTree",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Menu\\MenuTree",
+            "method": "__construct",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Menu\\MenuTree",
+            "method": "toArray",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\Model\\Model",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Model\\Model",
+            "method": "__construct",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Model\\Model",
+            "method": "all",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Model\\Model",
+            "method": "get",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Model\\Model",
+            "method": "set",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\Module\\Module",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Module\\Module",
+            "method": "__construct",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Module\\Module",
+            "method": "isEnabled",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Module\\Module",
+            "method": "option",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\Module\\ModuleDefinition",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Module\\ModuleDefinition",
+            "method": "__construct",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\Module\\ModuleRegistry",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Module\\ModuleRegistry",
+            "method": "__construct",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Module\\ModuleRegistry",
+            "method": "getEnabled",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\Package\\Package",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Package\\Package",
+            "method": "__construct",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Package\\Package",
+            "method": "content",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Package\\Package",
+            "method": "hasLanguage",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Package\\Package",
+            "method": "id",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Package\\Package",
+            "method": "rootDir",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Package\\Package",
+            "method": "routes",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\Package\\PackageRepository",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Package\\PackageRepository",
+            "method": "__construct",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Package\\PackageRepository",
+            "method": "all",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Package\\PackageRepository",
+            "method": "get",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Package\\PackageRepository",
+            "method": "resolve",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\RefBook\\Api\\LocalizedRefBookDocumentationProvider",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\RefBook\\Api\\LocalizedRefBookDocumentationProvider",
+            "method": "__construct",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\RefBook\\Api\\LocalizedRefBookDocumentationProvider",
+            "method": "localizeSnapshot",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\RefBook\\Api\\LocalizedRefBookDocumentationProvider",
+            "method": "localizeSymbol",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\RefBook\\Api\\RefBookDocumentationAssetRepository",
+            "method": "__construct",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\RefBook\\Api\\RefBookDocumentationI18nRestRouter",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\RefBook\\Api\\RefBookDocumentationI18nRestRouter",
+            "method": "__construct",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\RefBook\\Api\\RefBookDocumentationI18nRestRouter",
+            "method": "handle",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\RefBook\\Api\\RefBookRestApi",
+            "method": "__construct",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\RefBook\\Api\\RefBookRestSnapshotProvider",
+            "method": "__construct",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\RefBook\\Attribute\\OpusRefBookClass",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\RefBook\\Attribute\\OpusRefBookClass",
+            "method": "__construct",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\RefBook\\Attribute\\OpusRefBookClass",
+            "method": "toArray",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\RefBook\\Attribute\\OpusRefBookMethod",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\RefBook\\Attribute\\OpusRefBookMethod",
+            "method": "__construct",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\RefBook\\Attribute\\OpusRefBookMethod",
+            "method": "toArray",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\RefBook\\Contract\\RefBookInspectableInterface",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\RefBook\\Contract\\RefBookInspectableInterface",
+            "method": "refBookDomain",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\RefBook\\I18n\\RefBookDocumentationI18nCatalog",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\RefBook\\I18n\\RefBookDocumentationI18nCatalog",
+            "method": "all",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\RefBook\\I18n\\RefBookDocumentationI18nCatalog",
+            "method": "translateSourceText",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\RefBook\\I18n\\RefBookDocumentationLocale",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\RefBook\\I18n\\RefBookDocumentationLocale",
+            "method": "assertSupported",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\RefBook\\I18n\\RefBookDocumentationLocale",
+            "method": "supported",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\RefBook\\I18n\\RefBookDocumentationTranslationMissingException",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\RefBook\\I18n\\RefBookDocumentationTranslationMissingException",
+            "method": "forSourceText",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\RefBook\\Model\\RefBookClassEntry",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\RefBook\\Model\\RefBookClassEntry",
+            "method": "__construct",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\RefBook\\Model\\RefBookClassEntry",
+            "method": "hasMetadata",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\RefBook\\Model\\RefBookClassEntry",
+            "method": "methods",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\RefBook\\Model\\RefBookClassEntry",
+            "method": "name",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\RefBook\\Model\\RefBookClassEntry",
+            "method": "toArray",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\RefBook\\Model\\RefBookMethodEntry",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\RefBook\\Model\\RefBookMethodEntry",
+            "method": "__construct",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\RefBook\\Model\\RefBookMethodEntry",
+            "method": "hasMetadata",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\RefBook\\Model\\RefBookMethodEntry",
+            "method": "name",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\RefBook\\Model\\RefBookMethodEntry",
+            "method": "toArray",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\RefBook\\Model\\RefBookScanResult",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\RefBook\\Model\\RefBookScanResult",
+            "method": "__construct",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\RefBook\\Model\\RefBookScanResult",
+            "method": "classes",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\RefBook\\Model\\RefBookScanResult",
+            "method": "loadErrors",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\RefBook\\Model\\RefBookScanResult",
+            "method": "summary",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\RefBook\\Model\\RefBookScanResult",
+            "method": "toArray",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\RefBook\\RefBookContractValidator",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\RefBook\\RefBookContractValidator",
+            "method": "validate",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\RefBook\\RefBookReflectionScanner",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\RefBook\\RefBookReflectionScanner",
+            "method": "scan",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\RefBook\\RefBookSnapshotBuilder",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\RefBook\\RefBookSnapshotBuilder",
+            "method": "build",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\Renderer\\HtmlRenderer",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Renderer\\HtmlRenderer",
+            "method": "__construct",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Renderer\\HtmlRenderer",
+            "method": "render",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\Renderer\\JsonRenderer",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Renderer\\JsonRenderer",
+            "method": "render",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\Renderer\\RenderException",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Renderer\\RenderException",
+            "method": "because",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\Renderer\\RendererInterface",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Renderer\\RendererInterface",
+            "method": "render",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\Renderer\\ViewModel",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Renderer\\ViewModel",
+            "method": "__construct",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\Request\\Request",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Request\\Request",
+            "method": "__construct",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Request\\Request",
+            "method": "toHttpRequest",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\Response\\Response",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Response\\Response",
+            "method": "__construct",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Response\\Response",
+            "method": "toHttpResponse",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\Response\\ResponseFacade",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Response\\ResponseFacade",
+            "method": "html",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Response\\ResponseFacade",
+            "method": "json",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\Rest\\Rest",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Rest\\Rest",
+            "method": "json",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\Router\\Route",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Router\\Route",
+            "method": "__construct",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\Router\\Router",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Router\\Router",
+            "method": "__construct",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Router\\Router",
+            "method": "add",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Router\\Router",
+            "method": "all",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Router\\Router",
+            "method": "byName",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Router\\Router",
+            "method": "hasName",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Router\\Router",
+            "method": "hasPath",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Router\\Router",
+            "method": "match",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\Security\\AclGuard",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Security\\AclGuard",
+            "method": "assertAllowed",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\Security\\FsmGuard",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Security\\FsmGuard",
+            "method": "assertAllowed",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\Security\\SecureDispatchDecision",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Security\\SecureDispatchDecision",
+            "method": "__construct",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\Security\\SecureDispatchGate",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Security\\SecureDispatchGate",
+            "method": "assertAllowed",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\Security\\Security",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Security\\Security",
+            "method": "__construct",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Security\\Security",
+            "method": "allow",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Security\\Security",
+            "method": "assertAllowed",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Security\\Security",
+            "method": "deny",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Security\\Security",
+            "method": "isAllowed",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Security\\Security",
+            "method": "isDenied",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\Security\\SiteSecurityPolicy",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Security\\SiteSecurityPolicy",
+            "method": "__construct",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\Security\\SiteSecurityPolicyLoader",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Security\\SiteSecurityPolicyLoader",
+            "method": "load",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\Session\\Session",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Session\\Session",
+            "method": "__construct",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Session\\Session",
+            "method": "all",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Session\\Session",
+            "method": "clear",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Session\\Session",
+            "method": "get",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Session\\Session",
+            "method": "getOrDefault",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Session\\Session",
+            "method": "has",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Session\\Session",
+            "method": "remove",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Session\\Session",
+            "method": "set",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\Site\\SiteDefinition",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Site\\SiteDefinition",
+            "method": "__construct",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Site\\SiteDefinition",
+            "method": "hasDatabase",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Site\\SiteDefinition",
+            "method": "requireDatabaseFile",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\Site\\SiteResolver",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Site\\SiteResolver",
+            "method": "__construct",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Site\\SiteResolver",
+            "method": "resolve",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\Smtp\\Smtp",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Smtp\\Smtp",
+            "method": "__construct",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\Support\\Support",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Support\\Support",
+            "method": "e",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Support\\Support",
+            "method": "normalizePath",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Support\\Support",
+            "method": "startsWith",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Support\\Support",
+            "method": "trimSlashes",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\Template\\Adapter",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Template\\Adapter",
+            "method": "loadTemplate",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Template\\Adapter",
+            "method": "render",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\Template\\Smarty",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Template\\Smarty",
+            "method": "assign",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Template\\Smarty",
+            "method": "assignAll",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Template\\Smarty",
+            "method": "loadTemplate",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Template\\Smarty",
+            "method": "parse",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Template\\Smarty",
+            "method": "render",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\Template\\TemplateException",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Template\\TemplateException",
+            "method": "because",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\Template\\TemplateRendererInterface",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Template\\TemplateRendererInterface",
+            "method": "render",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\Template\\Twig",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Template\\Twig",
+            "method": "__construct",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Template\\Twig",
+            "method": "loadTemplate",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Template\\Twig",
+            "method": "render",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\Template\\TwigTemplateRenderer",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Template\\TwigTemplateRenderer",
+            "method": "__construct",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Template\\TwigTemplateRenderer",
+            "method": "render",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\Template\\X64",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Template\\X64",
+            "method": "assign",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Template\\X64",
+            "method": "assignAll",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Template\\X64",
+            "method": "loadTemplate",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Template\\X64",
+            "method": "parse",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Template\\X64",
+            "method": "render",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\Theme\\ThemeDefinition",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Theme\\ThemeDefinition",
+            "method": "__construct",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\Url\\Url",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Url\\Url",
+            "method": "__construct",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Url\\Url",
+            "method": "__toString",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Url\\Url",
+            "method": "asset",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Url\\Url",
+            "method": "getAnchor",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Url\\Url",
+            "method": "getArguments",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Url\\Url",
+            "method": "getHost",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Url\\Url",
+            "method": "getPath",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Url\\Url",
+            "method": "getProtocol",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Url\\Url",
+            "method": "route",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Url\\Url",
+            "method": "setAnchor",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Url\\Url",
+            "method": "setArguments",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Url\\Url",
+            "method": "setHost",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Url\\Url",
+            "method": "setPath",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Url\\Url",
+            "method": "setProtocol",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Url\\Url",
+            "method": "to",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\Url\\UrlException",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Url\\UrlException",
+            "method": "because",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\Url\\UrlGenerator",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Url\\UrlGenerator",
+            "method": "__construct",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Url\\UrlGenerator",
+            "method": "path",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\Validation\\Validator",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Validation\\Validator",
+            "method": "__construct",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Validation\\Validator",
+            "method": "email",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Validation\\Validator",
+            "method": "getMessages",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Validation\\Validator",
+            "method": "integer",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Validation\\Validator",
+            "method": "isAbsoluteUrl",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Validation\\Validator",
+            "method": "isAddress",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Validation\\Validator",
+            "method": "isBirthDate",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Validation\\Validator",
+            "method": "isBool",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Validation\\Validator",
+            "method": "isBoolean",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Validation\\Validator",
+            "method": "isCityName",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Validation\\Validator",
+            "method": "isCleanHtml",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Validation\\Validator",
+            "method": "isColor",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Validation\\Validator",
+            "method": "isCountryName",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Validation\\Validator",
+            "method": "isDate",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Validation\\Validator",
+            "method": "isEan13",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Validation\\Validator",
+            "method": "isEmail",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Validation\\Validator",
+            "method": "isFileName",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Validation\\Validator",
+            "method": "isFloat",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Validation\\Validator",
+            "method": "isGenderIsoCode",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Validation\\Validator",
+            "method": "isGenderName",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Validation\\Validator",
+            "method": "isGenericName",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Validation\\Validator",
+            "method": "isIcoFile",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Validation\\Validator",
+            "method": "isImgFile",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Validation\\Validator",
+            "method": "isInt",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Validation\\Validator",
+            "method": "isLanguageIsoCode",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Validation\\Validator",
+            "method": "isLinkRewrite",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Validation\\Validator",
+            "method": "isLoadedObject",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Validation\\Validator",
+            "method": "isMailName",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Validation\\Validator",
+            "method": "isMailSubject",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Validation\\Validator",
+            "method": "isMd5",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Validation\\Validator",
+            "method": "isName",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Validation\\Validator",
+            "method": "isNullOrUnsignedInt",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Validation\\Validator",
+            "method": "isOptFloat",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Validation\\Validator",
+            "method": "isPasswd",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Validation\\Validator",
+            "method": "isPhoneNumber",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Validation\\Validator",
+            "method": "isPostCode",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Validation\\Validator",
+            "method": "isProtocol",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Validation\\Validator",
+            "method": "isSha1",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Validation\\Validator",
+            "method": "isStateIsoCode",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Validation\\Validator",
+            "method": "isString",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Validation\\Validator",
+            "method": "isSubDomainName",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Validation\\Validator",
+            "method": "isUnsignedFloat",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Validation\\Validator",
+            "method": "isUnsignedInt",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Validation\\Validator",
+            "method": "isUrl",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Validation\\Validator",
+            "method": "isValidSearch",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Validation\\Validator",
+            "method": "isValide",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Validation\\Validator",
+            "method": "is_false",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Validation\\Validator",
+            "method": "is_true",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Validation\\Validator",
+            "method": "notEmpty",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\View\\Html",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\View\\Html",
+            "method": "__construct",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\View\\Html",
+            "method": "toResponse",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\View\\View",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\View\\View",
+            "method": "__construct",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\View\\View",
+            "method": "render",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\View\\ViewException",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\View\\ViewException",
+            "method": "because",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "Opus\\Xml\\Xml",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Xml\\Xml",
+            "method": "fromFile",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "method",
+            "symbol": "Opus\\Xml\\Xml",
+            "method": "fromString",
+            "code": "METHOD_METADATA_MISSING",
+            "message": "OpusRefBookMethod metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "OPUS_SimpleXMLElementExtended",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        },
+        {
+            "scope": "class",
+            "symbol": "OPUS_Singleton",
+            "method": "",
+            "code": "CLASS_METADATA_MISSING",
+            "message": "OpusRefBookClass metadata is missing."
+        }
+    ],
+    "snapshot_path": "H:\\Opus\\var\\refbook\\snapshot.latest.json"
+}

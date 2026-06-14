@@ -1,0 +1,16 @@
+{
+    "palier": "P112Q3E4",
+    "strict": true,
+    "domain": "HTTP",
+    "snapshot_schema_version": "opus-refbook-snapshot/v1",
+    "summary": {
+        "classes": 2,
+        "public_methods": 7,
+        "class_metadata_missing": 0,
+        "method_metadata_missing": 0,
+        "load_errors": 0,
+        "violations": 0
+    },
+    "violations": [],
+    "snapshot_path": "H:\\Opus\\var\\refbook\\snapshot.http.latest.json"
+}
