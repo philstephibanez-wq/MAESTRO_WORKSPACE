@@ -44,6 +44,10 @@ P116C4 — OPUS packaging and RefBook migration foundation.
 - `844079472871135c8bc21dcbcc06ec4e076c9659` — `P116C4B_ADD_OPUS_PACKAGE_VALIDATOR`
 - `cdc9daf574b22a48b45243a6525bcd61bd0179cc` — `P116C4B_UPDATE_PACKAGES_README_MANIFEST_VALIDATION`
 - `274a43f8b2fc9c6f57c94f96a484d45f9b27af90` — `P116C4B_UPDATE_OPUS_README_PACKAGE_VALIDATION`
+- `c5e6ad57c66e0d4a639c255fe1c902d7eb4522ec` — `P116C4D_ADD_OPUS_PACKAGE_INSTALLER`
+- `e5d258d51fca6fa0a936be40074699e77dde65f1` — `P116C4D_ADD_OPUS_PACKAGE_INSTALL_CONTRACT`
+- `bee6b2396de731927645f693bc663d3eaa53c773` — `P116C4D_UPDATE_OPUS_README_PACKAGE_INSTALLER`
+- `3515e075a1f67d9a96acb52fb0b2e1d59b8b59b2` — `P116C4D_UPDATE_PACKAGES_README_INSTALLER`
 
 ## Latest relevant MAESTRO_WORKSPACE commits
 
@@ -51,6 +55,9 @@ P116C4 — OPUS packaging and RefBook migration foundation.
 - `855a6cb7e8f310139166e2f5b8938dafdc6101a8` — `P116C3O_UPDATE_README_SHARED_CORE_TOPOLOGY`
 - `3fa08450fa536e21663fc4c363fc8bf49c1e6451` — `P116C3O_UPDATE_PROJECT_INDEX_SHARED_CORE_TOPOLOGY`
 - `012a641f144d99286635ad88d006c155dbdd646b` — `P116C4C_WORKSPACE_ALWAYS_UPDATED_DELIVERY_HANDOFF_ADR`
+- `c09107e96682b4a45e76f2abf6c54e04eb0bfce6` — `P116C4C_ADD_CURRENT_WORKSPACE_HANDOFF`
+- `5735ddda62fc611d2164192626402f83acd764c9` — `P116C4C_UPDATE_README_MANDATORY_HANDOFF`
+- `97376d36c233a50e04a10500113062924e1b3f89` — `P116C4C_UPDATE_PROJECT_INDEX_MANDATORY_HANDOFF`
 
 ## Next safe step
 
@@ -62,6 +69,7 @@ Recommended local checks:
 cd /d H:\path\to\OPUS
 git pull --ff-only
 php tools\validate_opus_packages.php
+php tools\install_opus_package.php --package=opus-refbook --target=H:\UwAmp\www\OPUS_REF_BOOK --opus-root=H:\OPUS --dry-run
 ```
 
 Then audit `OPUS_REF_BOOK` for Twig, backups, legacy names, CSS overrides, and broken i18n before migration.
@@ -69,6 +77,7 @@ Then audit `OPUS_REF_BOOK` for Twig, backups, legacy names, CSS overrides, and b
 ## Explicit blockers / unknowns
 
 - The OPUS package validator has not been executed on the user's local clone by the assistant.
+- The OPUS package installer dry-run has not been executed on the user's local clone by the assistant.
 - The current `OPUS_REF_BOOK` repository is transitional and known to contain broken/scorie state from prior attempts.
 - The final legal `LICENSE` and `COMMERCIAL_LICENSE` texts are not drafted/finalized yet; only `LICENSE_INTENT.md` and workspace ADRs exist.
 
