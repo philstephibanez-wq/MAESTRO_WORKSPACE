@@ -4,6 +4,17 @@ Workspace global de coordination pour les sous-projets MAESTRO, OPUS, OPUS RefBo
 
 Ce dépôt sert à garder les contrats, décisions, handoffs et cartes de reprise. Il ne remplace pas les dépôts sources des sous-projets.
 
+## Reprise immédiate dans un chat neuf
+
+Lire dans cet ordre :
+
+1. `README.md` ;
+2. `CONTEXT/HANDOFFS/CURRENT_HANDOFF.md` ;
+3. `CONTEXT/PROJECTS/PROJECT_INDEX.md` ;
+4. les ADRs liées.
+
+Aucune livraison n'est complète si le workspace/handoff n'a pas été mis à jour quand l'état projet change.
+
 ## Vue rapide
 
 | Projet | Rôle | État |
@@ -45,8 +56,20 @@ Le RefBook peut être livré séparément comme package/site optionnel, mais il 
 | Commercial | Licence commerciale payante avec royalties obligatoires |
 | Open source OSI | Non, sauf décision future contraire |
 
+## Handoff obligatoire à chaque livraison
+
+À chaque livraison qui change l'état projet, mettre à jour le workspace, notamment :
+
+- `CONTEXT/HANDOFFS/CURRENT_HANDOFF.md` pour la reprise immédiate ;
+- `CONTEXT/PROJECTS/PROJECT_INDEX.md` si les priorités changent ;
+- `CONTEXT/DECISIONS/*.md` si une décision d'architecture/licence/packaging est prise ;
+- `README.md` si la vue 10 secondes change.
+
+Le but est de pouvoir ouvrir un chat neuf à tout moment sans dépendre d'une mémoire implicite.
+
 ## Raccourcis
 
+- Handoff courant : CONTEXT/HANDOFFS/CURRENT_HANDOFF.md
 - Index projets : CONTEXT/PROJECTS/PROJECT_INDEX.md
 - Décisions : CONTEXT/DECISIONS/
 - Handoffs : CONTEXT/HANDOFFS/
@@ -63,3 +86,4 @@ Le RefBook peut être livré séparément comme package/site optionnel, mais il 
 - À la livraison : proposer OPUS clean en package principal, OPUS_REF_BOOK en option officielle, OPUS_USER_GUIDE en option envisagée.
 - Topologie cible : OPUS core unique partagé, packages optionnels sans copie du framework.
 - Licence OPUS cible : copyright Philippe Stéphane Ibanez, usage non commercial libre, usage commercial sous licence payante avec royalties.
+- À chaque livraison : workspace et `CURRENT_HANDOFF.md` mis à jour si l'état projet change.
