@@ -100,24 +100,6 @@
                 "type": "shell",
                 "command": "H:\\UwAmp\\bin\\php\\php-8.5.6\\php.exe -v",
                 "problemMatcher": []
-            },
-            {
-                "label": "P112 · ASAP_REF_BOOK smoke D3",
-                "type": "shell",
-                "command": "H:\\UwAmp\\bin\\php\\php-8.5.6\\php.exe H:\\ASAP_REF_BOOK\\tools\\smoke\\p112d3_reference_book_api_pages_smoke.php",
-                "problemMatcher": []
-            },
-            {
-                "label": "P112 · Test ASAP_REF_BOOK application page",
-                "type": "shell",
-                "command": "curl.exe -s http://127.0.0.1/ASAP_REF_BOOK/application",
-                "problemMatcher": []
-            },
-            {
-                "label": "P112 · Test ASAP_REF_BOOK security page",
-                "type": "shell",
-                "command": "curl.exe -s http://127.0.0.1/ASAP_REF_BOOK/security",
-                "problemMatcher": []
             }
         ]
     }
