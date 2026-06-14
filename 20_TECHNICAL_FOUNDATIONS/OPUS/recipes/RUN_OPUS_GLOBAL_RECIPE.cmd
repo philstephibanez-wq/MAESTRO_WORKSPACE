@@ -5,8 +5,8 @@ if not exist "H:\OPUS\config" echo OPUS_GLOBAL_RECIPE_FAILED_CONFIG_MISSING
 if not exist "H:\OPUS\config" exit /b 1
 if not exist "H:\OPUS\framework\Opus" echo OPUS_GLOBAL_RECIPE_FAILED_FRAMEWORK_CORE_MISSING
 if not exist "H:\OPUS\framework\Opus" exit /b 1
-if not exist "H:\OPUS\packages\opus-refbook\opus-package.json" echo OPUS_GLOBAL_RECIPE_FAILED_REFBOOK_PACKAGE_MANIFEST_MISSING
-if not exist "H:\OPUS\packages\opus-refbook\opus-package.json" exit /b 1
+if not exist "H:\OPUS\packages\opus-8.1.0-lysenko-reference-book\opus-package.json" echo OPUS_GLOBAL_RECIPE_FAILED_REFBOOK_PACKAGE_MANIFEST_MISSING
+if not exist "H:\OPUS\packages\opus-8.1.0-lysenko-reference-book\opus-package.json" exit /b 1
 if not exist "H:\OPUS\sites" echo OPUS_GLOBAL_RECIPE_FAILED_SITES_ROOT_MISSING
 if not exist "H:\OPUS\sites" exit /b 1
 if not exist "H:\OPUS\var" echo OPUS_GLOBAL_RECIPE_FAILED_VAR_ROOT_MISSING
