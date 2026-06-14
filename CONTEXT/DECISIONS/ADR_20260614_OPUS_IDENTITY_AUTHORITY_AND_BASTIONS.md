@@ -4,7 +4,7 @@
 
 Accepted as architecture direction.
 
-Implementation is deferred until after the RefBook `.score` migration is stabilized.
+Implementation is deferred until after the RefBook `.score` migration is stabilized and the KB / MO_KB resume point is clear.
 
 ## Context
 
@@ -19,6 +19,8 @@ The workspace is moving toward public and semi-public surfaces:
 
 The user wants a secure-by-design architecture with minimal attack surface.
 
+On 2026-06-14, the user confirmed that a dedicated HP Elite 8300 Linux server is ready and Webmin is already installed. This server can become the first physical bastion target, reducing the need for an initial bastion VM in the first deployment profile.
+
 ## Decision
 
 Introduce a self-hosted trust authority and bastion-oriented security model.
@@ -32,6 +34,7 @@ OPUS_POLICY_ENGINE
 OPUS_PUBLIC_BASTION
 OPUS_ADMIN_BASTION
 OPUS_WORKER_BASTION
+LSTSAR
 ```
 
 ## OPUS_IDENTITY_AUTHORITY
@@ -160,11 +163,63 @@ Rules:
 - Bastions fail closed.
 - Workers/slaves should call outward; they should not expose public inbound ports.
 
-## VM decision
+## Physical Linux bastion target
+
+The first concrete bastion target is the user's dedicated HP Elite 8300 Linux server.
+
+Target name:
+
+```text
+HP_ELITE_8300_LINUX_BASTION
+```
+
+Initial role:
+
+```text
+Internet
+  ↓ HTTPS 443 only when public
+HP_ELITE_8300_LINUX_BASTION
+  ↓ controlled reverse proxy / firewall / gateway path
+Windows H: internal services
+  OPUS / OPUS_REF_BOOK / MO_KB / Maestro / KB / development data
+```
+
+Accepted responsibilities:
+
+- public edge / bastion host,
+- reverse proxy,
+- TLS termination,
+- firewall boundary,
+- access/security logs,
+- fail2ban / rate limiting candidate,
+- future API gateway host candidate,
+- future Identity Authority host candidate only if isolation, backup, secret-storage and restore policy are validated first.
+
+Webmin rule:
+
+```text
+Webmin is admin-only.
+Webmin must remain LAN/VPN-only.
+Webmin must not be exposed directly to the public Internet.
+```
+
+## VM / physical host decision
 
 VMs are not mandatory for local development.
 
-Local/dev can start with:
+A dedicated physical Linux bastion is now available, so the first serious public exposure model should prefer:
+
+```text
+HP_ELITE_8300_LINUX_BASTION
++
+OPUS services behind it
++
+no business data or KB on the bastion
++
+Webmin LAN/VPN only
+```
+
+Local/dev can still start with:
 
 ```text
 single Windows host
@@ -174,25 +229,40 @@ Windows firewall and Bitdefender rules
 no direct public daemon/database exposure
 ```
 
-For serious public exposure, the recommended first hardening step is:
+Long-term stronger model remains possible:
 
 ```text
-one lightweight public bastion VM
-+
-OPUS services behind it
-+
-no data or KB on the bastion
-```
-
-Long-term stronger model:
-
-```text
-VM_PUBLIC_BASTION
-VM_API_GATEWAY
-VM_IDENTITY_AUTHORITY
+PHYSICAL_PUBLIC_BASTION or VM_PUBLIC_BASTION
+VM_API_GATEWAY or dedicated gateway service
+VM_IDENTITY_AUTHORITY or dedicated authority service
 VM_APP_SERVICES
 protected DATA / KB storage
 ```
+
+## LSTSAR
+
+`LSTSAR` is accepted as a future secure data-flow layer and must not become a catch-all engine.
+
+Working meaning:
+
+```text
+Load
+Store
+Transform
+Security
+Audit
+Replay-control
+```
+
+Constraints:
+
+- strict contracts,
+- typed validation,
+- explicit transformation policy,
+- auditable execution,
+- replay protection where relevant,
+- no silent fallback,
+- no direct bypass of `OPUS_API_GATEWAY`, `OPUS_IDENTITY_AUTHORITY`, or policy decisions.
 
 ## Consequences
 
@@ -203,6 +273,7 @@ Positive:
 - consistent audit,
 - revocable clients and tokens,
 - clear separation between public gateway and internal services,
+- physical Linux bastion available without waiting for VM setup,
 - worker/slave security model can grow cleanly.
 
 Costs:
@@ -210,7 +281,8 @@ Costs:
 - more infrastructure concepts,
 - more recipes required,
 - token/key lifecycle must be maintained,
-- local dev and public deployment profiles must be documented separately.
+- local dev, LAN, bastion and public deployment profiles must be documented separately,
+- HP Linux bastion hardening must be done carefully before public exposure.
 
 ## Execution order
 
@@ -221,8 +293,10 @@ Recommended order:
 ```text
 P116C3_REAL_SCORE_REFBOOK
 P116C4_LIVE_REFBOOK_RECIPE
-stable handoff
+stable RefBook handoff
+resume KB / MO_KB work
 P117A_IDENTITY_AUTHORITY_CONTRACT
 P117B_BASTION_SECURITY_MODEL
 P117C_API_GATEWAY_PEP
+P117H_LSTSAR_CONTRACT
 ```
