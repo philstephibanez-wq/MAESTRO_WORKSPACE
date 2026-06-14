@@ -11,22 +11,30 @@ Ce fichier donne une lecture immédiate des sous-projets du workspace. Il doit r
 - Dépôt cible : OPUS.
 - Priorité : haute.
 - Règle : OPUS n'est pas ASAP. ASAP est historique uniquement.
+- Livraison : package principal obligatoire, clean, sans résidus RefBook/Twig/legacy.
 
 ### OPUS RefBook
 
 - Rôle : site officiel de documentation OPUS.
-- Cible : application/site livré dans le package OPUS.
+- Cible : package optionnel officiel livré avec OPUS.
 - Emplacement cible : OPUS/sites/opus-refbook.
 - Mode local : offline-first.
 - Mode publié : online public, sans debug ni chemins locaux.
 - Règle : fonctionne grâce à OPUS, mais ne pollue pas le cœur framework.
 - Livrable propre : zéro Twig actif, zéro legacy, zéro backup, zéro CSS mort.
 
+### OPUS_USER_GUIDE
+
+- Rôle : guide utilisateur optionnel futur.
+- Différence : guide humain, installation, workflows, exemples et prise en main.
+- Règle : ne pas le mélanger au RefBook technique sans ADR dédiée.
+- Statut : option de livraison envisagée, à cadrer.
+
 ### OPUS_REF_BOOK
 
 - Rôle : dépôt transitoire actuel du RefBook.
 - Statut : instable, à assainir.
-- Destination : migration contrôlée vers OPUS/sites/opus-refbook.
+- Destination : migration contrôlée vers OPUS/sites/opus-refbook puis package optionnel OPUS_REF_BOOK.
 - Règle : ne pas le considérer comme source officielle long terme.
 
 ### MAESTRO_V5
@@ -58,6 +66,14 @@ Ce fichier donne une lecture immédiate des sous-projets du workspace. Il doit r
 - Rôle : contexte global, décisions, handoffs, contrats transverses.
 - Règle : documenter et cadrer, pas remplacer les dépôts sources.
 
+## Packaging OPUS cible
+
+| Package | Type | Inclusion |
+|---|---|---|
+| OPUS | Core obligatoire | Toujours livré |
+| OPUS_REF_BOOK | Site officiel optionnel | Profil documenté/offline/online |
+| OPUS_USER_GUIDE | Guide utilisateur optionnel | Profil futur à cadrer |
+
 ## Priorité de reprise
 
 1. Stopper les rustines sur OPUS_REF_BOOK.
@@ -65,10 +81,12 @@ Ce fichier donne une lecture immédiate des sous-projets du workspace. Il doit r
 3. Nettoyer Twig/legacy/backups du livrable cible.
 4. Stabiliser layout et i18n RefBook.
 5. Préparer migration RefBook dans OPUS.
-6. Reprendre OPUS puis KB/Maestro selon priorité validée.
+6. Cadrer les profils de livraison OPUS / OPUS_REF_BOOK / OPUS_USER_GUIDE.
+7. Reprendre OPUS puis KB/Maestro selon priorité validée.
 
 ## Contrats associés
 
+- CONTEXT/DECISIONS/ADR_20260614_OPUS_DELIVERY_PACKAGING_PROFILE.md
 - CONTEXT/DECISIONS/ADR_20260614_OPUS_REFBOOK_PACKAGED_OFFLINE_ONLINE_SITE.md
 - CONTEXT/DECISIONS/ADR_20260614_OPUS_FRAMEWORK_IDENTITY.md
 - CONTEXT/VERSIONS/OPUS_VERSION.md
