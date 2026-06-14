@@ -4,12 +4,13 @@
  *
  * Visibility: public CLI maintenance tool.
  * Role: validate official optional OPUS package manifests and clean-deliverable gates.
- * Arguments: none. The script must be launched from the OPUS repository root or from any
- *            descendant directory; it resolves the repository root from its own location.
+ * Arguments: --root=<absolute OPUS root>. The tool is workspace-only and must validate an
+ *            explicit OPUS product root; it must not infer the target from its own location.
  * Returns: process exit code 0 when every package passes, 1 when at least one package fails.
  * Side effects: prints a deterministic report to STDOUT/STDERR; does not modify files.
- * Errors: invalid JSON, missing manifest fields, forbidden fallbacks, duplicated framework,
- *         Twig templates, legacy backups, caches, secrets or vendor dumps in package trees.
+ * Errors: missing root, invalid JSON, missing manifest fields, forbidden fallbacks,
+ *         duplicated framework, Twig templates, legacy backups, caches, secrets or vendor dumps
+ *         in package trees.
  * Business contract: zero silent fallback. A missing or invalid package contract is a hard error.
  */
 
@@ -21,9 +22,14 @@ final class OpusPackageValidator
     /** @var list<string> */
     private array $errors = [];
 
-    public function run(): int
+    /** @param list<string> $argv */
+    public function run(array $argv): int
     {
-        $root = dirname(__DIR__);
+        $root = $this->resolveRoot($argv);
+        if ($root === null) {
+            return $this->finish();
+        }
+
         $packagesRoot = $root . DIRECTORY_SEPARATOR . 'packages';
 
         if (!is_dir($packagesRoot)) {
@@ -42,6 +48,41 @@ final class OpusPackageValidator
         }
 
         return $this->finish();
+    }
+
+    /**
+     * Resolve the explicit OPUS product root passed by the caller.
+     *
+     * @param list<string> $argv
+     */
+    private function resolveRoot(array $argv): ?string
+    {
+        $candidate = null;
+
+        foreach ($argv as $index => $argument) {
+            if ($argument === '--root') {
+                $candidate = $argv[$index + 1] ?? null;
+                break;
+            }
+
+            if (str_starts_with($argument, '--root=')) {
+                $candidate = substr($argument, strlen('--root='));
+                break;
+            }
+        }
+
+        if (!is_string($candidate) || trim($candidate) === '') {
+            $this->error('Missing required argument: --root=<absolute OPUS root>');
+            return null;
+        }
+
+        $root = rtrim($candidate, "\\/");
+        if (!is_dir($root)) {
+            $this->error('OPUS root not found: ' . $root);
+            return null;
+        }
+
+        return $root;
     }
 
     /**
@@ -265,4 +306,4 @@ final class OpusPackageValidator
     }
 }
 
-exit((new OpusPackageValidator())->run());
+exit((new OpusPackageValidator())->run($argv));
