@@ -68,6 +68,7 @@ Ce fichier donne une lecture immédiate des sous-projets du workspace. Il doit r
 
 - Rôle : contexte global, décisions, handoffs, contrats transverses.
 - Règle : documenter et cadrer, pas remplacer les dépôts sources.
+- Règle livraison : chaque livraison significative met à jour le workspace et `CONTEXT/HANDOFFS/CURRENT_HANDOFF.md`.
 
 ## Packaging OPUS cible
 
@@ -85,6 +86,16 @@ Les sites/packages optionnels déclarent leur dépendance OPUS.
 Aucun site ne copie framework/Opus dans son propre arbre.
 ```
 
+## Handoff de reprise obligatoire
+
+Le fichier canonique de reprise est :
+
+```text
+CONTEXT/HANDOFFS/CURRENT_HANDOFF.md
+```
+
+Il doit être mis à jour à chaque livraison qui change l'état réel d'un sous-projet, une décision, une priorité ou une prochaine étape.
+
 ## Priorité de reprise
 
 1. Stopper les rustines sur OPUS_REF_BOOK.
@@ -95,9 +106,12 @@ Aucun site ne copie framework/Opus dans son propre arbre.
 6. Préparer migration RefBook dans OPUS/packages/opus-refbook.
 7. Cadrer les profils de livraison OPUS / OPUS_REF_BOOK / OPUS_USER_GUIDE.
 8. Reprendre OPUS puis KB/Maestro selon priorité validée.
+9. Mettre à jour `CURRENT_HANDOFF.md` à chaque livraison.
 
 ## Contrats associés
 
+- CONTEXT/HANDOFFS/CURRENT_HANDOFF.md
+- CONTEXT/DECISIONS/ADR_20260614_WORKSPACE_ALWAYS_UPDATED_DELIVERY_HANDOFF.md
 - CONTEXT/DECISIONS/ADR_20260614_OPUS_DELIVERY_PACKAGING_PROFILE.md
 - CONTEXT/DECISIONS/ADR_20260614_OPUS_REFBOOK_PACKAGED_OFFLINE_ONLINE_SITE.md
 - CONTEXT/DECISIONS/ADR_20260614_OPUS_SHARED_CORE_PACKAGES_NO_DUPLICATION.md
