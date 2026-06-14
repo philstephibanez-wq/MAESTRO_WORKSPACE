@@ -1,0 +1,74 @@
+# Project Index — MAESTRO WORKSPACE
+
+Ce fichier donne une lecture immédiate des sous-projets du workspace. Il doit rester court, opérationnel et maintenable.
+
+## Carte des sous-projets
+
+### OPUS
+
+- Rôle : framework PHP principal.
+- Identité : OPUS Framework 8.1.0 "Lysenko".
+- Dépôt cible : OPUS.
+- Priorité : haute.
+- Règle : OPUS n'est pas ASAP. ASAP est historique uniquement.
+
+### OPUS RefBook
+
+- Rôle : site officiel de documentation OPUS.
+- Cible : application/site livré dans le package OPUS.
+- Emplacement cible : OPUS/sites/opus-refbook.
+- Mode local : offline-first.
+- Mode publié : online public, sans debug ni chemins locaux.
+- Règle : fonctionne grâce à OPUS, mais ne pollue pas le cœur framework.
+- Livrable propre : zéro Twig actif, zéro legacy, zéro backup, zéro CSS mort.
+
+### OPUS_REF_BOOK
+
+- Rôle : dépôt transitoire actuel du RefBook.
+- Statut : instable, à assainir.
+- Destination : migration contrôlée vers OPUS/sites/opus-refbook.
+- Règle : ne pas le considérer comme source officielle long terme.
+
+### MAESTRO_V5
+
+- Rôle : assistant musical REAPER/Lua.
+- Objectif : aider le musicien à composer, analyser, humaniser, orchestrer et enrichir.
+- Règle : la finalité reste faire de la musique, pas maintenir l'infrastructure.
+
+### MO_KB_DAEMON
+
+- Rôle : backend KB musicale, workers, master/slaves, ingestion et analyses.
+- Mode : service Python/headless + contrôle local.
+- Règle : la KB canonique reste sous contrôle master ; slaves sans écriture directe concurrente.
+
+### MO_KB_FRONT
+
+- Rôle : front/backoffice PHP/UwAmp pour la KB.
+- Statut : à aligner progressivement avec OPUS.
+- Règle : UI web séparée du backend Python, consommation par API/versionnement.
+
+### Log&Play / publication
+
+- Rôle : exposition publique, domaines, publication des sites.
+- Cible : publication RefBook et autres sites via architecture sécurisée.
+- Règle : public -> bastion -> gateway -> services internes -> data.
+
+### MAESTRO_WORKSPACE
+
+- Rôle : contexte global, décisions, handoffs, contrats transverses.
+- Règle : documenter et cadrer, pas remplacer les dépôts sources.
+
+## Priorité de reprise
+
+1. Stopper les rustines sur OPUS_REF_BOOK.
+2. Auditer le vrai contenu servi localement.
+3. Nettoyer Twig/legacy/backups du livrable cible.
+4. Stabiliser layout et i18n RefBook.
+5. Préparer migration RefBook dans OPUS.
+6. Reprendre OPUS puis KB/Maestro selon priorité validée.
+
+## Contrats associés
+
+- CONTEXT/DECISIONS/ADR_20260614_OPUS_REFBOOK_PACKAGED_OFFLINE_ONLINE_SITE.md
+- CONTEXT/DECISIONS/ADR_20260614_OPUS_FRAMEWORK_IDENTITY.md
+- CONTEXT/VERSIONS/OPUS_VERSION.md
