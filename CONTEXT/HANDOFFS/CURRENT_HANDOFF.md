@@ -6,7 +6,7 @@ Canonical resume card for a fresh chat. A new chat must be able to restart from 
 
 ## Current priority
 
-P116C5N — restore OPUS runtime entrypoint, framework autoloader, strict `var/cache` + `var/logs` contract.
+P116C5N — validate OPUS runtime entrypoint, framework autoloader, strict `var/cache` + `var/logs` contract.
 
 ## Immediate stop rule
 
@@ -60,29 +60,30 @@ H:\MAESTRO_WORKSPACE\var\opus\...
 H:\MAESTRO_WORKSPACE\tools\opus\...
 ```
 
-## Current OPUS audit facts
+## P116C5N implementation written to OPUS GitHub
 
-Current OPUS repository is clean and up to date on `master`.
-
-Tracked runtime/autoload classes found:
+Written directly to `philstephibanez-wq/OPUS`:
 
 ```text
-framework/Opus/Autoload/AutoloadCache.php
-framework/Opus/Autoload/ClassMapBuilder.php
-framework/Opus/Cache/Cache.php
+index.php
+framework/Opus/Autoload/Autoloader.php
+framework/Opus/Log/RuntimeLogger.php
+.gitignore
 ```
 
-Tracked `var` placeholders found:
+Tracked OPUS `var` cleanup written to GitHub:
 
 ```text
-var/.gitkeep
-var/README.md
-var/cache/.gitkeep
-var/logs/.gitkeep
-var/tmp/.gitkeep
+removed var/.gitkeep
+removed var/README.md
+removed var/tmp/.gitkeep
+kept    var/cache/.gitkeep
+kept    var/logs/.gitkeep
 ```
 
-Current local OPUS `var` also contains dev/diagnostic folders that must leave OPUS product storage:
+Important: local untracked folders in `H:\OPUS\var` are not removed by Git pull. They must be moved or deleted locally before `index.php` can pass the strict var contract.
+
+Known local folders to move out of OPUS product storage if still present:
 
 ```text
 var/audit
@@ -94,21 +95,15 @@ var/tmp
 var/write_refbook_entrypoint.py
 ```
 
-## Next safe step
-
-Implement P116C5N in OPUS only:
+Recommended workspace destination if preservation is needed:
 
 ```text
-1. Add/restore root index.php as the unique runtime entrypoint.
-2. Add framework class Opus\Autoload\Autoloader.
-3. Ensure the autoloader rebuilds its classmap cache when missing or stale.
-4. Ensure OPUS writes runtime logs to var/logs.
-5. Restrict OPUS var to cache/logs only.
-6. Move any dev/diagnostic var content to MAESTRO_WORKSPACE if it must be kept.
-7. Add a blocking runtime audit for entrypoint/cache/log/strict-var.
+H:\MAESTRO_WORKSPACE\var\opus\...
 ```
 
-Expected audit states:
+## Next safe local validation
+
+After pulling OPUS, move any forbidden local `var` entries out of OPUS, then validate:
 
 ```text
 OPUS_INDEX_ENTRYPOINT_OK
@@ -122,7 +117,7 @@ OPUS_STRICT_VAR_CONTRACT_OK
 | Repository | Role | Current state |
 |---|---|---|
 | MAESTRO_WORKSPACE | Contracts, decisions, handoffs | Canonical coordination layer, updated for P116C5N |
-| OPUS | Framework core | Active implementation target: runtime autoloader and strict var |
+| OPUS | Framework core | Runtime autoloader implanted on GitHub; local pull/validation required |
 | OPUS_REF_BOOK | Transitional RefBook repository | Reverted to P116C5H baseline; do not patch UI now |
 | MAESTRO_V5 | REAPER/Lua music assistant | Active, not current priority |
 | MO_KB_DAEMON | Music KB backend/workers | Active, not current priority |
@@ -130,11 +125,11 @@ OPUS_STRICT_VAR_CONTRACT_OK
 
 ## Explicit blockers / unknowns
 
-- OPUS root `index.php` is not yet restored in the audited state.
-- OPUS autoload/cache build scripts were removed from product `tools/`; the runtime role must return as framework class behavior, not as a tools script.
+- Local OPUS must pull the new runtime commits.
+- Local OPUS must move/delete forbidden untracked `var` entries before strict runtime boot can pass.
 - OPUS RefBook must later be checked to ensure it consumes OPUS through the official runtime contract.
 - RefBook UI scroll/footer work is paused until OPUS runtime is stable.
 
 ## Fresh chat starter
 
-On reprend depuis MAESTRO_WORKSPACE. Priorité : P116C5N — restaurer OPUS runtime : `index.php` unique point d’entrée, autoloader classe framework, cache dans `OPUS\var\cache`, logs dans `OPUS\var\logs`, `OPUS\var` strictement limité à `cache/logs`. Ne pas toucher au RefBook UI avant validation runtime.
+On reprend depuis MAESTRO_WORKSPACE. Priorité : P116C5N — valider OPUS runtime : `index.php` unique point d’entrée, autoloader classe framework, cache dans `OPUS\var\cache`, logs dans `OPUS\var\logs`, `OPUS\var` strictement limité à `cache/logs`. OPUS GitHub a reçu `index.php`, `Autoloader.php`, `RuntimeLogger.php`; pull local puis déplacer les anciens dossiers dev de `OPUS\var` vers `MAESTRO_WORKSPACE\var\opus` avant test. Ne pas toucher au RefBook UI avant validation runtime.
