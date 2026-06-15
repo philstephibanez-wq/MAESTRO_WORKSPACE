@@ -19,21 +19,34 @@ Aucune livraison n'est complète si le workspace/handoff n'a pas été mis à jo
 
 | Projet | Rôle | État |
 |---|---|---|
-| OPUS | Framework PHP OPUS 8.1.0 "Lysenko" | Prioritaire |
-| OPUS RefBook | Site officiel de documentation OPUS, package optionnel | Runtime assaini ; UX pro sidebar + thèmes saisons à livrer |
+| OPUS | Framework PHP OPUS 8.1.0 "Lysenko" | Priorité critique : restaurer runtime `index.php` + autoloader + `var/cache` + `var/logs` |
+| OPUS RefBook | Site officiel de documentation OPUS, package optionnel | Revenu au baseline P116C5H ; UI en pause jusqu'à validation runtime OPUS |
 | OPUS_USER_GUIDE | Guide utilisateur optionnel futur | À cadrer |
-| OPUS_REF_BOOK | Dépôt transitoire du RefBook actuel | Assaini côté Twig/ScoreTemplate/branding ; prochaine étape P116C5H |
+| OPUS_REF_BOOK | Dépôt transitoire du RefBook actuel | Revert P116C5M appliqué après régressions UI P116C5I/J/K/L |
 | MAESTRO_V5 | Assistant musical REAPER/Lua | Actif |
 | MO_KB_DAEMON | Backend KB musicale, workers master/slaves | Actif |
 | MO_KB_FRONT | Front/backoffice KB | À aligner |
 | Log&Play | Publication web, domaines, bastion/gateway | À cadrer |
 | MAESTRO_WORKSPACE | Contexte global et décisions | Source de contexte |
 
+## OPUS runtime contract immédiat
+
+```text
+H:\OPUS\index.php                         unique point d'entrée produit
+H:\OPUS\framework\Opus\Autoload\...      autoloader framework
+H:\OPUS\var\cache                         caches runtime OPUS
+H:\OPUS\var\logs                          logs runtime OPUS
+```
+
+`H:\OPUS\var` ne doit contenir que `cache` et `logs`.
+
+Tout ce qui est développement, audit, generated, recipes, tmp, refbook transitoire ou diagnostic va dans MAESTRO_WORKSPACE si nécessaire, pas dans OPUS product runtime.
+
 ## Packaging OPUS cible
 
 | Package | Statut | Contrat |
 |---|---|---|
-| OPUS | Obligatoire | Core clean, livrable, sans résidus RefBook/Twig |
+| OPUS | Obligatoire | Core clean, livrable, runtime strict, sans résidus RefBook/Twig/dev |
 | OPUS_REF_BOOK | Optionnel officiel | Site OPUS offline-first et publiable online |
 | OPUS_USER_GUIDE | Optionnel futur | Guide utilisateur séparé du RefBook technique |
 
@@ -78,13 +91,8 @@ Le but est de pouvoir ouvrir un chat neuf à tout moment sans dépendre d'une m�
 
 ## Règles immédiates
 
-- Pas de patch sans source de vérité.
+- OPUS runtime d'abord, RefBook UI ensuite.
+- Pas de nouveau patch UI RefBook tant que OPUS `index.php` + autoloader + cache/logs ne sont pas validés.
 - Pas de fallback silencieux.
-- Pas de code mort dans les livrables.
-- RefBook cible : zéro Twig actif, zéro archive legacy, zéro backup.
-- RefBook UX cible : header allégé, sidebar documentaire gauche, navigation lisible, thèmes saisons low-glare.
-- Le RefBook OPUS doit rester un vrai site OPUS offline et publiable online.
-- À la livraison : proposer OPUS clean en package principal, OPUS_REF_BOOK en option officielle, OPUS_USER_GUIDE en option envisagée.
-- Topologie cible : OPUS core unique partagé, packages optionnels sans copie du framework.
-- Licence OPUS cible : copyright Philippe Stéphane Ibanez, usage non commercial libre, usage commercial sous licence payante avec royalties.
-- À chaque livraison : workspace et `CURRENT_HANDOFF.md` mis à jour si l'état projet change.
+- Les caches vont dans `OPUS/var/cache`.
+- Les logs vont dans `OPUS/var/logs`.
