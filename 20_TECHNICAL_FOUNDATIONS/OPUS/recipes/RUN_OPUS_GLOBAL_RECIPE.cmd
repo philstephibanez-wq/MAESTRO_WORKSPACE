@@ -1,4 +1,6 @@
 @echo off
+call "%~dp0RUN_OPUS_WORKSPACE_LAYOUT_GUARD.cmd"
+if errorlevel 1 exit /b 1
 call "H:\MAESTRO_WORKSPACE\20_TECHNICAL_FOUNDATIONS\OPUS\recipes\RUN_OPUS_UNIT_RECIPE.cmd"
 if errorlevel 1 exit /b 1
 if not exist "H:\OPUS\config" echo OPUS_GLOBAL_RECIPE_FAILED_CONFIG_MISSING
