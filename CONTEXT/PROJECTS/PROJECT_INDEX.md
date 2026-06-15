@@ -9,9 +9,14 @@ Ce fichier donne une lecture immédiate des sous-projets du workspace. Il doit r
 - Rôle : framework PHP principal.
 - Identité : OPUS Framework 8.1.0 "Lysenko".
 - Dépôt cible : OPUS.
-- Priorité : haute.
+- Priorité : critique immédiate.
 - Règle : OPUS n'est pas ASAP. ASAP est historique uniquement.
-- Livraison : package principal obligatoire, clean, sans résidus RefBook/Twig/legacy.
+- Entrée runtime : `index.php` à la racine OPUS, unique point d'entrée produit.
+- Autoload : classe framework `Opus\Autoload\...`, appelée par `index.php`; aucun script racine `autoload.php`.
+- Cache : `H:\OPUS\var\cache` uniquement.
+- Logs : `H:\OPUS\var\logs` uniquement.
+- Règle `var/` : seulement `cache` et `logs`; tout dev/audit/generated/tmp/recipes/refbook va dans MAESTRO_WORKSPACE si nécessaire.
+- Livraison : package principal obligatoire, clean, sans résidus RefBook/Twig/legacy/dev.
 - Topologie : core framework unique partagé, jamais copié dans chaque site.
 
 ### OPUS RefBook
@@ -24,8 +29,8 @@ Ce fichier donne une lecture immédiate des sous-projets du workspace. Il doit r
 - Règle : fonctionne grâce à OPUS, mais ne pollue pas le cœur framework.
 - Règle runtime : dépend d'un OPUS core partagé déclaré par manifest/config, sans duplication du framework.
 - Livrable propre : zéro Twig actif, zéro legacy, zéro backup, zéro CSS mort.
-- UX cible : header global léger, vraie sidebar documentaire gauche, contenu central confortable, navigation responsive.
-- Thèmes cible : `winter` = Night actuel, `summer` = Ocean actuel, `spring` = mauve pastel/lavande sombre, `autumn` = ambre/cuivre/brun doux. `paper` ne doit plus être exposé.
+- État : revenu au baseline P116C5H après revert des régressions P116C5I/J/K/L.
+- Blocage : ne pas reprendre l'UI RefBook tant que le runtime OPUS n'est pas validé.
 
 ### OPUS_USER_GUIDE
 
@@ -38,9 +43,9 @@ Ce fichier donne une lecture immédiate des sous-projets du workspace. Il doit r
 ### OPUS_REF_BOOK
 
 - Rôle : dépôt transitoire actuel du RefBook.
-- Statut : runtime assaini mais encore transitoire.
-- Validé : ScoreTemplate actif, zéro Twig attendu, Composer purgé de `twig/twig`, `lang=cs` OK, branding `OPUS FRAMEWORK / Reference Book`.
-- Prochaine étape : P116C5H — sidebar documentaire pro + thèmes saisons avant migration dans OPUS/packages/opus-refbook.
+- Statut : runtime assaini puis rollback au baseline P116C5H après régressions UI.
+- Validé avant pause : ScoreTemplate actif, zéro Twig attendu, Composer purgé de `twig/twig`, `lang=cs` OK, branding `OPUS FRAMEWORK / Reference Book`, sidebar/thèmes P116C5H.
+- Dernier commit stable actuel : `b5f00c6 P116C5M_REVERT_REFBOOK_UI_REGRESSIONS_TO_P116C5H`.
 - Destination : migration contrôlée vers OPUS/packages/opus-refbook puis package optionnel OPUS_REF_BOOK.
 - Règle : ne pas le considérer comme source officielle long terme.
 
@@ -73,6 +78,7 @@ Ce fichier donne une lecture immédiate des sous-projets du workspace. Il doit r
 - Rôle : contexte global, décisions, handoffs, contrats transverses.
 - Règle : documenter et cadrer, pas remplacer les dépôts sources.
 - Règle livraison : chaque livraison significative met à jour le workspace et `CONTEXT/HANDOFFS/CURRENT_HANDOFF.md`.
+- Stockage dev OPUS : `H:\MAESTRO_WORKSPACE\var\opus\...` et `H:\MAESTRO_WORKSPACE\tools\opus\...` si nécessaire.
 
 ## Packaging OPUS cible
 
@@ -88,6 +94,8 @@ Ce fichier donne une lecture immédiate des sous-projets du workspace. Il doit r
 OPUS core est unique et partagé.
 Les sites/packages optionnels déclarent leur dépendance OPUS.
 Aucun site ne copie framework/Opus dans son propre arbre.
+OPUS product runtime écrit uniquement dans OPUS/var/cache et OPUS/var/logs.
+Les états de développement, audits, generated, recipes, tmp et refbook transitoire vont dans MAESTRO_WORKSPACE.
 ```
 
 ## Handoff de reprise obligatoire
@@ -102,19 +110,19 @@ Il doit être mis à jour à chaque livraison qui change l'état réel d'un sous
 
 ## Priorité de reprise
 
-1. P116C5H : restaurer une vraie sidebar documentaire gauche dans OPUS_REF_BOOK.
-2. P116C5H : remplacer `night/ocean/paper` par `winter/summer/spring/autumn`.
-3. Garder `winter` proche du Night actuel et `summer` proche de l'Ocean actuel.
-4. Créer `spring` en mauve pastel/lavande sombre premium.
-5. Créer `autumn` en ambre/cuivre/brun doux, sans blanc agressif.
-6. Retirer le menu horizontal principal du header ; garder header = brand, search, theme, language.
-7. Vérifier zéro Twig, zéro erreur runtime i18n, zéro double scrollbar sale.
-8. Ensuite seulement préparer la migration RefBook dans OPUS/packages/opus-refbook.
-9. Mettre à jour `CURRENT_HANDOFF.md` à chaque livraison.
+1. P116C5N : restaurer OPUS `index.php` unique point d'entrée.
+2. P116C5N : restaurer l'autoloader comme classe framework appelée par `index.php`.
+3. P116C5N : l'autoloader reconstruit son cache dans `OPUS/var/cache` si nécessaire.
+4. P116C5N : OPUS écrit ses logs runtime dans `OPUS/var/logs`.
+5. P116C5N : `OPUS/var` est strictement limité à `cache/logs`.
+6. P116C5N : déplacer les contenus dev/audit/generated/tmp/recipes/refbook vers MAESTRO_WORKSPACE si nécessaires.
+7. P116C5N : audit bloquant `OPUS_INDEX_ENTRYPOINT_OK`, `OPUS_AUTOLOAD_CACHE_REBUILD_OK`, `OPUS_RUNTIME_LOG_WRITE_OK`, `OPUS_STRICT_VAR_CONTRACT_OK`.
+8. Ensuite seulement reprendre la migration RefBook contrôlée.
 
 ## Contrats associés
 
 - CONTEXT/HANDOFFS/CURRENT_HANDOFF.md
+- CONTEXT/DECISIONS/ADR_20260616_OPUS_STRICT_RUNTIME_ENTRYPOINT_VAR_AUTOLOADER.md
 - CONTEXT/DECISIONS/ADR_20260614_WORKSPACE_ALWAYS_UPDATED_DELIVERY_HANDOFF.md
 - CONTEXT/DECISIONS/ADR_20260614_OPUS_DELIVERY_PACKAGING_PROFILE.md
 - CONTEXT/DECISIONS/ADR_20260614_OPUS_REFBOOK_PACKAGED_OFFLINE_ONLINE_SITE.md
