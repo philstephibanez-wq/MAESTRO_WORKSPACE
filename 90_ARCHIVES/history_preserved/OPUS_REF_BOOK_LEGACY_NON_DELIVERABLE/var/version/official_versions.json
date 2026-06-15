@@ -1,0 +1,11 @@
+{
+  "schema": "OPUS_REFBOOK_OFFICIAL_VERSIONS_V1",
+  "repository": "philstephibanez-wq/OPUS_REF_BOOK",
+  "repository_url": "https://github.com/philstephibanez-wq/OPUS_REF_BOOK",
+  "default_branch": "main",
+  "default_branch_commit": "ec92c5df2c2c2f59eb8f0f5e112dce09eb4c3505",
+  "latest_tag": null,
+  "latest_release": null,
+  "fetched_at": "2026-06-13T10:45:00+02:00",
+  "source": "github-cache"
+}

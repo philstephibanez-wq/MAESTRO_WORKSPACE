@@ -1,0 +1,23 @@
+{
+  "manifest_version": 3,
+  "name": "Opus RefBook Robot",
+  "description": "Local development robot for OPUS_REF_BOOK visual/runtime contract checks.",
+  "version": "0.1.0",
+  "action": {
+    "default_title": "Opus RefBook Robot",
+    "default_popup": "popup.html"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "http://127.0.0.1/OPUS_REF_BOOK/*",
+        "http://localhost/OPUS_REF_BOOK/*"
+      ],
+      "js": [
+        "content.js"
+      ],
+      "run_at": "document_idle"
+    }
+  ],
+  "permissions": []
+}
