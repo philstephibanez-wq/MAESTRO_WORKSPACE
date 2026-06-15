@@ -24,6 +24,8 @@ Ce fichier donne une lecture immédiate des sous-projets du workspace. Il doit r
 - Règle : fonctionne grâce à OPUS, mais ne pollue pas le cœur framework.
 - Règle runtime : dépend d'un OPUS core partagé déclaré par manifest/config, sans duplication du framework.
 - Livrable propre : zéro Twig actif, zéro legacy, zéro backup, zéro CSS mort.
+- UX cible : header global léger, vraie sidebar documentaire gauche, contenu central confortable, navigation responsive.
+- Thèmes cible : `winter` = Night actuel, `summer` = Ocean actuel, `spring` = mauve pastel/lavande sombre, `autumn` = ambre/cuivre/brun doux. `paper` ne doit plus être exposé.
 
 ### OPUS_USER_GUIDE
 
@@ -36,7 +38,9 @@ Ce fichier donne une lecture immédiate des sous-projets du workspace. Il doit r
 ### OPUS_REF_BOOK
 
 - Rôle : dépôt transitoire actuel du RefBook.
-- Statut : instable, à assainir.
+- Statut : runtime assaini mais encore transitoire.
+- Validé : ScoreTemplate actif, zéro Twig attendu, Composer purgé de `twig/twig`, `lang=cs` OK, branding `OPUS FRAMEWORK / Reference Book`.
+- Prochaine étape : P116C5H — sidebar documentaire pro + thèmes saisons avant migration dans OPUS/packages/opus-refbook.
 - Destination : migration contrôlée vers OPUS/packages/opus-refbook puis package optionnel OPUS_REF_BOOK.
 - Règle : ne pas le considérer comme source officielle long terme.
 
@@ -98,14 +102,14 @@ Il doit être mis à jour à chaque livraison qui change l'état réel d'un sous
 
 ## Priorité de reprise
 
-1. Stopper les rustines sur OPUS_REF_BOOK.
-2. Auditer le vrai contenu servi localement.
-3. Nettoyer Twig/legacy/backups du livrable cible.
-4. Stabiliser layout et i18n RefBook.
-5. Définir le manifest package OPUS optionnel.
-6. Préparer migration RefBook dans OPUS/packages/opus-refbook.
-7. Cadrer les profils de livraison OPUS / OPUS_REF_BOOK / OPUS_USER_GUIDE.
-8. Reprendre OPUS puis KB/Maestro selon priorité validée.
+1. P116C5H : restaurer une vraie sidebar documentaire gauche dans OPUS_REF_BOOK.
+2. P116C5H : remplacer `night/ocean/paper` par `winter/summer/spring/autumn`.
+3. Garder `winter` proche du Night actuel et `summer` proche de l'Ocean actuel.
+4. Créer `spring` en mauve pastel/lavande sombre premium.
+5. Créer `autumn` en ambre/cuivre/brun doux, sans blanc agressif.
+6. Retirer le menu horizontal principal du header ; garder header = brand, search, theme, language.
+7. Vérifier zéro Twig, zéro erreur runtime i18n, zéro double scrollbar sale.
+8. Ensuite seulement préparer la migration RefBook dans OPUS/packages/opus-refbook.
 9. Mettre à jour `CURRENT_HANDOFF.md` à chaque livraison.
 
 ## Contrats associés
@@ -116,4 +120,5 @@ Il doit être mis à jour à chaque livraison qui change l'état réel d'un sous
 - CONTEXT/DECISIONS/ADR_20260614_OPUS_REFBOOK_PACKAGED_OFFLINE_ONLINE_SITE.md
 - CONTEXT/DECISIONS/ADR_20260614_OPUS_SHARED_CORE_PACKAGES_NO_DUPLICATION.md
 - CONTEXT/DECISIONS/ADR_20260614_OPUS_FRAMEWORK_IDENTITY.md
+- CONTEXT/DECISIONS/ADR_20260615_OPUS_REFBOOK_PRO_DOC_SIDEBAR_SEASONS_THEMES.md
 - CONTEXT/VERSIONS/OPUS_VERSION.md
