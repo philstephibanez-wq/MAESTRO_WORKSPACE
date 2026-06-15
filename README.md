@@ -20,9 +20,9 @@ Aucune livraison n'est complète si le workspace/handoff n'a pas été mis à jo
 | Projet | Rôle | État |
 |---|---|---|
 | OPUS | Framework PHP OPUS 8.1.0 "Lysenko" | Prioritaire |
-| OPUS RefBook | Site officiel de documentation OPUS, package optionnel | À migrer dans OPUS |
+| OPUS RefBook | Site officiel de documentation OPUS, package optionnel | Runtime assaini ; UX pro sidebar + thèmes saisons à livrer |
 | OPUS_USER_GUIDE | Guide utilisateur optionnel futur | À cadrer |
-| OPUS_REF_BOOK | Dépôt transitoire du RefBook actuel | À nettoyer |
+| OPUS_REF_BOOK | Dépôt transitoire du RefBook actuel | Assaini côté Twig/ScoreTemplate/branding ; prochaine étape P116C5H |
 | MAESTRO_V5 | Assistant musical REAPER/Lua | Actif |
 | MO_KB_DAEMON | Backend KB musicale, workers master/slaves | Actif |
 | MO_KB_FRONT | Front/backoffice KB | À aligner |
@@ -82,6 +82,7 @@ Le but est de pouvoir ouvrir un chat neuf à tout moment sans dépendre d'une m�
 - Pas de fallback silencieux.
 - Pas de code mort dans les livrables.
 - RefBook cible : zéro Twig actif, zéro archive legacy, zéro backup.
+- RefBook UX cible : header allégé, sidebar documentaire gauche, navigation lisible, thèmes saisons low-glare.
 - Le RefBook OPUS doit rester un vrai site OPUS offline et publiable online.
 - À la livraison : proposer OPUS clean en package principal, OPUS_REF_BOOK en option officielle, OPUS_USER_GUIDE en option envisagée.
 - Topologie cible : OPUS core unique partagé, packages optionnels sans copie du framework.
