@@ -20,3 +20,9 @@ Next implementation target:
 - Keep OPUS core shared and required.
 - Preserve zero silent fallback.
 - Keep all generated docs and tools in MAESTRO_WORKSPACE, never in deliverable packages.
+
+Clarification:
+- The Composer-only, multiplatform rule applies to client deliverables and package installation contracts.
+- Development tooling may use local workspace commands, CMD recipes, smoke tests and generators, but only from MAESTRO_WORKSPACE.
+- Product and deliverable roots must stay clean.
+- Anything that is not deliverable must execute from the workspace, not from OPUS, OPUS_REF_BOOK, packages or public site roots.
