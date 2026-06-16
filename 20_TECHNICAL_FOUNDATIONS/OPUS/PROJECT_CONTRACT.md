@@ -29,21 +29,69 @@ OPUS public readiness requires:
 - operational runtime;
 - strict MVC pipeline;
 - ScoreTemplate rendering;
-- integrated security gates: FSM, ACL, API identity, SSO-style tokens and scopes;
-- TLSTSAR chain including Report;
+- FSM/ACL/SSO-like secure control plane;
+- fail-closed blocked states for suspicious or inconsistent situations;
+- API identity, authentication, authorization, SSO-style tokens and scopes;
+- data-driven site generation and management tools;
+- administrator dashboard protected by the same control plane;
 - developer documentation that explains usage, parameters, returns, errors and examples;
 - Linux deployment documentation;
 - validation reports stored in MAESTRO_WORKSPACE.
 
-## TLSTSAR contract
+## Layer separation contract
 
-For OPUS public release, TLSTSAR means:
+OPUS must not mix responsibilities between layers.
+
+```text
+CONTROL PLANE
+- FSM
+- ACL
+- SSO-like identity
+- authentication
+- authorization
+- scopes
+- blocked states
+
+MVC RUNTIME
+- site resolution
+- route resolution
+- controllers
+- ViewModels
+- ScoreTemplate
+- HTTP/API responses
+
+TOOLS / BUSINESS UTILITIES
+- LSTSAR/TLSTSAR
+- site generators
+- loaders
+- transformers
+- stores
+- KB tools
+- Maestro tools
+
+OBSERVABILITY / OPERATIONS
+- logs
+- reports
+- audits
+- notifications
+- administrator dashboard
+```
+
+The control plane protects tools and business utilities. Tools and business utilities never become the control plane.
+
+## LSTSAR/TLSTSAR contract
+
+LSTSAR/TLSTSAR is a useful secured data-driven utility class. It is not the OPUS security layer.
+
+For OPUS public release, the current LSTSAR/TLSTSAR wording means:
 
 ```text
 Trace -> Load -> Secure -> Transform -> Store -> Audit -> Report
 ```
 
-`Report` is mandatory. Every audit, patch, validation, or release gate must produce an explicit, exploitable report in MAESTRO_WORKSPACE.
+`Report` is mandatory for LSTSAR/TLSTSAR operations.
+
+Every audit, patch, validation, or release gate must produce an explicit, exploitable report in MAESTRO_WORKSPACE.
 
 ## Relation to other projects
 
