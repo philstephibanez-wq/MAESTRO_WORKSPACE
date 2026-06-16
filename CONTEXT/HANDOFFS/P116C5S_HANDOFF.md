@@ -1,4 +1,4 @@
-# P116C5S / P116C5T HANDOFF
+# P116C5S / P116C5T / P116C5U HANDOFF
 
 Status: IN PROGRESS
 
@@ -6,6 +6,7 @@ Scope:
 - OPUS: router-based breadcrumb foundation.
 - OPUS_REF_BOOK: consume OPUS breadcrumb, restore global navigation, separate menu bar from header, keep sidebar complementary, enrich detail pages.
 - P116C5T: map class responsibility / contract from live OPUS source documentation into the RefBook symbol ViewModel.
+- P116C5U: fix the RefBook application shell so header/menu/breadcrumb no longer scroll away with the document body.
 - MAESTRO_WORKSPACE: track this handoff systematically.
 
 Created commits:
@@ -20,15 +21,20 @@ Created commits:
 - OPUS_REF_BOOK 6bbf603 P116C5S_ENRICH_SYMBOL_PAGE_WITH_MERMAID_TRACE
 - OPUS_REF_BOOK 00de193 P116C5S_ENABLE_MERMAID_RENDERING
 - OPUS_REF_BOOK dc603fe P116C5T_MAP_CLASS_RESPONSIBILITY_AND_CONTRACT
+- OPUS_REF_BOOK 902e005 P116C5U_FIX_REFBOOK_FIXED_SHELL_BREADCRUMB
+- OPUS_REF_BOOK 5d98059 P116C5U_FIX_REFBOOK_FIXED_SHELL_BREADCRUMB_CSS
 - MAESTRO_WORKSPACE e4ca979 P116C5T_UPDATE_HANDOFF_CLASS_CONTRACT_MAPPING
 - MAESTRO_WORKSPACE eed3011 P116C5T_FIX_HANDOFF_COMMIT_REFERENCE
 
 Applied UI corrections:
 - Main menu moved below the header as a dedicated horizontal menu bar.
 - Sidebar remains complementary and no longer owns the global menu role.
-- Sidebar domain list is no longer capped by an internal max-height; it follows the page flow.
+- Sidebar domain list is no longer capped by an internal max-height; it follows the sidebar scroll contract.
 - Domain page no longer renders generated/fallback domain descriptions.
 - Symbol detail page now exposes a Mermaid trace generated from real symbol/domain/source/method data.
+- P116C5U moves breadcrumb out of the scrollable content pane into its own shell row.
+- P116C5U changes the RefBook shell to a fixed viewport grid: header, menu, breadcrumb, central body, footer.
+- P116C5U disables document body scrolling and makes the central content/sidebar panes responsible for scrolling.
 
 Applied metadata corrections:
 - ReferenceRuntimeSnapshotRepository no longer forces empty responsibility / contract on every class.
@@ -37,7 +43,6 @@ Applied metadata corrections:
 - If a class has no source section, the key is omitted; the public UI must not invent fallback text.
 
 Remaining:
-- Fix app shell scrolling so header/menu/breadcrumb stay visible while central content scrolls.
 - Replace remaining public symbol/symbole wording in i18n catalogs.
 - Remove inactive domain description fallback code from ReferenceContentService and ReferenceCatalogService.
 - Consider exposing OpusRefBookClass attribute payload directly through RuntimeClassCatalog in a later OPUS-side refinement.
