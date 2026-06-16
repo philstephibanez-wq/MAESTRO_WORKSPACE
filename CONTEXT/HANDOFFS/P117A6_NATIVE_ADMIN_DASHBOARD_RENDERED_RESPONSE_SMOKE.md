@@ -2,7 +2,7 @@
 
 ## Status
 
-PENDING RUNTIME VALIDATION.
+RUNTIME VALIDATED by user on 2026-06-16.
 
 ## OPUS commit chain
 
@@ -28,7 +28,7 @@ git status --short --branch
 php -r "$boot=require 'index.php'; $r=\Opus\Runtime\NativeAdminDashboardRenderedResponseSmoke::run(); foreach (['ok','gate','admin_status','admin_content_type','admin_surface_header','admin_body_contains_dashboard','admin_body_contains_blocked_state','denied_status','denied_is_public_response'] as $k) { echo $k.'='.(is_bool($r[$k]) ? ($r[$k] ? 'true' : 'false') : $r[$k]).PHP_EOL; } echo 'denied_public_body='.str_replace(\"\n\", ' | ', $r['denied_public_body']).PHP_EOL;"
 ```
 
-## Expected result
+## User runtime result
 
 ```text
 ok=true
@@ -41,6 +41,18 @@ admin_body_contains_blocked_state=true
 denied_status=503
 denied_is_public_response=true
 denied_public_body=Site temporairement bloqué. | Contactez le support.
+```
+
+## Validation meaning
+
+P117A6 proves that:
+
+```text
+- the native OPUS administrator dashboard route can render an HTML dashboard response;
+- the response uses the native admin dashboard surface header;
+- the rendered body contains dashboard content and blocked-state information;
+- denied contexts still receive only the opaque public support message;
+- admin diagnostic data is not exposed in denied/public responses.
 ```
 
 ## Next gate after validation
