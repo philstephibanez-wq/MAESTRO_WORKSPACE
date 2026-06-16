@@ -104,21 +104,84 @@ Required:
 
 OPUS is not positioned as a Laravel clone.
 
-OPUS is a strict, secure-by-contract framework with an official request pipeline:
+OPUS is a strict, secure-by-contract, FSM/ACL/SSO-like driven MVC framework.
+
+## OPUS core definition
+
+OPUS is an MVC controlled by an explicit FSM/ACL/SSO-like control plane, like an application micro-computer.
+
+```text
+FSM = control unit / workflow processor
+Route = incoming instruction
+Current state = state register
+Identity / SSO-like = actor and trust context
+ACL = permission circuit
+Controller = authorized execution peripheral
+ViewModel = structured output memory
+ScoreTemplate = display unit
+TLSTSAR Report = execution trace and proof
+```
+
+## Official request control pipeline
+
+No business route, API endpoint, controller action, rendering path, authorization path, or report path may bypass the control plane.
 
 ```text
 Request
+-> Bootstrap
 -> Site resolution
--> Router
--> FSM gate
--> ACL gate
--> API identity / token / scope gate when applicable
--> Controller
+-> Route resolution
+-> Identity / SSO-like context
+-> FSM decision
+-> ACL authorization
+-> API token / scope decision when applicable
+-> Authorized controller action
 -> ViewModel
--> ScoreTemplate
--> Response
--> Audit / Report
+-> ScoreTemplate or API response
+-> TLSTSAR Audit
+-> TLSTSAR Report
 ```
+
+The FSM does not replace ACL or identity. It orchestrates them.
+
+```text
+FSM decides whether the action is possible in the current application state.
+ACL decides whether the actor has permission to execute the action.
+SSO-like identity decides who the actor is and what trust/scopes are attached.
+```
+
+## Public-route ergonomics rule
+
+A simple public page must remain easy to create.
+
+The developer may use a short declaration for simple routes, but OPUS must still map it to explicit internal control metadata.
+
+```text
+Public route declaration
+-> standard public FSM state
+-> standard anonymous identity context
+-> standard public ACL policy
+-> standard public report profile
+```
+
+Sensitive routes, admin routes, API routes, KB routes, and Maestro routes must declare the FSM/ACL/SSO-like control metadata explicitly.
+
+## Data-driven site management objective
+
+OPUS must provide tools to generate and manage a new site from correct configuration and data.
+
+The target developer workflow is configuration-first:
+
+```text
+site configuration
+-> route declarations
+-> FSM/ACL/SSO-like policy declarations
+-> controller/view/template bindings
+-> generated or validated site skeleton
+-> smoke report
+```
+
+The engine may "eat everything" only if the data and configuration are correct. Invalid or incomplete configuration must stop with an explicit diagnostic and report.
 
 ## TLSTSAR definition
 
@@ -141,6 +204,10 @@ Reports belong in MAESTRO_WORKSPACE, not in OPUS product roots.
 - No broad refactor without explicit validation.
 - No source root pollution with patch runners or temporary reports.
 - No documentation-first detour that blocks OPUS runtime and KB/Maestro return.
+- No business route outside FSM/ACL/SSO-like control.
+- No API endpoint outside identity/token/scope control.
+- No public route without explicit standard public policy.
+- No validated action without TLSTSAR Report.
 
 ## Immediate next gate
 
