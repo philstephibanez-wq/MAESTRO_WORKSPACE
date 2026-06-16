@@ -342,12 +342,13 @@ P117A1B_FIX_OPUS_OFFICIAL_AUTOLOAD_BOOT
 P117A2_OPUS_PUBLIC_ROUTE_MVC_SMOKE
 P117A3_FSM_BLOCKED_STATE_EVENT_MODEL
 P117A4_ADMIN_BLOCKED_STATE_DASHBOARD_VIEWMODEL
+P117A5_NATIVE_ADMIN_DASHBOARD_ROUTE_SMOKE
 ```
 
 ## Immediate next gate
 
 ```text
-P117A5_NATIVE_ADMIN_DASHBOARD_ROUTE_SMOKE
+P117A6_NATIVE_ADMIN_DASHBOARD_RENDERED_RESPONSE_SMOKE
 ```
 
-This gate must prove that the administrator dashboard is a native OPUS route surface protected by the same control plane, not an external add-on or bypass.
+This gate must prove that the native administrator dashboard route can render an OPUS dashboard response from the protected ViewModel, while denied or public contexts still receive only the opaque support message.
