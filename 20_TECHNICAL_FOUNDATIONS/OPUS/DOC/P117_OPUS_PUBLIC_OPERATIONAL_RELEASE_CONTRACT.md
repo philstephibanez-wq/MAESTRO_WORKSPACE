@@ -318,15 +318,13 @@ Workspace validation and release reports belong in MAESTRO_WORKSPACE, not in OPU
 
 ## Documentation hygiene rule
 
-OPUS root `DOC` is reserved for stable documentation entry points.
+OPUS product roots must not receive smoke notes, patch notes, runtime validation reports, handoffs, or workflow tracking files.
 
-Per-gate smoke notes, validation reports, patch notes and runtime handoffs must not be accumulated directly under OPUS root `DOC`.
+Per-gate P117 notes and validation reports belong exclusively in MAESTRO_WORKSPACE, under `CONTEXT/HANDOFFS/` and the relevant workspace contracts.
 
-P117 runtime validation reports live in MAESTRO_WORKSPACE handoffs. If OPUS needs an internal pointer, it must be grouped under a dedicated subdirectory such as:
+OPUS `DOC` is reserved only for stable product documentation that is part of OPUS itself, such as public developer documentation, reference entry points, or product manuals. P117 smoke tracking is not stable OPUS product documentation.
 
-```text
-DOC/patches/P117/
-```
+No `DOC/patches/P117/` pointer or equivalent workaround is allowed inside OPUS for P117 workflow tracking.
 
 ## Non-negotiable rules
 
@@ -337,6 +335,7 @@ DOC/patches/P117/
 - No broad refactor without explicit validation.
 - No source root pollution with patch runners or temporary reports.
 - No OPUS root `DOC` pollution with per-gate smoke notes.
+- No OPUS `DOC/patches` pointer for P117 smoke or workflow tracking.
 - No documentation-first detour that blocks OPUS runtime and KB/Maestro return.
 - No business route outside FSM/ACL/SSO-like control.
 - No API endpoint outside identity/token/scope control.
