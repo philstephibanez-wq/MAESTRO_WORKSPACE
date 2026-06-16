@@ -20,7 +20,8 @@ Created commits:
 - OPUS_REF_BOOK 6bbf603 P116C5S_ENRICH_SYMBOL_PAGE_WITH_MERMAID_TRACE
 - OPUS_REF_BOOK 00de193 P116C5S_ENABLE_MERMAID_RENDERING
 - OPUS_REF_BOOK dc603fe P116C5T_MAP_CLASS_RESPONSIBILITY_AND_CONTRACT
-- MAESTRO_WORKSPACE dc603fe context note: OPUS_REF_BOOK commit maps class Responsibility / Contract from live source doc comments; missing fields remain absent, not filled by fallback text.
+- MAESTRO_WORKSPACE e4ca979 P116C5T_UPDATE_HANDOFF_CLASS_CONTRACT_MAPPING
+- MAESTRO_WORKSPACE eed3011 P116C5T_FIX_HANDOFF_COMMIT_REFERENCE
 
 Applied UI corrections:
 - Main menu moved below the header as a dedicated horizontal menu bar.
