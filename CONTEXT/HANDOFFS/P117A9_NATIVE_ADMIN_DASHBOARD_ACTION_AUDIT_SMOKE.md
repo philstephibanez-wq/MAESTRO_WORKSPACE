@@ -1,6 +1,6 @@
 # P117A9 — Native Admin Dashboard Action Audit Smoke
 
-Status: PENDING RUNTIME VALIDATION
+Status: RUNTIME VALIDATED
 Date: 2026-06-16
 Scope: OPUS / MAESTRO_WORKSPACE
 
@@ -39,7 +39,9 @@ git status --short --branch
 php -r "$boot=require 'index.php'; $r=\Opus\Runtime\NativeAdminDashboardActionAuditSmoke::run(); foreach (['ok','gate','audit_event_count','allowed_audit_decision','allowed_audit_action','allowed_audit_effect','denied_audit_decision','denied_audit_reason','denied_public_status','denied_is_public_response'] as $k) { echo $k.'='.(is_bool($r[$k]) ? ($r[$k] ? 'true' : 'false') : $r[$k]).PHP_EOL; } echo 'denied_public_body='.str_replace(\"\n\", ' | ', $r['denied_public_body']).PHP_EOL;"
 ```
 
-## Expected result
+## Runtime validation result
+
+Validated locally by the user on 2026-06-16.
 
 ```text
 ok=true
@@ -55,12 +57,22 @@ denied_is_public_response=true
 denied_public_body=Site temporairement bloqué. | Contactez le support.
 ```
 
+The smoke was run twice successfully after pulling OPUS to `09b5133`.
+
 ## Validation criteria
 
-- Authorized admin action emits a protected audit event.
-- Denied admin action emits a protected audit event.
-- Audit event count is exactly `2`.
-- Authorized event carries `ALLOW` and the expected action effect.
-- Denied event carries `DENY` and the protected denial reason.
-- Public denied response remains the opaque support message.
-- No audit id, admin action, denial reason, effect, or identity context leaks into public response.
+- Authorized admin action emits a protected audit event. VALIDATED.
+- Denied admin action emits a protected audit event. VALIDATED.
+- Audit event count is exactly `2`. VALIDATED.
+- Authorized event carries `ALLOW` and the expected action effect. VALIDATED.
+- Denied event carries `DENY` and the protected denial reason. VALIDATED.
+- Public denied response remains the opaque support message. VALIDATED.
+- No audit id, admin action, denial reason, effect, or identity context leaks into public response. VALIDATED.
+
+## Result
+
+P117A9 is runtime validated.
+
+Authorized native administrator dashboard actions now emit protected audit / observability data.
+
+Denied native administrator dashboard actions also emit protected audit / observability data while still returning only the authorized opaque public support response to the denied caller.
