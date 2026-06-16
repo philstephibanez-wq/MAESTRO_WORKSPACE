@@ -316,6 +316,18 @@ A LSTSAR/TLSTSAR validation without an exploitable report is not valid.
 
 Workspace validation and release reports belong in MAESTRO_WORKSPACE, not in OPUS product roots.
 
+## Documentation hygiene rule
+
+OPUS root `DOC` is reserved for stable documentation entry points.
+
+Per-gate smoke notes, validation reports, patch notes and runtime handoffs must not be accumulated directly under OPUS root `DOC`.
+
+P117 runtime validation reports live in MAESTRO_WORKSPACE handoffs. If OPUS needs an internal pointer, it must be grouped under a dedicated subdirectory such as:
+
+```text
+DOC/patches/P117/
+```
+
 ## Non-negotiable rules
 
 - No silent fallback.
@@ -324,6 +336,7 @@ Workspace validation and release reports belong in MAESTRO_WORKSPACE, not in OPU
 - No empty public documentation sections.
 - No broad refactor without explicit validation.
 - No source root pollution with patch runners or temporary reports.
+- No OPUS root `DOC` pollution with per-gate smoke notes.
 - No documentation-first detour that blocks OPUS runtime and KB/Maestro return.
 - No business route outside FSM/ACL/SSO-like control.
 - No API endpoint outside identity/token/scope control.
@@ -345,12 +358,13 @@ P117A4_ADMIN_BLOCKED_STATE_DASHBOARD_VIEWMODEL
 P117A5_NATIVE_ADMIN_DASHBOARD_ROUTE_SMOKE
 P117A6_NATIVE_ADMIN_DASHBOARD_RENDERED_RESPONSE_SMOKE
 P117A7_NATIVE_ADMIN_DASHBOARD_SCREEN_STRUCTURE_SMOKE
+P117A8_NATIVE_ADMIN_DASHBOARD_ACTION_CONTROL_SMOKE
 ```
 
 ## Immediate next gate
 
 ```text
-P117A8_NATIVE_ADMIN_DASHBOARD_ACTION_CONTROL_SMOKE
+P117A9_NATIVE_ADMIN_DASHBOARD_ACTION_AUDIT_SMOKE
 ```
 
-This gate must prove that native administrator dashboard actions are declared, authorized by the OPUS control plane, and denied with the public opaque support response when the caller is not authorized.
+This gate must prove that authorized native administrator dashboard actions emit protected audit/observability data and that denied callers still receive only the public opaque support response.
