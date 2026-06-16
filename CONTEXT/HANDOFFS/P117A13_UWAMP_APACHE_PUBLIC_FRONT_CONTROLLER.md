@@ -58,7 +58,6 @@ Detailed causes must be visible only to admins through internal logs/dashboard.
 public/index.php
 public/.htaccess
 framework/Opus/Runtime/UwAmpPublicFrontControllerSmoke.php
-DOC/P117A13_UWAMP_APACHE_PUBLIC_FRONT_CONTROLLER.md
 ```
 
 ## Manual local operation still required
