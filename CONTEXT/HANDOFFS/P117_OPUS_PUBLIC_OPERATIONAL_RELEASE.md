@@ -297,8 +297,44 @@ var/cache contains .gitkeep and opus.
 var/logs contains .gitkeep and opus_runtime.log.
 ```
 
+## P117A2 delivered in OPUS
+
+Status: pending user pull/smoke.
+
+Top documented commit:
+
+```text
+27a4c2c P117A2_DOCUMENT_PUBLIC_ROUTE_MVC_SMOKE
+```
+
+Delivered baseline:
+
+```text
+- public request value object
+- public response value object
+- public route declaration
+- public router
+- public control decision
+- public route control plane
+- public blocked response renderer
+- public page model
+- public home action
+- simple ScoreTemplate-compatible renderer
+- public MVC smoke runner
+```
+
+Mandatory public opacity rule is applied by the blocked public renderer:
+
+```text
+Site temporairement bloqué.
+Contactez le support.
+```
+
+Protected administrator diagnostics remain in the smoke result under `admin_diagnostics`; they must not be rendered to public users.
+
 ## Next gate
 
 ```text
-P117A2_OPUS_PUBLIC_ROUTE_MVC_SMOKE
+User validates P117A2 smoke on H:/OPUS.
+Then continue toward P117A3_FSM_BLOCKED_STATE_EVENT_MODEL or P117A3_PUBLIC_SITE_CONFIG_DECLARATION.
 ```
