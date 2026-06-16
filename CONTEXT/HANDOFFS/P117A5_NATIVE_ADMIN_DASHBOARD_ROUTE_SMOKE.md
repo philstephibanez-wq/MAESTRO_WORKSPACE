@@ -2,7 +2,7 @@
 
 ## Status
 
-PENDING_RUNTIME_VALIDATION
+RUNTIME_VALIDATED
 
 ## Scope
 
@@ -49,7 +49,11 @@ git status --short --branch
 php -r "$boot=require 'index.php'; $r=\Opus\Runtime\NativeAdminDashboardRouteSmoke::run(); foreach (['ok','gate','admin_route','admin_allowed','admin_surface','admin_blocked_state','admin_reason','anonymous_allowed','anonymous_public_status','anonymous_admin_reason'] as $k) { echo $k.'='.(is_bool($r[$k]) ? ($r[$k] ? 'true' : 'false') : $r[$k]).PHP_EOL; } echo 'anonymous_public_body='.str_replace(\"\n\", ' | ', $r['anonymous_public_body']).PHP_EOL;"
 ```
 
-## Expected result
+## Runtime validation evidence
+
+User validated on Windows 10.0.26200.8655 from `H:\OPUS` after `git pull` and clean `master...origin/master` status.
+
+Observed output:
 
 ```text
 ok=true
@@ -65,6 +69,19 @@ anonymous_admin_reason=ADMIN_DASHBOARD_ROLE_DENIED
 anonymous_public_body=Site temporairement bloqué. | Contactez le support.
 ```
 
-## Next step after runtime validation
+## Validated guarantees
 
-Record P117A5 runtime validation, then proceed to the next native dashboard increment.
+```text
+Native OPUS admin dashboard route exists: /admin/blocked-states
+Admin route passes through a dedicated control plane
+Authorized admin context receives dashboard data
+Anonymous context is denied
+Denied public response remains opaque
+No admin diagnostic leaks into the public response
+```
+
+## Next step
+
+Proceed to `P117A6_NATIVE_ADMIN_DASHBOARD_RENDERED_RESPONSE_SMOKE`.
+
+This next gate must prove that the native admin route can render an OPUS dashboard response from the protected ViewModel, still without exposing any protected diagnostic to public callers.
