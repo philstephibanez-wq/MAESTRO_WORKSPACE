@@ -52,6 +52,7 @@ Required:
 - Identity / authentication / SSO-like token and scope gate is specified and demonstrable.
 - Fail-closed blocked states are specified and demonstrable.
 - Admin alert event model is specified for blocked states.
+- Native OPUS administrator dashboard ViewModels are specified and demonstrable.
 - LSTSAR/TLSTSAR remains a secured utility class, not the security layer.
 
 ### P117B — Developer documentation
@@ -162,7 +163,7 @@ OBSERVABILITY / OPERATIONS
 - reports
 - audits
 - notifications
-- administrator dashboard
+- native administrator dashboard
 ```
 
 Rule:
@@ -236,6 +237,19 @@ Public route declaration
 
 Sensitive routes, admin routes, API routes, KB routes, Maestro routes, generator routes, and tool invocations must declare the FSM/ACL/SSO-like control metadata explicitly.
 
+## Public error opacity rule
+
+Public users must never receive technical, security, configuration, routing, authentication, authorization, FSM, ACL, API, filesystem, class, database, stack trace, or tool diagnostics.
+
+The only public blocked-state message authorized for a generic site block is:
+
+```text
+Site temporairement bloqué.
+Contactez le support.
+```
+
+All actionable detail must remain private to protected admin surfaces, internal logs, audit events, or secured support workflows.
+
 ## Data-driven site management objective
 
 OPUS must provide tools to generate and manage a new site from correct configuration and data.
@@ -254,9 +268,11 @@ site configuration
 
 The engine may "eat everything" only if the data and configuration are correct. Invalid or incomplete configuration must stop with an explicit diagnostic.
 
-## Administrator dashboard objective
+## Native administrator dashboard objective
 
-OPUS must provide or support an administrator dashboard for site operators.
+OPUS must provide a native integrated administrator dashboard for site operators.
+
+The dashboard is not an external add-on and is not an optional bypass surface. It is part of the OPUS operational product.
 
 The dashboard is an OPUS application protected by the same FSM/ACL/SSO-like control plane.
 
@@ -273,6 +289,10 @@ ADMIN_REPLAY_FAILED_JOB
 ```
 
 Each dashboard action must be a declared route/intention/transition/permission, not a bypass.
+
+Dashboard ViewModels may expose actionable diagnostics to administrators only after the administrator route itself has passed the OPUS control plane.
+
+Dashboard data must never be reused in public responses.
 
 ## Notifications
 
@@ -308,27 +328,26 @@ Workspace validation and release reports belong in MAESTRO_WORKSPACE, not in OPU
 - No business route outside FSM/ACL/SSO-like control.
 - No API endpoint outside identity/token/scope control.
 - No public route without explicit standard public policy.
+- No public technical diagnostic leakage.
 - No authorized tool invocation outside FSM/ACL/SSO-like control.
 - No dashboard action outside FSM/ACL/SSO-like control.
+- No native dashboard data leak to public responses.
 - No LSTSAR/TLSTSAR operation without its own Report.
 - No release gate without a MAESTRO_WORKSPACE validation report.
+
+## Runtime validated gates
+
+```text
+P117A1B_FIX_OPUS_OFFICIAL_AUTOLOAD_BOOT
+P117A2_OPUS_PUBLIC_ROUTE_MVC_SMOKE
+P117A3_FSM_BLOCKED_STATE_EVENT_MODEL
+P117A4_ADMIN_BLOCKED_STATE_DASHBOARD_VIEWMODEL
+```
 
 ## Immediate next gate
 
 ```text
-P117A1_OPUS_RUNTIME_SMOKE_AND_VAR_AUDIT
+P117A5_NATIVE_ADMIN_DASHBOARD_ROUTE_SMOKE
 ```
 
-This gate has already exposed the current OPUS boot blocker:
-
-```text
-Class "Opus\Autoload\Autoloader" not found in H:\OPUS\index.php:23
-```
-
-Next implementation gate:
-
-```text
-P117A1B_FIX_OPUS_OFFICIAL_AUTOLOAD_BOOT
-```
-
-This gate must repair the official boot path without fallback and then rerun the smoke validation.
+This gate must prove that the administrator dashboard is a native OPUS route surface protected by the same control plane, not an external add-on or bypass.
