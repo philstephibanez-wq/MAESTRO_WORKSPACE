@@ -10,7 +10,7 @@ Return to music composition as quickly as possible by making OPUS operational, d
 
 ## Product objective
 
-OPUS must be deliverable as a public PHP framework with integrated security and useful developer documentation.
+OPUS must be deliverable as a public PHP framework with integrated secure-by-design control, useful developer documentation, Linux deployment guidance, and data-driven site generation/management tools.
 
 This release is not a RefBook cosmetic effort.
 
@@ -38,7 +38,7 @@ MAESTRO_WORKSPACE
 
 ## P117 release gates
 
-### P117A — OPUS operational runtime and security baseline
+### P117A — OPUS operational runtime and secure control baseline
 
 Required:
 
@@ -47,10 +47,12 @@ Required:
 - `var` remains restricted to `var/cache` and `var/logs`.
 - MVC pipeline is demonstrable.
 - ScoreTemplate rendering is demonstrable.
-- FSM gate is demonstrable.
+- FSM control gate is demonstrable.
 - ACL gate is demonstrable.
-- API identity / SSO-style token and scope gate is specified and demonstrable.
-- TLSTSAR Report output exists for validation.
+- Identity / authentication / SSO-like token and scope gate is specified and demonstrable.
+- Fail-closed blocked states are specified and demonstrable.
+- Admin alert event model is specified for blocked states.
+- LSTSAR/TLSTSAR remains a secured utility class, not the security layer.
 
 ### P117B — Developer documentation
 
@@ -64,7 +66,7 @@ Required:
 - Render a `.score` page.
 - Secure a route with FSM and ACL.
 - Expose an API endpoint with identity/token/scope checks.
-- Understand TLSTSAR with Report.
+- Use LSTSAR/TLSTSAR as a data-driven utility class when relevant.
 - Deploy on Linux.
 - API reference as appendix only.
 
@@ -78,7 +80,7 @@ Every documented method must explain:
 - explicit errors;
 - example;
 - related workflow or recipe;
-- generated report when applicable.
+- generated report when applicable to that method or tool.
 
 ### P117C — Linux deployment
 
@@ -115,16 +117,64 @@ FSM = control unit / workflow processor
 Route = incoming instruction
 Current state = state register
 Identity / SSO-like = actor and trust context
+Authentication = proof of identity
 ACL = permission circuit
 Controller = authorized execution peripheral
 ViewModel = structured output memory
 ScoreTemplate = display unit
-TLSTSAR Report = execution trace and proof
+Observability = logs, audit events, reports, notifications
+LSTSAR/TLSTSAR = secured data-driven utility class, not security layer
+```
+
+## Strict layer separation
+
+OPUS must not mix responsibilities between layers.
+
+```text
+CONTROL PLANE
+- FSM
+- ACL
+- SSO-like identity
+- authentication
+- authorization
+- scopes
+- blocked states
+
+MVC RUNTIME
+- site resolution
+- route resolution
+- controllers
+- ViewModels
+- ScoreTemplate
+- HTTP/API responses
+
+TOOLS / BUSINESS UTILITIES
+- LSTSAR/TLSTSAR
+- site generators
+- loaders
+- transformers
+- stores
+- KB tools
+- Maestro tools
+
+OBSERVABILITY / OPERATIONS
+- logs
+- reports
+- audits
+- notifications
+- administrator dashboard
+```
+
+Rule:
+
+```text
+The control plane protects tools and business utilities.
+Tools and business utilities never become the control plane.
 ```
 
 ## Official request control pipeline
 
-No business route, API endpoint, controller action, rendering path, authorization path, or report path may bypass the control plane.
+No business route, API endpoint, controller action, rendering path, authorization path, generator action, dashboard action, or tool invocation may bypass the control plane.
 
 ```text
 Request
@@ -132,23 +182,43 @@ Request
 -> Site resolution
 -> Route resolution
 -> Identity / SSO-like context
+-> Authentication decision
 -> FSM decision
 -> ACL authorization
 -> API token / scope decision when applicable
 -> Authorized controller action
+-> Optional authorized tool invocation
 -> ViewModel
 -> ScoreTemplate or API response
--> TLSTSAR Audit
--> TLSTSAR Report
+-> Observability event / report when applicable
 ```
 
-The FSM does not replace ACL or identity. It orchestrates them.
+The FSM does not replace ACL or identity. It orchestrates the control context.
 
 ```text
 FSM decides whether the action is possible in the current application state.
 ACL decides whether the actor has permission to execute the action.
 SSO-like identity decides who the actor is and what trust/scopes are attached.
 ```
+
+## Fail-closed security rule
+
+The FSM is central to security. If an unexpected, strange, incomplete, inconsistent, or suspicious situation occurs, OPUS must stop in an explicit blocked state.
+
+Examples:
+
+```text
+UNKNOWN_ROUTE_BLOCKED
+CONFIG_BLOCKED
+AUTH_BLOCKED
+ACL_BLOCKED
+FSM_TRANSITION_BLOCKED
+API_SCOPE_BLOCKED
+INTEGRITY_BLOCKED
+TOOL_INVOCATION_BLOCKED
+```
+
+No silent recovery, no hidden retry, no implicit permission, no guessed configuration, and no automatic unlock are allowed.
 
 ## Public-route ergonomics rule
 
@@ -161,10 +231,10 @@ Public route declaration
 -> standard public FSM state
 -> standard anonymous identity context
 -> standard public ACL policy
--> standard public report profile
+-> standard public observability profile
 ```
 
-Sensitive routes, admin routes, API routes, KB routes, and Maestro routes must declare the FSM/ACL/SSO-like control metadata explicitly.
+Sensitive routes, admin routes, API routes, KB routes, Maestro routes, generator routes, and tool invocations must declare the FSM/ACL/SSO-like control metadata explicitly.
 
 ## Data-driven site management objective
 
@@ -177,23 +247,54 @@ site configuration
 -> route declarations
 -> FSM/ACL/SSO-like policy declarations
 -> controller/view/template bindings
+-> generator validation
 -> generated or validated site skeleton
--> smoke report
+-> smoke validation report in MAESTRO_WORKSPACE
 ```
 
-The engine may "eat everything" only if the data and configuration are correct. Invalid or incomplete configuration must stop with an explicit diagnostic and report.
+The engine may "eat everything" only if the data and configuration are correct. Invalid or incomplete configuration must stop with an explicit diagnostic.
 
-## TLSTSAR definition
+## Administrator dashboard objective
+
+OPUS must provide or support an administrator dashboard for site operators.
+
+The dashboard is an OPUS application protected by the same FSM/ACL/SSO-like control plane.
+
+It may expose authorized operations such as:
+
+```text
+ADMIN_VIEW_SITE_STATE
+ADMIN_VIEW_BLOCKED_STATES
+ADMIN_ACKNOWLEDGE_ALERT
+ADMIN_RELOAD_CONFIG
+ADMIN_RUN_SITE_AUDIT
+ADMIN_UNLOCK_BLOCKED_SITE
+ADMIN_REPLAY_FAILED_JOB
+```
+
+Each dashboard action must be a declared route/intention/transition/permission, not a bypass.
+
+## Notifications
+
+Blocked states may emit alerts through configured channels such as mail, dashboard, webhook, or internal API.
+
+Notifications are operations/observability. They are not LSTSAR/TLSTSAR and are not the security layer.
+
+Notifications must carry an event id or report id when available, plus the expected manual intervention.
+
+## LSTSAR/TLSTSAR definition
+
+Current project wording may still reference `TLSTSAR`; the concept is a secured data-driven utility class, not the OPUS security layer.
 
 ```text
 Trace -> Load -> Secure -> Transform -> Store -> Audit -> Report
 ```
 
-`Report` is mandatory.
+`Report` is mandatory for LSTSAR/TLSTSAR operations.
 
-A validation without an exploitable report is not valid.
+A LSTSAR/TLSTSAR validation without an exploitable report is not valid.
 
-Reports belong in MAESTRO_WORKSPACE, not in OPUS product roots.
+Workspace validation and release reports belong in MAESTRO_WORKSPACE, not in OPUS product roots.
 
 ## Non-negotiable rules
 
@@ -207,7 +308,10 @@ Reports belong in MAESTRO_WORKSPACE, not in OPUS product roots.
 - No business route outside FSM/ACL/SSO-like control.
 - No API endpoint outside identity/token/scope control.
 - No public route without explicit standard public policy.
-- No validated action without TLSTSAR Report.
+- No authorized tool invocation outside FSM/ACL/SSO-like control.
+- No dashboard action outside FSM/ACL/SSO-like control.
+- No LSTSAR/TLSTSAR operation without its own Report.
+- No release gate without a MAESTRO_WORKSPACE validation report.
 
 ## Immediate next gate
 
@@ -215,4 +319,16 @@ Reports belong in MAESTRO_WORKSPACE, not in OPUS product roots.
 P117A1_OPUS_RUNTIME_SMOKE_AND_VAR_AUDIT
 ```
 
-This gate must establish the operational runtime baseline before modifying product behavior.
+This gate has already exposed the current OPUS boot blocker:
+
+```text
+Class "Opus\Autoload\Autoloader" not found in H:\OPUS\index.php:23
+```
+
+Next implementation gate:
+
+```text
+P117A1B_FIX_OPUS_OFFICIAL_AUTOLOAD_BOOT
+```
+
+This gate must repair the official boot path without fallback and then rerun the smoke validation.
