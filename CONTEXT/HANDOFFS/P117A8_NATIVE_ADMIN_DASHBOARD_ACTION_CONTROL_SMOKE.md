@@ -35,7 +35,7 @@ denied_public_body=Site temporairement bloqué. | Contactez le support.
 - allowed admin action is declared as ADMIN_ACKNOWLEDGE_BLOCKED_STATE
 - authorized administrator with required scope receives granted=true
 - authorized action produces blocked_state_acknowledged
-- missing scope is denied by the OPUS admin action control plane
+- missing scope is denied by OPUS
 - denied caller receives only the public opaque support response
 - administrator action diagnostics do not leak into public output
 ```
@@ -51,15 +51,11 @@ framework/Opus/Runtime/NativeAdminDashboardActionControlSmoke.php
 
 ## Documentation hygiene correction
 
-The OPUS root `DOC` directory must not be used as a dumping ground for per-gate smoke notes.
+The OPUS repository must not store P117 smoke notes, patch notes, runtime validation reports, handoffs, or workflow tracking files.
 
-The OPUS root `DOC/P117A*.md` smoke notes were removed from the root documentation surface after user correction. A single internal pointer is kept under:
+All P117 validation tracking belongs in MAESTRO_WORKSPACE.
 
-```text
-DOC/patches/P117/README.md
-```
-
-Detailed runtime validation remains in MAESTRO_WORKSPACE handoffs.
+No OPUS-side pointer directory is allowed for P117 workflow tracking.
 
 ## Next gate
 
