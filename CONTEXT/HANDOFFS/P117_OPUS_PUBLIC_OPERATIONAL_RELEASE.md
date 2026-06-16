@@ -118,6 +118,40 @@ The control plane protects tools and business utilities.
 Tools and business utilities never become the control plane.
 ```
 
+## P117A0D delivered in MAESTRO_WORKSPACE
+
+Commit:
+
+```text
+f1d39ba P117A0D_ADD_OPUS_FSM_BASTION_THESIS_DOC
+```
+
+Document:
+
+```text
+20_TECHNICAL_FOUNDATIONS/OPUS/DOC/P117_OPUS_FSM_BASTION_THESIS.md
+```
+
+Decision:
+
+```text
+OPUS is a data-driven MVC framework whose execution is controlled by a FSM/ACL/SSO-like bastion.
+```
+
+The document is intended for OPUS public presentation and product positioning. It explains:
+
+```text
+- FSM-bastion as OPUS architectural DNA;
+- strict layer separation;
+- fail-closed blocked states;
+- data-driven site generation;
+- developer ergonomics;
+- administrator dashboard;
+- notifications as operations, not security layer;
+- LSTSAR/TLSTSAR as secured business utility, not control plane;
+- relation to KB, Maestro and final music objective.
+```
+
 ## Corrected project contracts
 
 - `20_TECHNICAL_FOUNDATIONS/OPUS/PROJECT_CONTRACT.md`
@@ -235,14 +269,24 @@ Reports belong in MAESTRO_WORKSPACE, not in OPUS source roots.
 
 ## P117A1 result observed by user
 
-Status: FAIL.
+Status: FAIL then fixed by P117A1B.
 
-The OPUS official entry point does not boot yet.
-
-Observed blocker:
+Initial blocker:
 
 ```text
-Opus/Autoload/Autoloader is not resolved by the official OPUS entry point.
+Opus/Autoload/Autoloader was not resolved by the official OPUS entry point.
+```
+
+P117A1B fixed official boot.
+
+Observed by user after pull:
+
+```text
+ok=true
+class_count=208
+cache_file=H:\OPUS\var\cache\opus\autoload\opus_classmap.php
+log_file=H:\OPUS\var\logs\opus_runtime.log
+rebuild=true
 ```
 
 Observed var tree remains structurally acceptable:
@@ -256,20 +300,5 @@ var/logs contains .gitkeep and opus_runtime.log.
 ## Next gate
 
 ```text
-P117A1B_FIX_OPUS_OFFICIAL_AUTOLOAD_BOOT
-```
-
-Goal:
-
-- repair the official OPUS boot path;
-- resolve the OPUS autoloader without hidden fallback;
-- keep var restricted to cache and logs;
-- rerun the runtime smoke;
-- produce a new explicit validation report.
-
-## User command after pulling workspace
-
-```cmd
-cd /d H:\MAESTRO_WORKSPACE
-git pull
+P117A2_OPUS_PUBLIC_ROUTE_MVC_SMOKE
 ```
