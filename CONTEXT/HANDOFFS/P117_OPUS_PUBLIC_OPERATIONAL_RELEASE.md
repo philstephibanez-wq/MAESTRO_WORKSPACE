@@ -58,10 +58,64 @@ Decision:
 OPUS is an MVC controlled by an explicit FSM/ACL/SSO-like control plane, like an application micro-computer.
 ```
 
-Consequence:
+## P117A0C delivered in MAESTRO_WORKSPACE
+
+Commits:
 
 ```text
-No business route, API endpoint, controller action, rendering path, authorization path, or report path may bypass the control plane.
+5a5471d P117A0C_SEPARATE_SECURITY_CONTROL_AND_LSTSAR_TOOL
+f2e0547 P117A0C_FIX_OPUS_LAYER_SEPARATION_CONTRACT
+```
+
+Decision:
+
+```text
+LSTSAR/TLSTSAR is a secured data-driven utility class.
+It is not the OPUS security layer.
+```
+
+Correct separation:
+
+```text
+CONTROL PLANE
+- FSM
+- ACL
+- SSO-like identity
+- authentication
+- authorization
+- scopes
+- blocked states
+
+MVC RUNTIME
+- site resolution
+- route resolution
+- controllers
+- ViewModels
+- ScoreTemplate
+- HTTP/API responses
+
+TOOLS / BUSINESS UTILITIES
+- LSTSAR/TLSTSAR
+- site generators
+- loaders
+- transformers
+- stores
+- KB tools
+- Maestro tools
+
+OBSERVABILITY / OPERATIONS
+- logs
+- reports
+- audits
+- notifications
+- administrator dashboard
+```
+
+Rule:
+
+```text
+The control plane protects tools and business utilities.
+Tools and business utilities never become the control plane.
 ```
 
 ## Corrected project contracts
@@ -75,7 +129,7 @@ The previous OPUS and OPUS_REF_BOOK project contracts were stale and still refer
 ## P117 scope
 
 ```text
-P117A — OPUS runtime + security + TLSTSAR Report
+P117A — OPUS runtime + FSM/ACL/SSO-like security control plane
 P117B — Developer documentation useful for public release
 P117C — Linux server deployment
 P117D — Return to KB and Maestro
@@ -95,14 +149,32 @@ Request
 -> Site resolution
 -> Route resolution
 -> Identity / SSO-like context
+-> Authentication decision
 -> FSM decision
 -> ACL authorization
 -> API token / scope decision when applicable
 -> Authorized controller action
+-> Optional authorized tool invocation
 -> ViewModel
 -> ScoreTemplate or API response
--> TLSTSAR Audit
--> TLSTSAR Report
+-> Observability event / report when applicable
+```
+
+## Fail-closed security rule
+
+The FSM is central to security. If an unexpected, strange, incomplete, inconsistent, or suspicious situation occurs, OPUS must stop in an explicit blocked state.
+
+Examples:
+
+```text
+UNKNOWN_ROUTE_BLOCKED
+CONFIG_BLOCKED
+AUTH_BLOCKED
+ACL_BLOCKED
+FSM_TRANSITION_BLOCKED
+API_SCOPE_BLOCKED
+INTEGRITY_BLOCKED
+TOOL_INVOCATION_BLOCKED
 ```
 
 ## Data-driven site objective
@@ -116,19 +188,48 @@ site configuration
 -> route declarations
 -> FSM/ACL/SSO-like policy declarations
 -> controller/view/template bindings
+-> generator validation
 -> generated or validated site skeleton
--> smoke report
+-> smoke validation report in MAESTRO_WORKSPACE
 ```
 
-Invalid or incomplete configuration must stop with explicit diagnostics and a report.
+Invalid or incomplete configuration must stop with explicit diagnostics.
 
-## TLSTSAR
+## Administrator dashboard objective
+
+OPUS must provide or support an administrator dashboard for site operators.
+
+The dashboard is an OPUS application protected by the same FSM/ACL/SSO-like control plane.
+
+It may expose authorized operations such as:
+
+```text
+ADMIN_VIEW_SITE_STATE
+ADMIN_VIEW_BLOCKED_STATES
+ADMIN_ACKNOWLEDGE_ALERT
+ADMIN_RELOAD_CONFIG
+ADMIN_RUN_SITE_AUDIT
+ADMIN_UNLOCK_BLOCKED_SITE
+ADMIN_REPLAY_FAILED_JOB
+```
+
+Each dashboard action must be a declared route/intention/transition/permission, not a bypass.
+
+## Notifications
+
+Blocked states may emit alerts through configured channels such as mail, dashboard, webhook, or internal API.
+
+Notifications are operations/observability. They are not LSTSAR/TLSTSAR and are not the security layer.
+
+## LSTSAR/TLSTSAR
+
+Current project wording may still reference `TLSTSAR`; the concept is a secured data-driven utility class, not the OPUS security layer.
 
 ```text
 Trace -> Load -> Secure -> Transform -> Store -> Audit -> Report
 ```
 
-`Report` is mandatory.
+`Report` is mandatory for LSTSAR/TLSTSAR operations.
 
 Reports belong in MAESTRO_WORKSPACE, not in OPUS source roots.
 
