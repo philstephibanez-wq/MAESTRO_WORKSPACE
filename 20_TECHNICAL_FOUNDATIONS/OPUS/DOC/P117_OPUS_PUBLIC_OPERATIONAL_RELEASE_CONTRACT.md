@@ -344,12 +344,13 @@ P117A3_FSM_BLOCKED_STATE_EVENT_MODEL
 P117A4_ADMIN_BLOCKED_STATE_DASHBOARD_VIEWMODEL
 P117A5_NATIVE_ADMIN_DASHBOARD_ROUTE_SMOKE
 P117A6_NATIVE_ADMIN_DASHBOARD_RENDERED_RESPONSE_SMOKE
+P117A7_NATIVE_ADMIN_DASHBOARD_SCREEN_STRUCTURE_SMOKE
 ```
 
 ## Immediate next gate
 
 ```text
-P117A7_NATIVE_ADMIN_DASHBOARD_SCREEN_STRUCTURE_SMOKE
+P117A8_NATIVE_ADMIN_DASHBOARD_ACTION_CONTROL_SMOKE
 ```
 
-This gate must prove that the rendered native administrator dashboard response exposes a stable OPUS dashboard screen structure around protected admin data, while denied or public contexts still receive only the opaque support message.
+This gate must prove that native administrator dashboard actions are declared, authorized by the OPUS control plane, and denied with the public opaque support response when the caller is not authorized.
