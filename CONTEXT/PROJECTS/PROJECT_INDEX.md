@@ -9,12 +9,15 @@ Ce fichier donne une lecture immédiate des sous-projets du workspace. Il doit r
 - Rôle : framework PHP principal.
 - Identité : OPUS Framework 8.1.0 "Lysenko".
 - Dépôt cible : OPUS.
-- Priorité : critique immédiate.
+- Priorité : critique immédiate, livraison Linux préprod + durcissement serveur P117.
+- État Linux : installé dans `/srv/opus/OPUS`, Apache `public/`, DNS LAN, UFW, ClamAV ciblé et AWFFull privé validés.
+- Prochaines étapes : `P117SEC2_FAIL2BAN`, puis `P117L4B_LINUX_MULTISITE_REGISTRY_OVERLAY`, puis `P117AUTH1_ADMIN_GATE_CLOUDFLARE_READY`.
 - Règle : OPUS n'est pas ASAP. ASAP est historique uniquement.
 - Entrée runtime : `index.php` à la racine OPUS, unique point d'entrée produit.
 - Autoload : classe framework `Opus\Autoload\...`, appelée par `index.php`; aucun script racine `autoload.php`.
-- Cache : `H:\OPUS\var\cache` uniquement.
-- Logs : `H:\OPUS\var\logs` uniquement.
+- Cache Windows dev : `H:\OPUS\var\cache` uniquement.
+- Logs Windows dev : `H:\OPUS\var\logs` uniquement.
+- Cache/logs Linux préprod : `/srv/opus/OPUS/var/cache` et `/srv/opus/OPUS/var/logs`.
 - Règle `var/` : seulement `cache` et `logs`; tout dev/audit/generated/tmp/recipes/refbook va dans MAESTRO_WORKSPACE si nécessaire.
 - Livraison : package principal obligatoire, clean, sans résidus RefBook/Twig/legacy/dev.
 - Topologie : core framework unique partagé, jamais copié dans chaque site.
@@ -30,7 +33,7 @@ Ce fichier donne une lecture immédiate des sous-projets du workspace. Il doit r
 - Règle runtime : dépend d'un OPUS core partagé déclaré par manifest/config, sans duplication du framework.
 - Livrable propre : zéro Twig actif, zéro legacy, zéro backup, zéro CSS mort.
 - État : revenu au baseline P116C5H après revert des régressions P116C5I/J/K/L.
-- Blocage : ne pas reprendre l'UI RefBook tant que le runtime OPUS n'est pas validé.
+- Blocage : ne pas reprendre l'UI RefBook tant que le runtime OPUS Linux/P117 n'est pas stabilisé.
 
 ### OPUS_USER_GUIDE
 
@@ -71,7 +74,8 @@ Ce fichier donne une lecture immédiate des sous-projets du workspace. Il doit r
 
 - Rôle : exposition publique, domaines, publication des sites.
 - Cible : publication RefBook et autres sites via architecture sécurisée.
-- Règle : public -> bastion -> gateway -> services internes -> data.
+- Règle : public -> Cloudflare Tunnel/Access -> gateway/service OPUS -> data.
+- Décision opérationnelle P117 : pas d'ouverture Freebox par défaut ; Cloudflare Tunnel + Cloudflare Access avant exposition publique.
 
 ### MAESTRO_WORKSPACE
 
@@ -110,18 +114,17 @@ Il doit être mis à jour à chaque livraison qui change l'état réel d'un sous
 
 ## Priorité de reprise
 
-1. P116C5N : restaurer OPUS `index.php` unique point d'entrée.
-2. P116C5N : restaurer l'autoloader comme classe framework appelée par `index.php`.
-3. P116C5N : l'autoloader reconstruit son cache dans `OPUS/var/cache` si nécessaire.
-4. P116C5N : OPUS écrit ses logs runtime dans `OPUS/var/logs`.
-5. P116C5N : `OPUS/var` est strictement limité à `cache/logs`.
-6. P116C5N : déplacer les contenus dev/audit/generated/tmp/recipes/refbook vers MAESTRO_WORKSPACE si nécessaires.
-7. P116C5N : audit bloquant `OPUS_INDEX_ENTRYPOINT_OK`, `OPUS_AUTOLOAD_CACHE_REBUILD_OK`, `OPUS_RUNTIME_LOG_WRITE_OK`, `OPUS_STRICT_VAR_CONTRACT_OK`.
-8. Ensuite seulement reprendre la migration RefBook contrôlée.
+1. P117SEC2 : installer Fail2ban sans bloquer l'IP LAN opérateur `192.168.1.176` ni l'accès Tailscale.
+2. P117L4B : ajouter un overlay registry Linux pour supprimer `SERVER_DEGRADED` causé par les chemins Windows `H:\UwAmp`.
+3. P117AUTH1 : poser un gate admin explicite compatible LAN préprod et Cloudflare Access.
+4. P117CF1/P117CF2 : Cloudflare Tunnel puis Cloudflare Access, sans ouverture Freebox par défaut.
+5. Reprendre ensuite la migration RefBook contrôlée quand OPUS P117 est stable.
 
 ## Contrats associés
 
 - CONTEXT/HANDOFFS/CURRENT_HANDOFF.md
+- CONTEXT/HANDOFFS/P117_20260617_OPUS_LINUX_BASELINE_SMTP_NTP.md
+- CONTEXT/HANDOFFS/P117_20260617_OPUS_LINUX_DNS_SECURITY_UFW.md
 - CONTEXT/DECISIONS/ADR_20260616_OPUS_STRICT_RUNTIME_ENTRYPOINT_VAR_AUTOLOADER.md
 - CONTEXT/DECISIONS/ADR_20260614_WORKSPACE_ALWAYS_UPDATED_DELIVERY_HANDOFF.md
 - CONTEXT/DECISIONS/ADR_20260614_OPUS_DELIVERY_PACKAGING_PROFILE.md
