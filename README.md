@@ -19,28 +19,51 @@ Aucune livraison n'est complète si le workspace/handoff n'a pas été mis à jo
 
 | Projet | Rôle | État |
 |---|---|---|
-| OPUS | Framework PHP OPUS 8.1.0 "Lysenko" | Priorité critique : restaurer runtime `index.php` + autoloader + `var/cache` + `var/logs` |
-| OPUS RefBook | Site officiel de documentation OPUS, package optionnel | Revenu au baseline P116C5H ; UI en pause jusqu'à validation runtime OPUS |
+| OPUS | Framework PHP OPUS 8.1.0 "Lysenko" | Priorité P117 : Linux préprod installé et durci ; DNS LAN, Apache LAN, UFW, ClamAV ciblé et AWFFull privé validés ; prochain : Fail2ban puis registry overlay Linux |
+| OPUS RefBook | Site officiel de documentation OPUS, package optionnel | UI en pause jusqu'à stabilisation OPUS P117 |
 | OPUS_USER_GUIDE | Guide utilisateur optionnel futur | À cadrer |
 | OPUS_REF_BOOK | Dépôt transitoire du RefBook actuel | Revert P116C5M appliqué après régressions UI P116C5I/J/K/L |
 | MAESTRO_V5 | Assistant musical REAPER/Lua | Actif |
 | MO_KB_DAEMON | Backend KB musicale, workers master/slaves | Actif |
 | MO_KB_FRONT | Front/backoffice KB | À aligner |
-| Log&Play | Publication web, domaines, bastion/gateway | À cadrer |
+| Log&Play | Publication web, domaines, bastion/gateway | Cible : Cloudflare Tunnel + Cloudflare Access, pas d'ouverture Freebox par défaut |
 | MAESTRO_WORKSPACE | Contexte global et décisions | Source de contexte |
 
 ## OPUS runtime contract immédiat
 
 ```text
-H:\OPUS\index.php                         unique point d'entrée produit
+H:\OPUS\index.php                         unique point d'entrée produit Windows dev
 H:\OPUS\framework\Opus\Autoload\...      autoloader framework
-H:\OPUS\var\cache                         caches runtime OPUS
-H:\OPUS\var\logs                          logs runtime OPUS
+H:\OPUS\var\cache                         caches runtime OPUS Windows dev
+H:\OPUS\var\logs                          logs runtime OPUS Windows dev
+/srv/opus/OPUS                              OPUS Linux préprod
+/srv/opus/OPUS/public                       Apache DocumentRoot Linux
+/srv/opus/OPUS/var/cache                    cache runtime Linux
+/srv/opus/OPUS/var/logs                     logs runtime Linux
 ```
 
-`H:\OPUS\var` ne doit contenir que `cache` et `logs`.
+`H:\OPUS\var` et `/srv/opus/OPUS/var` ne doivent contenir que `cache` et `logs`.
 
 Tout ce qui est développement, audit, generated, recipes, tmp, refbook transitoire ou diagnostic va dans MAESTRO_WORKSPACE si nécessaire, pas dans OPUS product runtime.
+
+## OPUS Linux P117 état court
+
+```text
+Serveur Linux       : logandplay
+LAN                 : 192.168.1.135 / eno1
+PC opérateur        : 192.168.1.176
+Tailscale           : 100.83.101.117
+DNS LAN             : dnsmasq, opus.lan.logandplay.org -> 192.168.1.135
+Apache              : /etc/apache2/sites-available/opus-preprod.conf
+UFW                 : actif, incoming deny, LAN/Tailscale autorisés seulement
+ClamAV              : scan ciblé quotidien OPUS + /tmp, pas de suppression automatique
+Stats web privées   : AWFFull vers /srv/opus/security/awffull/opus
+Systemd             : zéro unité failed après validation P117SEC
+```
+
+L'admin direct LAN peut encore afficher `503 Site temporairement bloqué`. C'est attendu jusqu'au gate auth/ACL P117AUTH1.
+
+Le dashboard peut encore afficher `SERVER_DEGRADED` tant que P117L4B n'a pas remplacé les chemins Windows `H:\UwAmp` dans la vue registry Linux.
 
 ## Packaging OPUS cible
 
@@ -91,8 +114,9 @@ Le but est de pouvoir ouvrir un chat neuf à tout moment sans dépendre d'une m�
 
 ## Règles immédiates
 
-- OPUS runtime d'abord, RefBook UI ensuite.
-- Pas de nouveau patch UI RefBook tant que OPUS `index.php` + autoloader + cache/logs ne sont pas validés.
+- OPUS P117 Linux préprod et sécurité d'abord, RefBook UI ensuite.
+- Pas de nouveau patch UI RefBook tant que OPUS Linux P117 n'est pas stabilisé.
 - Pas de fallback silencieux.
 - Les caches vont dans `OPUS/var/cache`.
 - Les logs vont dans `OPUS/var/logs`.
+- Les commandes doivent préciser l'environnement : Windows dev, Windows navigateur, PowerShell admin ou serveur Linux préprod.
