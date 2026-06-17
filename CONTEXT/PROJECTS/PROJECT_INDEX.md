@@ -4,15 +4,28 @@ Ce fichier donne une lecture immédiate des sous-projets du workspace. Il doit r
 
 ## Carte des sous-projets
 
+### LOGANDPLAY
+
+- Rôle : identité publique, carte d'entrée `logandplay.org`, présentation de l'écosystème Log&Play.
+- Statut : nouveau projet workspace créé pour P117SITE1.
+- Dépôt source actuel : à créer ou à rattacher plus tard ; contrat et décisions dans MAESTRO_WORKSPACE.
+- Rendu cible : page/site généré par OPUS, sans hardcode métier dans le core framework.
+- Contenu initial : cartes OPUS, MAESTRO et KB avec description + statut `PROCHAINEMENT`.
+- Exposition : aucune exposition publique active pour l'instant ; OPUS, MAESTRO et KB restent non publics.
+- Sécurité : aucun lien Webmin, admin, LAN, préprod, chemin serveur ou diagnostic public.
+- Cible future : Cloudflare Tunnel + Cloudflare Access, pas d'ouverture Freebox par défaut.
+- Contrat dédié : `CONTEXT/PROJECTS/LOGANDPLAY.md`.
+
 ### OPUS
 
 - Rôle : framework PHP principal.
 - Identité : OPUS Framework 8.1.0 "Lysenko".
 - Dépôt cible : OPUS.
-- Priorité : critique immédiate, livraison Linux préprod + durcissement serveur P117.
-- État Linux : installé dans `/srv/opus/OPUS`, Apache `public/`, DNS LAN, UFW, ClamAV ciblé et AWFFull privé validés.
-- Prochaines étapes : `P117SEC2_FAIL2BAN`, puis `P117L4B_LINUX_MULTISITE_REGISTRY_OVERLAY`, puis `P117AUTH1_ADMIN_GATE_CLOUDFLARE_READY`.
+- Priorité : critique immédiate, livraison Linux préprod + durcissement serveur P117 puis page LOGANDPLAY P117SITE1.
+- État Linux : installé dans `/srv/opus/OPUS`, Apache `public/`, DNS LAN, UFW, Fail2ban SSH/Webmin, ClamAV ciblé, AWFFull privé et Webmin tempdir validés.
+- Prochaines étapes : `P117SITE1_LOGANDPLAY_PUBLIC_IDENTITY_HOME`, puis `P117L4B_LINUX_MULTISITE_REGISTRY_OVERLAY`, puis `P117AUTH1_ADMIN_GATE_CLOUDFLARE_READY`.
 - Règle : OPUS n'est pas ASAP. ASAP est historique uniquement.
+- Règle Log&Play : OPUS génère le site/page, mais le contenu métier LOGANDPLAY ne doit pas être intégré au cœur framework.
 - Entrée runtime : `index.php` à la racine OPUS, unique point d'entrée produit.
 - Autoload : classe framework `Opus\Autoload\...`, appelée par `index.php`; aucun script racine `autoload.php`.
 - Cache Windows dev : `H:\OPUS\var\cache` uniquement.
@@ -56,26 +69,22 @@ Ce fichier donne une lecture immédiate des sous-projets du workspace. Il doit r
 
 - Rôle : assistant musical REAPER/Lua.
 - Objectif : aider le musicien à composer, analyser, humaniser, orchestrer et enrichir.
+- Statut public : non exposé ; future carte LOGANDPLAY en `PROCHAINEMENT`.
 - Règle : la finalité reste faire de la musique, pas maintenir l'infrastructure.
 
 ### MO_KB_DAEMON
 
 - Rôle : backend KB musicale, workers, master/slaves, ingestion et analyses.
 - Mode : service Python/headless + contrôle local.
+- Statut public : non exposé ; future carte LOGANDPLAY en `PROCHAINEMENT`.
 - Règle : la KB canonique reste sous contrôle master ; slaves sans écriture directe concurrente.
 
 ### MO_KB_FRONT
 
 - Rôle : front/backoffice PHP/UwAmp pour la KB.
 - Statut : à aligner progressivement avec OPUS.
+- Statut public : non exposé.
 - Règle : UI web séparée du backend Python, consommation par API/versionnement.
-
-### Log&Play / publication
-
-- Rôle : exposition publique, domaines, publication des sites.
-- Cible : publication RefBook et autres sites via architecture sécurisée.
-- Règle : public -> Cloudflare Tunnel/Access -> gateway/service OPUS -> data.
-- Décision opérationnelle P117 : pas d'ouverture Freebox par défaut ; Cloudflare Tunnel + Cloudflare Access avant exposition publique.
 
 ### MAESTRO_WORKSPACE
 
@@ -91,6 +100,7 @@ Ce fichier donne une lecture immédiate des sous-projets du workspace. Il doit r
 | OPUS | Core obligatoire | Toujours livré |
 | OPUS_REF_BOOK | Site officiel optionnel | Profil documenté/offline/online |
 | OPUS_USER_GUIDE | Guide utilisateur optionnel | Profil futur à cadrer |
+| LOGANDPLAY_SITE | Site public futur | Carte d'identité publique `logandplay.org`, générée par OPUS |
 
 ## Topologie OPUS cible
 
@@ -100,6 +110,7 @@ Les sites/packages optionnels déclarent leur dépendance OPUS.
 Aucun site ne copie framework/Opus dans son propre arbre.
 OPUS product runtime écrit uniquement dans OPUS/var/cache et OPUS/var/logs.
 Les états de développement, audits, generated, recipes, tmp et refbook transitoire vont dans MAESTRO_WORKSPACE.
+LOGANDPLAY est un projet/site consommateur d'OPUS, pas une responsabilité du core OPUS.
 ```
 
 ## Handoff de reprise obligatoire
@@ -114,7 +125,7 @@ Il doit être mis à jour à chaque livraison qui change l'état réel d'un sous
 
 ## Priorité de reprise
 
-1. P117SEC2 : installer Fail2ban sans bloquer l'IP LAN opérateur `192.168.1.176` ni l'accès Tailscale.
+1. P117SITE1 : créer la page identité `logandplay.org` générée par OPUS avec cartes OPUS, MAESTRO et KB en `PROCHAINEMENT`.
 2. P117L4B : ajouter un overlay registry Linux pour supprimer `SERVER_DEGRADED` causé par les chemins Windows `H:\UwAmp`.
 3. P117AUTH1 : poser un gate admin explicite compatible LAN préprod et Cloudflare Access.
 4. P117CF1/P117CF2 : Cloudflare Tunnel puis Cloudflare Access, sans ouverture Freebox par défaut.
@@ -123,8 +134,10 @@ Il doit être mis à jour à chaque livraison qui change l'état réel d'un sous
 ## Contrats associés
 
 - CONTEXT/HANDOFFS/CURRENT_HANDOFF.md
+- CONTEXT/PROJECTS/LOGANDPLAY.md
 - CONTEXT/HANDOFFS/P117_20260617_OPUS_LINUX_BASELINE_SMTP_NTP.md
 - CONTEXT/HANDOFFS/P117_20260617_OPUS_LINUX_DNS_SECURITY_UFW.md
+- CONTEXT/DECISIONS/ADR_20260617_LOGANDPLAY_PUBLIC_IDENTITY_SITE.md
 - CONTEXT/DECISIONS/ADR_20260616_OPUS_STRICT_RUNTIME_ENTRYPOINT_VAR_AUTOLOADER.md
 - CONTEXT/DECISIONS/ADR_20260614_WORKSPACE_ALWAYS_UPDATED_DELIVERY_HANDOFF.md
 - CONTEXT/DECISIONS/ADR_20260614_OPUS_DELIVERY_PACKAGING_PROFILE.md
