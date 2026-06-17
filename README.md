@@ -1,6 +1,6 @@
 # MAESTRO WORKSPACE
 
-Workspace global de coordination pour les sous-projets MAESTRO, OPUS, OPUS RefBook, MO_KB et Log&Play.
+Workspace global de coordination pour les sous-projets MAESTRO, OPUS, OPUS RefBook, MO_KB et LOGANDPLAY.
 
 Ce dépôt sert à garder les contrats, décisions, handoffs et cartes de reprise. Il ne remplace pas les dépôts sources des sous-projets.
 
@@ -19,14 +19,14 @@ Aucune livraison n'est complète si le workspace/handoff n'a pas été mis à jo
 
 | Projet | Rôle | État |
 |---|---|---|
-| OPUS | Framework PHP OPUS 8.1.0 "Lysenko" | Priorité P117 : Linux préprod installé et durci ; DNS LAN, Apache LAN, UFW, ClamAV ciblé et AWFFull privé validés ; prochain : Fail2ban puis registry overlay Linux |
+| LOGANDPLAY | Identité publique, carte d'entrée `logandplay.org` et présentation de l'écosystème | Nouveau projet workspace : page OPUS-generated prévue, liens OPUS/MAESTRO/KB en `PROCHAINEMENT`, aucune exposition publique active |
+| OPUS | Framework PHP OPUS 8.1.0 "Lysenko" | Linux préprod installé et durci ; DNS LAN, Apache LAN, UFW, Fail2ban SSH/Webmin, ClamAV ciblé, AWFFull privé et Webmin tempdir validés ; prochain : page LOGANDPLAY puis registry overlay Linux |
 | OPUS RefBook | Site officiel de documentation OPUS, package optionnel | UI en pause jusqu'à stabilisation OPUS P117 |
 | OPUS_USER_GUIDE | Guide utilisateur optionnel futur | À cadrer |
 | OPUS_REF_BOOK | Dépôt transitoire du RefBook actuel | Revert P116C5M appliqué après régressions UI P116C5I/J/K/L |
-| MAESTRO_V5 | Assistant musical REAPER/Lua | Actif |
-| MO_KB_DAEMON | Backend KB musicale, workers master/slaves | Actif |
-| MO_KB_FRONT | Front/backoffice KB | À aligner |
-| Log&Play | Publication web, domaines, bastion/gateway | Cible : Cloudflare Tunnel + Cloudflare Access, pas d'ouverture Freebox par défaut |
+| MAESTRO_V5 | Assistant musical REAPER/Lua | Actif, non exposé publiquement |
+| MO_KB_DAEMON | Backend KB musicale, workers master/slaves | Actif privé, non exposé publiquement |
+| MO_KB_FRONT | Front/backoffice KB | À aligner, non exposé publiquement |
 | MAESTRO_WORKSPACE | Contexte global et décisions | Source de contexte |
 
 ## OPUS runtime contract immédiat
@@ -46,6 +46,19 @@ H:\OPUS\var\logs                          logs runtime OPUS Windows dev
 
 Tout ce qui est développement, audit, generated, recipes, tmp, refbook transitoire ou diagnostic va dans MAESTRO_WORKSPACE si nécessaire, pas dans OPUS product runtime.
 
+## LOGANDPLAY public identity contract immédiat
+
+```text
+Projet workspace : LOGANDPLAY
+Hôte cible       : logandplay.org
+Rôle             : carte d'identité publique de l'écosystème
+Rendu            : page/site généré par OPUS
+Statut actuel    : pas encore exposé publiquement
+Liens projets    : OPUS / MAESTRO / KB affichés en PROCHAINEMENT
+```
+
+La page publique ne doit exposer aucun chemin serveur, Webmin, admin, LAN, diagnostic runtime ou détail de préproduction.
+
 ## OPUS Linux P117 état court
 
 ```text
@@ -56,8 +69,10 @@ Tailscale           : 100.83.101.117
 DNS LAN             : dnsmasq, opus.lan.logandplay.org -> 192.168.1.135
 Apache              : /etc/apache2/sites-available/opus-preprod.conf
 UFW                 : actif, incoming deny, LAN/Tailscale autorisés seulement
+Fail2ban            : sshd + opus-webmin actifs, LAN/Tailscale ignorés
 ClamAV              : scan ciblé quotidien OPUS + /tmp, pas de suppression automatique
 Stats web privées   : AWFFull vers /srv/opus/security/awffull/opus
+Webmin tempdir      : /var/lib/webmin/tmp hors /tmp tmpfs
 Systemd             : zéro unité failed après validation P117SEC
 ```
 
@@ -72,6 +87,7 @@ Le dashboard peut encore afficher `SERVER_DEGRADED` tant que P117L4B n'a pas rem
 | OPUS | Obligatoire | Core clean, livrable, runtime strict, sans résidus RefBook/Twig/dev |
 | OPUS_REF_BOOK | Optionnel officiel | Site OPUS offline-first et publiable online |
 | OPUS_USER_GUIDE | Optionnel futur | Guide utilisateur séparé du RefBook technique |
+| LOGANDPLAY_SITE | Futur site public | Site/package consommant OPUS core, sans polluer le framework |
 
 ## Topologie OPUS cible
 
@@ -81,7 +97,7 @@ Plusieurs sites/packages OPUS optionnels.
 Aucune duplication du framework par site.
 ```
 
-Le RefBook peut être livré séparément comme package/site optionnel, mais il doit dépendre d'un OPUS core partagé et déclaré explicitement.
+Le RefBook et le futur site LOGANDPLAY peuvent être livrés séparément comme packages/sites optionnels, mais ils doivent dépendre d'un OPUS core partagé et déclaré explicitement.
 
 ## Licence OPUS cible
 
@@ -107,6 +123,7 @@ Le but est de pouvoir ouvrir un chat neuf à tout moment sans dépendre d'une m�
 
 - Handoff courant : CONTEXT/HANDOFFS/CURRENT_HANDOFF.md
 - Index projets : CONTEXT/PROJECTS/PROJECT_INDEX.md
+- Projet LOGANDPLAY : CONTEXT/PROJECTS/LOGANDPLAY.md
 - Décisions : CONTEXT/DECISIONS/
 - Handoffs : CONTEXT/HANDOFFS/
 - Versions : CONTEXT/VERSIONS/
@@ -114,7 +131,8 @@ Le but est de pouvoir ouvrir un chat neuf à tout moment sans dépendre d'une m�
 
 ## Règles immédiates
 
-- OPUS P117 Linux préprod et sécurité d'abord, RefBook UI ensuite.
+- LOGANDPLAY P117SITE1 : créer la page identité `logandplay.org` générée par OPUS, avec liens OPUS/MAESTRO/KB en `PROCHAINEMENT`.
+- OPUS P117 Linux préprod et sécurité restent la base active.
 - Pas de nouveau patch UI RefBook tant que OPUS Linux P117 n'est pas stabilisé.
 - Pas de fallback silencieux.
 - Les caches vont dans `OPUS/var/cache`.
