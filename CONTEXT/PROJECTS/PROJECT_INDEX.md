@@ -16,6 +16,10 @@ Référence canonique : `CONTEXT/DECISIONS/ADR_20260619_CONTRACT_FIRST_NO_BRICOL
 
 Toute livraison future doit privilégier le contrat, l'audit réel, la source de vérité et la cohérence architecturale plutôt que la vitesse. Aucun site OPUS/ASAP ne doit être traité comme une page isolée si le contrat impose une application, des modules, routes, controllers, services, view-models, templates, ressources, I18N/thèmes ou FSM/transitions.
 
+Règle applicative ASAP/OPUS : une application possède un socle commun hérité par ses modules. Chaque module porte uniquement son métier et ses ressources propres ou overrides : ACL, helpers, CSS/assets, JavaScript, local/I18N, models/services, controllers, views/view-models et templates `.score`. Les parties communes ne sont jamais dupliquées module par module.
+
+Règle OPUS ScoreTemplate : aucune page OPUS conforme sans module et sans template `.score`.
+
 ## Carte des sous-projets
 
 ### LOGANDPLAY
@@ -26,6 +30,7 @@ Toute livraison future doit privilégier le contrat, l'audit réel, la source de
 - Dépôt source actuel : `philstephibanez-wq/OPUS`.
 - Rendu cible : site/application généré par OPUS, sans hardcode métier dans le core framework.
 - Règle P117SITE12 : Log&Play doit être aligné sur le vrai contrat d'application OPUS/ASAP avant toute nouvelle correction visuelle/runtime.
+- Règle module : Log&Play doit devenir une application modulaire, pas une page publique isolée.
 - Contenu initial : cartes OPUS, MAESTRO et KB avec description + statut `PROCHAINEMENT`.
 - Exposition : aucune exposition publique active pour l'instant ; OPUS, MAESTRO et KB restent non publics.
 - Sécurité : aucun lien Webmin, admin, LAN, préprod, chemin serveur ou diagnostic public.
@@ -40,8 +45,9 @@ Toute livraison future doit privilégier le contrat, l'audit réel, la source de
 - Priorité : critique immédiate, livraison Linux préprod + durcissement serveur P117 puis alignement contractuel des sites intégrés P117SITE12.
 - État Linux : installé dans `/srv/opus/OPUS`, Apache `public/`, DNS LAN, UFW, Fail2ban SSH/Webmin, ClamAV ciblé, AWFFull privé et Webmin tempdir validés.
 - Prochaines étapes : P117SITE12 OPUS site contract alignment, puis `P117L4B_LINUX_MULTISITE_REGISTRY_OVERLAY`, puis `P117AUTH1_ADMIN_GATE_CLOUDFLARE_READY`.
-- Règle : OPUS n'est pas ASAP, mais ASAP est une référence historique utile pour la structure applicative quand l'utilisateur le fournit explicitement.
+- Règle : OPUS n'est pas ASAP, mais ASAP est une référence historique structurante pour la conception applicative : application commune + modules hérités + parties métier par module.
 - Règle Log&Play : OPUS génère le site/page, mais le contenu métier LOGANDPLAY ne doit pas être intégré au cœur framework.
+- Règle modules : OPUS doit utiliser toute la potentialité du framework pour ses sites/apps ; pas de page isolée si un module, une route, une FSM, un service, un ViewModel ou un `.score` est requis.
 - Entrée runtime : `index.php` à la racine OPUS, unique point d'entrée produit.
 - Autoload : classe framework `Opus\Autoload\...`, appelée par `index.php`; aucun script racine `autoload.php`.
 - Cache Windows dev : `H:\OPUS\var\cache` uniquement.
@@ -62,6 +68,7 @@ Toute livraison future doit privilégier le contrat, l'audit réel, la source de
 - Règle runtime : dépend d'un OPUS core partagé déclaré par manifest/config, sans duplication du framework.
 - Livrable propre : zéro Twig actif, zéro legacy, zéro backup, zéro CSS mort.
 - Règle P117SITE12 : RefBook sert de référence de maturité applicative, mais doit lui aussi être contrôlé contre le contrat commun OPUS site avant tout patch UI/runtime.
+- Règle ScoreTemplate : tout rendu RefBook doit rester en `.score`.
 
 ### OPUS_USER_GUIDE
 
@@ -122,6 +129,9 @@ Toute livraison future doit privilégier le contrat, l'audit réel, la source de
 OPUS core est unique et partagé.
 Les sites/packages optionnels déclarent leur dépendance OPUS.
 Aucun site ne copie framework/Opus dans son propre arbre.
+Chaque application/site OPUS possède un socle commun et des modules métier hérités.
+Chaque module porte uniquement ses ACL/helpers/assets/javascript/local/models-services/controllers/viewmodels/templates propres.
+Les pages OPUS passent obligatoirement par modules + templates .score.
 OPUS product runtime écrit uniquement dans OPUS/var/cache et OPUS/var/logs.
 Les états de développement, audits, generated, recipes, tmp et refbook transitoire vont dans MAESTRO_WORKSPACE.
 LOGANDPLAY est un projet/site consommateur d'OPUS, pas une responsabilité du core OPUS.
