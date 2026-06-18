@@ -50,13 +50,59 @@ router / route contract
 controller
 domain service / content service
 view model
-template / ScoreTemplate / view layer
+ScoreTemplate .score templates / view layer
 resources / content / i18n / theme
 public front controller
 optional FSM / transition contract when present
 ```
 
 If these layers are missing or inconsistent, the next step is an audit and alignment plan, not a visual or runtime patch.
+
+## OPUS ScoreTemplate obligation
+
+For OPUS applications and OPUS-owned sites, every HTML representation must go through ScoreTemplate `.score` templates.
+
+This is mandatory, not optional.
+
+```text
+NO .score TEMPLATE, NO CONFORMING OPUS PAGE.
+```
+
+Forbidden in OPUS applications/sites:
+
+- page HTML concatenated in PHP;
+- business or page rendering in `public/index.php`;
+- business or page rendering inside controllers;
+- active Twig rendering;
+- templates scattered outside the module/application contract;
+- visual components hardcoded in services;
+- isolated public pages that bypass modules and ScoreTemplate.
+
+Required rendering pipeline:
+
+```text
+Controller -> Service -> ViewModel -> ScoreTemplateRenderer -> .score -> HTML Response
+```
+
+Required site/application structure principle:
+
+```text
+application/config or manifest
+application/<Module>/Module
+application/<Module>/Controller
+application/<Module>/Service
+application/<Module>/ViewModel
+application/<Module>/templates/*.score
+application/<Module>/templates/pages/*.score
+application/<Module>/templates/partials/*.score
+application/<Module>/templates/components/*.score
+resources/content
+resources/i18n
+resources/themes
+public/index.php as front controller only
+```
+
+Every page belongs to a module. Every module owns its `.score` templates. FSM/transitions must be declared through the official OPUS contract when present, never hidden in controllers, templates, or JavaScript.
 
 ## Delivery rule
 
@@ -80,10 +126,18 @@ no intrusive profile/session creation
 no PowerShell unless explicitly requested
 ```
 
+## Repository write policy
+
+No commit, push, or direct repository mutation may be performed without explicit user validation.
+
+MAESTRO_WORKSPACE may be written only after explicit validation from the user.
+
+OPUS write access is revoked for the assistant: OPUS work is read-only for audit/proposal, and implementation must be delivered as a local runner or patch proposal for the user to apply and validate.
+
 ## Consequences
 
 The assistant must pause and ask for, search for, or create the missing contract before continuing when a requested patch would otherwise be bricolage.
 
 The assistant must prefer telling the user that a contract/audit is required over delivering a rushed patch.
 
-This ADR supersedes any informal tendency toward quick visual fixes, ad hoc runtime fixes, or isolated page work when a framework/application contract is involved.
+This ADR supersedes any informal tendency toward quick visual fixes, ad hoc runtime fixes, isolated page work, or non-ScoreTemplate rendering when a framework/application contract is involved.
