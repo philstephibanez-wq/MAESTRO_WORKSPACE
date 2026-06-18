@@ -12,13 +12,20 @@ NO BRICOLAGE DELIVERY.
 SLOWER IS ACCEPTABLE; WASTING USER TIME IS NOT.
 ```
 
-Référence canonique : `CONTEXT/DECISIONS/ADR_20260619_CONTRACT_FIRST_NO_BRICOLAGE.md`.
+Références canoniques :
+
+```text
+CONTEXT/DECISIONS/ADR_20260619_CONTRACT_FIRST_NO_BRICOLAGE.md
+CONTEXT/DECISIONS/ADR_20260619_OPUS_COMPOSER_GENERATORS_AND_KB_FRONT_SITES.md
+```
 
 Toute livraison future doit privilégier le contrat, l'audit réel, la source de vérité et la cohérence architecturale plutôt que la vitesse. Aucun site OPUS/ASAP ne doit être traité comme une page isolée si le contrat impose une application, des modules, routes, controllers, services, view-models, templates, ressources, I18N/thèmes ou FSM/transitions.
 
 Règle applicative ASAP/OPUS : une application possède un socle commun hérité par ses modules. Chaque module porte uniquement son métier et ses ressources propres ou overrides : ACL, helpers, CSS/assets, JavaScript, local/I18N, models/services, controllers, views/view-models et templates `.score`. Les parties communes ne sont jamais dupliquées module par module.
 
 Règle OPUS ScoreTemplate : aucune page OPUS conforme sans module et sans template `.score`.
+
+Règle OPUS Composer/générateurs : OPUS utilise Composer pour package/autoload/orchestration, mais toute création de site/module/page/route/transition/locale/asset/template doit passer par des générateurs contractuels OPUS. Les dépendances externes sont évitées par défaut et ne sont autorisées que comme exception validée.
 
 ## Carte des sous-projets
 
@@ -31,6 +38,7 @@ Règle OPUS ScoreTemplate : aucune page OPUS conforme sans module et sans templa
 - Rendu cible : site/application généré par OPUS, sans hardcode métier dans le core framework.
 - Règle P117SITE12 : Log&Play doit être aligné sur le vrai contrat d'application OPUS/ASAP avant toute nouvelle correction visuelle/runtime.
 - Règle module : Log&Play doit devenir une application modulaire, pas une page publique isolée.
+- Règle générateur : aucune nouvelle page/module/route/transition ne doit être créée à la main.
 - Contenu initial : cartes OPUS, MAESTRO et KB avec description + statut `PROCHAINEMENT`.
 - Exposition : aucune exposition publique active pour l'instant ; OPUS, MAESTRO et KB restent non publics.
 - Sécurité : aucun lien Webmin, admin, LAN, préprod, chemin serveur ou diagnostic public.
@@ -44,10 +52,12 @@ Règle OPUS ScoreTemplate : aucune page OPUS conforme sans module et sans templa
 - Dépôt cible : OPUS.
 - Priorité : critique immédiate, livraison Linux préprod + durcissement serveur P117 puis alignement contractuel des sites intégrés P117SITE12.
 - État Linux : installé dans `/srv/opus/OPUS`, Apache `public/`, DNS LAN, UFW, Fail2ban SSH/Webmin, ClamAV ciblé, AWFFull privé et Webmin tempdir validés.
-- Prochaines étapes : P117SITE12 OPUS site contract alignment, puis `P117L4B_LINUX_MULTISITE_REGISTRY_OVERLAY`, puis `P117AUTH1_ADMIN_GATE_CLOUDFLARE_READY`.
+- Prochaines étapes : P117SITE12 OPUS site contract alignment + generator contract, puis `P117L4B_LINUX_MULTISITE_REGISTRY_OVERLAY`, puis `P117AUTH1_ADMIN_GATE_CLOUDFLARE_READY`.
 - Règle : OPUS n'est pas ASAP, mais ASAP est une référence historique structurante pour la conception applicative : application commune + modules hérités + parties métier par module.
+- Différence ASAP -> OPUS : OPUS passe par Composer pour l'autoload, les packages, les manifests et les générateurs, tout en évitant les dépendances externes quand c'est possible.
 - Règle Log&Play : OPUS génère le site/page, mais le contenu métier LOGANDPLAY ne doit pas être intégré au cœur framework.
 - Règle modules : OPUS doit utiliser toute la potentialité du framework pour ses sites/apps ; pas de page isolée si un module, une route, une FSM, un service, un ViewModel ou un `.score` est requis.
+- Règle générateurs : l'équivalent OPUS de `composer create site`, `create module`, `create page`, `create route`, `create transition`, `create locale`, `create asset` et `create template` doit devenir le seul chemin de création.
 - Entrée runtime : `index.php` à la racine OPUS, unique point d'entrée produit.
 - Autoload : classe framework `Opus\Autoload\...`, appelée par `index.php`; aucun script racine `autoload.php`.
 - Cache Windows dev : `H:\OPUS\var\cache` uniquement.
@@ -69,6 +79,7 @@ Règle OPUS ScoreTemplate : aucune page OPUS conforme sans module et sans templa
 - Livrable propre : zéro Twig actif, zéro legacy, zéro backup, zéro CSS mort.
 - Règle P117SITE12 : RefBook sert de référence de maturité applicative, mais doit lui aussi être contrôlé contre le contrat commun OPUS site avant tout patch UI/runtime.
 - Règle ScoreTemplate : tout rendu RefBook doit rester en `.score`.
+- Règle générateur : les futures pages/modules/routes/transitions RefBook doivent passer par les générateurs OPUS.
 
 ### OPUS_USER_GUIDE
 
@@ -84,6 +95,25 @@ Règle OPUS ScoreTemplate : aucune page OPUS conforme sans module et sans templa
 - Statut : ne doit plus être considéré comme source officielle long terme après intégration OPUS.
 - Destination : historique remplacé par `H:\OPUS\sites\opus-refbook` dans le dépôt OPUS.
 - Règle : ne pas recréer les anciens dépôts/racines autonomes.
+
+### KB_FRONT_OFFICE
+
+- Rôle : futur site OPUS orienté front public/contrôlé de la KB musicale.
+- Statut : à créer plus tard comme vraie application/site OPUS.
+- Règle : doit être généré par OPUS, pas bricolé comme page ou UI autonome.
+- Règle module : chaque domaine/écran fonctionnel passe par modules métier héritant du commun.
+- Règle rendu : tout rendu passe par templates `.score`.
+- Règle dépendances : aucune dépendance externe sauf exception contractée et validée.
+
+### KB_BACK_OFFICE
+
+- Rôle : futur site OPUS d'administration/backoffice de la KB musicale.
+- Statut : à créer plus tard comme vraie application/site OPUS.
+- Règle : doit être généré par OPUS, pas bricolé comme page ou UI autonome.
+- Règle module : chaque domaine admin passe par modules métier héritant du commun.
+- Règle rendu : tout rendu passe par templates `.score`.
+- Règle sécurité : admin gate explicite, pas d'exposition publique directe sans contrat d'authentification.
+- Règle dépendances : aucune dépendance externe sauf exception contractée et validée.
 
 ### MAESTRO_V5
 
@@ -101,10 +131,11 @@ Règle OPUS ScoreTemplate : aucune page OPUS conforme sans module et sans templa
 
 ### MO_KB_FRONT
 
-- Rôle : front/backoffice PHP/UwAmp pour la KB.
-- Statut : à aligner progressivement avec OPUS.
+- Rôle : front/backoffice PHP/UwAmp historique pour la KB.
+- Statut : à réévaluer et à scinder/aligner vers `KB_FRONT_OFFICE` et `KB_BACK_OFFICE` sous forme de vrais sites OPUS.
 - Statut public : non exposé.
 - Règle : UI web séparée du backend Python, consommation par API/versionnement.
+- Règle future : ne pas poursuivre en bricolage ; migration ou remplacement par sites OPUS générés contractuellement.
 
 ### MAESTRO_WORKSPACE
 
@@ -122,19 +153,24 @@ Règle OPUS ScoreTemplate : aucune page OPUS conforme sans module et sans templa
 | OPUS_REF_BOOK | Site officiel optionnel | Profil documenté/offline/online |
 | OPUS_USER_GUIDE | Guide utilisateur optionnel | Profil futur à cadrer |
 | LOGANDPLAY_SITE | Site public futur | Carte d'identité publique `logandplay.org`, générée par OPUS |
+| KB_FRONT_OFFICE | Site KB futur | Front public/contrôlé généré par OPUS |
+| KB_BACK_OFFICE | Site KB futur | Backoffice/admin généré par OPUS |
 
 ## Topologie OPUS cible
 
 ```text
 OPUS core est unique et partagé.
+Composer orchestre autoload/packages/manifests/générateurs OPUS.
 Les sites/packages optionnels déclarent leur dépendance OPUS.
 Aucun site ne copie framework/Opus dans son propre arbre.
 Chaque application/site OPUS possède un socle commun et des modules métier hérités.
 Chaque module porte uniquement ses ACL/helpers/assets/javascript/local/models-services/controllers/viewmodels/templates propres.
 Les pages OPUS passent obligatoirement par modules + templates .score.
+Toute création passe par générateurs OPUS, jamais par création sauvage de page.
+Aucune dépendance externe sauf exception contractée, auditée et validée.
 OPUS product runtime écrit uniquement dans OPUS/var/cache et OPUS/var/logs.
 Les états de développement, audits, generated, recipes, tmp et refbook transitoire vont dans MAESTRO_WORKSPACE.
-LOGANDPLAY est un projet/site consommateur d'OPUS, pas une responsabilité du core OPUS.
+LOGANDPLAY, KB_FRONT_OFFICE et KB_BACK_OFFICE sont des sites/applications consommateurs d'OPUS, pas des responsabilités du core OPUS.
 ```
 
 ## Handoff de reprise obligatoire
@@ -150,14 +186,16 @@ Il doit être mis à jour à chaque livraison qui change l'état réel d'un sous
 ## Priorité de reprise
 
 1. P117SITE12 : auditer et aligner contractuellement les sites OPUS intégrés avant toute nouvelle correction visuelle/runtime.
-2. P117L4B : ajouter un overlay registry Linux pour supprimer `SERVER_DEGRADED` causé par les chemins Windows `H:\UwAmp`.
-3. P117AUTH1 : poser un gate admin explicite compatible LAN préprod et Cloudflare Access.
-4. P117CF1/P117CF2 : Cloudflare Tunnel puis Cloudflare Access, sans ouverture Freebox par défaut.
-5. Reprendre ensuite la migration RefBook contrôlée quand OPUS P117 est stable.
+2. P117SITE12G : spécifier le système OPUS Composer/generator avant toute nouvelle création de site/module/page.
+3. P117L4B : ajouter un overlay registry Linux pour supprimer `SERVER_DEGRADED` causé par les chemins Windows `H:\UwAmp`.
+4. P117AUTH1 : poser un gate admin explicite compatible LAN préprod et Cloudflare Access.
+5. P117CF1/P117CF2 : Cloudflare Tunnel puis Cloudflare Access, sans ouverture Freebox par défaut.
+6. Reprendre ensuite la migration RefBook contrôlée quand OPUS P117 est stable.
 
 ## Contrats associés
 
 - CONTEXT/DECISIONS/ADR_20260619_CONTRACT_FIRST_NO_BRICOLAGE.md
+- CONTEXT/DECISIONS/ADR_20260619_OPUS_COMPOSER_GENERATORS_AND_KB_FRONT_SITES.md
 - CONTEXT/HANDOFFS/CURRENT_HANDOFF.md
 - CONTEXT/PROJECTS/LOGANDPLAY.md
 - CONTEXT/HANDOFFS/P117_20260617_OPUS_LINUX_BASELINE_SMTP_NTP.md
