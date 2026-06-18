@@ -2,14 +2,30 @@
 
 Ce fichier donne une lecture immédiate des sous-projets du workspace. Il doit rester court, opérationnel et maintenable.
 
+## Règle permanente de livraison
+
+```text
+NO CONTRACT, NO PATCH.
+NO DOC CONTRACT, NO PATCH.
+NO SOURCE OF TRUTH, NO PATCH.
+NO BRICOLAGE DELIVERY.
+SLOWER IS ACCEPTABLE; WASTING USER TIME IS NOT.
+```
+
+Référence canonique : `CONTEXT/DECISIONS/ADR_20260619_CONTRACT_FIRST_NO_BRICOLAGE.md`.
+
+Toute livraison future doit privilégier le contrat, l'audit réel, la source de vérité et la cohérence architecturale plutôt que la vitesse. Aucun site OPUS/ASAP ne doit être traité comme une page isolée si le contrat impose une application, des modules, routes, controllers, services, view-models, templates, ressources, I18N/thèmes ou FSM/transitions.
+
 ## Carte des sous-projets
 
 ### LOGANDPLAY
 
 - Rôle : identité publique, carte d'entrée `logandplay.org`, présentation de l'écosystème Log&Play.
-- Statut : nouveau projet workspace créé pour P117SITE1.
-- Dépôt source actuel : à créer ou à rattacher plus tard ; contrat et décisions dans MAESTRO_WORKSPACE.
-- Rendu cible : page/site généré par OPUS, sans hardcode métier dans le core framework.
+- Statut : intégré sous OPUS comme site à aligner contractuellement.
+- Emplacement actuel : `H:\OPUS\sites\logandplay`.
+- Dépôt source actuel : `philstephibanez-wq/OPUS`.
+- Rendu cible : site/application généré par OPUS, sans hardcode métier dans le core framework.
+- Règle P117SITE12 : Log&Play doit être aligné sur le vrai contrat d'application OPUS/ASAP avant toute nouvelle correction visuelle/runtime.
 - Contenu initial : cartes OPUS, MAESTRO et KB avec description + statut `PROCHAINEMENT`.
 - Exposition : aucune exposition publique active pour l'instant ; OPUS, MAESTRO et KB restent non publics.
 - Sécurité : aucun lien Webmin, admin, LAN, préprod, chemin serveur ou diagnostic public.
@@ -21,10 +37,10 @@ Ce fichier donne une lecture immédiate des sous-projets du workspace. Il doit r
 - Rôle : framework PHP principal.
 - Identité : OPUS Framework 8.1.0 "Lysenko".
 - Dépôt cible : OPUS.
-- Priorité : critique immédiate, livraison Linux préprod + durcissement serveur P117 puis page LOGANDPLAY P117SITE1.
+- Priorité : critique immédiate, livraison Linux préprod + durcissement serveur P117 puis alignement contractuel des sites intégrés P117SITE12.
 - État Linux : installé dans `/srv/opus/OPUS`, Apache `public/`, DNS LAN, UFW, Fail2ban SSH/Webmin, ClamAV ciblé, AWFFull privé et Webmin tempdir validés.
-- Prochaines étapes : `P117SITE1_LOGANDPLAY_PUBLIC_IDENTITY_HOME`, puis `P117L4B_LINUX_MULTISITE_REGISTRY_OVERLAY`, puis `P117AUTH1_ADMIN_GATE_CLOUDFLARE_READY`.
-- Règle : OPUS n'est pas ASAP. ASAP est historique uniquement.
+- Prochaines étapes : P117SITE12 OPUS site contract alignment, puis `P117L4B_LINUX_MULTISITE_REGISTRY_OVERLAY`, puis `P117AUTH1_ADMIN_GATE_CLOUDFLARE_READY`.
+- Règle : OPUS n'est pas ASAP, mais ASAP est une référence historique utile pour la structure applicative quand l'utilisateur le fournit explicitement.
 - Règle Log&Play : OPUS génère le site/page, mais le contenu métier LOGANDPLAY ne doit pas être intégré au cœur framework.
 - Entrée runtime : `index.php` à la racine OPUS, unique point d'entrée produit.
 - Autoload : classe framework `Opus\Autoload\...`, appelée par `index.php`; aucun script racine `autoload.php`.
@@ -39,14 +55,13 @@ Ce fichier donne une lecture immédiate des sous-projets du workspace. Il doit r
 
 - Rôle : site officiel de documentation OPUS.
 - Cible : package optionnel officiel livré avec OPUS.
-- Emplacement cible : OPUS/packages/opus-refbook.
+- Emplacement actuel intégré : `H:\OPUS\sites\opus-refbook`.
 - Mode local : offline-first.
 - Mode publié : online public, sans debug ni chemins locaux.
 - Règle : fonctionne grâce à OPUS, mais ne pollue pas le cœur framework.
 - Règle runtime : dépend d'un OPUS core partagé déclaré par manifest/config, sans duplication du framework.
 - Livrable propre : zéro Twig actif, zéro legacy, zéro backup, zéro CSS mort.
-- État : revenu au baseline P116C5H après revert des régressions P116C5I/J/K/L.
-- Blocage : ne pas reprendre l'UI RefBook tant que le runtime OPUS Linux/P117 n'est pas stabilisé.
+- Règle P117SITE12 : RefBook sert de référence de maturité applicative, mais doit lui aussi être contrôlé contre le contrat commun OPUS site avant tout patch UI/runtime.
 
 ### OPUS_USER_GUIDE
 
@@ -58,12 +73,10 @@ Ce fichier donne une lecture immédiate des sous-projets du workspace. Il doit r
 
 ### OPUS_REF_BOOK
 
-- Rôle : dépôt transitoire actuel du RefBook.
-- Statut : runtime assaini puis rollback au baseline P116C5H après régressions UI.
-- Validé avant pause : ScoreTemplate actif, zéro Twig attendu, Composer purgé de `twig/twig`, `lang=cs` OK, branding `OPUS FRAMEWORK / Reference Book`, sidebar/thèmes P116C5H.
-- Dernier commit stable actuel : `b5f00c6 P116C5M_REVERT_REFBOOK_UI_REGRESSIONS_TO_P116C5H`.
-- Destination : migration contrôlée vers OPUS/packages/opus-refbook puis package optionnel OPUS_REF_BOOK.
-- Règle : ne pas le considérer comme source officielle long terme.
+- Rôle : ancien dépôt transitoire historique du RefBook.
+- Statut : ne doit plus être considéré comme source officielle long terme après intégration OPUS.
+- Destination : historique remplacé par `H:\OPUS\sites\opus-refbook` dans le dépôt OPUS.
+- Règle : ne pas recréer les anciens dépôts/racines autonomes.
 
 ### MAESTRO_V5
 
@@ -91,6 +104,7 @@ Ce fichier donne une lecture immédiate des sous-projets du workspace. Il doit r
 - Rôle : contexte global, décisions, handoffs, contrats transverses.
 - Règle : documenter et cadrer, pas remplacer les dépôts sources.
 - Règle livraison : chaque livraison significative met à jour le workspace et `CONTEXT/HANDOFFS/CURRENT_HANDOFF.md`.
+- Règle permanente : ne jamais livrer vite au détriment des contrats ; préférer une livraison plus lente, auditée, cohérente et testable.
 - Stockage dev OPUS : `H:\MAESTRO_WORKSPACE\var\opus\...` et `H:\MAESTRO_WORKSPACE\tools\opus\...` si nécessaire.
 
 ## Packaging OPUS cible
@@ -125,7 +139,7 @@ Il doit être mis à jour à chaque livraison qui change l'état réel d'un sous
 
 ## Priorité de reprise
 
-1. P117SITE1 : créer la page identité `logandplay.org` générée par OPUS avec cartes OPUS, MAESTRO et KB en `PROCHAINEMENT`.
+1. P117SITE12 : auditer et aligner contractuellement les sites OPUS intégrés avant toute nouvelle correction visuelle/runtime.
 2. P117L4B : ajouter un overlay registry Linux pour supprimer `SERVER_DEGRADED` causé par les chemins Windows `H:\UwAmp`.
 3. P117AUTH1 : poser un gate admin explicite compatible LAN préprod et Cloudflare Access.
 4. P117CF1/P117CF2 : Cloudflare Tunnel puis Cloudflare Access, sans ouverture Freebox par défaut.
@@ -133,6 +147,7 @@ Il doit être mis à jour à chaque livraison qui change l'état réel d'un sous
 
 ## Contrats associés
 
+- CONTEXT/DECISIONS/ADR_20260619_CONTRACT_FIRST_NO_BRICOLAGE.md
 - CONTEXT/HANDOFFS/CURRENT_HANDOFF.md
 - CONTEXT/PROJECTS/LOGANDPLAY.md
 - CONTEXT/HANDOFFS/P117_20260617_OPUS_LINUX_BASELINE_SMTP_NTP.md
