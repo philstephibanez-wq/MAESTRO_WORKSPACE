@@ -22,7 +22,35 @@ ASAP-derived application principle to preserve in OPUS: an application has commo
 
 ScoreTemplate is mandatory for OPUS application/site rendering: no `.score` template means no conforming OPUS page.
 
-Canonical decision: `CONTEXT/DECISIONS/ADR_20260619_CONTRACT_FIRST_NO_BRICOLAGE.md`.
+## Permanent OPUS site creation rule — Composer + generators
+
+OPUS differs from ASAP mainly by using Composer for package/autoload orchestration and by avoiding external dependencies whenever possible.
+
+No OPUS site, module, page, route, transition, locale, asset, or `.score` template may be created manually as an isolated file.
+
+Creation must go through OPUS contractual generators, for example:
+
+```text
+composer opus -- create:site <site>
+composer opus -- create:module <site> <module>
+composer opus -- create:page <site> <module> <page>
+composer opus -- create:route <site> <module> <page> <path>
+composer opus -- create:transition <site> <module> <from-state> <signal> <to-state>
+composer opus -- create:locale <site> <module> <locale>
+composer opus -- create:asset <site> <module> <asset-type>
+composer opus -- create:template <site> <module> <template-kind> <name>
+```
+
+External dependencies are exceptions only: explicit justification, license verification, version lock, security review, offline/local behavior review, no runtime network dependency, and user validation.
+
+`KB_FRONT_OFFICE` and `KB_BACK_OFFICE` are future OPUS sites/applications. They must follow the OPUS application/module/generator/ScoreTemplate contract and must not be built as bricolage pages or unrelated standalone UIs.
+
+Canonical decisions:
+
+```text
+CONTEXT/DECISIONS/ADR_20260619_CONTRACT_FIRST_NO_BRICOLAGE.md
+CONTEXT/DECISIONS/ADR_20260619_OPUS_COMPOSER_GENERATORS_AND_KB_FRONT_SITES.md
+```
 
 ## Current validated state — P117SITE9
 
@@ -70,10 +98,20 @@ Validated OPUS commits:
 ```text
 1. P117SITE12 — audit and align OPUS site application contracts before any further patch.
 2. Define the common OPUS site structure from the real OPUS/ASAP contract.
-3. Align Log&Play and RefBook as applications, not isolated pages.
-4. Enforce modules with inherited common resources plus business-specific module resources.
-5. Enforce ScoreTemplate .score rendering for all OPUS pages.
-6. Then correct browser/runtime symptoms only after the application contract is coherent.
+3. Specify OPUS Composer/generator commands before any new site/module/page creation.
+4. Align Log&Play and RefBook as applications, not isolated pages.
+5. Enforce modules with inherited common resources plus business-specific module resources.
+6. Enforce ScoreTemplate .score rendering for all OPUS pages.
+7. Treat KB_FRONT_OFFICE and KB_BACK_OFFICE as future OPUS sites/applications.
+8. Then correct browser/runtime symptoms only after the application contract is coherent.
+```
+
+## Repository write policy
+
+```text
+MAESTRO_WORKSPACE : write only after explicit user validation.
+OPUS              : read-only for the assistant; no direct write/commit/push.
+All repositories  : no commit/push/direct mutation without explicit user validation.
 ```
 
 ## Current source-of-truth rule
@@ -88,16 +126,19 @@ No direct work on removed roots : H:\OPUS_REF_BOOK, H:\LOGANDPLAY.ORG
 
 | Repository / Project | Role | Current state |
 |---|---|---|
-| MAESTRO_WORKSPACE | Contracts, decisions, handoffs | Updated for OPUS system site integration, contract-first/no-bricolage rule, and ASAP module inheritance model |
+| MAESTRO_WORKSPACE | Contracts, decisions, handoffs | Updated for contract-first, OPUS/ASAP module inheritance, ScoreTemplate, Composer/generator and KB front/back office site rules |
 | OPUS | Framework core + integrated system sites | RefBook and Log&Play integrated under `sites/`; site contracts require P117SITE12 alignment |
+| KB_FRONT_OFFICE | Future public/controlled KB site | Must be OPUS site/application, generated through OPUS generators |
+| KB_BACK_OFFICE | Future administrative KB site | Must be OPUS site/application, generated through OPUS generators |
 | MAESTRO_V5 | REAPER/Lua music assistant | Active, not publicly exposed |
 | MO_KB_DAEMON | Music KB backend/workers | Active private, not publicly exposed |
-| MO_KB_FRONT | KB front/backoffice | To align later |
+| MO_KB_FRONT | Historical/current KB front/backoffice context | To be split/aligned toward KB_FRONT_OFFICE and KB_BACK_OFFICE OPUS sites |
 
 ## Required reading for details
 
 ```text
 CONTEXT/DECISIONS/ADR_20260619_CONTRACT_FIRST_NO_BRICOLAGE.md
+CONTEXT/DECISIONS/ADR_20260619_OPUS_COMPOSER_GENERATORS_AND_KB_FRONT_SITES.md
 CONTEXT/DECISIONS/ADR_20260618_OPUS_SYSTEM_SITES_INTEGRATED.md
 CONTEXT/HANDOFFS/P117SITE9_OPUS_SITE_INTEGRATION_WORKSPACE_UPDATE.md
 CONTEXT/PROJECTS/PROJECT_INDEX.md
