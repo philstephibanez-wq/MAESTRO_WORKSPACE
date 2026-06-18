@@ -58,6 +58,58 @@ optional FSM / transition contract when present
 
 If these layers are missing or inconsistent, the next step is an audit and alignment plan, not a visual or runtime patch.
 
+## ASAP-derived module inheritance contract
+
+The historical ASAP application model provided by the user is an architectural reference for how the user designs applications.
+
+An application is not a set of loose pages. It is a common application base plus business modules.
+
+```text
+Application
+  = common application/framework base
+  + configuration
+  + routing/navigation
+  + FSM/transitions when present
+  + business modules
+```
+
+Each module is a complete business unit that inherits the common application base and may override or extend it with its own business-specific resources.
+
+A module may contain these standard categories:
+
+```text
+acl/
+helpers/
+css or assets/
+javascript/
+local or i18n/
+models or services/
+controllers/
+views or view-models/
+templates .score/
+```
+
+Common parts must not be duplicated in every module. They belong to the application/framework common layer and are inherited by modules.
+
+Module-specific parts belong inside the module and must be limited to that module's business responsibility, resources, overrides, and presentation templates.
+
+For OPUS sites, the target principle is:
+
+```text
+sites/<site>/application/common/...
+sites/<site>/application/config/...
+sites/<site>/application/<BusinessModule>/acl/...
+sites/<site>/application/<BusinessModule>/helpers/...
+sites/<site>/application/<BusinessModule>/javascript/...
+sites/<site>/application/<BusinessModule>/local/...
+sites/<site>/application/<BusinessModule>/models-or-services/...
+sites/<site>/application/<BusinessModule>/controllers/...
+sites/<site>/application/<BusinessModule>/views-or-viewmodels/...
+sites/<site>/application/<BusinessModule>/templates/*.score
+```
+
+This is the conceptual application model for OPUS site alignment unless a stronger OPUS-native contract explicitly supersedes it.
+
 ## OPUS ScoreTemplate obligation
 
 For OPUS applications and OPUS-owned sites, every HTML representation must go through ScoreTemplate `.score` templates.
@@ -88,10 +140,15 @@ Required site/application structure principle:
 
 ```text
 application/config or manifest
+application/common/*
 application/<Module>/Module
 application/<Module>/Controller
 application/<Module>/Service
 application/<Module>/ViewModel
+application/<Module>/acl
+application/<Module>/helpers
+application/<Module>/javascript
+application/<Module>/local or i18n
 application/<Module>/templates/*.score
 application/<Module>/templates/pages/*.score
 application/<Module>/templates/partials/*.score
@@ -140,4 +197,4 @@ The assistant must pause and ask for, search for, or create the missing contract
 
 The assistant must prefer telling the user that a contract/audit is required over delivering a rushed patch.
 
-This ADR supersedes any informal tendency toward quick visual fixes, ad hoc runtime fixes, isolated page work, or non-ScoreTemplate rendering when a framework/application contract is involved.
+This ADR supersedes any informal tendency toward quick visual fixes, ad hoc runtime fixes, isolated page work, duplicated module commons, or non-ScoreTemplate rendering when a framework/application contract is involved.
