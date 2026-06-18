@@ -4,6 +4,22 @@
 
 Canonical resume card for a fresh chat. A new chat must be able to restart from this file without relying on hidden conversation memory.
 
+## Permanent delivery rule — contract-first, no bricolage
+
+```text
+NO CONTRACT, NO PATCH.
+NO DOC CONTRACT, NO PATCH.
+NO SOURCE OF TRUTH, NO PATCH.
+NO BRICOLAGE DELIVERY.
+SLOWER IS ACCEPTABLE; WASTING USER TIME IS NOT.
+```
+
+Every future delivery must be contract-first. Do not try to please the user with quick fixes, improvised visual tweaks, isolated-page patches, local hacks, intrusive browser launches, or ad hoc runners when the correct work is architectural or contractual.
+
+For OPUS / ASAP-style work, sites must be treated as applications with modules, routes, controllers, services, view models, templates, resources, I18N/theme contracts, and FSM/transition contracts when present. If the application contract is missing or inconsistent, the next step is audit and alignment plan, not a patch.
+
+Canonical decision: `CONTEXT/DECISIONS/ADR_20260619_CONTRACT_FIRST_NO_BRICOLAGE.md`.
+
 ## Current validated state — P117SITE9
 
 OPUS is now the source of truth for its system sites.
@@ -48,10 +64,10 @@ Validated OPUS commits:
 ## Immediate next work
 
 ```text
-1. P117SITE10 — clean workspace references and optional Apache backup cleanup.
-2. RefBook HEAD handling — make curl -I / HTTP HEAD return a clean response.
-3. Local UwAmp IPv6 policy — plain curl may prefer IPv6 and timeout; use curl.exe -4 for validation until fixed.
-4. Continue OPUS public/preprod hardening and Cloudflare path after workspace is clean.
+1. P117SITE12 — audit and align OPUS site application contracts before any further patch.
+2. Define the common OPUS site structure from the real OPUS/ASAP contract.
+3. Align Log&Play and RefBook as applications, not isolated pages.
+4. Then correct browser/runtime symptoms only after the application contract is coherent.
 ```
 
 ## Current source-of-truth rule
@@ -66,8 +82,8 @@ No direct work on removed roots : H:\OPUS_REF_BOOK, H:\LOGANDPLAY.ORG
 
 | Repository / Project | Role | Current state |
 |---|---|---|
-| MAESTRO_WORKSPACE | Contracts, decisions, handoffs | Updated for OPUS system site integration |
-| OPUS | Framework core + integrated system sites | RefBook and Log&Play integrated under `sites/` |
+| MAESTRO_WORKSPACE | Contracts, decisions, handoffs | Updated for OPUS system site integration and contract-first/no-bricolage rule |
+| OPUS | Framework core + integrated system sites | RefBook and Log&Play integrated under `sites/`; site contracts require P117SITE12 alignment |
 | MAESTRO_V5 | REAPER/Lua music assistant | Active, not publicly exposed |
 | MO_KB_DAEMON | Music KB backend/workers | Active private, not publicly exposed |
 | MO_KB_FRONT | KB front/backoffice | To align later |
@@ -75,6 +91,7 @@ No direct work on removed roots : H:\OPUS_REF_BOOK, H:\LOGANDPLAY.ORG
 ## Required reading for details
 
 ```text
+CONTEXT/DECISIONS/ADR_20260619_CONTRACT_FIRST_NO_BRICOLAGE.md
 CONTEXT/DECISIONS/ADR_20260618_OPUS_SYSTEM_SITES_INTEGRATED.md
 CONTEXT/HANDOFFS/P117SITE9_OPUS_SITE_INTEGRATION_WORKSPACE_UPDATE.md
 CONTEXT/PROJECTS/PROJECT_INDEX.md
