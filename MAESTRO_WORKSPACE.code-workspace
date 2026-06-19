@@ -19,10 +19,6 @@
         {
             "name": "OPUS",
             "path": "H:\\OPUS"
-        },
-        {
-            "name": "OPUS_REF_BOOK",
-            "path": "H:\\OPUS_REF_BOOK"
         }
     ],
     "settings": {

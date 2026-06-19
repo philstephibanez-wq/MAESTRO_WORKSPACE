@@ -1,0 +1,8 @@
+P117SITE12B_OPUS_COMPOSER_CREATE_SITE_MODULE_FOUNDATION
+==== BEFORE ====
+## master...origin/master
+b8e791e (HEAD -> master, origin/master, origin/HEAD) cleanup !
+ae7fef9 cleanup !
+93516ce cleanup
+b25773a P117SITE11C_LOCAL_RUNTIME_AND_VISUAL_STABILITY
+5a44f73 faute d'accent (utf8)

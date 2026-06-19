@@ -1,0 +1,11 @@
+P117SITE12M_OPUS_SERVE_VALIDATE_SITE
+==== BEFORE ====
+## master...origin/master
+ M framework/Opus/Console/Command/AddLanguageCommand.php
+ M framework/Opus/Scaffold/SiteScaffoldPlan.php
+ M sites/skeleton/public/index.php
+0e7ca81 (HEAD -> master, origin/master, origin/HEAD) P117SITE12I_OPUS bon état d'avancement
+b8e791e cleanup !
+ae7fef9 cleanup !
+93516ce cleanup
+b25773a P117SITE11C_LOCAL_RUNTIME_AND_VISUAL_STABILITY
