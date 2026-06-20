@@ -1,14 +1,14 @@
-# OPUS — P117SITE14 generated-site workflow docs delivered
+# OPUS — P117SITE14 generated-site workflow docs validated
 
 Date: 2026-06-20
 Project: OPUS / MAESTRO_WORKSPACE
-Status: RUNNER_DELIVERED_PENDING_USER_RUNTIME
+Status: VALIDATED_RUNTIME
 
-## Delivered milestone
+## Validated milestone
 
-`P117SITE14_GENERATED_SITE_WORKFLOW_DOCS_RUNNER` has been delivered for local OPUS validation.
+`P117SITE14_GENERATED_SITE_WORKFLOW_DOCS_RUNNER` has been executed successfully in the user's OPUS runtime.
 
-The runner is intended to update OPUS with the generated-site user workflow contract:
+The runner updates OPUS with the generated-site user workflow contract:
 
 - route -> module -> template -> i18n -> assets;
 - generated `START_HERE.md` explains how to modify a page without touching framework internals;
@@ -18,9 +18,9 @@ The runner is intended to update OPUS with the generated-site user workflow cont
 - `{{ value }}` is escaped, `{{{ value }}}` is an explicit raw HTML slot;
 - `[[ ignore ]] ... [[ endignore ]]` is documented as a source-only non-rendered block.
 
-## Validation expected from user runtime
+## Runtime evidence
 
-Expected success markers:
+The user run produced:
 
 ```text
 CHECK_START_HERE_WORKFLOW=OK
@@ -31,7 +31,26 @@ P117SITE14_GENERATED_SITE_WORKFLOW_SMOKE_OK
 P117SITE14_GENERATED_SITE_WORKFLOW_DOCS_OK
 ```
 
+## OPUS local changes expected before commit
+
+```text
+ M framework/Opus/Scaffold/SiteScaffoldPlan.php
+?? DOC/
+?? tools/smoke_p117site14_generated_site_workflow.py
+```
+
+`sites/skeleton/` must not appear in `git status --short` after smoke cleanup.
+
 ## Previous stable base
 
 - P117SITE12Q1: `ScoreTemplateRenderer` and `[[ignore]]` validated.
 - P117SITE13B: generated-site smoke and cleanup gate validated.
+
+## Next milestone
+
+P117SITE15 should add Composer introspection commands for generated sites, starting with:
+
+```text
+opus:list-routes
+opus:list-modules
+```
