@@ -1,7 +1,7 @@
 # OPUS — P117SITE14 status
 
 Date: 2026-06-20
-Status: RUNNER_DELIVERED_PENDING_RUNTIME
+Status: VALIDATED_RUNTIME
 
 P117SITE14 formalizes the generated-site workflow so an OPUS user can modify a generated site without opening framework internals.
 
@@ -11,15 +11,13 @@ The visible page path is:
 route -> module -> template -> i18n -> assets
 ```
 
-Delivered runner scope:
+Validated OPUS runner:
 
-- patch generated START_HERE content in SiteScaffoldPlan.php;
-- patch generated module README content in SiteScaffoldPlan.php;
-- add DOC/P117SITE14_GENERATED_SITE_WORKFLOW.md to OPUS;
-- add a cleanup smoke tool to OPUS;
-- generate sites/skeleton, validate it, inspect generated docs/rendering contracts, then remove sites/skeleton.
+```text
+P117SITE14_GENERATED_SITE_WORKFLOW_DOCS_RUNNER
+```
 
-Required validation markers:
+Runtime validation markers observed from the user run:
 
 ```text
 CHECK_START_HERE_WORKFLOW=OK
@@ -30,6 +28,22 @@ P117SITE14_GENERATED_SITE_WORKFLOW_SMOKE_OK
 P117SITE14_GENERATED_SITE_WORKFLOW_DOCS_OK
 ```
 
-Source policy: sites/skeleton remains a generated artifact and must not be committed.
+Validated scope:
 
-Next after validation: add Composer introspection commands for routes and modules.
+- generated `START_HERE.md` documents the route -> module -> template -> i18n -> assets workflow;
+- generated module README files document the module edit path;
+- `DOC/P117SITE14_GENERATED_SITE_WORKFLOW.md` is added to OPUS;
+- `tools/smoke_p117site14_generated_site_workflow.py` is added to OPUS;
+- the smoke generates `sites/skeleton`, validates it, verifies workflow markers, verifies `ScoreTemplateRenderer`, then removes `sites/skeleton`.
+
+Source policy: `sites/skeleton/` remains a generated artifact and must not be committed.
+
+Current OPUS local expected changes after validation:
+
+```text
+ M framework/Opus/Scaffold/SiteScaffoldPlan.php
+?? DOC/
+?? tools/smoke_p117site14_generated_site_workflow.py
+```
+
+Next milestone: add Composer introspection commands for generated sites: `opus:list-routes`, `opus:list-modules`, then module/page/rubric creation commands.
