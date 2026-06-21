@@ -13,6 +13,7 @@ Milestone: P117SITE20_CREATE_APPLICATION_FULLSTACK_SKELETON
 - `c0b6bd10b55c33f88831011e5226195efdb4be0b` — `P117SITE20 add create application composer script`
 - `70c82f43ca168b03e695243d96b3378042c13713` — `P117SITE20 document fullstack skeleton`
 - `b68933be7a3ac1635dcd19d18fa6bb3e35628eec` — `P117SITE20 add fullstack skeleton smoke`
+- `ab32f8e9e71014e4bb31fed8ad57e1ce7aafc971` — `P117SITE20 fix generated front controller root`
 
 ## New command
 
@@ -78,3 +79,4 @@ P117SITE20_CREATE_APPLICATION_FULLSTACK_SKELETON_SMOKE_OK
 - Standard components stay owned by OPUS.
 - Applications own custom components only.
 - Backoffice remains a frontend specialization, never the backend.
+- Generated `public/index.php` now resolves OPUS root from `sites/<app>/public` using three parent levels.
