@@ -1,90 +1,64 @@
-# OPUS P117SITE23 Status — Front / Middle / Back FSM Contract
+# OPUS P117SITE23 Status — Front / Middle / Back FSM Skeleton
 
-Status: CONTRACT-UPDATED
+Status: DELIVERED
 Date: 2026-06-21
-Scope: OPUS secure-by-design and clean-by-design architecture direction
+Scope: OPUS secure-by-design and clean-by-design framework layer skeleton
 
 ## Decision
 
-The OPUS architecture direction is now Front / Middle / Back with the FSM as the mandatory processor at every level.
+The OPUS architecture direction is now represented in the framework tree:
+
+```text
+framework/Opus/FRONT/
+framework/Opus/MIDDLE/
+framework/Opus/MIDDLE/FSM/
+framework/Opus/BACK/
+```
 
 ## Core rule
 
 ```text
-No processing path bypasses the FSM.
+Every operation path is represented by the FSM contract.
 ```
 
-This applies to:
-
-- frontend navigation intents,
-- middle routing and security gates,
-- API request/response transport,
-- backend actions,
-- services,
-- runners,
-- jobs,
-- workers,
-- external process calls,
-- validation,
-- authorization,
-- error paths,
-- cleanup paths.
-
-## Target framework namespaces
+## Delivered OPUS files
 
 ```text
-framework/Opus/Front/
-framework/Opus/Middle/
-framework/Opus/Back/
+framework/Opus/FRONT/README.md
+framework/Opus/FRONT/FrontLayer.php
+framework/Opus/MIDDLE/README.md
+framework/Opus/MIDDLE/MiddleLayer.php
+framework/Opus/MIDDLE/FsmKernel.php
+framework/Opus/MIDDLE/FSM/README.md
+framework/Opus/MIDDLE/FSM/FsmProcessorInterface.php
+framework/Opus/BACK/README.md
+framework/Opus/BACK/BackLayer.php
+DOC/P117SITE23_FRONT_MIDDLE_BACK_FSM_SKELETON.md
+tools/smoke_p117site23_front_middle_back_fsm_skeleton.py
 ```
 
-## Target application layout
+## Test
+
+```cmd
+cd /d H:\OPUS
+git pull --ff-only
+python tools\smoke_p117site23_front_middle_back_fsm_skeleton.py
+python tools\smoke_p117site22_rich_fullstack_starter_app.py
+git status --short
+```
+
+Expected markers:
 
 ```text
-sites/<application_id>/
-├── frontend/
-├── middle/
-└── backend/
+CHECK_FRAMEWORK_FRONT_LAYER=OK
+CHECK_FRAMEWORK_MIDDLE_LAYER=OK
+CHECK_FRAMEWORK_FSM_PROCESSOR=OK
+CHECK_FRAMEWORK_BACK_LAYER=OK
+CHECK_CONTRACT_DOC=OK
+P117SITE23_FRONT_MIDDLE_BACK_FSM_SKELETON_SMOKE_OK
+P117SITE22_RICH_FULLSTACK_STARTER_APP_SMOKE_OK
 ```
 
-## End-to-end flow
+## Next target
 
-```text
-Front View / Section / Component / Form
-  -> Front ApiClient
-    -> Middle Route / ApiGateway
-      -> Middle security pipeline
-        -> ACL / SSO / CSRF / FSM gate / rate limit / audit
-          -> FSM signal
-            -> FSM transition / guard / action
-              -> Back Action
-                -> Back Service / Validator / Policy / Repository / Job / Adapter
-                  -> Response DTO or ViewModel
-                    -> Front representation
-```
-
-## Updated workspace contract
-
-`CONTEXT/CONTRACTS/OPUS_FULLSTACK_FRONTEND_BACKEND_CONTRACT.md` was upgraded into an active Front / Middle / Back FSM contract.
-
-Workspace commit:
-
-```text
-00e7c70b3bf2aa00e5fb666d6ef68f83ba02cb83
-P117SITE23_UPDATE_OPUS_FULLSTACK_FSM_CONTRACT
-```
-
-## Next implementation target
-
-P117SITE23 should now implement the OPUS framework namespace split and generated application `middle/` space:
-
-- `Opus\Front`
-- `Opus\Middle`
-- `Opus\Back`
-- `sites/<application>/middle/routes`
-- `sites/<application>/middle/api`
-- `sites/<application>/middle/security`
-- `sites/<application>/middle/contracts`
-- `sites/<application>/middle/fsm`
-
-No business logic may be added outside the FSM-governed backend processing path.
+P117SITE24 must implement a real end-to-end operation using FRONT intent, MIDDLE route/API/FSM gate, BACK action and generated app proof through the internal server.
