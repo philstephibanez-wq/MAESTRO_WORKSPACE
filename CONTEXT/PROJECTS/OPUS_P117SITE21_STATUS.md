@@ -1,6 +1,6 @@
 # OPUS P117SITE21 - create:site application alias
 
-Status: DELIVERED + WINDOWS SMOKE FIX
+Status: DELIVERED + WINDOWS SMOKE FIX + CMD COMPOSER FIX
 
 ## Purpose
 
@@ -22,6 +22,7 @@ P117SITE21 makes create:site a backward-compatible alias of the canonical create
 - 7a3253364cef924b0454691047cc8f682ccd53bc - P117SITE21_CREATE_SITE_APPLICATION_ALIAS_SMOKE
 - 668b68efe6855215b1689ef19c24bfb6e9502005 - P117SITE21_CREATE_SITE_APPLICATION_ALIAS_DOC
 - fefaa437c13a01beccbcaca5863fb1405b883ae2 - P117SITE21B_CREATE_SITE_ALIAS_SMOKE_WINDOWS_COMPOSER_FIX
+- 1e0acb88a9469dda83e4cbfd809ec479367b9088 - P117SITE21C_CREATE_SITE_ALIAS_SMOKE_CMD_COMPOSER_FIX
 
 ## Runtime issue fixed
 
@@ -31,20 +32,20 @@ The first Windows smoke run failed with:
 [WinError 2] Le fichier spécifié est introuvable
 ```
 
-Root cause: the Python smoke called `composer` directly with `subprocess.run([...])`. On Windows this may fail to resolve the batch wrapper depending on PATH/PATHEXT handling in the Python process.
+Root cause: the Python smoke called Composer through `subprocess.run([...])`. On Steve's Windows setup `composer` is available from CMD, but `composer.cmd` is not available and Python may not resolve the Composer command like CMD does.
 
-Fix: the smoke now resolves Composer explicitly with `shutil.which()` using this order:
+Final fix: on Windows the smoke now calls Composer through CMD explicitly:
 
 ```text
-composer.bat
-composer.cmd
-composer
+cmd /d /c composer
 ```
 
-If Composer cannot be resolved, the smoke now fails with the explicit error:
+This preserves the local Composer resolution that works in the user's terminal.
+
+If Composer cannot be resolved, the smoke fails with:
 
 ```text
-COMPOSER_EXECUTABLE_NOT_FOUND: composer.bat/composer.cmd/composer
+COMPOSER_EXECUTABLE_NOT_FOUND: composer/composer.bat/composer.cmd
 ```
 
 ## Runtime test
