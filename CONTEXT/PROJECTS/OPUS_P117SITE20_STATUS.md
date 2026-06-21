@@ -1,6 +1,6 @@
 # OPUS P117SITE20 Status
 
-Status: DELIVERED
+Status: VALIDATED
 Date: 2026-06-21
 Repository: philstephibanez-wq/OPUS
 Milestone: P117SITE20_CREATE_APPLICATION_FULLSTACK_SKELETON
@@ -15,6 +15,10 @@ Milestone: P117SITE20_CREATE_APPLICATION_FULLSTACK_SKELETON
 - `b68933be7a3ac1635dcd19d18fa6bb3e35628eec` — `P117SITE20 add fullstack skeleton smoke`
 - `ab32f8e9e71014e4bb31fed8ad57e1ce7aafc971` — `P117SITE20 fix generated front controller root`
 - `e2a1a18dd6dff874229597509c2787ebda428659` — `P117SITE20 fix scaffold plan syntax`
+
+## Workspace validation commit
+
+- `e0792894aeff8ce84aa78225ce25272b54ee1914` — `P117SITE20_CREATE_APPLICATION_FULLSTACK_SKELETON_VALIDATED`
 
 ## New command
 
@@ -67,11 +71,16 @@ viewmodels/
 python tools/smoke_p117site20_create_application_fullstack_skeleton.py
 ```
 
-Expected success marker:
+Validated success marker:
 
 ```text
 P117SITE20_CREATE_APPLICATION_FULLSTACK_SKELETON_SMOKE_OK
+CHECK_CLEANUP=OK
 ```
+
+## User validation
+
+The user confirmed the test as OK and requested continuation.
 
 ## Notes
 
@@ -82,3 +91,7 @@ P117SITE20_CREATE_APPLICATION_FULLSTACK_SKELETON_SMOKE_OK
 - Backoffice remains a frontend specialization, never the backend.
 - Generated `public/index.php` now resolves OPUS root from `sites/<app>/public` using three parent levels.
 - Scaffold plan syntax hotfix applied after remote inspection.
+
+## Next recommended milestone
+
+`P117SITE21_CREATE_VIEW_SECTION_COMPONENT_COMMANDS`
