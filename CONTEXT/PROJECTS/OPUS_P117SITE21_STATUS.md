@@ -1,6 +1,6 @@
 # OPUS P117SITE21 - create:site application alias
 
-Status: VALIDATED_WITH_FOLLOWUP_FIX
+Status: VALIDATED_FINAL
 
 ## Purpose
 
@@ -59,18 +59,39 @@ test-app-fullstack
 test-site-alias
 ```
 
-## Runtime validation
+## Final runtime validation
 
-Validated by Steve from `H:\OPUS` after P117SITE21C fix.
+Validated by Steve from `H:\OPUS` after the P117SITE20B and P117SITE21C Windows Composer fixes.
 
 Validated command sequence:
 
 ```cmd
+git pull --ff-only
+python tools\smoke_p117site20_create_application_fullstack_skeleton.py
 python tools\smoke_p117site21_create_site_application_alias.py
+composer opus:create-application -- test-app-fullstack --write
+composer opus:create-site -- test-site-alias --write
+rmdir /s /q sites\test-app-fullstack
+rmdir /s /q sites\test-site-alias
 git status --short
 ```
 
-Validated markers:
+Validated P117SITE20 markers:
+
+```text
+CHECK_CREATE_APPLICATION_COMMAND=OK
+CHECK_FRONTEND_BACKEND_ROOTS=OK
+CHECK_VIEW_LAYOUT_SECTION_LINKS=OK
+CHECK_COMPONENT_CONTRACTS=OK
+CHECK_BACKEND_API_ENDPOINT=OK
+CHECK_BACKOFFICE_NOT_BACKEND=OK
+CHECK_NO_LEGACY_APPLICATION_ROOT=OK
+CHECK_NEUTRAL_NO_BLOG_CMS_DEFAULT=OK
+P117SITE20_CREATE_APPLICATION_FULLSTACK_SKELETON_SMOKE_OK
+CHECK_CLEANUP=OK
+```
+
+Validated P117SITE21 markers:
 
 ```text
 CHECK_CREATE_SITE_ALIAS_COMMAND=OK
@@ -81,7 +102,14 @@ P117SITE21_CREATE_SITE_APPLICATION_ALIAS_SMOKE_OK
 CHECK_CLEANUP=OK
 ```
 
-Final local state reported clean after smoke:
+Validated manual create commands:
+
+```text
+OPUS_CREATE_APPLICATION_WRITTEN: test-app-fullstack
+OPUS_CREATE_APPLICATION_WRITTEN: test-site-alias
+```
+
+Final local state reported clean after cleanup:
 
 ```text
 git status --short
