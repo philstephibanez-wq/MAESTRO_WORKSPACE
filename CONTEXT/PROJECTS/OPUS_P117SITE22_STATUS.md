@@ -20,18 +20,24 @@ Créer une application OPUS générée suffisamment riche pour être testée vis
 - `1711532d6bf1257ccbbaff13afa20581f8153298` — `P117SITE22_RICH_FULLSTACK_STARTER_APP`
 - `606cc30cc3cc45a212a7f8fee41f610331907a18` — `P117SITE22_RICH_FULLSTACK_STARTER_APP_DOC`
 - `f738b1d6ccdf1360e88d3d0d14939ade2efd40d3` — `P117SITE22_RICH_FULLSTACK_STARTER_APP_SMOKE`
+- `04d6afa610ca15d3815fd0510a90393e19f22448` — `P117SITE22_KEEP_P117SITE21_SMOKE_COMPATIBLE`
+- `ea816a7b7aed07ca0b4d7ec15a6452b4409c553c` — `P117SITE22_KEEP_P117SITE20_SMOKE_COMPATIBLE`
 
 ## Fichiers OPUS concernés
 
 - `framework/Opus/Scaffold/FullstackApplicationScaffoldPlan.php`
 - `DOC/P117SITE22_RICH_FULLSTACK_STARTER_APP.md`
 - `tools/smoke_p117site22_rich_fullstack_starter_app.py`
+- `tools/smoke_p117site20_create_application_fullstack_skeleton.py`
+- `tools/smoke_p117site21_create_site_application_alias.py`
 
-## Test attendu
+## Test automatisé attendu
 
 ```cmd
 cd /d H:\OPUS
 git pull --ff-only
+python tools\smoke_p117site20_create_application_fullstack_skeleton.py
+python tools\smoke_p117site21_create_site_application_alias.py
 python tools\smoke_p117site22_rich_fullstack_starter_app.py
 ```
 
