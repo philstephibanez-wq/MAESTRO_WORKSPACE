@@ -1,6 +1,6 @@
 # OPUS P117SITE21 - create:site application alias
 
-Status: VALIDATED
+Status: VALIDATED_WITH_FOLLOWUP_FIX
 
 ## Purpose
 
@@ -23,6 +23,7 @@ P117SITE21 makes create:site a backward-compatible alias of the canonical create
 - 668b68efe6855215b1689ef19c24bfb6e9502005 - P117SITE21_CREATE_SITE_APPLICATION_ALIAS_DOC
 - fefaa437c13a01beccbcaca5863fb1405b883ae2 - P117SITE21B_CREATE_SITE_ALIAS_SMOKE_WINDOWS_COMPOSER_FIX
 - 1e0acb88a9469dda83e4cbfd809ec479367b9088 - P117SITE21C_CREATE_SITE_ALIAS_SMOKE_CMD_COMPOSER_FIX
+- 42d4fc92b5eac1059e345a21757451e3e8ec03eb - P117SITE20B_CREATE_APPLICATION_SMOKE_CMD_COMPOSER_FIX
 
 ## Runtime issue fixed
 
@@ -34,18 +35,28 @@ The first Windows smoke run failed with:
 
 Root cause: the Python smoke called Composer through `subprocess.run([...])`. On Steve's Windows setup `composer` is available from CMD, but `composer.cmd` is not available and Python may not resolve the Composer command like CMD does.
 
-Final fix: on Windows the smoke now calls Composer through CMD explicitly:
+Final fix for P117SITE21: on Windows the smoke now calls Composer through CMD explicitly:
 
 ```text
 cmd /d /c composer
 ```
 
-This preserves the local Composer resolution that works in the user's terminal.
+Follow-up fix for P117SITE20: the same Composer resolution was applied to `tools/smoke_p117site20_create_application_fullstack_skeleton.py` after manual testing revealed the older smoke still failed with WinError 2.
 
-If Composer cannot be resolved, the smoke fails with:
+## Manual test finding
+
+Manual commands using underscores were rejected:
 
 ```text
-COMPOSER_EXECUTABLE_NOT_FOUND: composer/composer.bat/composer.cmd
+OPUS_CREATE_APPLICATION_INVALID_APPLICATION_ID: test_app_fullstack
+OPUS_CREATE_APPLICATION_INVALID_APPLICATION_ID: test_site_alias
+```
+
+This is expected under the current application id contract. Application ids must use the accepted slug form; use hyphenated ids such as:
+
+```text
+test-app-fullstack
+test-site-alias
 ```
 
 ## Runtime validation
