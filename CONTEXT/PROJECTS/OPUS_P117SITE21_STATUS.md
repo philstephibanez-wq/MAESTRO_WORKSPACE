@@ -1,6 +1,6 @@
 # OPUS P117SITE21 - create:site application alias
 
-Status: DELIVERED
+Status: DELIVERED + WINDOWS SMOKE FIX
 
 ## Purpose
 
@@ -21,21 +21,50 @@ P117SITE21 makes create:site a backward-compatible alias of the canonical create
 - 1ea1f078bb9b43b7e7528aadc062f9689f63857d - P117SITE21_HELP_CREATE_SITE_ALIAS
 - 7a3253364cef924b0454691047cc8f682ccd53bc - P117SITE21_CREATE_SITE_APPLICATION_ALIAS_SMOKE
 - 668b68efe6855215b1689ef19c24bfb6e9502005 - P117SITE21_CREATE_SITE_APPLICATION_ALIAS_DOC
+- fefaa437c13a01beccbcaca5863fb1405b883ae2 - P117SITE21B_CREATE_SITE_ALIAS_SMOKE_WINDOWS_COMPOSER_FIX
+
+## Runtime issue fixed
+
+The first Windows smoke run failed with:
+
+```text
+[WinError 2] Le fichier spécifié est introuvable
+```
+
+Root cause: the Python smoke called `composer` directly with `subprocess.run([...])`. On Windows this may fail to resolve the batch wrapper depending on PATH/PATHEXT handling in the Python process.
+
+Fix: the smoke now resolves Composer explicitly with `shutil.which()` using this order:
+
+```text
+composer.bat
+composer.cmd
+composer
+```
+
+If Composer cannot be resolved, the smoke now fails with the explicit error:
+
+```text
+COMPOSER_EXECUTABLE_NOT_FOUND: composer.bat/composer.cmd/composer
+```
 
 ## Runtime test
 
 Run from H:\OPUS:
 
+```cmd
 python tools\smoke_p117site21_create_site_application_alias.py
+```
 
 Expected markers:
 
+```text
 CHECK_CREATE_SITE_ALIAS_COMMAND=OK
 CHECK_CREATE_SITE_ALIAS_FULLSTACK_STRUCTURE=OK
 CHECK_CREATE_SITE_ALIAS_FRONTEND_BACKEND_SEPARATION=OK
 CHECK_CREATE_SITE_ALIAS_NO_LEGACY_APPLICATION_ROOT=OK
 P117SITE21_CREATE_SITE_APPLICATION_ALIAS_SMOKE_OK
 CHECK_CLEANUP=OK
+```
 
 ## Next
 
