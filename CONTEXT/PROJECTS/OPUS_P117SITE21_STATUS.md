@@ -1,6 +1,6 @@
 # OPUS P117SITE21 - create:site application alias
 
-Status: DELIVERED + WINDOWS SMOKE FIX + CMD COMPOSER FIX
+Status: VALIDATED
 
 ## Purpose
 
@@ -48,15 +48,18 @@ If Composer cannot be resolved, the smoke fails with:
 COMPOSER_EXECUTABLE_NOT_FOUND: composer/composer.bat/composer.cmd
 ```
 
-## Runtime test
+## Runtime validation
 
-Run from H:\OPUS:
+Validated by Steve from `H:\OPUS` after P117SITE21C fix.
+
+Validated command sequence:
 
 ```cmd
 python tools\smoke_p117site21_create_site_application_alias.py
+git status --short
 ```
 
-Expected markers:
+Validated markers:
 
 ```text
 CHECK_CREATE_SITE_ALIAS_COMMAND=OK
@@ -67,6 +70,14 @@ P117SITE21_CREATE_SITE_APPLICATION_ALIAS_SMOKE_OK
 CHECK_CLEANUP=OK
 ```
 
+Final local state reported clean after smoke:
+
+```text
+git status --short
+```
+
+(no output)
+
 ## Next
 
-After validation, continue with frontend authoring commands: create:view, create:section, create:component.
+Continue with frontend authoring commands: create:view, create:section, create:component.
