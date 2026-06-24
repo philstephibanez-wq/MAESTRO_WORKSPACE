@@ -53,7 +53,7 @@ CONTEXT/DECISIONS/ADR_20260619_OPUS_COMPOSER_GENERATORS_AND_KB_FRONT_SITES.md
 CONTEXT/DECISIONS/ADR_20260619_OPUS_SCORE_FIRST_MVC_SOURCE_AGNOSTIC_DATA.md
 ```
 
-## Current validated OPUS state — P6D audit installed / blocked for docblocks
+## Current validated OPUS state — P6D4 runtime core docblocks batch 1
 
 ```text
 OPUS root      : H:\OPUS
@@ -75,6 +75,7 @@ dfe6801 P6C_REGISTER_RUNTIME_CLEANUP_SELECTOR_AUDIT
 d174b7f P6D_ADD_RUNTIME_APPLICATION_NAMESPACE_AND_REFBOOK_DOC_AUDIT
 22a187d P6D2_FIX_REFBOOK_DOC_AUDIT_SCOPE_AND_REGISTER_TOOL
 abba89a P6D3_REPAIR_RUNTIME_REFBOOK_DOC_AUDIT_AND_REGISTER_SMOKE
+506b165 P6D4_DOCBLOCK_RUNTIME_CORE_BATCH1
 ```
 
 Runtime state:
@@ -102,7 +103,7 @@ P5H_BOOTSTRAP_MOVE_DESIGN_AUDIT_OK
 git status clean
 ```
 
-P6D audit finding:
+P6D/P6D4 audit finding:
 
 ```text
 P6D_RUNTIME_APPLICATION_NAMESPACE_AND_REFBOOK_DOC_AUDIT_FAIL
@@ -110,7 +111,7 @@ DECISION=P6D_BLOCKED_REVIEW_REQUIRED
 NEXT_SAFE_STEP=P6D_REVIEW_DOCBLOCK_AND_APPLICATION_REFERENCES
 ```
 
-Important P6D facts:
+Important P6D4 facts:
 
 ```text
 OPUS_Application still has 11 runtime references.
@@ -118,8 +119,18 @@ RefBook class PHPDoc coverage is not 100%.
 CLASS_LIKE_TOTAL=79
 CLASS_LIKE_NAMESPACED=35
 CLASS_LIKE_GLOBAL=44
-CLASS_LIKE_WITH_DOCBLOCK=23
-CLASS_LIKE_MISSING_DOCBLOCK=56
+CLASS_LIKE_WITH_DOCBLOCK=28
+CLASS_LIKE_MISSING_DOCBLOCK=51
+```
+
+P6D4 documented runtime core batch:
+
+```text
+Opus/Runtime/Application.php
+Opus/Runtime/Bootstrap.php
+Opus/Runtime/Kernel.php
+Opus/Routing/Router.php
+Opus/View/View.php
 ```
 
 Important regression guard:
@@ -135,6 +146,7 @@ Do not start RefBook generation fixes until P6D docblock coverage batches are tr
 Specific handoffs:
 
 ```text
+CONTEXT/HANDOFFS/P6D4_20260624_OPUS_RUNTIME_CORE_DOCBLOCK_BATCH1.md
 CONTEXT/HANDOFFS/P6D_20260624_OPUS_RUNTIME_APPLICATION_REFBOOK_DOC_AUDIT.md
 CONTEXT/HANDOFFS/P6C_20260624_OPUS_RUNTIME_CLEANUP_TARGET_SELECTED.md
 CONTEXT/HANDOFFS/P6B_20260624_OPUS_LEGACY_REMOVED.md
@@ -157,15 +169,15 @@ H:\LOGANDPLAY.ORG
 ## Immediate next work
 
 ```text
-1. P6D_REVIEW_DOCBLOCK_AND_APPLICATION_REFERENCES.
+1. P6D5_DOCBLOCK_BATCH2.
 2. P6D remains audit-first: no OPUS_Application namespace migration yet.
 3. Fix RefBook PHPDoc class coverage by coherent batches.
-4. Recommended first batch:
-   - Opus/Runtime/Application.php
-   - Opus/Runtime/Bootstrap.php
-   - Opus/Runtime/Kernel.php
-   - Opus/Routing/Router.php
-   - Opus/View/View.php
+4. Recommended next batch:
+   - Opus/Http/Request.php
+   - Opus/Http/Response.php
+   - Opus/Application/ApplicationDefinition.php
+   - Opus/Application/ApplicationRegistry.php
+   - Opus/Foundation/Support.php
 5. Re-run P6D after every documentation batch.
 6. Later candidates after P6D:
    - P6E_WWW_ENTRYPOINT_RESPONSIBILITY_SPLIT.
@@ -193,8 +205,8 @@ No direct work on removed roots : H:\OPUS_REF_BOOK, H:\LOGANDPLAY.ORG
 
 | Repository / Project | Role | Current state |
 |---|---|---|
-| MAESTRO_WORKSPACE | Contracts, decisions, handoffs | Updated for OPUS P6D runtime Application + RefBook PHPDoc audit |
-| OPUS | Framework core + integrated system sites | Runtime P6D audit installed; OPUS_Application migration blocked; RefBook PHPDoc coverage missing 56 docblocks |
+| MAESTRO_WORKSPACE | Contracts, decisions, handoffs | Updated for OPUS P6D4 runtime core docblock batch 1 |
+| OPUS | Framework core + integrated system sites | Runtime P6D audit installed; OPUS_Application migration blocked; RefBook PHPDoc coverage missing 51 docblocks |
 | KB_FRONT_OFFICE | Future public/controlled KB site | Must be OPUS site/application, generated through OPUS generators and rendered through Score-first MVC pipeline |
 | KB_BACK_OFFICE | Future administrative KB site | Must be OPUS site/application, generated through OPUS generators and rendered through Score-first MVC pipeline |
 | MAESTRO_V5 | REAPER/Lua music assistant | Active, not publicly exposed |
@@ -204,6 +216,7 @@ No direct work on removed roots : H:\OPUS_REF_BOOK, H:\LOGANDPLAY.ORG
 ## Required reading for details
 
 ```text
+CONTEXT/HANDOFFS/P6D4_20260624_OPUS_RUNTIME_CORE_DOCBLOCK_BATCH1.md
 CONTEXT/HANDOFFS/P6D_20260624_OPUS_RUNTIME_APPLICATION_REFBOOK_DOC_AUDIT.md
 CONTEXT/HANDOFFS/P6C_20260624_OPUS_RUNTIME_CLEANUP_TARGET_SELECTED.md
 CONTEXT/HANDOFFS/P6B_20260624_OPUS_LEGACY_REMOVED.md
