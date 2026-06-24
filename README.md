@@ -20,8 +20,8 @@ Aucune livraison n'est complète si le workspace/handoff n'a pas été mis à jo
 | Projet | Rôle | État |
 |---|---|---|
 | LOGANDPLAY | Identité publique, carte d'entrée `logandplay.org` et présentation de l'écosystème | Nouveau projet workspace : page OPUS-generated prévue, liens OPUS/MAESTRO/KB en `PROCHAINEMENT`, aucune exposition publique active |
-| OPUS | Framework PHP OPUS 8.1.0 "Lysenko" | Linux préprod installé et durci ; DNS LAN, Apache LAN, UFW, Fail2ban SSH/Webmin, ClamAV ciblé, AWFFull privé et Webmin tempdir validés ; prochain : page LOGANDPLAY puis registry overlay Linux |
-| OPUS RefBook | Site officiel de documentation OPUS, package optionnel | UI en pause jusqu'à stabilisation OPUS P117 |
+| OPUS | Framework PHP OPUS 8.1.0 "Lysenko" | Windows dev P6B validé : `Opus/Legacy` supprimé, `Opus/Runtime/Application.php` actif, `www/index.php` Composer-only, P6A migration archivée ; prochaine cible : P6C runtime cleanup target |
+| OPUS RefBook | Site officiel de documentation OPUS, package optionnel | UI en pause jusqu'à stabilisation OPUS P117/P6 |
 | OPUS_USER_GUIDE | Guide utilisateur optionnel futur | À cadrer |
 | OPUS_REF_BOOK | Dépôt transitoire du RefBook actuel | Revert P116C5M appliqué après régressions UI P116C5I/J/K/L |
 | MAESTRO_V5 | Assistant musical REAPER/Lua | Actif, non exposé publiquement |
@@ -33,6 +33,8 @@ Aucune livraison n'est complète si le workspace/handoff n'a pas été mis à jo
 
 ```text
 H:\OPUS\index.php                         unique point d'entrée produit Windows dev
+H:\OPUS\Opus\Runtime\Bootstrap.php       bootstrap runtime stable
+H:\OPUS\Opus\Runtime\Application.php     application runtime active depuis P6A
 H:\OPUS\framework\Opus\Autoload\...      autoloader framework
 H:\OPUS\var\cache                         caches runtime OPUS Windows dev
 H:\OPUS\var\logs                          logs runtime OPUS Windows dev
@@ -41,6 +43,8 @@ H:\OPUS\var\logs                          logs runtime OPUS Windows dev
 /srv/opus/OPUS/var/cache                    cache runtime Linux
 /srv/opus/OPUS/var/logs                     logs runtime Linux
 ```
+
+`Opus/Legacy` ne doit pas réapparaître dans le runtime produit. Toute recréation de `H:\OPUS\Opus\Legacy` est une régression P6.
 
 `H:\OPUS\var` et `/srv/opus/OPUS/var` ne doivent contenir que `cache` et `logs`.
 
@@ -84,7 +88,7 @@ Le dashboard peut encore afficher `SERVER_DEGRADED` tant que P117L4B n'a pas rem
 
 | Package | Statut | Contrat |
 |---|---|---|
-| OPUS | Obligatoire | Core clean, livrable, runtime strict, sans résidus RefBook/Twig/dev |
+| OPUS | Obligatoire | Core clean, livrable, runtime strict, sans résidus RefBook/Twig/legacy/dev |
 | OPUS_REF_BOOK | Optionnel officiel | Site OPUS offline-first et publiable online |
 | OPUS_USER_GUIDE | Optionnel futur | Guide utilisateur séparé du RefBook technique |
 | LOGANDPLAY_SITE | Futur site public | Site/package consommant OPUS core, sans polluer le framework |
@@ -95,6 +99,7 @@ Le dashboard peut encore afficher `SERVER_DEGRADED` tant que P117L4B n'a pas rem
 Un seul framework OPUS partagé.
 Plusieurs sites/packages OPUS optionnels.
 Aucune duplication du framework par site.
+Aucun dossier Opus/Legacy dans le runtime produit.
 ```
 
 Le RefBook et le futur site LOGANDPLAY peuvent être livrés séparément comme packages/sites optionnels, mais ils doivent dépendre d'un OPUS core partagé et déclaré explicitement.
@@ -122,6 +127,7 @@ Le but est de pouvoir ouvrir un chat neuf à tout moment sans dépendre d'une m�
 ## Raccourcis
 
 - Handoff courant : CONTEXT/HANDOFFS/CURRENT_HANDOFF.md
+- Handoff OPUS P6B : CONTEXT/HANDOFFS/P6B_20260624_OPUS_LEGACY_REMOVED.md
 - Index projets : CONTEXT/PROJECTS/PROJECT_INDEX.md
 - Projet LOGANDPLAY : CONTEXT/PROJECTS/LOGANDPLAY.md
 - Décisions : CONTEXT/DECISIONS/
@@ -131,9 +137,11 @@ Le but est de pouvoir ouvrir un chat neuf à tout moment sans dépendre d'une m�
 
 ## Règles immédiates
 
+- OPUS P6B : `Opus/Legacy` supprimé ; ne pas le recréer.
+- OPUS P6C : choisir la prochaine cible runtime cleanup avant tout patch.
 - LOGANDPLAY P117SITE1 : créer la page identité `logandplay.org` générée par OPUS, avec liens OPUS/MAESTRO/KB en `PROCHAINEMENT`.
-- OPUS P117 Linux préprod et sécurité restent la base active.
-- Pas de nouveau patch UI RefBook tant que OPUS Linux P117 n'est pas stabilisé.
+- OPUS P117 Linux préprod et sécurité restent la base active côté serveur.
+- Pas de nouveau patch UI RefBook tant que OPUS Linux/P6 runtime n'est pas stabilisé.
 - Pas de fallback silencieux.
 - Les caches vont dans `OPUS/var/cache`.
 - Les logs vont dans `OPUS/var/logs`.
