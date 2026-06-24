@@ -20,7 +20,7 @@ Aucune livraison n'est complète si le workspace/handoff n'a pas été mis à jo
 | Projet | Rôle | État |
 |---|---|---|
 | LOGANDPLAY | Identité publique, carte d'entrée `logandplay.org` et présentation de l'écosystème | Nouveau projet workspace : page OPUS-generated prévue, liens OPUS/MAESTRO/KB en `PROCHAINEMENT`, aucune exposition publique active |
-| OPUS | Framework PHP OPUS 8.1.0 "Lysenko" | Windows dev P6D4 : runtime core docblock batch 1 validé, `OPUS_Application` migration bloquée, RefBook encore bloqué par 51 docblocks manquants |
+| OPUS | Framework PHP OPUS 8.1.0 "Lysenko" | Windows dev P6D5 : HTTP/Application/Foundation docblock batch 2 validé, `OPUS_Application` migration bloquée, RefBook encore bloqué par 46 docblocks manquants |
 | OPUS RefBook | Site officiel de documentation OPUS, package optionnel | Alimenté par autodoc PHPDoc ; bloqué tant que OPUS n'a pas 100% de docblocks classes/interfaces |
 | OPUS_USER_GUIDE | Guide utilisateur optionnel futur | À cadrer |
 | OPUS_REF_BOOK | Dépôt transitoire du RefBook actuel | Revert P116C5M appliqué après régressions UI P116C5I/J/K/L |
@@ -57,8 +57,8 @@ P6D audit source : tools/audits/audit_p6d_runtime_application_namespace_readines
 Class total      : 79
 Namespaced       : 35
 Global           : 44
-With docblock    : 28
-Missing docblock : 51
+With docblock    : 33
+Missing docblock : 46
 Status           : blocked until PHPDoc class/interface coverage reaches 100%
 ```
 
@@ -141,6 +141,7 @@ Le but est de pouvoir ouvrir un chat neuf à tout moment sans dépendre d'une m�
 ## Raccourcis
 
 - Handoff courant : CONTEXT/HANDOFFS/CURRENT_HANDOFF.md
+- Handoff OPUS P6D5 : CONTEXT/HANDOFFS/P6D5_20260624_OPUS_HTTP_APPLICATION_FOUNDATION_DOCBLOCK_BATCH2.md
 - Handoff OPUS P6D4 : CONTEXT/HANDOFFS/P6D4_20260624_OPUS_RUNTIME_CORE_DOCBLOCK_BATCH1.md
 - Handoff OPUS P6D : CONTEXT/HANDOFFS/P6D_20260624_OPUS_RUNTIME_APPLICATION_REFBOOK_DOC_AUDIT.md
 - Handoff OPUS P6C : CONTEXT/HANDOFFS/P6C_20260624_OPUS_RUNTIME_CLEANUP_TARGET_SELECTED.md
@@ -154,7 +155,7 @@ Le but est de pouvoir ouvrir un chat neuf à tout moment sans dépendre d'une m�
 
 ## Règles immédiates
 
-- OPUS P6D4 : runtime core docblock batch 1 validé ; ne pas migrer `OPUS_Application` tant que 11 références runtime et 51 docblocks manquants ne sont pas traités.
+- OPUS P6D5 : HTTP/Application/Foundation docblock batch 2 validé ; ne pas migrer `OPUS_Application` tant que 11 références runtime et 46 docblocks manquants ne sont pas traités.
 - OPUS RefBook : autodoc bloquée tant que couverture PHPDoc classe/interface n'est pas 100%.
 - OPUS P6B : `Opus/Legacy` supprimé ; ne pas le recréer.
 - LOGANDPLAY P117SITE1 : créer la page identité `logandplay.org` générée par OPUS, avec liens OPUS/MAESTRO/KB en `PROCHAINEMENT`.
