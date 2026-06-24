@@ -20,8 +20,8 @@ Aucune livraison n'est complète si le workspace/handoff n'a pas été mis à jo
 | Projet | Rôle | État |
 |---|---|---|
 | LOGANDPLAY | Identité publique, carte d'entrée `logandplay.org` et présentation de l'écosystème | Nouveau projet workspace : page OPUS-generated prévue, liens OPUS/MAESTRO/KB en `PROCHAINEMENT`, aucune exposition publique active |
-| OPUS | Framework PHP OPUS 8.1.0 "Lysenko" | Windows dev P6C validé : `Opus/Legacy` supprimé, `Opus/Runtime/Application.php` actif, `www/index.php` Composer-only, P6A migration archivée, P6D sélectionné pour audit namespace Application |
-| OPUS RefBook | Site officiel de documentation OPUS, package optionnel | UI en pause jusqu'à stabilisation OPUS P117/P6 |
+| OPUS | Framework PHP OPUS 8.1.0 "Lysenko" | Windows dev P6D audit installé : `Opus/Legacy` supprimé, `OPUS_Application` migration bloquée, RefBook bloqué par 56 docblocks manquants |
+| OPUS RefBook | Site officiel de documentation OPUS, package optionnel | Alimenté par autodoc PHPDoc ; bloqué tant que OPUS n'a pas 100% de docblocks classes/interfaces |
 | OPUS_USER_GUIDE | Guide utilisateur optionnel futur | À cadrer |
 | OPUS_REF_BOOK | Dépôt transitoire du RefBook actuel | Revert P116C5M appliqué après régressions UI P116C5I/J/K/L |
 | MAESTRO_V5 | Assistant musical REAPER/Lua | Actif, non exposé publiquement |
@@ -34,7 +34,7 @@ Aucune livraison n'est complète si le workspace/handoff n'a pas été mis à jo
 ```text
 H:\OPUS\index.php                         unique point d'entrée produit Windows dev
 H:\OPUS\Opus\Runtime\Bootstrap.php       bootstrap runtime stable
-H:\OPUS\Opus\Runtime\Application.php     application runtime active depuis P6A ; namespace à auditer en P6D
+H:\OPUS\Opus\Runtime\Application.php     application runtime active depuis P6A ; global OPUS_Application à auditer/migrer plus tard
 H:\OPUS\framework\Opus\Autoload\...      autoloader framework
 H:\OPUS\var\cache                         caches runtime OPUS Windows dev
 H:\OPUS\var\logs                          logs runtime OPUS Windows dev
@@ -49,6 +49,20 @@ H:\OPUS\var\logs                          logs runtime OPUS Windows dev
 `H:\OPUS\var` et `/srv/opus/OPUS/var` ne doivent contenir que `cache` et `logs`.
 
 Tout ce qui est développement, audit, generated, recipes, tmp, refbook transitoire ou diagnostic va dans MAESTRO_WORKSPACE si nécessaire, pas dans OPUS product runtime.
+
+## OPUS RefBook autodoc contract immédiat
+
+```text
+P6D audit source : tools/audits/audit_p6d_runtime_application_namespace_readiness.py
+Class total      : 79
+Namespaced       : 35
+Global           : 44
+With docblock    : 23
+Missing docblock : 56
+Status           : blocked until PHPDoc class/interface coverage reaches 100%
+```
+
+Le RefBook ne doit pas être alimenté par des classes non documentées ou par un parseur approximatif. Les docblocks doivent être corrigés par lots cohérents et validés par P6D.
 
 ## LOGANDPLAY public identity contract immédiat
 
@@ -127,6 +141,7 @@ Le but est de pouvoir ouvrir un chat neuf à tout moment sans dépendre d'une m�
 ## Raccourcis
 
 - Handoff courant : CONTEXT/HANDOFFS/CURRENT_HANDOFF.md
+- Handoff OPUS P6D : CONTEXT/HANDOFFS/P6D_20260624_OPUS_RUNTIME_APPLICATION_REFBOOK_DOC_AUDIT.md
 - Handoff OPUS P6C : CONTEXT/HANDOFFS/P6C_20260624_OPUS_RUNTIME_CLEANUP_TARGET_SELECTED.md
 - Handoff OPUS P6B : CONTEXT/HANDOFFS/P6B_20260624_OPUS_LEGACY_REMOVED.md
 - Index projets : CONTEXT/PROJECTS/PROJECT_INDEX.md
@@ -138,7 +153,8 @@ Le but est de pouvoir ouvrir un chat neuf à tout moment sans dépendre d'une m�
 
 ## Règles immédiates
 
-- OPUS P6C : P6D est la prochaine cible, audit namespace `Opus/Runtime/Application.php` avant tout patch.
+- OPUS P6D : audit installé ; ne pas migrer `OPUS_Application` tant que 11 références runtime et 56 docblocks manquants ne sont pas traités.
+- OPUS RefBook : autodoc bloquée tant que couverture PHPDoc classe/interface n'est pas 100%.
 - OPUS P6B : `Opus/Legacy` supprimé ; ne pas le recréer.
 - LOGANDPLAY P117SITE1 : créer la page identité `logandplay.org` générée par OPUS, avec liens OPUS/MAESTRO/KB en `PROCHAINEMENT`.
 - OPUS P117 Linux préprod et sécurité restent la base active côté serveur.
