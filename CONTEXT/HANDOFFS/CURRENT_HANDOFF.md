@@ -14,9 +14,9 @@ NO BRICOLAGE DELIVERY.
 NO FALLBACK SILENCIEUX.
 ```
 
-OPUS is an applicative web framework. HTML output must come from `.score` templates through explicit data/view-model contracts. Do not assemble product HTML in PHP, do not query data from templates, and do not bypass generators or runtime contracts.
+OPUS is an applicative web framework. HTML output must come from `.score` templates through explicit data/view-model contracts.
 
-## Current OPUS resume state — P7A1A abort propre
+## Current OPUS state — P7A1C validated
 
 ```text
 OPUS root      : H:\OPUS
@@ -25,164 +25,102 @@ Workspace root : H:\MAESTRO_WORKSPACE
 Workspace repo : philstephibanez-wq/MAESTRO_WORKSPACE
 ```
 
-Specific handoff to read first for the current OPUS state:
+Read first:
+
+```text
+CONTEXT/HANDOFFS/P7A1C_20260626_OPUS_TOKENIZER_FRAMEWORK_INTERFACES_CONTRACTS.md
+```
+
+History handoff:
 
 ```text
 CONTEXT/HANDOFFS/P7A1A_20260626_OPUS_INTERFACE_REFACTOR_ABORT_AND_FSM_DEMO_REMOVAL.md
 ```
 
-## Current OPUS Git status
+## OPUS Git status
 
-A local OPUS commit was created:
+P7A1C was executed, committed and pushed.
+
+```text
+c1cded0 P7A1C add tokenizer-based framework interfaces and contracts
+41a4d2b..c1cded0  master -> master
+## master...origin/master
+```
+
+## P7A1C validated output
+
+```text
+PHP_FILES=79
+CLASS_LIKE_TOTAL=80
+CLASSES_TOTAL=75
+CONCRETE_CLASSES=71
+ABSTRACT_EXEMPT=4
+INTERFACES_CREATED=71
+CLASSES_PATCHED=71
+MISSING_IMPLEMENTS=0
+PHP_LINT_ERRORS=0
+EXIT_CODE=0
+```
+
+Reports committed:
+
+```text
+DOC/reference/generated/json/p7a1c_contract_map.json
+DOC/reference/generated/markdown/P7A1C_CONTRACT_MAP.md
+```
+
+Base contracts added:
+
+```text
+Opus/Framework/OpusFrameworkComponentInterface.php
+Opus/Framework/OpusExceptionAwareInterface.php
+Opus/Framework/OpusExceptionContractInterface.php
+Opus/Framework/OpusProfilerAwareInterface.php
+Opus/Framework/OpusSelfDocumentingInterface.php
+```
+
+## Validated decision still active
+
+`Opus/Fsm/Fsm.php` was removed as a demo FSM and must not be restored.
 
 ```text
 41a4d2b Remove demo FSM from OPUS framework
 ```
 
-Observed local status after commit:
+## P7A1A warning
+
+P7A1A3 through P7A1A9 are invalidated. Do not reuse them as a base.
+
+Key causes:
 
 ```text
-## master...origin/master [ahead 1]
+regex scanner noise
+false OK with CLASSES=0
+bad implements injection
+invalid generated interface names
+broad *Interface.php deletion
+rejected Opus/Contract/PerClass and tools/contracts
 ```
 
-If this commit has not yet been pushed, push OPUS before the next global run:
+## Current limitation
 
-```cmd
-git push
-```
+P7A1C validates the interface and contract skeleton only. It does not yet validate the full runtime diagnostic bridge into exceptions and profiler traces.
 
-## Validated decision
-
-`Opus/Fsm/Fsm.php` was intentionally deleted because it was a demo FSM and not a real framework component.
-
-Deleted demo content summary:
+## Next milestone
 
 ```text
-demoFlow()
-BOOT -> PACKAGE_READY -> I18N_READY -> RENDER_READY -> DONE
+P7A1D_BIG_RUNTIME_EXCEPTION_PROFILER_PIPELINE
 ```
 
-This file must not be restored by any automated reset or global runner.
-
-## P7A1A invalidated attempts
-
-P7A1A3 through P7A1A9 are invalidated and must not be reused as a base.
-
-Reasons:
+Target:
 
 ```text
-- generic interfaces were insufficient ;
-- generated interfaces were not implemented by classes ;
-- implements injection caused PHP parse errors ;
-- regex scanners captured noise instead of PHP class declarations ;
-- false OK with CLASSES=0 ;
-- invalid generated interfaces such as andInterface.php, runtimeInterface.php, eMailInterface.php ;
-- broad deletion of *Interface.php deleted legitimate OPUS interfaces ;
-- Opus/Scaffold/ScaffoldPlanInterface.php and Opus/Score/TemplateRendererInterface.php had to be restored ;
-- RefBook HTML generation was not cleanly isolated through OPUS templates ;
-- administrative naming such as Opus/Contract/PerClass and tools/contracts was rejected ;
-- Foundation/Support as a generated contract element was rejected ;
-- automated git restore must not bring back the deleted demo FSM.
+runtime diagnostics -> OPUS exception objects -> profiler trace levels
+explicit exemptions
+PHP lint global
+no false OK
+RefBook data update
 ```
-
-## Mandatory next-run contract
-
-Next run must be a single clean run using a PHP tokenizer strategy.
-
-```text
-- start from HEAD containing the deletion of Opus/Fsm/Fsm.php ;
-- never restore Opus/Fsm/Fsm.php ;
-- never use regex to detect PHP classes ;
-- use token_get_all() ;
-- detect only T_CLASS ;
-- exclude T_INTERFACE ;
-- exclude T_TRAIT ;
-- exclude anonymous classes ;
-- never delete *Interface.php globally ;
-- never touch existing interfaces unless explicitly controlled ;
-- generate readable sibling interfaces only for real concrete classes ;
-- reject interfaces generated from method names, variables, comments or internal words ;
-- no Opus/Contract/PerClass ;
-- no tools/contracts ;
-- no generated Foundation/Support ;
-- no false OK if CLASSES=0 ;
-- global php -l is blocking ;
-- RefBook HTML must be generated by OPUS through .score templates, not Python HTML concatenation.
-```
-
-## Target interface model
-
-Modern class:
-
-```text
-Opus/Runtime/Application.php
-Opus/Runtime/ApplicationInterface.php
-```
-
-Legacy class:
-
-```text
-Opus/Acl/Acl.class.php
-Opus/Acl/AclInterface.php
-```
-
-Expected class declaration:
-
-```php
-final class Application implements ApplicationInterface
-```
-
-Expected interface contract:
-
-```php
-interface ApplicationInterface extends
-    OpusFrameworkComponentInterface,
-    OpusExceptionAwareInterface,
-    OpusProfilerAwareInterface,
-    OpusSelfDocumentingInterface
-{
-}
-```
-
-## Error / exception / profiler target
-
-```text
-PHP warning / notice / deprecated / runtime error
--> OPUS contractual exception
--> Throwable normalization
--> profiler multi-level trace
--> RefBook / Profiler readable output
-```
-
-Parse errors cannot always be caught at runtime, so the gate must run global lint before runtime:
-
-```text
-php -l global obligatoire
-```
-
-## Next proposed milestone
-
-```text
-P7A1B_ONE_RUN_TOKENIZER_BASED_FRAMEWORK_INTERFACES
-```
-
-Objective:
-
-```text
-- real class scan with token_get_all ;
-- readable sibling interfaces ;
-- explicit implements for each concrete class ;
-- framework/profiler/exception/autodoc contracts ;
-- error -> exception -> profiler pipeline ;
-- global PHP lint ;
-- OPUS RefBook via .score templates ;
-- no false OK ;
-- no demo FSM restoration.
-```
-
-## Previous OPUS baseline retained for context
-
-The last clean historical baseline before the P7A1A abort was P6D8: full RefBook class/interface docblock coverage had been validated, with 79/79 class-like declarations documented and `OPUS_Application` runtime namespace migration still pending.
 
 ## Repository write policy
 
