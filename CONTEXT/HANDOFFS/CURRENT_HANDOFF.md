@@ -16,7 +16,7 @@ NO FALLBACK SILENCIEUX.
 
 OPUS is an applicative web framework. HTML output must come from `.score` templates through explicit data/view-model contracts.
 
-## Current OPUS state — P7A1C validated
+## Current OPUS state — P7A1D4 validated
 
 ```text
 OPUS root      : H:\OPUS
@@ -28,63 +28,88 @@ Workspace repo : philstephibanez-wq/MAESTRO_WORKSPACE
 Read first:
 
 ```text
-CONTEXT/HANDOFFS/P7A1C_20260626_OPUS_TOKENIZER_FRAMEWORK_INTERFACES_CONTRACTS.md
+CONTEXT/HANDOFFS/P7A1D4_20260626_OPUS_WEB_PROFILER_CONFIGURED_FSM_VALIDATED.md
 ```
 
-History handoff:
+Related ADR:
 
 ```text
+CONTEXT/ADRS/ADR_20260626_OPUS_RUNTIME_FSM_CONFIGURATION_NOT_HARDCODED.md
+```
+
+History handoffs:
+
+```text
+CONTEXT/HANDOFFS/P7A1C_20260626_OPUS_TOKENIZER_FRAMEWORK_INTERFACES_CONTRACTS.md
 CONTEXT/HANDOFFS/P7A1A_20260626_OPUS_INTERFACE_REFACTOR_ABORT_AND_FSM_DEMO_REMOVAL.md
 ```
 
-## OPUS Git status
+## OPUS status
 
-P7A1C was executed, committed and pushed.
+P7A1D4 was executed, validated, committed and pushed.
+
+Final local status observed:
 
 ```text
-c1cded0 P7A1C add tokenizer-based framework interfaces and contracts
-41a4d2b..c1cded0  master -> master
 ## master...origin/master
 ```
 
-## P7A1C validated output
+Report present on OPUS master:
 
 ```text
-PHP_FILES=79
-CLASS_LIKE_TOTAL=80
-CLASSES_TOTAL=75
-CONCRETE_CLASSES=71
-ABSTRACT_EXEMPT=4
-INTERFACES_CREATED=71
-CLASSES_PATCHED=71
-MISSING_IMPLEMENTS=0
+DOC/reference/generated/json/p7a1d4_web_profiler_exception_pipeline.json
+```
+
+## P7A1D4 validated output
+
+```text
+PHP_FILES=188
 PHP_LINT_ERRORS=0
+COLLECTORS_REGISTERED=9
+WEB_PROFILER_ROUTE_AVAILABLE=1
+WEB_PROFILER_TEMPLATE_SCORE_AVAILABLE=1
+CONFIGURED_FSM_MAPS=4
+NO_HARDCODED_RUNTIME_FSM=1
+NO_HTML_BUILT_IN_COLLECTORS=1
+OK=1
 EXIT_CODE=0
 ```
 
-Reports committed:
+## What P7A1D4 validates
 
 ```text
-DOC/reference/generated/json/p7a1c_contract_map.json
-DOC/reference/generated/markdown/P7A1C_CONTRACT_MAP.md
+Web Profiler OPUS style target
+OPUS .score profiler template
+9 collectors registered
+collectors contain no HTML
+runtime diagnostics to exception to profiler pipeline
+configured runtime FSM under config/fsm_runtime
+no hardcoded runtime FSM transitions
+global PHP lint OK
 ```
 
-Base contracts added:
+Collectors:
 
 ```text
-Opus/Framework/OpusFrameworkComponentInterface.php
-Opus/Framework/OpusExceptionAwareInterface.php
-Opus/Framework/OpusExceptionContractInterface.php
-Opus/Framework/OpusProfilerAwareInterface.php
-Opus/Framework/OpusSelfDocumentingInterface.php
+request
+routing
+exception
+template
+database
+config
+mail
+memory
+runtime
 ```
 
-## Validated decision still active
+## Validated decisions still active
 
 `Opus/Fsm/Fsm.php` was removed as a demo FSM and must not be restored.
 
+Runtime FSM transitions must be configuration data, not PHP hardcoded sequences.
+
 ```text
-41a4d2b Remove demo FSM from OPUS framework
+config/fsm_runtime
 ```
 
 ## P7A1A warning
@@ -98,28 +123,27 @@ regex scanner noise
 false OK with CLASSES=0
 bad implements injection
 invalid generated interface names
-broad *Interface.php deletion
-rejected Opus/Contract/PerClass and tools/contracts
+broad interface deletion
+rejected administrative contract paths
 ```
-
-## Current limitation
-
-P7A1C validates the interface and contract skeleton only. It does not yet validate the full runtime diagnostic bridge into exceptions and profiler traces.
 
 ## Next milestone
 
 ```text
-P7A1D_BIG_RUNTIME_EXCEPTION_PROFILER_PIPELINE
+P7A1E_WEB_PROFILER_HTTP_SMOKE_AND_UI_POLISH
 ```
 
 Target:
 
 ```text
-runtime diagnostics -> OPUS exception objects -> profiler trace levels
-explicit exemptions
-PHP lint global
-no false OK
-RefBook data update
+HTTP smoke of profiler index
+HTTP smoke of one profiler trace
+real runtime trace creation
+collector menu visible
+timeline visible
+normalized exception visible
+official professional UI polish
+no raw page and no HTML outside .score
 ```
 
 ## Repository write policy
