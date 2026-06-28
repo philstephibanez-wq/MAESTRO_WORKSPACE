@@ -30,7 +30,7 @@ Règle OPUS ScoreTemplate : aucune page OPUS conforme sans module et sans templa
 
 Règle OPUS Composer/générateurs : OPUS utilise Composer pour package/autoload/orchestration, mais toute création de site/module/page/route/transition/locale/asset/template doit passer par des générateurs contractuels OPUS. Les dépendances externes sont évitées par défaut et ne sont autorisées que comme exception validée.
 
-Règle OPUS Score-first MVC/data : le HTML est produit par `.score`; I18N porte les chaînes; les données sont normalisées par provider/repository/service/view-model quelle que soit leur source initiale (fichier, JSON, XML, BDD, API, cache, KB, service interne, etc.). JSON/XML/BDD/API/fichiers sont des sources ou transports de données, jamais un substitut au template.
+Règle OPUS Score-first MVC/data : le HTML est produit par `.score`; I18N porte les chaînes; les données sont normalisées par provider/repository/service/view-model quelle que soit leur source initiale. JSON/XML/BDD/API/fichiers sont des sources ou transports de données, jamais un substitut au template.
 
 ## Carte des sous-projets
 
@@ -56,12 +56,13 @@ Règle OPUS Score-first MVC/data : le HTML est produit par `.score`; I18N porte 
 - Rôle : framework PHP principal.
 - Identité : OPUS Framework 8.1.0 "Lysenko".
 - Dépôt cible : `philstephibanez-wq/OPUS`.
-- État courant : P7B1 `P7 add REST API SSO security core` validé et poussé sur `master`, commit `73f1deb`.
-- Priorité immédiate : nettoyer les scories locales `cd`, `del`, `git`, `php`, `rmdir`, puis reprendre depuis `CURRENT_HANDOFF.md`.
-- Prochain palier actif : `P7_LSTSAR_CONTRACT_CORE`.
+- État courant : P7B2 `P7 add LSTSAR contract core` validé et poussé sur `master`, commit `af2576f`.
+- Prochain palier actif : `P7_LSTSAR_CONTRACT_ENGINE_SKELETON`.
+- P7B1 validé : REST API SSO Security Core, commit `73f1deb`.
+- P7B2 validé : `Opus\Lstsar` contracts, LSTSAR contract registry, REST endpoints `/api/v1/lstsar/contracts` et `/api/v1/lstsar/pipelines/default`.
 - État Linux : installé dans `/srv/opus/OPUS`, Apache `public/`, DNS LAN, UFW, Fail2ban SSH/Webmin, ClamAV ciblé, AWFFull privé et Webmin tempdir validés.
 - Règle REST : REST est une brique générique OPUS, data-driven et contractuelle ; elle consomme SSO, Identity, ACL et FSM ; elle ne doit pas contenir de hardcode LSTSAR.
-- Règle LSTSAR : LSTSAR consommera REST/Security Core plus tard via ses propres contrats `Opus\Lstsar\...`.
+- Règle LSTSAR : LSTSAR signifie Load / Secure / Transform / Store / Audit / Report ; il a ses propres contrats `Opus\Lstsar\...` et consomme REST/Security Core.
 - Règle ACL : l'ACL OPUS est un contrat de policy ; une logique ACL plus mûre issue d'ASAP peut être adaptée derrière interface, sans casser le framework.
 - Règle : OPUS n'est pas ASAP, mais ASAP est une référence historique structurante pour la conception applicative : application commune + modules hérités + parties métier par module.
 - Différence ASAP -> OPUS : OPUS passe par Composer pour l'autoload, les packages, les manifests et les générateurs, tout en évitant les dépendances externes quand c'est possible.
@@ -70,7 +71,6 @@ Règle OPUS Score-first MVC/data : le HTML est produit par `.score`; I18N porte 
 - Règle générateurs : l'équivalent OPUS de `composer create site`, `create module`, `create page`, `create route`, `create transition`, `create locale`, `create asset` et `create template` doit devenir le seul chemin de création.
 - Règle MVC/data : source de donnée indifférente au rendu ; provider/repository/adapter -> service -> validation/transformation -> ViewModel -> `.score` -> HTML.
 - Entrée runtime : `index.php` à la racine OPUS, unique point d'entrée produit.
-- Autoload : classe framework `Opus\Autoload\...`, appelée par `index.php`; aucun script racine `autoload.php`.
 - Cache Windows dev : `H:\OPUS\var\cache` uniquement.
 - Logs Windows dev : `H:\OPUS\var\logs` uniquement.
 - Cache/logs Linux préprod : `/srv/opus/OPUS/var/cache` et `/srv/opus/OPUS/var/logs`.
@@ -185,7 +185,7 @@ Toute création passe par générateurs OPUS, jamais par création sauvage de pa
 JSON/XML/BDD/API/fichiers sont des sources/transports, jamais des substituts aux templates.
 REST est une brique framework générique, data-driven et contractuelle.
 SSO, Identity, ACL et FSM sont des contrats consommés par REST, LSTSAR et autres briques.
-LSTSAR doit avoir ses propres contrats et ne doit pas être codé en dur dans REST.
+LSTSAR a ses propres contrats sous Opus\Lstsar.
 Aucune dépendance externe sauf exception contractée, auditée et validée.
 OPUS product runtime écrit uniquement dans OPUS/var/cache et OPUS/var/logs.
 Les états de développement, audits, generated, recipes, tmp et refbook transitoire vont dans MAESTRO_WORKSPACE.
@@ -204,18 +204,18 @@ Il doit être mis à jour à chaque livraison qui change l'état réel d'un sous
 
 ## Priorité de reprise
 
-1. Nettoyer `H:\OPUS` des scories locales `cd`, `del`, `git`, `php`, `rmdir`, puis confirmer `## master...origin/master`.
-2. Lire `CONTEXT/HANDOFFS/P7B1_20260628_OPUS_REST_SSO_SECURITY_CORE.md`.
-3. Lancer `P7_LSTSAR_CONTRACT_CORE` : contrats LSTSAR, Load/Secure/Transform/Store/Audit/Report, endpoints LSTSAR via ApiEndpointInterface, aucun hardcode LSTSAR dans REST.
-4. Ajouter i18n fr/en/es au profiler dev toolbar/page.
-5. Reprendre ensuite les générateurs OPUS et l'alignement sites/modules : P117SITE12M/N/O/P.
-6. Reprendre ensuite `P117L4B_LINUX_MULTISITE_REGISTRY_OVERLAY`, puis `P117AUTH1_ADMIN_GATE_CLOUDFLARE_READY`.
-7. Cloudflare Tunnel puis Cloudflare Access, sans ouverture Freebox par défaut.
-8. Reprendre ensuite la migration RefBook/Log&Play contrôlée quand OPUS générateurs/sites sont stables.
+1. Lire `CONTEXT/HANDOFFS/P7B2_20260628_OPUS_LSTSAR_CONTRACT_CORE.md`.
+2. Lancer `P7_LSTSAR_CONTRACT_ENGINE_SKELETON` : job descriptor, constraint value objects, stage result, runner skeleton via interfaces uniquement.
+3. Ajouter i18n fr/en/es au profiler dev toolbar/page.
+4. Reprendre ensuite les générateurs OPUS et l'alignement sites/modules : P117SITE12M/N/O/P.
+5. Reprendre ensuite `P117L4B_LINUX_MULTISITE_REGISTRY_OVERLAY`, puis `P117AUTH1_ADMIN_GATE_CLOUDFLARE_READY`.
+6. Cloudflare Tunnel puis Cloudflare Access, sans ouverture Freebox par défaut.
+7. Reprendre ensuite la migration RefBook/Log&Play contrôlée quand OPUS générateurs/sites sont stables.
 
 ## Contrats associés
 
 - CONTEXT/HANDOFFS/CURRENT_HANDOFF.md
+- CONTEXT/HANDOFFS/P7B2_20260628_OPUS_LSTSAR_CONTRACT_CORE.md
 - CONTEXT/HANDOFFS/P7B1_20260628_OPUS_REST_SSO_SECURITY_CORE.md
 - CONTEXT/DECISIONS/ADR_20260628_OPUS_REST_API_GENERIC_SECURITY_CORE.md
 - CONTEXT/PROJECTS/OPUS_CURRENT_STATE.md
