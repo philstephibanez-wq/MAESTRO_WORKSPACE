@@ -10,8 +10,9 @@ Lire dans cet ordre :
 
 1. `README.md` ;
 2. `CONTEXT/HANDOFFS/CURRENT_HANDOFF.md` ;
-3. `CONTEXT/PROJECTS/PROJECT_INDEX.md` ;
-4. les ADRs liées.
+3. `CONTEXT/HANDOFFS/P7B1_20260628_OPUS_REST_SSO_SECURITY_CORE.md` ;
+4. `CONTEXT/PROJECTS/PROJECT_INDEX.md` ;
+5. les ADRs liées.
 
 Aucune livraison n'est complète si le workspace/handoff n'a pas été mis à jour quand l'état projet change.
 
@@ -19,23 +20,48 @@ Aucune livraison n'est complète si le workspace/handoff n'a pas été mis à jo
 
 | Projet | Rôle | État |
 |---|---|---|
-| LOGANDPLAY | Identité publique, carte d'entrée `logandplay.org` et présentation de l'écosystème | Nouveau projet workspace : page OPUS-generated prévue, liens OPUS/MAESTRO/KB en `PROCHAINEMENT`, aucune exposition publique active |
-| OPUS | Framework PHP OPUS 8.1.0 "Lysenko" | Windows dev P6D8 : RefBook docblocks classe/interface 100% OK, prochain palier = migration contrôlée du contrat namespace runtime `OPUS_Application` |
-| OPUS RefBook | Site officiel de documentation OPUS, package optionnel | Gate PHPDoc ouvert : 79/79 classes/interfaces documentées, prêt pour suite P6D application namespace |
+| LOGANDPLAY | Identité publique, carte d'entrée `logandplay.org` et présentation de l'écosystème | Projet workspace/site OPUS à aligner contractuellement ; aucune exposition publique active |
+| OPUS | Framework PHP OPUS 8.1.0 "Lysenko" | P7B1 REST API SSO Security Core validé et poussé, commit OPUS `73f1deb`; prochaine étape `P7_LSTSAR_CONTRACT_CORE` |
+| OPUS RefBook | Site officiel de documentation OPUS, package optionnel | Intégré sous OPUS comme site optionnel ; doit rester `.score`, sans polluer le core |
 | OPUS_USER_GUIDE | Guide utilisateur optionnel futur | À cadrer |
-| OPUS_REF_BOOK | Dépôt transitoire du RefBook actuel | Revert P116C5M appliqué après régressions UI P116C5I/J/K/L |
+| OPUS_REF_BOOK | Ancien dépôt transitoire RefBook | Ne plus utiliser comme source long terme |
 | MAESTRO_V5 | Assistant musical REAPER/Lua | Actif, non exposé publiquement |
 | MO_KB_DAEMON | Backend KB musicale, workers master/slaves | Actif privé, non exposé publiquement |
-| MO_KB_FRONT | Front/backoffice KB | À aligner, non exposé publiquement |
-| MAESTRO_WORKSPACE | Contexte global et décisions | Source de contexte |
+| MO_KB_FRONT | Front/backoffice KB historique | À réévaluer vers KB_FRONT_OFFICE / KB_BACK_OFFICE OPUS |
+| MAESTRO_WORKSPACE | Contexte global et décisions | Source de contexte, handoffs et TODOs |
+
+## OPUS état immédiat
+
+```text
+OPUS root      : H:\OPUS
+OPUS GitHub    : philstephibanez-wq/OPUS
+Workspace root : H:\MAESTRO_WORKSPACE
+Workspace repo : philstephibanez-wq/MAESTRO_WORKSPACE
+OPUS branch    : master
+OPUS commit    : 73f1deb
+OPUS message   : P7 add REST API SSO security core
+```
+
+P7B1 a ajouté une brique REST API générique OPUS avec contrats SSO, Identity, ACL policy et FSM guard. REST reste généraliste : LSTSAR et d'autres briques pourront la consommer, mais REST ne contient pas de hardcode LSTSAR.
+
+Endpoints smoke validés :
+
+```text
+GET /api/v1/status
+GET /api/v1/me
+GET /api/v1/security/policies
+```
+
+Validation P7B1 : JSON configs OK, autoload classes OK, API smoke OK, profiler temp nettoyé, commit et push OK.
+
+Avant tout nouveau patch OPUS, nettoyer dans `H:\OPUS` les scories locales observées après push : `cd`, `del`, `git`, `php`, `rmdir`, puis confirmer `## master...origin/master`.
 
 ## OPUS runtime contract immédiat
 
 ```text
 H:\OPUS\index.php                         unique point d'entrée produit Windows dev
 H:\OPUS\Opus\Runtime\Bootstrap.php       bootstrap runtime stable
-H:\OPUS\Opus\Runtime\Application.php     application runtime active depuis P6A ; global OPUS_Application à migrer sous contrat P6D
-H:\OPUS\framework\Opus\Autoload\...      autoloader framework
+H:\OPUS\Opus\Runtime\Application.php     application runtime active
 H:\OPUS\var\cache                         caches runtime OPUS Windows dev
 H:\OPUS\var\logs                          logs runtime OPUS Windows dev
 /srv/opus/OPUS                              OPUS Linux préprod
@@ -44,27 +70,47 @@ H:\OPUS\var\logs                          logs runtime OPUS Windows dev
 /srv/opus/OPUS/var/logs                     logs runtime Linux
 ```
 
-`Opus/Legacy` ne doit pas réapparaître dans le runtime produit. Toute recréation de `H:\OPUS\Opus\Legacy` est une régression P6.
+`Opus/Legacy` ne doit pas réapparaître dans le runtime produit. Toute recréation de `H:\OPUS\Opus\Legacy` est une régression.
 
 `H:\OPUS\var` et `/srv/opus/OPUS/var` ne doivent contenir que `cache` et `logs`.
 
 Tout ce qui est développement, audit, generated, recipes, tmp, refbook transitoire ou diagnostic va dans MAESTRO_WORKSPACE si nécessaire, pas dans OPUS product runtime.
 
-## OPUS RefBook autodoc contract immédiat
+## OPUS REST / Security Core contract immédiat
 
 ```text
-P6D audit source : tools/audits/audit_p6d_runtime_application_namespace_readiness.py
-Class total      : 79
-Namespaced       : 35
-Global           : 44
-With docblock    : 79
-Missing docblock : 0
-Status           : PHPDoc class/interface coverage 100% OK
-Decision         : P6D_READY_FOR_RUNTIME_APPLICATION_NAMESPACE_MIGRATION
-Next safe step   : P6D_APPLY_RUNTIME_APPLICATION_NAMESPACE_CONTRACT
+Opus\Api
+  ApiEndpointInterface
+  ApiDispatcher
+  ApiRouteRegistry
+  ApiErrorResponseFactory
+
+Opus\Security\Sso
+  SsoAuthenticatorInterface
+
+Opus\Security\Identity
+  IdentityContextInterface
+
+Opus\Security\Access
+  AclPolicyInterface
+  AccessDecisionInterface
+
+Opus\Security\Fsm
+  FsmGuardInterface
 ```
 
-Le RefBook ne doit pas être alimenté par des classes non documentées ou par un parseur approximatif. La couverture classe/interface est désormais complète, mais la migration `OPUS_Application` reste à faire sous contrat runtime explicite.
+Runtime flow :
+
+```text
+Request
+  -> ApiRouteRegistry
+  -> SSO
+  -> IdentityContext
+  -> ACL policy
+  -> optional FSM guard
+  -> ApiEndpointInterface
+  -> Response::json()
+```
 
 ## LOGANDPLAY public identity contract immédiat
 
@@ -114,6 +160,9 @@ Le dashboard peut encore afficher `SERVER_DEGRADED` tant que P117L4B n'a pas rem
 ```text
 Un seul framework OPUS partagé.
 Plusieurs sites/packages OPUS optionnels.
+REST est une brique framework générique et data-driven.
+SSO / Identity / ACL / FSM sont des contrats réutilisables par REST, LSTSAR et autres.
+LSTSAR doit avoir ses propres contrats sous Opus\Lstsar avant endpoints métier.
 Aucune duplication du framework par site.
 Aucun dossier Opus/Legacy dans le runtime produit.
 ```
@@ -143,13 +192,9 @@ Le but est de pouvoir ouvrir un chat neuf à tout moment sans dépendre d'une m�
 ## Raccourcis
 
 - Handoff courant : CONTEXT/HANDOFFS/CURRENT_HANDOFF.md
-- Handoff OPUS P6D8 : CONTEXT/HANDOFFS/P6D8_20260624_OPUS_ALL_REMAINING_REFBOOK_DOCBLOCKS.md
-- Handoff OPUS P6D6 : CONTEXT/HANDOFFS/P6D6_20260624_OPUS_BREADCRUMB_SECURITY_LEGACY_COMPONENTS_DOCBLOCK_BATCH3.md
-- Handoff OPUS P6D5 : CONTEXT/HANDOFFS/P6D5_20260624_OPUS_HTTP_APPLICATION_FOUNDATION_DOCBLOCK_BATCH2.md
-- Handoff OPUS P6D4 : CONTEXT/HANDOFFS/P6D4_20260624_OPUS_RUNTIME_CORE_DOCBLOCK_BATCH1.md
-- Handoff OPUS P6D : CONTEXT/HANDOFFS/P6D_20260624_OPUS_RUNTIME_APPLICATION_REFBOOK_DOC_AUDIT.md
-- Handoff OPUS P6C : CONTEXT/HANDOFFS/P6C_20260624_OPUS_RUNTIME_CLEANUP_TARGET_SELECTED.md
-- Handoff OPUS P6B : CONTEXT/HANDOFFS/P6B_20260624_OPUS_LEGACY_REMOVED.md
+- Handoff OPUS P7B1 : CONTEXT/HANDOFFS/P7B1_20260628_OPUS_REST_SSO_SECURITY_CORE.md
+- ADR OPUS REST Security Core : CONTEXT/DECISIONS/ADR_20260628_OPUS_REST_API_GENERIC_SECURITY_CORE.md
+- OPUS current state : CONTEXT/PROJECTS/OPUS_CURRENT_STATE.md
 - Index projets : CONTEXT/PROJECTS/PROJECT_INDEX.md
 - Projet LOGANDPLAY : CONTEXT/PROJECTS/LOGANDPLAY.md
 - Décisions : CONTEXT/DECISIONS/
@@ -159,12 +204,15 @@ Le but est de pouvoir ouvrir un chat neuf à tout moment sans dépendre d'une m�
 
 ## Règles immédiates
 
-- OPUS P6D8 : RefBook docblocks classe/interface 100% OK ; prochain palier = `P6D_APPLY_RUNTIME_APPLICATION_NAMESPACE_CONTRACT`.
-- OPUS runtime : `OPUS_Application` global reste actif ; 11 références runtime doivent être migrées sous contrôle, sans fallback silencieux.
+- OPUS P7B1 : REST API SSO Security Core validé et poussé.
+- OPUS local : nettoyer les scories `cd`, `del`, `git`, `php`, `rmdir` avant toute nouvelle livraison.
+- OPUS REST : générique, data-driven, contractuel, sans hardcode LSTSAR.
+- OPUS Security : SSO / Identity / ACL / FSM sous interfaces.
+- Prochaine étape : `P7_LSTSAR_CONTRACT_CORE`.
+- Profiler dev : i18n fr/en/es à reprendre ensuite.
 - OPUS P6B : `Opus/Legacy` supprimé ; ne pas le recréer.
-- LOGANDPLAY P117SITE1 : créer la page identité `logandplay.org` générée par OPUS, avec liens OPUS/MAESTRO/KB en `PROCHAINEMENT`.
+- LOGANDPLAY : créer/aligner la page identité `logandplay.org` générée par OPUS, avec liens OPUS/MAESTRO/KB en `PROCHAINEMENT`.
 - OPUS P117 Linux préprod et sécurité restent la base active côté serveur.
-- Pas de nouveau patch UI RefBook tant que OPUS Linux/P6 runtime n'est pas stabilisé.
 - Pas de fallback silencieux.
 - Les caches vont dans `OPUS/var/cache`.
 - Les logs vont dans `OPUS/var/logs`.
