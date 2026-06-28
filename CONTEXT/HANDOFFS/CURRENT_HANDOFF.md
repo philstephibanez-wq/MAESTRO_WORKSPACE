@@ -18,7 +18,7 @@ WORKSPACE HANDOFF UPDATED AT EVERY STATE CHANGE.
 
 OPUS is a general-purpose applicative web framework. HTML output must come from `.score` templates through explicit data/view-model contracts. REST is a generic OPUS framework brick, not a private API for one engine.
 
-## Current OPUS state — P7B1 validated
+## Current OPUS state — P7B2 validated
 
 ```text
 OPUS root      : H:\OPUS
@@ -26,13 +26,14 @@ OPUS GitHub    : philstephibanez-wq/OPUS
 Workspace root : H:\MAESTRO_WORKSPACE
 Workspace repo : philstephibanez-wq/MAESTRO_WORKSPACE
 OPUS branch    : master
-OPUS commit    : 73f1deb
-OPUS message   : P7 add REST API SSO security core
+OPUS commit    : af2576f
+OPUS message   : P7 add LSTSAR contract core
 ```
 
 Read first:
 
 ```text
+CONTEXT/HANDOFFS/P7B2_20260628_OPUS_LSTSAR_CONTRACT_CORE.md
 CONTEXT/HANDOFFS/P7B1_20260628_OPUS_REST_SSO_SECURITY_CORE.md
 ```
 
@@ -52,108 +53,87 @@ CONTEXT/HANDOFFS/P7A1A_20260626_OPUS_INTERFACE_REFACTOR_ABORT_AND_FSM_DEMO_REMOV
 
 ## OPUS status
 
-P7B1 was executed, validated, committed and pushed.
+P7B2 was executed, validated, committed and pushed.
 
 Validated OPUS commit:
 
 ```text
-73f1deb P7 add REST API SSO security core
+af2576f P7 add LSTSAR contract core
 ```
 
-OPUS remote push completed to origin/master.
-
-## Immediate cleanup before next OPUS patch
-
-After the push, local `H:\OPUS` still showed command-name scories:
-
-```text
-?? cd
-?? del
-?? git
-?? php
-?? rmdir
-```
-
-Before any new OPUS patch, delete these files and confirm:
+Final local status observed by user:
 
 ```text
 ## master...origin/master
 ```
 
-No future OPUS work should start from a dirty working tree.
-
-## P7B1 validated output
+## P7B2 validated output
 
 ```text
-JSON_OK: config/api/routes.json
-JSON_OK: config/security/sso.json
-JSON_OK: config/security/acl.json
-
-CLASS_OK: Opus\Api\ApiDispatcher
-CLASS_OK: Opus\Api\ApiRouteRegistry
-CLASS_OK: Opus\Security\Access\ConfigAclPolicy
-CLASS_OK: Opus\Security\Sso\DevHeaderSsoAuthenticator
-CLASS_OK: Opus\Security\Fsm\ConfigFsmGuard
-
-API_SMOKE_OK: status
-API_SMOKE_OK: me
-API_SMOKE_OK: policies
+LSTSAR_SMOKE_OK: contracts
+LSTSAR_SMOKE_OK: pipeline
 TEMP_PROFILER_CLEANED
 ```
 
-## What P7B1 validates
+Additional validation:
 
 ```text
-Generic REST API dispatcher
-Data-driven API route registry
-ApiEndpointInterface contract
-JSON error response factory
-SSO contract with dev-header adapter
-IdentityContext contract
-ACL policy contract with config-backed policy
-FSM guard contract with config-backed guard
-Router no longer hardcodes demo API endpoints
-Profiler reused during API/security smoke validation
+PHP lint OK on LSTSAR endpoints, registry, root interfaces and stage interfaces.
+JSON_OK: config/api/routes.json
+JSON_OK: config/security/acl.json
+JSON_OK: config/lstsar/contracts.json
+CONTRACT_OK: LSTSAR interfaces, LstsarContractRegistry and LSTSAR API endpoints
+```
+
+## What P7B2 validates
+
+```text
+Opus\Lstsar namespace exists.
+LSTSAR root contracts exist.
+Load / Secure / Transform / Store / Audit / Report stage interfaces exist.
+Data-driven LSTSAR contract registry exists.
+REST exposes LSTSAR contract discovery through ApiEndpointInterface endpoints.
+REST core remains generic and does not own LSTSAR business logic.
 ```
 
 Validated endpoints:
 
 ```text
-GET /api/v1/status
-GET /api/v1/me
-GET /api/v1/security/policies
+GET /api/v1/lstsar/contracts
+GET /api/v1/lstsar/pipelines/default
 ```
 
 ## Validated decisions still active
 
-`Opus/Fsm/Fsm.php` was removed as a demo FSM and must not be restored.
+REST remains a generic OPUS framework brick. REST consumes SSO, Identity, ACL and FSM contracts. LSTSAR consumes REST and Security Core through its own contracts.
 
-Runtime FSM transitions must be configuration data, not PHP hardcoded sequences.
+LSTSAR is Load / Secure / Transform / Store / Audit / Report.
+
+LSTSAR contracts are declared separately under:
 
 ```text
-config/fsm_runtime
+Opus\Lstsar
+config/lstsar/contracts.json
 ```
 
-REST remains a generic OPUS framework brick. REST consumes SSO, Identity, ACL and FSM contracts. LSTSAR will consume REST and Security Core later, but REST must not contain LSTSAR-specific hardcode.
-
-The OPUS ACL currently exposed in this patch is a policy contract and config-backed adapter. Mature ACL behavior from ASAP may be adapted later behind the OPUS interface; do not replace framework contracts with project-specific hardcode.
+`Opus/Fsm/Fsm.php` was removed as a demo FSM and must not be restored. Runtime FSM transitions must be configuration data, not PHP hardcoded sequences.
 
 ## Next milestone
 
 ```text
-P7_LSTSAR_CONTRACT_CORE
+P7_LSTSAR_CONTRACT_ENGINE_SKELETON
 ```
 
 Target:
 
 ```text
-Opus\Lstsar\LstsarPipelineInterface
-Opus\Lstsar\LstsarJobInterface
-Opus\Lstsar\LstsarReportInterface
-Load / Secure / Transform / Store / Audit / Report contracts
-LSTSAR endpoints implementing ApiEndpointInterface
-No LSTSAR hardcode inside REST core
-Reuse REST Security Core contracts
+immutable job descriptor contract object
+source and target constraint value objects
+stage result object
+pipeline runner skeleton using interfaces only
+no real persistence yet
+no HTML and no template responsibility
+API endpoints remain thin adapters over framework services
 ```
 
 Secondary follow-up:
