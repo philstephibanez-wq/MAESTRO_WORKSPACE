@@ -18,7 +18,7 @@ WORKSPACE HANDOFF UPDATED AT EVERY STATE CHANGE.
 
 OPUS is a general-purpose applicative web framework. HTML output must come from `.score` templates through explicit data/view-model contracts. REST is a generic OPUS framework brick, not a private API for one engine.
 
-## Current OPUS state — P7B2 validated
+## Current OPUS state — P7B3 validated
 
 ```text
 OPUS root      : H:\OPUS
@@ -26,13 +26,14 @@ OPUS GitHub    : philstephibanez-wq/OPUS
 Workspace root : H:\MAESTRO_WORKSPACE
 Workspace repo : philstephibanez-wq/MAESTRO_WORKSPACE
 OPUS branch    : master
-OPUS commit    : af2576f
-OPUS message   : P7 add LSTSAR contract core
+OPUS commit    : ec2cb0c
+OPUS message   : P7 add LSTSAR contract engine skeleton
 ```
 
 Read first:
 
 ```text
+CONTEXT/HANDOFFS/P7B3_20260628_OPUS_LSTSAR_CONTRACT_ENGINE_SKELETON.md
 CONTEXT/HANDOFFS/P7B2_20260628_OPUS_LSTSAR_CONTRACT_CORE.md
 CONTEXT/HANDOFFS/P7B1_20260628_OPUS_REST_SSO_SECURITY_CORE.md
 ```
@@ -53,12 +54,12 @@ CONTEXT/HANDOFFS/P7A1A_20260626_OPUS_INTERFACE_REFACTOR_ABORT_AND_FSM_DEMO_REMOV
 
 ## OPUS status
 
-P7B2 was executed, validated, committed and pushed.
+P7B3 was executed, validated, committed and pushed.
 
 Validated OPUS commit:
 
 ```text
-af2576f P7 add LSTSAR contract core
+ec2cb0c P7 add LSTSAR contract engine skeleton
 ```
 
 Final local status observed by user:
@@ -67,40 +68,41 @@ Final local status observed by user:
 ## master...origin/master
 ```
 
-## P7B2 validated output
+## P7B3 validated output
 
 ```text
-LSTSAR_SMOKE_OK: contracts
-LSTSAR_SMOKE_OK: pipeline
+LSTSAR_ENGINE_SMOKE_OK
 TEMP_PROFILER_CLEANED
 ```
 
 Additional validation:
 
 ```text
-PHP lint OK on LSTSAR endpoints, registry, root interfaces and stage interfaces.
+PHP lint OK on LSTSAR engine endpoint, registry, constraint/job/source/target classes, runner, run report, declared pipeline and stage result.
 JSON_OK: config/api/routes.json
 JSON_OK: config/security/acl.json
 JSON_OK: config/lstsar/contracts.json
-CONTRACT_OK: LSTSAR interfaces, LstsarContractRegistry and LSTSAR API endpoints
+CLASS_OK: all new LSTSAR engine skeleton classes
 ```
 
-## What P7B2 validates
+## What P7B3 validates
 
 ```text
-Opus\Lstsar namespace exists.
-LSTSAR root contracts exist.
-Load / Secure / Transform / Store / Audit / Report stage interfaces exist.
-Data-driven LSTSAR contract registry exists.
-REST exposes LSTSAR contract discovery through ApiEndpointInterface endpoints.
-REST core remains generic and does not own LSTSAR business logic.
+LSTSAR immutable job descriptor object exists.
+LSTSAR source and target contract objects exist.
+LSTSAR constraint set object exists.
+LSTSAR stage result object exists.
+LSTSAR declared pipeline object exists.
+LSTSAR pipeline runner skeleton exists.
+LSTSAR pipeline run report object exists.
+REST exposes LSTSAR engine skeleton through ApiEndpointInterface endpoint.
+No real persistence is introduced.
 ```
 
-Validated endpoints:
+Validated endpoint:
 
 ```text
-GET /api/v1/lstsar/contracts
-GET /api/v1/lstsar/pipelines/default
+GET /api/v1/lstsar/engine/skeleton
 ```
 
 ## Validated decisions still active
@@ -109,7 +111,7 @@ REST remains a generic OPUS framework brick. REST consumes SSO, Identity, ACL an
 
 LSTSAR is Load / Secure / Transform / Store / Audit / Report.
 
-LSTSAR contracts are declared separately under:
+LSTSAR contracts and engine skeleton are declared separately under:
 
 ```text
 Opus\Lstsar
@@ -121,18 +123,18 @@ config/lstsar/contracts.json
 ## Next milestone
 
 ```text
-P7_LSTSAR_CONTRACT_ENGINE_SKELETON
+P7_LSTSAR_CONTRACT_VALIDATION_CORE
 ```
 
 Target:
 
 ```text
-immutable job descriptor contract object
-source and target constraint value objects
-stage result object
-pipeline runner skeleton using interfaces only
-no real persistence yet
-no HTML and no template responsibility
+source constraint validation object
+target constraint validation object
+received vs transformed constraint validation separation
+explicit validation errors
+no silent fallback
+no real storage yet
 API endpoints remain thin adapters over framework services
 ```
 
