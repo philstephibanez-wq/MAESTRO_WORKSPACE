@@ -10,9 +10,10 @@ Lire dans cet ordre :
 
 1. `README.md` ;
 2. `CONTEXT/HANDOFFS/CURRENT_HANDOFF.md` ;
-3. `CONTEXT/HANDOFFS/P7B1_20260628_OPUS_REST_SSO_SECURITY_CORE.md` ;
-4. `CONTEXT/PROJECTS/PROJECT_INDEX.md` ;
-5. les ADRs liées.
+3. `CONTEXT/HANDOFFS/P7B2_20260628_OPUS_LSTSAR_CONTRACT_CORE.md` ;
+4. `CONTEXT/HANDOFFS/P7B1_20260628_OPUS_REST_SSO_SECURITY_CORE.md` ;
+5. `CONTEXT/PROJECTS/PROJECT_INDEX.md` ;
+6. les ADRs liées.
 
 Aucune livraison n'est complète si le workspace/handoff n'a pas été mis à jour quand l'état projet change.
 
@@ -21,7 +22,7 @@ Aucune livraison n'est complète si le workspace/handoff n'a pas été mis à jo
 | Projet | Rôle | État |
 |---|---|---|
 | LOGANDPLAY | Identité publique, carte d'entrée `logandplay.org` et présentation de l'écosystème | Projet workspace/site OPUS à aligner contractuellement ; aucune exposition publique active |
-| OPUS | Framework PHP OPUS 8.1.0 "Lysenko" | P7B1 REST API SSO Security Core validé et poussé, commit OPUS `73f1deb`; prochaine étape `P7_LSTSAR_CONTRACT_CORE` |
+| OPUS | Framework PHP OPUS 8.1.0 "Lysenko" | P7B2 LSTSAR Contract Core validé et poussé, commit OPUS `af2576f`; prochaine étape `P7_LSTSAR_CONTRACT_ENGINE_SKELETON` |
 | OPUS RefBook | Site officiel de documentation OPUS, package optionnel | Intégré sous OPUS comme site optionnel ; doit rester `.score`, sans polluer le core |
 | OPUS_USER_GUIDE | Guide utilisateur optionnel futur | À cadrer |
 | OPUS_REF_BOOK | Ancien dépôt transitoire RefBook | Ne plus utiliser comme source long terme |
@@ -38,11 +39,15 @@ OPUS GitHub    : philstephibanez-wq/OPUS
 Workspace root : H:\MAESTRO_WORKSPACE
 Workspace repo : philstephibanez-wq/MAESTRO_WORKSPACE
 OPUS branch    : master
-OPUS commit    : 73f1deb
-OPUS message   : P7 add REST API SSO security core
+OPUS commit    : af2576f
+OPUS message   : P7 add LSTSAR contract core
 ```
 
-P7B1 a ajouté une brique REST API générique OPUS avec contrats SSO, Identity, ACL policy et FSM guard. REST reste généraliste : LSTSAR et d'autres briques pourront la consommer, mais REST ne contient pas de hardcode LSTSAR.
+P7B2 a ajouté le socle contractuel LSTSAR sous `Opus\Lstsar`.
+
+LSTSAR signifie Load / Secure / Transform / Store / Audit / Report.
+
+REST reste généraliste : les endpoints LSTSAR exposent de la découverte de contrats via `ApiEndpointInterface`, mais le core REST ne contient pas de logique métier LSTSAR.
 
 Endpoints smoke validés :
 
@@ -50,11 +55,11 @@ Endpoints smoke validés :
 GET /api/v1/status
 GET /api/v1/me
 GET /api/v1/security/policies
+GET /api/v1/lstsar/contracts
+GET /api/v1/lstsar/pipelines/default
 ```
 
-Validation P7B1 : JSON configs OK, autoload classes OK, API smoke OK, profiler temp nettoyé, commit et push OK.
-
-Avant tout nouveau patch OPUS, nettoyer dans `H:\OPUS` les scories locales observées après push : `cd`, `del`, `git`, `php`, `rmdir`, puis confirmer `## master...origin/master`.
+Validation P7B2 : lint PHP OK, JSON configs OK, autoload OK, smoke API LSTSAR OK, profiler temp nettoyé, commit et push OK.
 
 ## OPUS runtime contract immédiat
 
@@ -76,7 +81,7 @@ H:\OPUS\var\logs                          logs runtime OPUS Windows dev
 
 Tout ce qui est développement, audit, generated, recipes, tmp, refbook transitoire ou diagnostic va dans MAESTRO_WORKSPACE si nécessaire, pas dans OPUS product runtime.
 
-## OPUS REST / Security Core contract immédiat
+## OPUS REST / Security / LSTSAR contract immédiat
 
 ```text
 Opus\Api
@@ -97,9 +102,21 @@ Opus\Security\Access
 
 Opus\Security\Fsm
   FsmGuardInterface
+
+Opus\Lstsar
+  LstsarPipelineInterface
+  LstsarJobInterface
+  LstsarReportInterface
+  LstsarStageInterface
+  LoadStageInterface
+  SecureStageInterface
+  TransformStageInterface
+  StoreStageInterface
+  AuditStageInterface
+  ReportStageInterface
 ```
 
-Runtime flow :
+Runtime API flow :
 
 ```text
 Request
@@ -162,12 +179,10 @@ Un seul framework OPUS partagé.
 Plusieurs sites/packages OPUS optionnels.
 REST est une brique framework générique et data-driven.
 SSO / Identity / ACL / FSM sont des contrats réutilisables par REST, LSTSAR et autres.
-LSTSAR doit avoir ses propres contrats sous Opus\Lstsar avant endpoints métier.
+LSTSAR a ses propres contrats sous Opus\Lstsar.
 Aucune duplication du framework par site.
 Aucun dossier Opus/Legacy dans le runtime produit.
 ```
-
-Le RefBook et le futur site LOGANDPLAY peuvent être livrés séparément comme packages/sites optionnels, mais ils doivent dépendre d'un OPUS core partagé et déclaré explicitement.
 
 ## Licence OPUS cible
 
@@ -192,6 +207,7 @@ Le but est de pouvoir ouvrir un chat neuf à tout moment sans dépendre d'une m�
 ## Raccourcis
 
 - Handoff courant : CONTEXT/HANDOFFS/CURRENT_HANDOFF.md
+- Handoff OPUS P7B2 : CONTEXT/HANDOFFS/P7B2_20260628_OPUS_LSTSAR_CONTRACT_CORE.md
 - Handoff OPUS P7B1 : CONTEXT/HANDOFFS/P7B1_20260628_OPUS_REST_SSO_SECURITY_CORE.md
 - ADR OPUS REST Security Core : CONTEXT/DECISIONS/ADR_20260628_OPUS_REST_API_GENERIC_SECURITY_CORE.md
 - OPUS current state : CONTEXT/PROJECTS/OPUS_CURRENT_STATE.md
@@ -204,11 +220,11 @@ Le but est de pouvoir ouvrir un chat neuf à tout moment sans dépendre d'une m�
 
 ## Règles immédiates
 
-- OPUS P7B1 : REST API SSO Security Core validé et poussé.
-- OPUS local : nettoyer les scories `cd`, `del`, `git`, `php`, `rmdir` avant toute nouvelle livraison.
+- OPUS P7B2 : LSTSAR Contract Core validé et poussé.
 - OPUS REST : générique, data-driven, contractuel, sans hardcode LSTSAR.
+- OPUS LSTSAR : contrats séparés sous `Opus\Lstsar`, pipeline non exécuté à ce stade.
 - OPUS Security : SSO / Identity / ACL / FSM sous interfaces.
-- Prochaine étape : `P7_LSTSAR_CONTRACT_CORE`.
+- Prochaine étape : `P7_LSTSAR_CONTRACT_ENGINE_SKELETON`.
 - Profiler dev : i18n fr/en/es à reprendre ensuite.
 - OPUS P6B : `Opus/Legacy` supprimé ; ne pas le recréer.
 - LOGANDPLAY : créer/aligner la page identité `logandplay.org` générée par OPUS, avec liens OPUS/MAESTRO/KB en `PROCHAINEMENT`.
