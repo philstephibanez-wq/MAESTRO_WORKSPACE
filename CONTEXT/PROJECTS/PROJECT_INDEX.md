@@ -24,14 +24,6 @@ CONTEXT/DECISIONS/ADR_20260628_OPUS_REST_API_GENERIC_SECURITY_CORE.md
 
 Toute livraison future doit privilégier le contrat, l'audit réel, la source de vérité et la cohérence architecturale plutôt que la vitesse. Aucun site OPUS/ASAP ne doit être traité comme une page isolée si le contrat impose une application, des modules, routes, controllers, services, view-models, templates, ressources, I18N/thèmes ou FSM/transitions.
 
-Règle applicative ASAP/OPUS : une application possède un socle commun hérité par ses modules. Chaque module porte uniquement son métier et ses ressources propres ou overrides : ACL, helpers, CSS/assets, JavaScript, local/I18N, models/services, controllers, views/view-models et templates `.score`. Les parties communes ne sont jamais dupliquées module par module.
-
-Règle OPUS ScoreTemplate : aucune page OPUS conforme sans module et sans template `.score`.
-
-Règle OPUS Composer/générateurs : OPUS utilise Composer pour package/autoload/orchestration, mais toute création de site/module/page/route/transition/locale/asset/template doit passer par des générateurs contractuels OPUS. Les dépendances externes sont évitées par défaut et ne sont autorisées que comme exception validée.
-
-Règle OPUS Score-first MVC/data : le HTML est produit par `.score`; I18N porte les chaînes; les données sont normalisées par provider/repository/service/view-model quelle que soit leur source initiale. JSON/XML/BDD/API/fichiers sont des sources ou transports de données, jamais un substitut au template.
-
 ## Carte des sous-projets
 
 ### LOGANDPLAY
@@ -41,12 +33,6 @@ Règle OPUS Score-first MVC/data : le HTML est produit par `.score`; I18N porte 
 - Emplacement actuel : `H:\OPUS\sites\logandplay`.
 - Dépôt source actuel : `philstephibanez-wq/OPUS`.
 - Rendu cible : site/application généré par OPUS, sans hardcode métier dans le core framework.
-- Règle P117SITE12 : Log&Play doit être aligné sur le vrai contrat d'application OPUS/ASAP avant toute nouvelle correction visuelle/runtime.
-- Règle module : Log&Play doit devenir une application modulaire, pas une page publique isolée.
-- Règle générateur : aucune nouvelle page/module/route/transition ne doit être créée à la main.
-- Règle rendu : `.score` produit le HTML, via données déjà préparées par le framework.
-- Contenu initial : cartes OPUS, MAESTRO et KB avec description + statut `PROCHAINEMENT`.
-- Exposition : aucune exposition publique active pour l'instant ; OPUS, MAESTRO et KB restent non publics.
 - Sécurité : aucun lien Webmin, admin, LAN, préprod, chemin serveur ou diagnostic public.
 - Cible future : Cloudflare Tunnel + Cloudflare Access, pas d'ouverture Freebox par défaut.
 - Contrat dédié : `CONTEXT/PROJECTS/LOGANDPLAY.md`.
@@ -56,17 +42,16 @@ Règle OPUS Score-first MVC/data : le HTML est produit par `.score`; I18N porte 
 - Rôle : framework PHP principal.
 - Identité : OPUS Framework 8.1.0 "Lysenko".
 - Dépôt cible : `philstephibanez-wq/OPUS`.
-- État courant : P7B2 `P7 add LSTSAR contract core` validé et poussé sur `master`, commit `af2576f`.
-- Prochain palier actif : `P7_LSTSAR_CONTRACT_ENGINE_SKELETON`.
+- État courant : P7B3 `P7 add LSTSAR contract engine skeleton` validé et poussé sur `master`, commit `ec2cb0c`.
+- Prochain palier actif : `P7_LSTSAR_CONTRACT_VALIDATION_CORE`.
 - P7B1 validé : REST API SSO Security Core, commit `73f1deb`.
-- P7B2 validé : `Opus\Lstsar` contracts, LSTSAR contract registry, REST endpoints `/api/v1/lstsar/contracts` et `/api/v1/lstsar/pipelines/default`.
+- P7B2 validé : `Opus\Lstsar` contracts, LSTSAR contract registry, REST endpoints `/api/v1/lstsar/contracts` et `/api/v1/lstsar/pipelines/default`, commit `af2576f`.
+- P7B3 validé : LSTSAR job descriptor, source/target contract objects, constraint set, stage result, declared pipeline, pipeline runner skeleton, run report, endpoint `/api/v1/lstsar/engine/skeleton`.
 - État Linux : installé dans `/srv/opus/OPUS`, Apache `public/`, DNS LAN, UFW, Fail2ban SSH/Webmin, ClamAV ciblé, AWFFull privé et Webmin tempdir validés.
 - Règle REST : REST est une brique générique OPUS, data-driven et contractuelle ; elle consomme SSO, Identity, ACL et FSM ; elle ne doit pas contenir de hardcode LSTSAR.
-- Règle LSTSAR : LSTSAR signifie Load / Secure / Transform / Store / Audit / Report ; il a ses propres contrats `Opus\Lstsar\...` et consomme REST/Security Core.
+- Règle LSTSAR : LSTSAR signifie Load / Secure / Transform / Store / Audit / Report ; il a ses propres contrats et objets moteur `Opus\Lstsar\...` et consomme REST/Security Core.
+- Règle validation LSTSAR suivante : séparer strictement validation reçue/source et validation transformée/cible, avec erreurs explicites et aucun fallback silencieux.
 - Règle ACL : l'ACL OPUS est un contrat de policy ; une logique ACL plus mûre issue d'ASAP peut être adaptée derrière interface, sans casser le framework.
-- Règle : OPUS n'est pas ASAP, mais ASAP est une référence historique structurante pour la conception applicative : application commune + modules hérités + parties métier par module.
-- Différence ASAP -> OPUS : OPUS passe par Composer pour l'autoload, les packages, les manifests et les générateurs, tout en évitant les dépendances externes quand c'est possible.
-- Règle Log&Play : OPUS génère le site/page, mais le contenu métier LOGANDPLAY ne doit pas être intégré au cœur framework.
 - Règle modules : OPUS doit utiliser toute la potentialité du framework pour ses sites/apps ; pas de page isolée si un module, une route, une FSM, un service, un ViewModel ou un `.score` est requis.
 - Règle générateurs : l'équivalent OPUS de `composer create site`, `create module`, `create page`, `create route`, `create transition`, `create locale`, `create asset` et `create template` doit devenir le seul chemin de création.
 - Règle MVC/data : source de donnée indifférente au rendu ; provider/repository/adapter -> service -> validation/transformation -> ViewModel -> `.score` -> HTML.
@@ -87,8 +72,6 @@ Règle OPUS Score-first MVC/data : le HTML est produit par `.score`; I18N porte 
 - Mode publié : online public, sans debug ni chemins locaux.
 - Règle : fonctionne grâce à OPUS, mais ne pollue pas le cœur framework.
 - Règle runtime : dépend d'un OPUS core partagé déclaré par manifest/config, sans duplication du framework.
-- Livrable propre : zéro Twig actif, zéro legacy, zéro backup, zéro CSS mort.
-- Règle P117SITE12 : RefBook sert de référence de maturité applicative, mais doit lui aussi être contrôlé contre le contrat commun OPUS site avant tout patch UI/runtime.
 - Règle ScoreTemplate : tout rendu RefBook doit rester en `.score`.
 - Règle générateur : les futures pages/modules/routes/transitions RefBook doivent passer par les générateurs OPUS.
 - Règle data : ses données de documentation doivent être normalisées avant rendu ; `.score` ne dépend pas de la source.
@@ -96,9 +79,6 @@ Règle OPUS Score-first MVC/data : le HTML est produit par `.score`; I18N porte 
 ### OPUS_USER_GUIDE
 
 - Rôle : guide utilisateur optionnel futur.
-- Différence : guide humain, installation, workflows, exemples et prise en main.
-- Règle : ne pas le mélanger au RefBook technique sans ADR dédiée.
-- Règle runtime : même modèle package optionnel OPUS, sans framework dupliqué.
 - Statut : option de livraison envisagée, à cadrer.
 
 ### OPUS_REF_BOOK
@@ -106,49 +86,33 @@ Règle OPUS Score-first MVC/data : le HTML est produit par `.score`; I18N porte 
 - Rôle : ancien dépôt transitoire historique du RefBook.
 - Statut : ne doit plus être considéré comme source officielle long terme après intégration OPUS.
 - Destination : historique remplacé par `H:\OPUS\sites\opus-refbook` dans le dépôt OPUS.
-- Règle : ne pas recréer les anciens dépôts/racines autonomes.
 
 ### KB_FRONT_OFFICE
 
 - Rôle : futur site OPUS orienté front public/contrôlé de la KB musicale.
 - Statut : à créer plus tard comme vraie application/site OPUS.
 - Règle : doit être généré par OPUS, pas bricolé comme page ou UI autonome.
-- Règle module : chaque domaine/écran fonctionnel passe par modules métier héritant du commun.
-- Règle rendu : tout rendu passe par templates `.score`.
-- Règle data : les sources peuvent être fichiers, JSON, XML, BDD, API, cache, KB ou services internes, mais le rendu passe toujours par provider/service/view-model avant `.score`.
-- Règle dépendances : aucune dépendance externe sauf exception contractée et validée.
 
 ### KB_BACK_OFFICE
 
 - Rôle : futur site OPUS d'administration/backoffice de la KB musicale.
 - Statut : à créer plus tard comme vraie application/site OPUS.
-- Règle : doit être généré par OPUS, pas bricolé comme page ou UI autonome.
-- Règle module : chaque domaine admin passe par modules métier héritant du commun.
-- Règle rendu : tout rendu passe par templates `.score`.
-- Règle data : les sources peuvent être fichiers, JSON, XML, BDD, API, cache, KB ou services internes, mais le rendu passe toujours par provider/service/view-model avant `.score`.
 - Règle sécurité : admin gate explicite, pas d'exposition publique directe sans contrat d'authentification.
-- Règle dépendances : aucune dépendance externe sauf exception contractée et validée.
 
 ### MAESTRO_V5
 
 - Rôle : assistant musical REAPER/Lua.
-- Objectif : aider le musicien à composer, analyser, humaniser, orchestrer et enrichir.
 - Statut public : non exposé ; future carte LOGANDPLAY en `PROCHAINEMENT`.
-- Règle : la finalité reste faire de la musique, pas maintenir l'infrastructure.
 
 ### MO_KB_DAEMON
 
 - Rôle : backend KB musicale, workers, master/slaves, ingestion et analyses.
-- Mode : service Python/headless + contrôle local.
 - Statut public : non exposé ; future carte LOGANDPLAY en `PROCHAINEMENT`.
-- Règle : la KB canonique reste sous contrôle master ; slaves sans écriture directe concurrente.
 
 ### MO_KB_FRONT
 
 - Rôle : front/backoffice PHP/UwAmp historique pour la KB.
 - Statut : à réévaluer et à scinder/aligner vers `KB_FRONT_OFFICE` et `KB_BACK_OFFICE` sous forme de vrais sites OPUS.
-- Statut public : non exposé.
-- Règle : UI web séparée du backend Python, consommation par API/versionnement.
 - Règle future : ne pas poursuivre en bricolage ; migration ou remplacement par sites OPUS générés contractuellement.
 
 ### MAESTRO_WORKSPACE
@@ -157,7 +121,6 @@ Règle OPUS Score-first MVC/data : le HTML est produit par `.score`; I18N porte 
 - Règle : documenter et cadrer, pas remplacer les dépôts sources.
 - Règle livraison : chaque livraison significative met à jour le workspace et `CONTEXT/HANDOFFS/CURRENT_HANDOFF.md`.
 - Règle permanente : ne jamais livrer vite au détriment des contrats ; préférer une livraison plus lente, auditée, cohérente et testable.
-- Stockage dev OPUS : `H:\MAESTRO_WORKSPACE\var\opus\...` et `H:\MAESTRO_WORKSPACE\tools\opus\...` si nécessaire.
 
 ## Packaging OPUS cible
 
@@ -178,14 +141,13 @@ Composer orchestre autoload/packages/manifests/générateurs OPUS.
 Les sites/packages optionnels déclarent leur dépendance OPUS.
 Aucun site ne copie framework/Opus dans son propre arbre.
 Chaque application/site OPUS possède un socle commun et des modules métier hérités.
-Chaque module porte uniquement ses ACL/helpers/assets/javascript/local/models-services/controllers/viewmodels/templates propres.
 Les pages OPUS passent obligatoirement par modules + templates .score.
 Toute création passe par générateurs OPUS, jamais par création sauvage de page.
 .score produit le HTML ; i18n fournit les chaînes ; data est normalisée quelle que soit la source.
 JSON/XML/BDD/API/fichiers sont des sources/transports, jamais des substituts aux templates.
 REST est une brique framework générique, data-driven et contractuelle.
 SSO, Identity, ACL et FSM sont des contrats consommés par REST, LSTSAR et autres briques.
-LSTSAR a ses propres contrats sous Opus\Lstsar.
+LSTSAR a ses propres contrats et objets moteur sous Opus\Lstsar.
 Aucune dépendance externe sauf exception contractée, auditée et validée.
 OPUS product runtime écrit uniquement dans OPUS/var/cache et OPUS/var/logs.
 Les états de développement, audits, generated, recipes, tmp et refbook transitoire vont dans MAESTRO_WORKSPACE.
@@ -204,8 +166,8 @@ Il doit être mis à jour à chaque livraison qui change l'état réel d'un sous
 
 ## Priorité de reprise
 
-1. Lire `CONTEXT/HANDOFFS/P7B2_20260628_OPUS_LSTSAR_CONTRACT_CORE.md`.
-2. Lancer `P7_LSTSAR_CONTRACT_ENGINE_SKELETON` : job descriptor, constraint value objects, stage result, runner skeleton via interfaces uniquement.
+1. Lire `CONTEXT/HANDOFFS/P7B3_20260628_OPUS_LSTSAR_CONTRACT_ENGINE_SKELETON.md`.
+2. Lancer `P7_LSTSAR_CONTRACT_VALIDATION_CORE` : validation source/reçue, validation cible/transformée, erreurs explicites, aucun fallback silencieux.
 3. Ajouter i18n fr/en/es au profiler dev toolbar/page.
 4. Reprendre ensuite les générateurs OPUS et l'alignement sites/modules : P117SITE12M/N/O/P.
 5. Reprendre ensuite `P117L4B_LINUX_MULTISITE_REGISTRY_OVERLAY`, puis `P117AUTH1_ADMIN_GATE_CLOUDFLARE_READY`.
@@ -215,22 +177,8 @@ Il doit être mis à jour à chaque livraison qui change l'état réel d'un sous
 ## Contrats associés
 
 - CONTEXT/HANDOFFS/CURRENT_HANDOFF.md
+- CONTEXT/HANDOFFS/P7B3_20260628_OPUS_LSTSAR_CONTRACT_ENGINE_SKELETON.md
 - CONTEXT/HANDOFFS/P7B2_20260628_OPUS_LSTSAR_CONTRACT_CORE.md
 - CONTEXT/HANDOFFS/P7B1_20260628_OPUS_REST_SSO_SECURITY_CORE.md
 - CONTEXT/DECISIONS/ADR_20260628_OPUS_REST_API_GENERIC_SECURITY_CORE.md
 - CONTEXT/PROJECTS/OPUS_CURRENT_STATE.md
-- CONTEXT/DECISIONS/ADR_20260619_CONTRACT_FIRST_NO_BRICOLAGE.md
-- CONTEXT/DECISIONS/ADR_20260619_OPUS_COMPOSER_GENERATORS_AND_KB_FRONT_SITES.md
-- CONTEXT/DECISIONS/ADR_20260619_OPUS_SCORE_FIRST_MVC_SOURCE_AGNOSTIC_DATA.md
-- CONTEXT/PROJECTS/LOGANDPLAY.md
-- CONTEXT/HANDOFFS/P117_20260617_OPUS_LINUX_BASELINE_SMTP_NTP.md
-- CONTEXT/HANDOFFS/P117_20260617_OPUS_LINUX_DNS_SECURITY_UFW.md
-- CONTEXT/DECISIONS/ADR_20260617_LOGANDPLAY_PUBLIC_IDENTITY_SITE.md
-- CONTEXT/DECISIONS/ADR_20260616_OPUS_STRICT_RUNTIME_ENTRYPOINT_VAR_AUTOLOADER.md
-- CONTEXT/DECISIONS/ADR_20260614_WORKSPACE_ALWAYS_UPDATED_DELIVERY_HANDOFF.md
-- CONTEXT/DECISIONS/ADR_20260614_OPUS_DELIVERY_PACKAGING_PROFILE.md
-- CONTEXT/DECISIONS/ADR_20260614_OPUS_REFBOOK_PACKAGED_OFFLINE_ONLINE_SITE.md
-- CONTEXT/DECISIONS/ADR_20260614_OPUS_SHARED_CORE_PACKAGES_NO_DUPLICATION.md
-- CONTEXT/DECISIONS/ADR_20260614_OPUS_FRAMEWORK_IDENTITY.md
-- CONTEXT/DECISIONS/ADR_20260615_OPUS_REFBOOK_PRO_DOC_SIDEBAR_SEASONS_THEMES.md
-- CONTEXT/VERSIONS/OPUS_VERSION.md
