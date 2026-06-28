@@ -19,7 +19,18 @@ Règles :
 - séparation stricte data, traitement, représentation ;
 - diagnostics explicites ;
 - templates .score ;
-- RefBook doit rendre avec .score OPUS.
+- RefBook doit rendre avec .score OPUS ;
+- aucune référence contractuelle à un moteur externe ;
+- les zones littérales délimitées par les marqueurs double-crochet ignore et endignore font partie du contrat ScoreTemplate.
+
+Zones littérales :
+
+- marqueur d'ouverture : deux crochets ouvrants + ignore + deux crochets fermants ;
+- marqueur de fermeture : deux crochets ouvrants + endignore + deux crochets fermants ;
+- le contenu interne doit rester littéral ;
+- aucune expression ScoreTemplate ne doit être évaluée dans une zone littérale ;
+- ouverture sans fermeture : erreur OPUS_SCORETEMPLATE_UNCLOSED_IGNORE ;
+- fermeture sans ouverture : erreur OPUS_SCORETEMPLATE_UNEXPECTED_ENDIGNORE.
 
 Classes cibles :
 
