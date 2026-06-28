@@ -4,7 +4,7 @@ Last updated: 2026-06-28.
 
 ## Repository
 
-- Local repo: H:\OPUS
+- Local repo: H:/OPUS
 - Remote: philstephibanez-wq/OPUS
 - Branch: master
 - Last pushed commit: c402bd9
@@ -12,17 +12,34 @@ Last updated: 2026-06-28.
 
 ## Current validated milestone
 
-P7B4 / P7_ACL_ASAP_COMPAT_REPAIR is validated and pushed.
+P7B4 / P7_ACL_ASAP_COMPAT_REPAIR is smoke-validated and pushed.
 
-## Important correction
+Full ASAP ACL parity is not certified yet. Next required milestone is P7_ACL_ASAP_PARITY_AUDIT.
 
-P7B4 repairs the earlier ACL regression.
+## ScoreTemplate ownership
+
+ScoreTemplate and .score belong to OPUS.
+
+Do not describe ScoreTemplate as an ASAP component in the current architecture.
+
+Historical wording such as ASAP ScoreTemplate Engine or ASAP View ScoreTemplate is obsolete for the OPUS line.
+
+Correct rule:
+
+- owner: OPUS;
+- rendering layer: OPUS view layer;
+- extension: .score;
+- ASAP role: historical context only.
+
+## Important ACL correction
+
+P7B4 repairs the earlier ACL regression by smoke tests.
 
 The earlier ACL gate was too small for OPUS because OPUS must evolve ASAP, not degrade it.
 
-The current ACL layer keeps AclPolicyInterface stable and adds an ASAP-compatible engine behind ConfigAclPolicy.
+P7B4 keeps AclPolicyInterface stable and adds an ASAP-inspired engine behind ConfigAclPolicy. A full parity audit remains required.
 
-## ACL capabilities now present
+## ACL capabilities smoke-covered
 
 - default deny
 - roles
@@ -42,10 +59,11 @@ OPUS now has:
 
 - generic REST API core;
 - OPUS identity and ACL contracts;
-- ASAP-compatible ACL engine;
+- ACL smoke repair after the earlier regression;
 - LSTSAR contract namespace;
 - LSTSAR contract discovery endpoints;
-- LSTSAR engine skeleton objects.
+- LSTSAR engine skeleton objects;
+- OPUS-owned ScoreTemplate / .score rule.
 
 ## Validated endpoints
 
@@ -71,23 +89,27 @@ P7B4 validation passed:
 
 ## Next milestone
 
-P7_LSTSAR_CONTRACT_VALIDATION_CORE.
+P7_ACL_ASAP_PARITY_AUDIT.
 
 Expected scope:
 
-- source constraint validation object;
-- target constraint validation object;
-- received vs transformed constraint validation separation;
-- explicit validation errors;
-- no silent fallback;
-- no real storage yet;
-- API endpoints remain thin adapters over framework services.
+- read ASAP_PHP_DEMO ACL source;
+- map ASAP ACL public API and behavior;
+- compare OPUS P7B4 ACL behavior against ASAP;
+- add missing parity smoke/tests;
+- fix OPUS ACL only after explicit audit matrix;
+- then resume P7_LSTSAR_CONTRACT_VALIDATION_CORE.
+
+## Later milestone
+
+P7_LSTSAR_CONTRACT_VALIDATION_CORE.
 
 ## Active continuation rule
 
 Before any new OPUS patch, read:
 
 - CONTEXT/HANDOFFS/CURRENT_HANDOFF.md
+- CONTEXT/DECISIONS/DECISION_20260628_OPUS_SCORETEMPLATE_OWNERSHIP.md
 - CONTEXT/HANDOFFS/P7B4_20260628_OPUS_ACL_ASAP_COMPAT_REPAIR.md
 - CONTEXT/HANDOFFS/P7B3_20260628_OPUS_LSTSAR_CONTRACT_ENGINE_SKELETON.md
 - CONTEXT/HANDOFFS/P7B2_20260628_OPUS_LSTSAR_CONTRACT_CORE.md
