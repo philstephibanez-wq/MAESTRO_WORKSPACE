@@ -10,6 +10,7 @@ NO DOC CONTRACT, NO PATCH.
 NO SOURCE OF TRUTH, NO PATCH.
 NO BRICOLAGE DELIVERY.
 SLOWER IS ACCEPTABLE; WASTING USER TIME IS NOT.
+WORKSPACE HANDOFF UPDATED AT EVERY STATE CHANGE.
 ```
 
 Références canoniques :
@@ -18,6 +19,7 @@ Références canoniques :
 CONTEXT/DECISIONS/ADR_20260619_CONTRACT_FIRST_NO_BRICOLAGE.md
 CONTEXT/DECISIONS/ADR_20260619_OPUS_COMPOSER_GENERATORS_AND_KB_FRONT_SITES.md
 CONTEXT/DECISIONS/ADR_20260619_OPUS_SCORE_FIRST_MVC_SOURCE_AGNOSTIC_DATA.md
+CONTEXT/DECISIONS/ADR_20260628_OPUS_REST_API_GENERIC_SECURITY_CORE.md
 ```
 
 Toute livraison future doit privilégier le contrat, l'audit réel, la source de vérité et la cohérence architecturale plutôt que la vitesse. Aucun site OPUS/ASAP ne doit être traité comme une page isolée si le contrat impose une application, des modules, routes, controllers, services, view-models, templates, ressources, I18N/thèmes ou FSM/transitions.
@@ -53,10 +55,14 @@ Règle OPUS Score-first MVC/data : le HTML est produit par `.score`; I18N porte 
 
 - Rôle : framework PHP principal.
 - Identité : OPUS Framework 8.1.0 "Lysenko".
-- Dépôt cible : OPUS.
-- Priorité : critique immédiate, livraison Linux préprod + durcissement serveur P117 puis alignement contractuel des sites intégrés P117SITE12.
+- Dépôt cible : `philstephibanez-wq/OPUS`.
+- État courant : P7B1 `P7 add REST API SSO security core` validé et poussé sur `master`, commit `73f1deb`.
+- Priorité immédiate : nettoyer les scories locales `cd`, `del`, `git`, `php`, `rmdir`, puis reprendre depuis `CURRENT_HANDOFF.md`.
+- Prochain palier actif : `P7_LSTSAR_CONTRACT_CORE`.
 - État Linux : installé dans `/srv/opus/OPUS`, Apache `public/`, DNS LAN, UFW, Fail2ban SSH/Webmin, ClamAV ciblé, AWFFull privé et Webmin tempdir validés.
-- Prochaines étapes : P117SITE12 OPUS site contract alignment + generator contract, puis `P117L4B_LINUX_MULTISITE_REGISTRY_OVERLAY`, puis `P117AUTH1_ADMIN_GATE_CLOUDFLARE_READY`.
+- Règle REST : REST est une brique générique OPUS, data-driven et contractuelle ; elle consomme SSO, Identity, ACL et FSM ; elle ne doit pas contenir de hardcode LSTSAR.
+- Règle LSTSAR : LSTSAR consommera REST/Security Core plus tard via ses propres contrats `Opus\Lstsar\...`.
+- Règle ACL : l'ACL OPUS est un contrat de policy ; une logique ACL plus mûre issue d'ASAP peut être adaptée derrière interface, sans casser le framework.
 - Règle : OPUS n'est pas ASAP, mais ASAP est une référence historique structurante pour la conception applicative : application commune + modules hérités + parties métier par module.
 - Différence ASAP -> OPUS : OPUS passe par Composer pour l'autoload, les packages, les manifests et les générateurs, tout en évitant les dépendances externes quand c'est possible.
 - Règle Log&Play : OPUS génère le site/page, mais le contenu métier LOGANDPLAY ne doit pas être intégré au cœur framework.
@@ -177,6 +183,9 @@ Les pages OPUS passent obligatoirement par modules + templates .score.
 Toute création passe par générateurs OPUS, jamais par création sauvage de page.
 .score produit le HTML ; i18n fournit les chaînes ; data est normalisée quelle que soit la source.
 JSON/XML/BDD/API/fichiers sont des sources/transports, jamais des substituts aux templates.
+REST est une brique framework générique, data-driven et contractuelle.
+SSO, Identity, ACL et FSM sont des contrats consommés par REST, LSTSAR et autres briques.
+LSTSAR doit avoir ses propres contrats et ne doit pas être codé en dur dans REST.
 Aucune dépendance externe sauf exception contractée, auditée et validée.
 OPUS product runtime écrit uniquement dans OPUS/var/cache et OPUS/var/logs.
 Les états de développement, audits, generated, recipes, tmp et refbook transitoire vont dans MAESTRO_WORKSPACE.
@@ -195,21 +204,24 @@ Il doit être mis à jour à chaque livraison qui change l'état réel d'un sous
 
 ## Priorité de reprise
 
-1. P117SITE12M : valider `serve-site` et `validate-site` sur le skeleton OPUS.
-2. P117SITE12N : mettre le skeleton en conformité Score-first MVC/source-agnostic data.
-3. P117SITE12O : ajouter inspection `list-sites`, `list-modules`, `list-languages`.
-4. P117SITE12P : ajouter routes/menu route-based.
-5. P117L4B : ajouter un overlay registry Linux pour supprimer `SERVER_DEGRADED` causé par les chemins Windows `H:\UwAmp`.
-6. P117AUTH1 : poser un gate admin explicite compatible LAN préprod et Cloudflare Access.
-7. P117CF1/P117CF2 : Cloudflare Tunnel puis Cloudflare Access, sans ouverture Freebox par défaut.
-8. Reprendre ensuite la migration RefBook/Log&Play contrôlée quand OPUS P117SITE12 est stable.
+1. Nettoyer `H:\OPUS` des scories locales `cd`, `del`, `git`, `php`, `rmdir`, puis confirmer `## master...origin/master`.
+2. Lire `CONTEXT/HANDOFFS/P7B1_20260628_OPUS_REST_SSO_SECURITY_CORE.md`.
+3. Lancer `P7_LSTSAR_CONTRACT_CORE` : contrats LSTSAR, Load/Secure/Transform/Store/Audit/Report, endpoints LSTSAR via ApiEndpointInterface, aucun hardcode LSTSAR dans REST.
+4. Ajouter i18n fr/en/es au profiler dev toolbar/page.
+5. Reprendre ensuite les générateurs OPUS et l'alignement sites/modules : P117SITE12M/N/O/P.
+6. Reprendre ensuite `P117L4B_LINUX_MULTISITE_REGISTRY_OVERLAY`, puis `P117AUTH1_ADMIN_GATE_CLOUDFLARE_READY`.
+7. Cloudflare Tunnel puis Cloudflare Access, sans ouverture Freebox par défaut.
+8. Reprendre ensuite la migration RefBook/Log&Play contrôlée quand OPUS générateurs/sites sont stables.
 
 ## Contrats associés
 
+- CONTEXT/HANDOFFS/CURRENT_HANDOFF.md
+- CONTEXT/HANDOFFS/P7B1_20260628_OPUS_REST_SSO_SECURITY_CORE.md
+- CONTEXT/DECISIONS/ADR_20260628_OPUS_REST_API_GENERIC_SECURITY_CORE.md
+- CONTEXT/PROJECTS/OPUS_CURRENT_STATE.md
 - CONTEXT/DECISIONS/ADR_20260619_CONTRACT_FIRST_NO_BRICOLAGE.md
 - CONTEXT/DECISIONS/ADR_20260619_OPUS_COMPOSER_GENERATORS_AND_KB_FRONT_SITES.md
 - CONTEXT/DECISIONS/ADR_20260619_OPUS_SCORE_FIRST_MVC_SOURCE_AGNOSTIC_DATA.md
-- CONTEXT/HANDOFFS/CURRENT_HANDOFF.md
 - CONTEXT/PROJECTS/LOGANDPLAY.md
 - CONTEXT/HANDOFFS/P117_20260617_OPUS_LINUX_BASELINE_SMTP_NTP.md
 - CONTEXT/HANDOFFS/P117_20260617_OPUS_LINUX_DNS_SECURITY_UFW.md
