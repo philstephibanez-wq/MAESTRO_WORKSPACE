@@ -14,6 +14,7 @@ NO FALLBACK SILENCIEUX.
 REUSE EXISTING OPUS BRICKS.
 WORKSPACE HANDOFF UPDATED AT EVERY STATE CHANGE.
 ASAP BEHAVIOR MUST BE EVOLVED, NOT DEGRADED.
+SCORETEMPLATE BELONGS TO OPUS, NOT ASAP.
 
 OPUS is a general-purpose applicative web framework. REST is a generic OPUS framework brick, not a private API for one engine.
 
@@ -26,6 +27,19 @@ Workspace repo: philstephibanez-wq/MAESTRO_WORKSPACE
 OPUS branch: master
 OPUS commit: c402bd9
 OPUS message: P7 repair ACL with ASAP-compatible engine
+
+## Critical correction: ScoreTemplate ownership
+
+ScoreTemplate / `.score` is OPUS, not ASAP.
+
+The old P115E wording naming `ASAP ScoreTemplate Engine`, `ASAP\View\ScoreTemplate`, or an ASAP-native implementation must be treated as obsolete/wrong for the OPUS line.
+
+Correct rule:
+
+- ScoreTemplate has always belonged to OPUS in the current architecture.
+- Do not create, name, document, or migrate it as an ASAP component.
+- ASAP may be historical context for some framework ideas, but ScoreTemplate is OPUS-owned.
+- Future docs/patches must use OPUS naming and namespace.
 
 ## Read first
 
