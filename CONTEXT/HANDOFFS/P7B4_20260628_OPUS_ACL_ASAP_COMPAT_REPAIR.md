@@ -1,8 +1,8 @@
-# P7B4 — OPUS ACL ASAP-Compatible Repair
+# P7B4 — OPUS ACL ASAP Repair Smoke
 
 ## Status
 
-VALIDATED_AND_PUSHED.
+VALIDATED_AND_PUSHED, BUT NOT FULL ASAP PARITY CERTIFIED.
 
 ## Source repositories
 
@@ -13,13 +13,28 @@ VALIDATED_AND_PUSHED.
 - Commit: c402bd9
 - Commit message: P7 repair ACL with ASAP-compatible engine
 
-## Summary
+## Correction of wording
 
-P7B4 repairs the ACL regression introduced by the earlier minimal REST gate.
+Do not claim that P7B4 proves full ASAP ACL parity.
 
-The earlier OPUS ACL gate supported only public, authenticated and role_or_scope. That was insufficient because OPUS must evolve ASAP, not degrade it.
+P7B4 repairs the immediate regression caused by the earlier minimal REST gate. It restores an ASAP-inspired ACL engine behind the existing OPUS AclPolicyInterface and passes an initial smoke matrix.
 
-P7B4 adds an ASAP-compatible ACL engine behind the existing OPUS AclPolicyInterface so the REST dispatcher contract remains stable while ACL semantics become framework-grade.
+This is not yet a full formal audit against the complete historical ASAP ACL behavior.
+
+## Why this matters
+
+OPUS must evolve ASAP, not degrade it.
+
+A smoke test is not a semantic parity proof.
+
+Before resuming LSTSAR validation work, perform an ACL parity audit against the uploaded ASAP_PHP_DEMO.zip source, especially:
+
+- framework/ASAP/ACL/ASAP_Acl.class.php
+- framework/ASAP/ACL/ASAP_Acl_conditions.php
+- framework/ASAP/ACL/ASAP_Acl_Resource.class.php
+- framework/ASAP/ACL/ASAP_Acl_Role.class.php
+- framework/ASAP/ACL/ASAP_Roles.class.php
+- application/default/helpers/AclDemo_helper.class.php
 
 ## Added OPUS files
 
@@ -33,7 +48,7 @@ P7B4 adds an ASAP-compatible ACL engine behind the existing OPUS AclPolicyInterf
 - Opus/Security/Access/ConfigAclPolicy.php
 - config/security/acl.json
 
-## Restored ACL capabilities
+## Smoke-covered ACL capabilities
 
 - default deny
 - roles
@@ -52,11 +67,7 @@ P7B4 adds an ASAP-compatible ACL engine behind the existing OPUS AclPolicyInterf
 
 ## Validation evidence from Windows dev
 
-- OPUS was clean before patch: `## master...origin/master`.
-- Initial ACL repair patch applied.
-- Missing AsapCompat files patch applied after first delivery gap.
-- Composer autoload regenerated.
-- PHP lint OK for ConfigAclPolicy and all AsapCompat classes.
+- PHP lint OK for ConfigAclPolicy and all AsapCompat classes/interfaces.
 - JSON OK on config/security/acl.json.
 - Autoload OK for ConfigAclPolicy and all AsapCompat classes/interfaces.
 - ACL smoke matrix OK for anonymous, authenticated, developer, scoped, staff, marketing, editor and admin identities.
@@ -72,29 +83,18 @@ Final local status observed by user:
 
 `## master...origin/master`
 
-## Architectural correction
-
-This repair is a priority correction, not a feature.
-
-OPUS must evolve ASAP into a cleaner framework architecture. It must not replace mature ASAP behavior with simplified substitutes.
-
-The ACL engine can be refactored and modernized, but its semantic power must be preserved or improved.
-
 ## Next milestone
 
-Resume only after ACL is treated as repaired:
-
-P7_LSTSAR_CONTRACT_VALIDATION_CORE.
+P7_ACL_ASAP_PARITY_AUDIT.
 
 Expected scope:
 
-- source constraint validation object;
-- target constraint validation object;
-- received vs transformed constraint validation separation;
-- explicit validation errors;
-- no silent fallback;
-- no real storage yet;
-- keep REST endpoint thin and config driven.
+- read ASAP_PHP_DEMO ACL source;
+- map all ASAP public ACL APIs and semantics;
+- compare OPUS P7B4 engine against ASAP behavior;
+- add missing compatibility tests;
+- fix OPUS ACL only after the audit matrix is explicit;
+- then resume P7_LSTSAR_CONTRACT_VALIDATION_CORE.
 
 ## Continuation rules
 
