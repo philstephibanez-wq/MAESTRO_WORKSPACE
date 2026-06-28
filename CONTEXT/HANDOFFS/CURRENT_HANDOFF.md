@@ -18,7 +18,7 @@ WORKSPACE HANDOFF UPDATED AT EVERY STATE CHANGE.
 
 OPUS is a general-purpose applicative web framework. HTML output must come from `.score` templates through explicit data/view-model contracts. REST is a generic OPUS framework brick, not a private API for one engine.
 
-## Current OPUS state — P7B3 validated
+## Current OPUS state — P7B3 validated, ACL blocker open
 
 ```text
 OPUS root      : H:\OPUS
@@ -38,18 +38,50 @@ CONTEXT/HANDOFFS/P7B2_20260628_OPUS_LSTSAR_CONTRACT_CORE.md
 CONTEXT/HANDOFFS/P7B1_20260628_OPUS_REST_SSO_SECURITY_CORE.md
 ```
 
-Related ADR:
+## Blocking correction before any new feature work
 
 ```text
-CONTEXT/DECISIONS/ADR_20260628_OPUS_REST_API_GENERIC_SECURITY_CORE.md
+P7_ACL_ASAP_COMPAT_REPAIR
 ```
 
-History handoffs:
+Reason:
 
 ```text
-CONTEXT/HANDOFFS/P7A1D4_20260626_OPUS_WEB_PROFILER_CONFIGURED_FSM_VALIDATED.md
-CONTEXT/HANDOFFS/P7A1C_20260626_OPUS_TOKENIZER_FRAMEWORK_INTERFACES_CONTRACTS.md
-CONTEXT/HANDOFFS/P7A1A_20260626_OPUS_INTERFACE_REFACTOR_ABORT_AND_FSM_DEMO_REMOVAL.md
+The current OPUS ConfigAclPolicy is only a minimal REST security gate.
+It supports public, authenticated and role_or_scope only.
+It does not preserve the historical ASAP ACL semantics.
+No LSTSAR validation-core patch may be prepared before this is corrected.
+```
+
+Required ASAP ACL semantics to port behind OPUS interfaces:
+
+```text
+default deny
+roles
+role inheritance
+resources
+resource inheritance
+privileges
+allow rules
+deny rules
+all resources
+all roles
+all privileges
+conditional assertions
+explicit decision trace
+no silent fallback
+```
+
+Uploaded reference source:
+
+```text
+ASAP_PHP_DEMO.zip
+framework/ASAP/ACL/ASAP_Acl.class.php
+framework/ASAP/ACL/ASAP_Acl_conditions.php
+framework/ASAP/ACL/ASAP_Acl_Resource.class.php
+framework/ASAP/ACL/ASAP_Acl_Role.class.php
+framework/ASAP/ACL/ASAP_Roles.class.php
+application/default/helpers/AclDemo_helper.class.php
 ```
 
 ## OPUS status
@@ -123,19 +155,21 @@ config/lstsar/contracts.json
 ## Next milestone
 
 ```text
-P7_LSTSAR_CONTRACT_VALIDATION_CORE
+P7_ACL_ASAP_COMPAT_REPAIR
 ```
 
 Target:
 
 ```text
-source constraint validation object
-target constraint validation object
-received vs transformed constraint validation separation
-explicit validation errors
-no silent fallback
-no real storage yet
-API endpoints remain thin adapters over framework services
+replace minimal ACL behavior with ASAP-compatible OPUS ACL engine
+keep AclPolicyInterface stable for REST dispatcher
+add role and resource inheritance
+add privilege allow/deny semantics
+add allResources/allRoles/allPrivileges semantics
+add conditional assertion contract
+add explicit decision traces and tests/smoke
+keep no silent fallback
+then resume P7_LSTSAR_CONTRACT_VALIDATION_CORE
 ```
 
 Secondary follow-up:
