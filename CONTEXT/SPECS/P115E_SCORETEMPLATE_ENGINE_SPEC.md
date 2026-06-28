@@ -1,10 +1,20 @@
-# P115E — ASAP ScoreTemplate Engine MVP
+# P115E — OPUS ScoreTemplate Engine MVP
+
+## Statut de correction
+
+Cette spécification remplace l'ancien libellé erroné `ASAP ScoreTemplate Engine`.
+
+ScoreTemplate / `.score` appartient à OPUS, pas ASAP.
+
+Les formulations historiques `ASAP ScoreTemplate Engine`, `ASAP\View\ScoreTemplate` et `implémentation ASAP native` sont obsolètes pour la ligne OPUS.
 
 ## Nom validé
 
-- Nom officiel : `ASAP ScoreTemplate Engine`
+- Nom officiel : `OPUS ScoreTemplate Engine`
 - Nom court : `ScoreTemplate`
-- Namespace cible : `ASAP\View\ScoreTemplate`
+- Extension : `.score`
+- Namespace cible : `Opus\View\ScoreTemplate`
+- Propriétaire framework : OPUS
 
 ## Formule d’architecture
 
@@ -12,9 +22,10 @@
 
 ## Objectif
 
-Créer un moteur de template natif ASAP, sans dépendance Twig/Symfony à terme, pour rendre les vues de façon stricte, sûre, lisible et facilement débogable.
+Créer un moteur de template natif OPUS, sans dépendance Twig/Symfony à terme, pour rendre les vues de façon stricte, sûre, lisible et facilement débogable.
 
-ScoreTemplate est une “partition de vue” :
+ScoreTemplate est une partition de vue OPUS :
+
 - les controllers/services préparent les données ;
 - le template orchestre uniquement l’affichage ;
 - aucune logique métier ne vit dans la vue ;
@@ -37,7 +48,7 @@ ScoreTemplate est une “partition de vue” :
   <li>{$item.label}</li>
 {/foreach}
 
-{include "partials/header.tpl"}
+{include "partials/header.score"}
 
 {# commentaire non rendu #}
 ```
@@ -48,7 +59,7 @@ ScoreTemplate est une “partition de vue” :
 - filtres : `escape`, `raw`, `default:"..."`, `upper`, `lower`, `json`, `url`
 - conditions : `{if}`, `{else}`, `{/if}`
 - boucles : `{foreach $items as $item}`, `{/foreach}`
-- includes : `{include "partials/header.tpl"}`
+- includes : `{include "partials/header.score"}`
 - commentaires : `{# ... #}`
 - erreurs strictes : variable manquante, include manquant, tag non fermé, filtre inconnu, boucle non itérable.
 
@@ -81,6 +92,7 @@ HTML volontaire uniquement via `raw` explicite :
 ## Diagnostic obligatoire
 
 Chaque erreur doit indiquer :
+
 - template ;
 - ligne ;
 - colonne si possible ;
@@ -91,26 +103,26 @@ Chaque erreur doit indiquer :
 Exemples :
 
 ```text
-ASAP_TEMPLATE_VARIABLE_MISSING
-Template: pages/home.tpl
+OPUS_SCORETEMPLATE_VARIABLE_MISSING
+Template: pages/home.score
 Line: 12
 Variable: $missing.value
 ```
 
 ```text
-ASAP_TEMPLATE_UNCLOSED_IF
-Template: pages/reference.tpl
+OPUS_SCORETEMPLATE_UNCLOSED_IF
+Template: pages/reference.score
 Line: 42
 Tag opened: {if $page.visible}
 Expected: {/if}
 ```
 
 ```text
-ASAP_TEMPLATE_INCLUDE_NOT_FOUND
-Template: pages/reference.tpl
+OPUS_SCORETEMPLATE_INCLUDE_NOT_FOUND
+Template: pages/reference.score
 Line: 8
-Include: partials/header.tpl
-Root: H:\ASAP_REF_BOOK\application\reference\templates
+Include: partials/header.score
+Root: H:\OPUS\sites\opus-refbook\templates
 ```
 
 ## DebugTrace
@@ -119,10 +131,10 @@ Mode debug officiel attendu :
 
 ```text
 Template rendered:
-- layout.tpl
-- partials/header.tpl
-- pages/reference.tpl
-- partials/footer.tpl
+- layout.score
+- partials/header.score
+- pages/reference.score
+- partials/footer.score
 
 Variables utilisées:
 - page.title
@@ -134,8 +146,8 @@ Variables manquantes:
 - none
 
 Includes:
-- partials/header.tpl OK
-- partials/footer.tpl OK
+- partials/header.score OK
+- partials/footer.score OK
 
 Escaping:
 - page.title escaped
@@ -145,25 +157,26 @@ Escaping:
 En développement uniquement, commentaires HTML possibles :
 
 ```html
-<!-- ASAP_SCORETEMPLATE_START pages/reference.tpl -->
+<!-- OPUS_SCORETEMPLATE_START pages/reference.score -->
 ...
-<!-- ASAP_SCORETEMPLATE_END pages/reference.tpl -->
+<!-- OPUS_SCORETEMPLATE_END pages/reference.score -->
 ```
 
 ## Classes cibles
 
 ```text
-ASAP\View\ScoreTemplate\ScoreTemplateEngine
-ASAP\View\ScoreTemplate\ScoreTemplateRenderer
-ASAP\View\ScoreTemplate\ScoreTemplateParser
-ASAP\View\ScoreTemplate\ScoreTemplateLoader
-ASAP\View\ScoreTemplate\ScoreTemplateContext
-ASAP\View\ScoreTemplate\ScoreTemplateFilterRegistry
-ASAP\View\ScoreTemplate\ScoreTemplateDebugTrace
-ASAP\View\ScoreTemplate\ScoreTemplateException
+Opus\View\ScoreTemplate\ScoreTemplateEngine
+Opus\View\ScoreTemplate\ScoreTemplateRenderer
+Opus\View\ScoreTemplate\ScoreTemplateParser
+Opus\View\ScoreTemplate\ScoreTemplateLoader
+Opus\View\ScoreTemplate\ScoreTemplateContext
+Opus\View\ScoreTemplate\ScoreTemplateFilterRegistry
+Opus\View\ScoreTemplate\ScoreTemplateDebugTrace
+Opus\View\ScoreTemplate\ScoreTemplateException
 ```
 
 Responsabilités :
+
 - Loader : trouve et lit les fichiers.
 - Parser : comprend la syntaxe.
 - Renderer : produit le HTML.
@@ -177,13 +190,13 @@ Responsabilités :
 Ne pas supprimer Twig brutalement.
 
 Ordre :
-1. Garder Twig temporairement.
-2. Finaliser P115C : assets RefBook ASAP déplacés de `DOC/refbook` vers `resources/refbook`.
-3. Finaliser P115D : RefBook consomme ASAP vendor au lieu de son propre vendor.
-4. Créer ScoreTemplate côté ASAP.
-5. Ajouter tests MVP.
-6. Migrer progressivement les templates RefBook.
-7. Supprimer Twig seulement quand RefBook tourne entièrement avec ScoreTemplate.
+
+1. Garder Twig temporairement si encore présent dans une zone historique.
+2. Maintenir `.score` comme format OPUS.
+3. Créer ou consolider ScoreTemplate côté OPUS uniquement.
+4. Ajouter tests MVP.
+5. Migrer progressivement les templates RefBook vers `.score` OPUS si certains fragments historiques ne le sont pas encore.
+6. Supprimer Twig seulement quand RefBook tourne entièrement avec OPUS ScoreTemplate.
 
 ## Contrats permanents
 
@@ -191,4 +204,5 @@ Ordre :
 - Pas de moteur fourre-tout.
 - Pas de logique métier dans les vues.
 - Séparation stricte data / traitement / représentation.
-- ScoreTemplate est une implémentation ASAP native ; Twig, Smarty, Mustache et Liquid sont des inspirations, pas du code à copier.
+- ScoreTemplate est une implémentation OPUS native ; Twig, Smarty, Mustache et Liquid sont des inspirations, pas du code à copier.
+- ASAP est un contexte historique possible, pas le propriétaire de ScoreTemplate.
