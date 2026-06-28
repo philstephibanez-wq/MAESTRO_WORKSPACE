@@ -1,4 +1,4 @@
-# P115E — OPUS ScoreTemplate Engine MVP
+# P115E — OPUS ScoreTemplate Engine — Palier 1 MVC
 
 ## Statut de correction
 
@@ -8,6 +8,14 @@ ScoreTemplate / `.score` appartient à OPUS, pas ASAP.
 
 Les formulations historiques `ASAP ScoreTemplate Engine`, `ASAP\View\ScoreTemplate` et `implémentation ASAP native` sont obsolètes pour la ligne OPUS.
 
+## Clarification MVP / MVC
+
+MVC est l'architecture OPUS.
+
+Le terme MVP ne doit pas être utilisé comme architecture ici. Quand un ancien texte mentionne MVP, il faut lire uniquement : premier palier fonctionnel minimal.
+
+Dans cette spécification, on utilise donc `Palier 1 MVC` pour éviter toute confusion.
+
 ## Nom validé
 
 - Nom officiel : `OPUS ScoreTemplate Engine`
@@ -15,6 +23,7 @@ Les formulations historiques `ASAP ScoreTemplate Engine`, `ASAP\View\ScoreTempla
 - Extension : `.score`
 - Namespace cible : `Opus\View\ScoreTemplate`
 - Propriétaire framework : OPUS
+- Architecture : MVC OPUS
 
 ## Formule d’architecture
 
@@ -24,14 +33,15 @@ Les formulations historiques `ASAP ScoreTemplate Engine`, `ASAP\View\ScoreTempla
 
 Créer un moteur de template natif OPUS, sans dépendance Twig/Symfony à terme, pour rendre les vues de façon stricte, sûre, lisible et facilement débogable.
 
-ScoreTemplate est une partition de vue OPUS :
+ScoreTemplate est la couche View du MVC OPUS :
 
 - les controllers/services préparent les données ;
+- les view-models transportent les données prêtes pour la vue ;
 - le template orchestre uniquement l’affichage ;
 - aucune logique métier ne vit dans la vue ;
 - aucune erreur n’est masquée.
 
-## Syntaxe MVP
+## Syntaxe Palier 1 MVC
 
 ```text
 {$page.title}
@@ -53,7 +63,7 @@ ScoreTemplate est une partition de vue OPUS :
 {# commentaire non rendu #}
 ```
 
-## Fonctionnalités MVP
+## Fonctionnalités Palier 1 MVC
 
 - variables : `{$page.title}`, `{$section.items.0.label}`
 - filtres : `escape`, `raw`, `default:"..."`, `upper`, `lower`, `json`, `url`
@@ -63,7 +73,7 @@ ScoreTemplate est une partition de vue OPUS :
 - commentaires : `{# ... #}`
 - erreurs strictes : variable manquante, include manquant, tag non fermé, filtre inconnu, boucle non itérable.
 
-## Interdits MVP
+## Interdits Palier 1 MVC
 
 - Pas de PHP libre dans les templates.
 - Pas de SQL/API/fichiers depuis un template.
@@ -185,6 +195,19 @@ Responsabilités :
 - DebugTrace : explique le rendu.
 - Exception : porte une erreur claire, localisée et contractuelle.
 
+## MVC OPUS
+
+```text
+Model / Provider / Repository / Adapter
+  -> Service / validation / transformation
+  -> Controller
+  -> ViewModel
+  -> ScoreTemplate .score
+  -> HTML
+```
+
+ScoreTemplate ne remplace pas MVC. ScoreTemplate est le moteur de rendu strict de la couche View.
+
 ## Migration
 
 Ne pas supprimer Twig brutalement.
@@ -194,7 +217,7 @@ Ordre :
 1. Garder Twig temporairement si encore présent dans une zone historique.
 2. Maintenir `.score` comme format OPUS.
 3. Créer ou consolider ScoreTemplate côté OPUS uniquement.
-4. Ajouter tests MVP.
+4. Ajouter tests Palier 1 MVC.
 5. Migrer progressivement les templates RefBook vers `.score` OPUS si certains fragments historiques ne le sont pas encore.
 6. Supprimer Twig seulement quand RefBook tourne entièrement avec OPUS ScoreTemplate.
 
@@ -206,3 +229,4 @@ Ordre :
 - Séparation stricte data / traitement / représentation.
 - ScoreTemplate est une implémentation OPUS native ; Twig, Smarty, Mustache et Liquid sont des inspirations, pas du code à copier.
 - ASAP est un contexte historique possible, pas le propriétaire de ScoreTemplate.
+- MVC reste l'architecture OPUS ; ScoreTemplate est la couche View, pas un substitut MVC.
