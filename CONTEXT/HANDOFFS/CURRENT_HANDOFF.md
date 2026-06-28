@@ -12,94 +12,116 @@ NO DOC CONTRACT, NO PATCH.
 NO SOURCE OF TRUTH, NO PATCH.
 NO BRICOLAGE DELIVERY.
 NO FALLBACK SILENCIEUX.
+REUSE EXISTING OPUS BRICKS.
+WORKSPACE HANDOFF UPDATED AT EVERY STATE CHANGE.
 ```
 
-OPUS is an applicative web framework. HTML output must come from `.score` templates through explicit data/view-model contracts.
+OPUS is a general-purpose applicative web framework. HTML output must come from `.score` templates through explicit data/view-model contracts. REST is a generic OPUS framework brick, not a private API for one engine.
 
-## Current OPUS state — P7A1D4 validated
+## Current OPUS state — P7B1 validated
 
 ```text
 OPUS root      : H:\OPUS
 OPUS GitHub    : philstephibanez-wq/OPUS
 Workspace root : H:\MAESTRO_WORKSPACE
 Workspace repo : philstephibanez-wq/MAESTRO_WORKSPACE
+OPUS branch    : master
+OPUS commit    : 73f1deb
+OPUS message   : P7 add REST API SSO security core
 ```
 
 Read first:
 
 ```text
-CONTEXT/HANDOFFS/P7A1D4_20260626_OPUS_WEB_PROFILER_CONFIGURED_FSM_VALIDATED.md
+CONTEXT/HANDOFFS/P7B1_20260628_OPUS_REST_SSO_SECURITY_CORE.md
 ```
 
 Related ADR:
 
 ```text
-CONTEXT/ADRS/ADR_20260626_OPUS_RUNTIME_FSM_CONFIGURATION_NOT_HARDCODED.md
+CONTEXT/DECISIONS/ADR_20260628_OPUS_REST_API_GENERIC_SECURITY_CORE.md
 ```
 
 History handoffs:
 
 ```text
+CONTEXT/HANDOFFS/P7A1D4_20260626_OPUS_WEB_PROFILER_CONFIGURED_FSM_VALIDATED.md
 CONTEXT/HANDOFFS/P7A1C_20260626_OPUS_TOKENIZER_FRAMEWORK_INTERFACES_CONTRACTS.md
 CONTEXT/HANDOFFS/P7A1A_20260626_OPUS_INTERFACE_REFACTOR_ABORT_AND_FSM_DEMO_REMOVAL.md
 ```
 
 ## OPUS status
 
-P7A1D4 was executed, validated, committed and pushed.
+P7B1 was executed, validated, committed and pushed.
 
-Final local status observed:
+Validated OPUS commit:
+
+```text
+73f1deb P7 add REST API SSO security core
+```
+
+OPUS remote push completed to origin/master.
+
+## Immediate cleanup before next OPUS patch
+
+After the push, local `H:\OPUS` still showed command-name scories:
+
+```text
+?? cd
+?? del
+?? git
+?? php
+?? rmdir
+```
+
+Before any new OPUS patch, delete these files and confirm:
 
 ```text
 ## master...origin/master
 ```
 
-Report present on OPUS master:
+No future OPUS work should start from a dirty working tree.
+
+## P7B1 validated output
 
 ```text
-DOC/reference/generated/json/p7a1d4_web_profiler_exception_pipeline.json
+JSON_OK: config/api/routes.json
+JSON_OK: config/security/sso.json
+JSON_OK: config/security/acl.json
+
+CLASS_OK: Opus\Api\ApiDispatcher
+CLASS_OK: Opus\Api\ApiRouteRegistry
+CLASS_OK: Opus\Security\Access\ConfigAclPolicy
+CLASS_OK: Opus\Security\Sso\DevHeaderSsoAuthenticator
+CLASS_OK: Opus\Security\Fsm\ConfigFsmGuard
+
+API_SMOKE_OK: status
+API_SMOKE_OK: me
+API_SMOKE_OK: policies
+TEMP_PROFILER_CLEANED
 ```
 
-## P7A1D4 validated output
+## What P7B1 validates
 
 ```text
-PHP_FILES=188
-PHP_LINT_ERRORS=0
-COLLECTORS_REGISTERED=9
-WEB_PROFILER_ROUTE_AVAILABLE=1
-WEB_PROFILER_TEMPLATE_SCORE_AVAILABLE=1
-CONFIGURED_FSM_MAPS=4
-NO_HARDCODED_RUNTIME_FSM=1
-NO_HTML_BUILT_IN_COLLECTORS=1
-OK=1
-EXIT_CODE=0
+Generic REST API dispatcher
+Data-driven API route registry
+ApiEndpointInterface contract
+JSON error response factory
+SSO contract with dev-header adapter
+IdentityContext contract
+ACL policy contract with config-backed policy
+FSM guard contract with config-backed guard
+Router no longer hardcodes demo API endpoints
+Profiler reused during API/security smoke validation
 ```
 
-## What P7A1D4 validates
+Validated endpoints:
 
 ```text
-Web Profiler OPUS style target
-OPUS .score profiler template
-9 collectors registered
-collectors contain no HTML
-runtime diagnostics to exception to profiler pipeline
-configured runtime FSM under config/fsm_runtime
-no hardcoded runtime FSM transitions
-global PHP lint OK
-```
-
-Collectors:
-
-```text
-request
-routing
-exception
-template
-database
-config
-mail
-memory
-runtime
+GET /api/v1/status
+GET /api/v1/me
+GET /api/v1/security/policies
 ```
 
 ## Validated decisions still active
@@ -112,38 +134,32 @@ Runtime FSM transitions must be configuration data, not PHP hardcoded sequences.
 config/fsm_runtime
 ```
 
-## P7A1A warning
+REST remains a generic OPUS framework brick. REST consumes SSO, Identity, ACL and FSM contracts. LSTSAR will consume REST and Security Core later, but REST must not contain LSTSAR-specific hardcode.
 
-P7A1A3 through P7A1A9 are invalidated. Do not reuse them as a base.
-
-Key causes:
-
-```text
-regex scanner noise
-false OK with CLASSES=0
-bad implements injection
-invalid generated interface names
-broad interface deletion
-rejected administrative contract paths
-```
+The OPUS ACL currently exposed in this patch is a policy contract and config-backed adapter. Mature ACL behavior from ASAP may be adapted later behind the OPUS interface; do not replace framework contracts with project-specific hardcode.
 
 ## Next milestone
 
 ```text
-P7A1E_WEB_PROFILER_HTTP_SMOKE_AND_UI_POLISH
+P7_LSTSAR_CONTRACT_CORE
 ```
 
 Target:
 
 ```text
-HTTP smoke of profiler index
-HTTP smoke of one profiler trace
-real runtime trace creation
-collector menu visible
-timeline visible
-normalized exception visible
-official professional UI polish
-no raw page and no HTML outside .score
+Opus\Lstsar\LstsarPipelineInterface
+Opus\Lstsar\LstsarJobInterface
+Opus\Lstsar\LstsarReportInterface
+Load / Secure / Transform / Store / Audit / Report contracts
+LSTSAR endpoints implementing ApiEndpointInterface
+No LSTSAR hardcode inside REST core
+Reuse REST Security Core contracts
+```
+
+Secondary follow-up:
+
+```text
+Profiler i18n fr/en/es for dev toolbar and profiler page.
 ```
 
 ## Repository write policy
