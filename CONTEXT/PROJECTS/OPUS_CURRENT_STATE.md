@@ -1,116 +1,148 @@
 # OPUS CURRENT STATE
 
-Last updated: 2026-06-28.
+Last updated: 2026-06-29.
 
 ## Repository
 
 - Local repo: H:/OPUS
 - Remote: philstephibanez-wq/OPUS
 - Branch: master
-- Last pushed commit: c402bd9
-- Commit message: P7 repair ACL with ASAP-compatible engine
+- Latest functional OPUS code commit: e12b1dd
+- Latest OPUS workspace-status-only commit in OPUS repo: 506280f
+- Latest validated tag: OPUS_P7_ODBC_EXPLORER_CONTRACT_CORE
 
 ## Current validated milestone
 
-P7B4 / P7_ACL_ASAP_COMPAT_REPAIR is smoke-validated and pushed.
+`P7_ODBC_EXPLORER_CONTRACT_CORE` is smoke-validated, pushed and tagged in OPUS.
 
-Full ASAP ACL parity is not certified yet. Next required milestone is P7_ACL_ASAP_PARITY_AUDIT.
+Correction: OPUS is a sub-project of MAESTRO_WORKSPACE. OPUS is not the workspace.
 
 ## ScoreTemplate ownership
 
-ScoreTemplate and .score belong to OPUS.
+ScoreTemplate and `.score` belong to OPUS.
 
 Do not describe ScoreTemplate as an ASAP component in the current architecture.
 
-Historical wording such as ASAP ScoreTemplate Engine or ASAP View ScoreTemplate is obsolete for the OPUS line.
+## Database and Model state
 
-Correct rule:
+OPUS database-facing architecture is ODBC-only.
 
-- owner: OPUS;
-- rendering layer: OPUS view layer;
-- extension: .score;
-- ASAP role: historical context only.
+Validated base:
 
-## Important ACL correction
+- `Opus\Database\Odbc\OdbcDataSourceConfig`
+- `Opus\Database\Odbc\OdbcColumn`
+- `Opus\Database\Odbc\OdbcConnectionInterface`
+- `Opus\Database\Odbc\NativeOdbcConnection`
+- `Opus\Database\Odbc\OdbcTableInspector`
+- `Opus\Model\ModelField`
+- `Opus\Model\TableModel`
+- `Opus\Model\ModelRecord`
+- `Opus\Model\Adapter\OdbcModelAdapter`
 
-P7B4 repairs the earlier ACL regression by smoke tests.
+Runtime evidence:
 
-The earlier ACL gate was too small for OPUS because OPUS must evolve ASAP, not degrade it.
+- PHP `odbc`: enabled.
+- PHP `PDO_ODBC`: enabled.
+- Active local PHP: `H:/UwAmp/bin/php/php-8.5.6/php.exe`.
+- Active PHP architecture: x86 / 32-bit.
+- Local ODBC work must use 32-bit drivers while this PHP remains x86.
 
-P7B4 keeps AclPolicyInterface stable and adds an ASAP-inspired engine behind ConfigAclPolicy. A full parity audit remains required.
+Rules:
 
-## ACL capabilities smoke-covered
+- all database-facing OPUS classes must use `Opus\Database\Odbc`;
+- OPUS must not add official direct MySQL, PostgreSQL, SQLite, PDO-specific or mysqli-facing database classes outside the ODBC boundary;
+- `Opus\Model` is the official representation layer for ODBC tables, rows, fields, types, lengths, nullability and metadata.
 
-- default deny
-- roles
-- role inheritance
-- resources
-- resource inheritance
-- privileges
-- allow and deny rules
-- all roles, all resources and all privileges
-- conditional assertions
-- explicit decision trace
-- no silent fallback
+## LSTSAR state
 
-## Current architecture state
+Validated so far:
 
-OPUS now has:
+- `P7_LSTSAR_CONTRACT_CORE`
+- `P7_LSTSAR_API_INTEGRATION_CORE`
 
-- generic REST API core;
-- OPUS identity and ACL contracts;
-- ACL smoke repair after the earlier regression;
-- LSTSAR contract namespace;
-- LSTSAR contract discovery endpoints;
-- LSTSAR engine skeleton objects;
-- OPUS-owned ScoreTemplate / .score rule.
+Correction: the current array/schema LSTSAR core is not the final heterogeneous database LSTSAR architecture.
 
-## Validated endpoints
+Final target: ODBC to Model to LSTSAR to ODBC.
 
-- GET /api/v1/status
-- GET /api/v1/me
-- GET /api/v1/security/policies
-- GET /api/v1/lstsar/contracts
-- GET /api/v1/lstsar/pipelines/default
-- GET /api/v1/lstsar/engine/skeleton
+## ODBC Explorer state
+
+`P7_ODBC_EXPLORER_CONTRACT_CORE` is validated.
+
+ODBC Explorer target:
+
+- Adminer/phpMyAdmin-like OPUS database administration surface;
+- ODBC + Model + LSTSAR integration;
+- drivers and DSN;
+- connection tests;
+- catalogs, schemas and tables;
+- column inspection;
+- row preview;
+- SQL console;
+- import/export;
+- guarded CRUD;
+- guarded DDL/schema builder;
+- TableModel generation;
+- LSTSAR draft generation.
+
+ODBC Explorer must become a true OPUS site/application:
+
+- OPUS routes;
+- controllers;
+- ScoreTemplate `.score` templates;
+- I18N;
+- SSO/ACL;
+- diagnostics;
+- profiler;
+- logs;
+- navigation;
+- admin/dev-only access.
+
+## Validated milestones
+
+- `P7_SCORETEMPLATE_CONTRACT_FINAL`
+- `P7_API_REST_SSO_SECURITY_CORE`
+- `P7_LSTSAR_CONTRACT_CORE`
+- `P7_LSTSAR_API_INTEGRATION_CORE`
+- `P7_MODEL_DATASOURCE_ODBC_CORE`
+- `P7_ODBC_EXPLORER_CONTRACT_CORE`
 
 ## Validation evidence
 
-P7B4 validation passed:
+Recent validations passed:
 
-- PHP lint OK for ConfigAclPolicy and AsapCompat classes.
-- JSON OK on config/security/acl.json.
-- Composer autoload OK.
-- ACL smoke matrix OK.
-- REST smoke OK.
-- Temporary profiler smoke data cleaned.
-- OPUS commit and push OK.
-- Final local status observed: `## master...origin/master`.
+- `P7_ODBC_EXPLORER_CONTRACT_CORE_SMOKE_OK`
+- `P7_MODEL_DATASOURCE_ODBC_CORE_SMOKE_OK`
+- `P7_LSTSAR_API_INTEGRATION_CORE_SMOKE_OK`
+- `P7_LSTSAR_CONTRACT_CORE_SMOKE_OK`
+
+Final local OPUS status observed after tag: `## master...origin/master`.
 
 ## Next milestone
 
-P7_ACL_ASAP_PARITY_AUDIT.
+`P7_ODBC_EXPLORER_READONLY_CORE`.
 
 Expected scope:
 
-- read ASAP_PHP_DEMO ACL source;
-- map ASAP ACL public API and behavior;
-- compare OPUS P7B4 ACL behavior against ASAP;
-- add missing parity smoke/tests;
-- fix OPUS ACL only after explicit audit matrix;
-- then resume P7_LSTSAR_CONTRACT_VALIDATION_CORE.
+- driver/DSN inventory where available;
+- connection test;
+- table listing;
+- column inspection;
+- preview rows;
+- TableModel generation;
+- LSTSAR draft generation.
 
-## Later milestone
+## Later milestones
 
-P7_LSTSAR_CONTRACT_VALIDATION_CORE.
+1. `P7_ODBC_EXPLORER_SITE_APP_CORE`.
+2. `P7_ODBC_EXPLORER_CRUD_CORE`.
+3. `P7_ODBC_SCHEMA_BUILDER_CORE`.
+4. `P7_LSTSAR_MODEL_DRIVEN_ODBC_CORE`.
 
 ## Active continuation rule
 
 Before any new OPUS patch, read:
 
 - CONTEXT/HANDOFFS/CURRENT_HANDOFF.md
-- CONTEXT/DECISIONS/DECISION_20260628_OPUS_SCORETEMPLATE_OWNERSHIP.md
-- CONTEXT/HANDOFFS/P7B4_20260628_OPUS_ACL_ASAP_COMPAT_REPAIR.md
-- CONTEXT/HANDOFFS/P7B3_20260628_OPUS_LSTSAR_CONTRACT_ENGINE_SKELETON.md
-- CONTEXT/HANDOFFS/P7B2_20260628_OPUS_LSTSAR_CONTRACT_CORE.md
-- CONTEXT/HANDOFFS/P7B1_20260628_OPUS_REST_SSO_SECURITY_CORE.md
+- CONTEXT/DECISIONS/DECISION_20260629_OPUS_ODBC_ONLY_MODEL_EXPLORER_SITE.md
+- CONTEXT/HANDOFFS/P7C1_20260629_OPUS_ODBC_MODEL_EXPLORER.md
+- CONTEXT/PROJECTS/PROJECT_INDEX.md
