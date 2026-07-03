@@ -8,6 +8,14 @@ Ce contrat est obligatoire pour tous les sites OPUS presents et futurs.
 
 Aucun site OPUS ne doit utiliser une structure specifique improvisee.
 
+## Regle de racine site
+
+Le nom du site est toujours le repertoire parent de `application`, `config` et `www`.
+
+Structure interdite : `application/<site>/...`
+
+Structure obligatoire : `sites/<site>/application/...`
+
 ## Structure canonique
 
 sites/<site>/
@@ -41,6 +49,7 @@ sites/<site>/
 
 ## Regles
 
+- Le nom du site est en amont de `application`.
 - Le repertoire applicatif s'appelle application, pas src.
 - Le repertoire web public s'appelle www, pas public.
 - Les assets publics vont dans www/asset.
