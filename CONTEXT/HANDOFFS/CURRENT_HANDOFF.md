@@ -4,60 +4,53 @@
 
 Canonical resume card for a fresh chat.
 
-## Active handoff
-
-Read first: `CONTEXT/HANDOFFS/OWASYS_20260716_DELIVERY_CLOSURE.md`.
-
 ## Active priority
 
 Finish OWASYS as a portable OPUS deliverable for OPUS users.
 
 Immediate path:
 
-1. expose secure Git stage/commit actions in the Source & Git screen;
-2. keep Git scope limited to the selected application;
-3. do not add free-form commands, pull, push, reset or branch mutation yet;
-4. finish UI/HTTP coverage and remove remaining essential placeholders;
-5. run the final functional and visual delivery recipe.
+1. complete real HTTP/runtime coverage for Source & Git;
+2. verify authenticated file listing, reading, preview and guarded writes;
+3. keep Git staging and commit limited to the selected application;
+4. do not add pull, push, reset, branch mutation or free-form commands;
+5. remove remaining essential placeholders and run the final functional/visual recipe.
 
 ## Source of truth
 
 - OPUS repository: `philstephibanez-wq/OPUS`
 - OPUS branch: `master`
-- Latest locally validated OPUS commit: `1c948b186e975d0319237849cc6ea730c9dede3f`
+- Latest locally validated OPUS commit: `cb2971f6abe3221a91a327fadbbd74366f641a3a`
 - Workspace repository: `philstephibanez-wq/MAESTRO_WORKSPACE`
 - Owner development root: `H:/OPUS` only as a local detail
 
 ## Validated OWASYS state
 
-The following paths are implemented and locally green:
+Locally green:
 
-- portable distribution contract;
+- portable Windows/Linux distribution contract;
 - Build preview, generation, validation and ZIP export;
-- Source state, authenticated endpoint and visual editor;
-- editable file tree, secure read, diff preview and atomic save;
+- Source route/state and authenticated endpoint;
+- visual file tree and source editor;
+- diff preview before mutation;
 - SHA-256 optimistic locking;
 - PHP and JSON validation;
+- atomic file replacement;
 - Git repository status, branch, HEAD, history and diff;
-- application-scoped Git staging and commit through `RepositoryOperator`;
+- application-scoped Git staging and commit;
 - mandatory generated profiler in development and unavailable in production;
 - 25 locale catalogs;
 - global suite ending with `OPUS_SMOKE_ALL_OK`.
 
 Validated markers include:
 
-- `OWASYS_BUILD_UI_SMOKE_OK`
-- `OWASYS_SOURCE_GIT_CORE_SMOKE_OK`
-- `OWASYS_SOURCE_UI_SMOKE_OK`
 - `OWASYS_SOURCE_EDITOR_UI_SMOKE_OK`
 - `OWASYS_REPOSITORY_OPERATOR_SMOKE_OK`
+- `OWASYS_SOURCE_GIT_WRITE_UI_SMOKE_OK`
 - `OPUS_VALIDATE_SITE_OK: owasys`
 - `OPUS_SMOKE_ALL_OK`
 
-Separate HTTP smokes remain listed by the runner:
-
-- `OWASYS_STRUCTURE_DRAFT_APPLY_UI_HTTP_SMOKE_SEPARATE`
-- `OWASYS_RUNTIME_FSM_HTTP_SMOKE_SEPARATE`
+HTTP smokes currently remain separate from the non-server global runner.
 
 ## Source & Git security contract
 
