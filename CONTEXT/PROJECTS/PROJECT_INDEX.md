@@ -1,101 +1,67 @@
 # Project Index — MAESTRO WORKSPACE
 
-Ce fichier donne une lecture immédiate des sous-projets du workspace.
-
-## Règles permanentes
+## Permanent rules
 
 NO CONTRACT, NO PATCH.
 NO DOC CONTRACT, NO PATCH.
 NO SOURCE OF TRUTH, NO PATCH.
 NO BRICOLAGE DELIVERY.
 WORKSPACE HANDOFF UPDATED AT EVERY STATE CHANGE.
-ASAP BEHAVIOR MUST BE EVOLVED, NOT DEGRADED.
 SCORETEMPLATE BELONGS TO OPUS, NOT ASAP.
 
 ## OPUS
 
-- Rôle : framework PHP principal.
-- Dépôt cible : `philstephibanez-wq/OPUS`.
-- Branche : `master`.
-- Dernier commit OPUS validé enregistré : `25ed28df48d97d6c99a1e2990d739fc4e104cc4d`.
-- Priorité active : terminer OWASYS.
-- ScoreTemplate : composant OPUS, extension `.score`.
-- REST : brique générique OPUS.
-- Accès BDD officiel : ODBC.
-- `Opus\Model` : représentation officielle des tables, lignes, champs, types, tailles et métadonnées ODBC.
+- Framework PHP principal.
+- Repository: `philstephibanez-wq/OPUS`.
+- Branch: `master`.
+- Latest locally validated commit: `1c948b186e975d0319237849cc6ea730c9dede3f`.
+- Database access: ODBC-only.
+- `Opus\Model`: official representation layer.
 
 ## OWASYS
 
-- Rôle : livrable OPUS destiné aux utilisateurs d’OPUS.
-- Source : dépôt OPUS, sous `sites/owasys` et `Opus/Owasys`.
-- Portabilité : environnements OPUS Windows et Linux supportés.
-- Interdiction : aucune dépendance contractuelle à `H:/OPUS`, UwAmp, un PC HP ou un serveur particulier.
-- Séparation dev/prod : basée sur `OPUS_ENV`, pas sur la machine.
-- Contrat de distribution : `OWASYS_DISTRIBUTION_V1`.
-- Architecture : state-first, sans racines générées `src`, `public` ou `resources`.
-- Profiler : obligatoire dans chaque application générée, disponible seulement en dev/local/development et indisponible en production.
-- Build pipeline/UI : validés, avec preview/build/build-and-export.
-- Source + Git core : validé, inspection Git en lecture seule et édition applicative sécurisée.
-- Sécurité éditeur : chemins limités, traversal/secrets refusés, preview sans mutation, verrou SHA-256, validation PHP/JSON, écriture atomique.
-- État : moteurs et recette globale verts.
-- Prochain travail exact : écran Source OWASYS avec arbre, éditeur, aperçu diff, sauvegarde contrôlée et statut Git en lecture seule.
-- Handoff : `CONTEXT/HANDOFFS/OWASYS_20260716_DELIVERY_CLOSURE.md`.
+- Portable OPUS deliverable for OPUS users on supported Windows/Linux environments.
+- Distribution contract: `OWASYS_DISTRIBUTION_V1`.
+- Dev/prod based on `OPUS_ENV`.
+- Build pipeline and UI validated.
+- Source state, endpoint and visual editor validated.
+- Git inspection validated.
+- Application-scoped Git staging and commit validated through `RepositoryOperator`.
+- No arbitrary Git command, pull, push, reset or branch mutation.
+- Next exact work: add visual staging/commit controls, staged-file display and UI smoke.
 
 ## OPUS Demo
 
-- Rôle : démonstration officielle générée par OWASYS.
-- État : à générer après fermeture d’OWASYS.
+Official demonstration to generate through OWASYS after closure.
 
-## OPUS User Book
+## User Book
 
-- Rôle : documentation utilisateur d’OPUS et d’OWASYS.
-- État : à produire après la démo.
+After the demo.
 
-## OPUS Reference Book
+## Reference Book
 
-- Rôle : documentation technique officielle OPUS.
-- Cible : package/site optionnel officiel livré avec OPUS.
-- Rendu : ScoreTemplate `.score` OPUS.
-- État : à produire après le User Book.
+After the User Book; official OPUS technical documentation rendered with ScoreTemplate `.score`.
 
 ## LSTSAR
 
-- Rôle : Load / Secure / Transform / Store / Audit / Restore.
-- Priorité : après OWASYS, Demo, User Book et Reference Book.
-- Cible finale : Model-driven + ODBC-driven.
-- Validation : source reçue et cible transformée contrôlées séparément.
-- Contraintes : type, `min_length`, `max_length`, `exact_length`, `max_bytes`, précision et échelle numériques.
+Load / Secure / Transform / Store / Audit / Restore. After OWASYS and documentation. Model-driven + ODBC-driven, with independent source and transformed-target validation.
 
 ## KB
 
-- Rôle : connaissance musicale et services associés.
-- Priorité : reprise après finalisation LSTSAR.
+Resume after LSTSAR.
 
 ## LOGANDPLAY
 
-- Rôle : identité publique et carte d’entrée `logandplay.org`.
-- Dépôt source actuel : `philstephibanez-wq/OPUS`.
+Public identity and `logandplay.org` entry map; contractual alignment pending.
 
 ## MAESTRO_WORKSPACE
 
-- Rôle : contexte global, décisions, handoffs et contrats transverses.
-- Règle : documenter et cadrer, sans remplacer les dépôts sources.
-- Correction importante : OPUS fait partie du workspace ; OPUS n’est pas le workspace.
+Global context, decisions and handoffs. OPUS is a sub-project; OPUS is not the workspace.
 
-## Priorité de reprise
+## Resume order
 
-1. Lire `CONTEXT/HANDOFFS/CURRENT_HANDOFF.md`.
-2. Lire `CONTEXT/HANDOFFS/OWASYS_20260716_DELIVERY_CLOSURE.md`.
-3. Implémenter l’écran Source sur le core validé.
-4. Terminer les autres écrans essentiels et la recette finale OWASYS.
-5. Générer la démo officielle.
-6. Produire User Book puis Reference Book.
-7. Finaliser LSTSAR.
-8. Revenir à KB.
-
-## Contrats associés
-
-- `CONTEXT/HANDOFFS/CURRENT_HANDOFF.md`
-- `CONTEXT/HANDOFFS/OWASYS_20260716_DELIVERY_CLOSURE.md`
-- `CONTEXT/PROJECTS/OPUS_CURRENT_STATE.md`
-- Les décisions ODBC/Model/LSTSAR restent applicables lors de la reprise de ce chantier.
+1. `CONTEXT/HANDOFFS/CURRENT_HANDOFF.md`
+2. `CONTEXT/HANDOFFS/OWASYS_20260716_DELIVERY_CLOSURE.md`
+3. Add Source & Git visual stage/commit workflow.
+4. Finish OWASYS closure recipe.
+5. Demo, User Book, Reference Book, LSTSAR, KB.
