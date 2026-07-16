@@ -12,14 +12,13 @@ Complete the final human browser acceptance of OWASYS, then declare delivery and
 
 - OPUS repository: `philstephibanez-wq/OPUS`
 - OPUS branch: `master`
-- Latest owner-validated OPUS commit before acceptance-contract addition: `5104168da5a845ce80baaf5a9ec1ab57a67bb449`
-- Latest OPUS commit containing the acceptance contract and smoke: `745f64787123e48ca413511f6314c92b5dc868a9`
+- Latest owner-validated OPUS commit: `745f64787123e48ca413511f6314c92b5dc868a9`
 - Workspace repository: `philstephibanez-wq/MAESTRO_WORKSPACE`
 - `H:/OPUS` is an owner development detail only
 
 ## OWASYS acceptance status
 
-All known automated technical and HTTP recipes are green.
+All known automated technical, UI-contract and HTTP recipes are green at OPUS commit `745f64787123e48ca413511f6314c92b5dc868a9`.
 
 Versioned closure contract:
 
@@ -32,6 +31,7 @@ OWASYS must not be declared delivered until the owner completes the browser reci
 
 ## Confirmed automated markers
 
+- `OWASYS_DELIVERY_ACCEPTANCE_SMOKE_OK`
 - `OPUS_SMOKE_ALL_OK`
 - `OWASYS_STRUCTURE_DRAFT_APPLY_UI_HTTP_SMOKE_OK`
 - `OWASYS_RUNTIME_FSM_HTTP_SMOKE_OK`
@@ -40,6 +40,7 @@ OWASYS must not be declared delivered until the owner completes the browser reci
 - `OWASYS_SOURCE_GIT_WRITE_UI_SMOKE_OK`
 - `OWASYS_REPOSITORY_OPERATOR_SMOKE_OK`
 - `OPUS_VALIDATE_SITE_OK: owasys`
+- `OPUS_VALIDATE_SITE_OK: demo-app`
 
 ## Final browser recipe
 
