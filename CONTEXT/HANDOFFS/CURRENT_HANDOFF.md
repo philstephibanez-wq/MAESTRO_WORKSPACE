@@ -16,19 +16,20 @@ Finish OWASYS as a portable OPUS deliverable for OPUS users.
 
 Immediate path:
 
-1. wire the OWASYS Build screen to the validated `BuildPipeline`;
-2. complete create -> preview -> generate -> validate -> export from the UI;
-3. add/finish UI and HTTP smoke coverage;
-4. remove placeholder-only behavior from essential screens;
-5. run final functional and visual delivery recipe.
+1. expose the validated Source + Git core through an OWASYS Source screen;
+2. provide file tree, secure read, edit, diff preview and controlled save;
+3. show Git repository state, branch, HEAD, changes and recent history in read-only mode;
+4. complete UI and HTTP smoke coverage;
+5. remove remaining placeholder-only behavior from essential screens;
+6. run final functional and visual delivery recipe.
 
-Do not divert into new peripheral framework work before OWASYS closure.
+Do not divert into peripheral framework work before OWASYS closure.
 
 ## Current source of truth
 
 - OPUS code and OPUS-owned sites: `philstephibanez-wq/OPUS`
 - OPUS branch: `master`
-- Latest validated OPUS commit recorded here: `4082f3c3ff57c57b560c371b2b01ff1b728cffc2`
+- Latest locally validated OPUS commit recorded here: `25ed28df48d97d6c99a1e2990d739fc4e104cc4d`
 - Workspace context: `philstephibanez-wq/MAESTRO_WORKSPACE`
 
 Current local development root used by the owner: `H:/OPUS`. This is not a distribution requirement.
@@ -39,15 +40,54 @@ OWASYS is a user-facing OPUS deliverable, portable across supported Windows and 
 
 - no hard dependency on `H:/OPUS`, UwAmp, one HP computer, or one Linux server;
 - runtime installation root resolution;
-- dev/prod determined by `OPUS_ENV`, not by machine identity;
+- dev/prod determined by `OPUS_ENV`, not machine identity;
 - state-first OPUS architecture;
 - no generated `src`, `public`, or `resources` roots.
 
 Distribution contract: `sites/owasys/config/distribution.json` (`OWASYS_DISTRIBUTION_V1`).
 
+## Build path state
+
+The OWASYS Build screen is now wired to the validated `BuildPipeline`.
+
+Available modes:
+
+- `preview`
+- `build`
+- `build-and-export`
+
+Validated markers include:
+
+- `OWASYS_BUILD_PIPELINE_SMOKE_OK`
+- `OWASYS_BUILD_UI_SMOKE_OK`
+
+## Source + Git core state
+
+Validated services:
+
+- `Opus/Owasys/RepositoryInspector.php`
+- `Opus/Owasys/ApplicationFileEditor.php`
+
+Current contract:
+
+- Git inspection is read-only;
+- no free-form Git command execution;
+- branch, HEAD, clean/dirty state, recent history and diff are available;
+- editable scope is restricted to `config/`, `application/` and `www/asset/` inside the selected application;
+- absolute paths, traversal, `.git`, secrets and authentication stores are rejected;
+- preview does not mutate disk;
+- SHA-256 optimistic locking prevents stale overwrites;
+- PHP and JSON are validated before atomic replacement.
+
+Validated marker:
+
+- `OWASYS_SOURCE_GIT_CORE_SMOKE_OK`
+
+The Source UI is not yet wired. This is the next exact implementation step.
+
 ## Generated profiler contract
 
-The profiler is mandatory in every OWASYS-generated application and is unavailable in production.
+The profiler is mandatory in every OWASYS-generated application and unavailable in production.
 
 - generated automatically;
 - not selectable;
@@ -58,10 +98,12 @@ The profiler is mandatory in every OWASYS-generated application and is unavailab
 
 ## Latest validation state
 
-Validated locally by the owner after pulling OPUS commit `4082f3c`:
+Locally validated by the owner after pulling OPUS commit `25ed28d`:
 
 - `OWASYS_DISTRIBUTION_PORTABILITY_SMOKE_OK`
 - `OWASYS_BUILD_PIPELINE_SMOKE_OK`
+- `OWASYS_BUILD_UI_SMOKE_OK`
+- `OWASYS_SOURCE_GIT_CORE_SMOKE_OK`
 - `OWASYS_GENERATED_PROFILER_SMOKE_OK`
 - `OWASYS_APPLICATION_CREATOR_SMOKE_OK`
 - `OWASYS_APPLICATION_EXPORTER_SMOKE_OK`
