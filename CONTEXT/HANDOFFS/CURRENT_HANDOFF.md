@@ -2,7 +2,87 @@
 
 ## Purpose
 
-Canonical resume card for a fresh chat. A new chat must be able to restart from this file without relying on hidden conversation memory.
+Canonical resume card for a fresh chat. A new chat must be able to restart without relying on hidden conversation memory.
+
+## Active handoff
+
+Read first:
+
+`CONTEXT/HANDOFFS/OWASYS_20260716_DELIVERY_CLOSURE.md`
+
+## Active priority
+
+Finish OWASYS as a portable OPUS deliverable for OPUS users.
+
+Immediate path:
+
+1. wire the OWASYS Build screen to the validated `BuildPipeline`;
+2. complete create -> preview -> generate -> validate -> export from the UI;
+3. add/finish UI and HTTP smoke coverage;
+4. remove placeholder-only behavior from essential screens;
+5. run final functional and visual delivery recipe.
+
+Do not divert into new peripheral framework work before OWASYS closure.
+
+## Current source of truth
+
+- OPUS code and OPUS-owned sites: `philstephibanez-wq/OPUS`
+- OPUS branch: `master`
+- Latest validated OPUS commit recorded here: `4082f3c3ff57c57b560c371b2b01ff1b728cffc2`
+- Workspace context: `philstephibanez-wq/MAESTRO_WORKSPACE`
+
+Current local development root used by the owner: `H:/OPUS`. This is not a distribution requirement.
+
+## OWASYS product contract
+
+OWASYS is a user-facing OPUS deliverable, portable across supported Windows and Linux environments.
+
+- no hard dependency on `H:/OPUS`, UwAmp, one HP computer, or one Linux server;
+- runtime installation root resolution;
+- dev/prod determined by `OPUS_ENV`, not by machine identity;
+- state-first OPUS architecture;
+- no generated `src`, `public`, or `resources` roots.
+
+Distribution contract: `sites/owasys/config/distribution.json` (`OWASYS_DISTRIBUTION_V1`).
+
+## Generated profiler contract
+
+The profiler is mandatory in every OWASYS-generated application and is unavailable in production.
+
+- generated automatically;
+- not selectable;
+- `profiler: false` rejected;
+- active only for `OPUS_ENV=dev`, `local`, or `development`;
+- production stays disabled even with `?profiler=1`;
+- OWASYS itself does not boot this generated profiler.
+
+## Latest validation state
+
+Validated locally by the owner after pulling OPUS commit `4082f3c`:
+
+- `OWASYS_DISTRIBUTION_PORTABILITY_SMOKE_OK`
+- `OWASYS_BUILD_PIPELINE_SMOKE_OK`
+- `OWASYS_GENERATED_PROFILER_SMOKE_OK`
+- `OWASYS_APPLICATION_CREATOR_SMOKE_OK`
+- `OWASYS_APPLICATION_EXPORTER_SMOKE_OK`
+- `OPUS_VALIDATE_SITE_OK: owasys`
+- `OPUS_SMOKE_ALL_OK`
+
+Separate HTTP smokes remain listed by the runner:
+
+- `OWASYS_STRUCTURE_DRAFT_APPLY_UI_HTTP_SMOKE_SEPARATE`
+- `OWASYS_RUNTIME_FSM_HTTP_SMOKE_SEPARATE`
+
+## Locked roadmap
+
+1. Finish OWASYS.
+2. Generate the official demo through OWASYS.
+3. Produce the User Book.
+4. Produce the Reference Book.
+5. Finalize LSTSAR.
+6. Return to KB.
+
+ODBC/Model/LSTSAR decisions remain valid but are not the immediate workstream.
 
 ## Permanent rules
 
@@ -16,83 +96,13 @@ WORKSPACE HANDOFF UPDATED AT EVERY STATE CHANGE.
 ASAP BEHAVIOR MUST BE EVOLVED, NOT DEGRADED.
 SCORETEMPLATE BELONGS TO OPUS, NOT ASAP.
 
-OPUS is a general-purpose applicative web framework. REST is a generic OPUS framework brick, not a private API for one engine.
+OPUS is a sub-project inside MAESTRO_WORKSPACE. OPUS is not the workspace.
 
-Critical correction: OPUS is only one sub-project inside MAESTRO_WORKSPACE. OPUS is not the workspace.
+## Read order
 
-## Current OPUS state
-
-OPUS root: H:\OPUS
-OPUS GitHub: philstephibanez-wq/OPUS
-Workspace root: H:\MAESTRO_WORKSPACE
-Workspace repo: philstephibanez-wq/MAESTRO_WORKSPACE
-OPUS branch: master
-Latest functional OPUS code commit: e12b1dd
-Latest OPUS workspace-status-only commit in OPUS repo: 506280f
-Latest validated OPUS tag: OPUS_P7_ODBC_EXPLORER_CONTRACT_CORE
-
-## Current OPUS architecture decisions
-
-ScoreTemplate / `.score` is OPUS, not ASAP.
-
-OPUS database-facing architecture is ODBC-only.
-
-- all database-facing OPUS classes must use `Opus\Database\Odbc`;
-- no official direct MySQL/PostgreSQL/SQLite/PDO-specific/mysqli-facing OPUS database class outside the ODBC boundary;
-- `Opus\Model` is the official representation of ODBC tables, rows, fields, types, lengths, nullability and metadata;
-- ODBC Explorer is the future Adminer/phpMyAdmin-like OPUS administration surface for ODBC + Model + LSTSAR;
-- ODBC Explorer must be implemented as a real OPUS site/application with routes, controllers, ScoreTemplate views, I18N, SSO/ACL, diagnostics, profiler and logs;
-- ODBC Explorer is not a public anonymous site;
-- destructive CRUD and DDL operations require guards, dry-run where applicable, non-empty predicates, confirmation and audit-oriented design.
-
-LSTSAR final target is Model-driven + ODBC-driven. The existing array/schema LSTSAR core is not the final heterogeneous database architecture until aligned with Model + ODBC.
-
-## Read first
-
-- CONTEXT/DECISIONS/DECISION_20260629_OPUS_ODBC_ONLY_MODEL_EXPLORER_SITE.md
-- CONTEXT/HANDOFFS/P7C1_20260629_OPUS_ODBC_MODEL_EXPLORER.md
-- CONTEXT/PROJECTS/OPUS_CURRENT_STATE.md
-- CONTEXT/PROJECTS/PROJECT_INDEX.md
-
-## Latest validations already passed
-
-- `P7_SCORETEMPLATE_CONTRACT_FINAL`
-- `P7_API_REST_SSO_SECURITY_CORE`
-- `P7_LSTSAR_CONTRACT_CORE`
-- `P7_LSTSAR_API_INTEGRATION_CORE`
-- `P7_MODEL_DATASOURCE_ODBC_CORE`
-- `P7_ODBC_EXPLORER_CONTRACT_CORE`
-
-## Next milestone
-
-P7_ODBC_EXPLORER_READONLY_CORE.
-
-Target:
-
-- real read-only ODBC explorer capabilities;
-- drivers/DSN inventory where available;
-- connection test;
-- table listing;
-- column inspection;
-- row preview;
-- TableModel generation;
-- LSTSAR draft generation.
-
-## Later milestones
-
-1. P7_ODBC_EXPLORER_SITE_APP_CORE.
-2. P7_ODBC_EXPLORER_CRUD_CORE.
-3. P7_ODBC_SCHEMA_BUILDER_CORE.
-4. P7_LSTSAR_MODEL_DRIVEN_ODBC_CORE.
-
-## Repository write policy
-
-MAESTRO_WORKSPACE: assistant may write directly to GitHub for contracts, ADRs, handoffs and project context updates.
-OPUS: no direct assistant write/commit/push for code; local runners only, then user validates and commits/pushes.
-All repositories: no direct mutation outside explicitly authorized scope.
-
-## Current source-of-truth rule
-
-OPUS code and OPUS-owned sites: philstephibanez-wq/OPUS
-Workspace context: philstephibanez-wq/MAESTRO_WORKSPACE
-No direct work on removed roots: H:\OPUS_REF_BOOK, H:\LOGANDPLAY.ORG
+1. `README.md`
+2. `CONTEXT/HANDOFFS/CURRENT_HANDOFF.md`
+3. `CONTEXT/HANDOFFS/OWASYS_20260716_DELIVERY_CLOSURE.md`
+4. `CONTEXT/PROJECTS/OPUS_CURRENT_STATE.md`
+5. `CONTEXT/PROJECTS/PROJECT_INDEX.md`
+6. ODBC/LSTSAR decisions only when that later workstream resumes.
