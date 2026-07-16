@@ -6,70 +6,74 @@ Canonical resume card for a fresh chat.
 
 ## Active priority
 
-Finish OWASYS as a portable OPUS deliverable for OPUS users.
-
-Immediate path:
-
-1. execute the final browser-based functional and visual acceptance;
-2. verify login, application selection, Source & Git editing, preview, guarded save, staging and commit;
-3. confirm Build preview/build/export visually;
-4. remove any remaining essential placeholder discovered during acceptance;
-5. declare OWASYS closed only after that visual recipe is green.
+Complete the final human browser acceptance of OWASYS, then declare delivery and generate the official demo.
 
 ## Source of truth
 
 - OPUS repository: `philstephibanez-wq/OPUS`
 - OPUS branch: `master`
-- Latest locally validated OPUS commit: `5104168da5a845ce80baaf5a9ec1ab57a67bb449`
+- Latest owner-validated OPUS commit before acceptance-contract addition: `5104168da5a845ce80baaf5a9ec1ab57a67bb449`
+- Latest OPUS commit containing the acceptance contract and smoke: `745f64787123e48ca413511f6314c92b5dc868a9`
 - Workspace repository: `philstephibanez-wq/MAESTRO_WORKSPACE`
-- Owner development root: `H:/OPUS` only as a local detail
+- `H:/OPUS` is an owner development detail only
 
-## Validated OWASYS state
+## OWASYS acceptance status
 
-Locally green:
+All known automated technical and HTTP recipes are green.
 
-- portable Windows/Linux distribution contract;
-- Build preview, generation, validation and ZIP export;
-- Source route/state and authenticated endpoint;
-- visual file tree and source editor;
-- diff preview before mutation;
-- SHA-256 optimistic locking;
-- PHP and JSON validation;
-- atomic file replacement;
-- Git repository status, branch, HEAD, history and diff;
-- application-scoped Git staging and commit;
-- mandatory generated profiler in development and unavailable in production;
-- 25 locale catalogs;
-- global suite ending with `OPUS_SMOKE_ALL_OK`;
-- `OWASYS_SOURCE_HTTP_SMOKE_OK`;
-- `OWASYS_STRUCTURE_DRAFT_APPLY_UI_HTTP_SMOKE_OK`;
-- `OWASYS_RUNTIME_FSM_HTTP_SMOKE_OK`.
+Versioned closure contract:
 
-All known automated technical and HTTP recipes are green. The remaining gate is real browser acceptance.
+- `sites/owasys/config/delivery-acceptance.json`
+- contract: `OWASYS_DELIVERY_ACCEPTANCE_V1`
+- status: `technical-acceptance-complete-visual-acceptance-pending`
+- smoke: `tools/smoke_owasys_delivery_acceptance.php`
 
-## Source & Git security contract
+OWASYS must not be declared delivered until the owner completes the browser recipe and `visual_acceptance.completed` is explicitly set to `true`.
 
-- no arbitrary Git command;
-- no pull, push, reset or branch mutation at this stage;
-- stage and commit only the selected application subtree;
-- commit message required, single-line and bounded;
-- editor limited to `config/`, `application/` and `www/asset/`;
-- absolute paths, traversal, `.git`, secrets and authentication stores rejected;
-- preview before mutation;
-- atomic write and concurrency protection.
+## Confirmed automated markers
 
-## Product contract
+- `OPUS_SMOKE_ALL_OK`
+- `OWASYS_STRUCTURE_DRAFT_APPLY_UI_HTTP_SMOKE_OK`
+- `OWASYS_RUNTIME_FSM_HTTP_SMOKE_OK`
+- `OWASYS_SOURCE_HTTP_SMOKE_OK`
+- `OWASYS_SOURCE_EDITOR_UI_SMOKE_OK`
+- `OWASYS_SOURCE_GIT_WRITE_UI_SMOKE_OK`
+- `OWASYS_REPOSITORY_OPERATOR_SMOKE_OK`
+- `OPUS_VALIDATE_SITE_OK: owasys`
 
-OWASYS is a portable user-facing OPUS deliverable for supported Windows and Linux environments. It must not depend on `H:/OPUS`, UwAmp, one PC or one server. Dev/prod behavior is driven by `OPUS_ENV`.
+## Final browser recipe
+
+1. Authenticate in OWASYS.
+2. Select `demo-app`.
+3. Open Source & Git.
+4. Open an authorized file.
+5. Make a reversible edit.
+6. Preview the diff.
+7. Confirm the validated save.
+8. Prepare only application changes.
+9. Commit with a bounded single-line message.
+10. Verify HEAD and repository state.
+11. Run Build preview.
+12. Run generation and ZIP export.
+13. Inspect essential screens for layout defects and placeholders.
+
+## Security contract
+
+- no free-form Git commands;
+- no pull, push, reset or branch mutation;
+- staging and commit limited to the selected application subtree;
+- editor limited to `config/`, `application/`, `www/asset/`;
+- traversal, absolute paths, `.git`, secrets and auth stores rejected;
+- preview, validation, SHA-256 lock and atomic write required.
 
 ## Locked roadmap
 
-1. Finish OWASYS.
-2. Generate the official demo through OWASYS.
-3. Produce the User Book.
-4. Produce the Reference Book.
-5. Finalize LSTSAR.
-6. Return to KB.
+1. Finish OWASYS visual acceptance.
+2. Generate official demo through OWASYS.
+3. User Book.
+4. Reference Book.
+5. LSTSAR.
+6. KB.
 
 ## Permanent rules
 
