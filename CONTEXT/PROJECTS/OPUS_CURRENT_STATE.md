@@ -1,148 +1,138 @@
 # OPUS CURRENT STATE
 
-Last updated: 2026-06-29.
+Last updated: 2026-07-16.
 
 ## Repository
 
-- Local repo: H:/OPUS
-- Remote: philstephibanez-wq/OPUS
-- Branch: master
-- Latest functional OPUS code commit: e12b1dd
-- Latest OPUS workspace-status-only commit in OPUS repo: 506280f
-- Latest validated tag: OPUS_P7_ODBC_EXPLORER_CONTRACT_CORE
+- Local development repo currently used by the owner: `H:/OPUS`
+- Remote: `philstephibanez-wq/OPUS`
+- Branch: `master`
+- Latest validated OPUS commit recorded here: `4082f3c3ff57c57b560c371b2b01ff1b728cffc2`
 
-## Current validated milestone
+The local Windows path and UwAmp stack are development details only, not OPUS or OWASYS distribution requirements.
 
-`P7_ODBC_EXPLORER_CONTRACT_CORE` is smoke-validated, pushed and tagged in OPUS.
+## Active milestone
 
-Correction: OPUS is a sub-project of MAESTRO_WORKSPACE. OPUS is not the workspace.
+Finish OWASYS as a portable OPUS deliverable for OPUS users.
 
-## ScoreTemplate ownership
+Active handoff:
 
-ScoreTemplate and `.score` belong to OPUS.
+`CONTEXT/HANDOFFS/OWASYS_20260716_DELIVERY_CLOSURE.md`
 
-Do not describe ScoreTemplate as an ASAP component in the current architecture.
+## OWASYS validated state
 
-## Database and Model state
+Validated locally by the project owner:
 
-OPUS database-facing architecture is ODBC-only.
+- distribution portability contract;
+- state-first navigation and runtime FSM;
+- local password authentication;
+- SQLite runtime registry;
+- application inspection;
+- structure draft preparation and application;
+- application scaffold planning and writing;
+- application creation and validation;
+- mandatory generated development profiler;
+- application export;
+- build pipeline;
+- 25-locale catalog completeness and syntax;
+- global OPUS smoke suite.
 
-Validated base:
+Latest confirmed markers include:
 
-- `Opus\Database\Odbc\OdbcDataSourceConfig`
-- `Opus\Database\Odbc\OdbcColumn`
-- `Opus\Database\Odbc\OdbcConnectionInterface`
-- `Opus\Database\Odbc\NativeOdbcConnection`
-- `Opus\Database\Odbc\OdbcTableInspector`
-- `Opus\Model\ModelField`
-- `Opus\Model\TableModel`
-- `Opus\Model\ModelRecord`
-- `Opus\Model\Adapter\OdbcModelAdapter`
+- `OWASYS_DISTRIBUTION_PORTABILITY_SMOKE_OK`
+- `OWASYS_BUILD_PIPELINE_SMOKE_OK`
+- `OWASYS_GENERATED_PROFILER_SMOKE_OK`
+- `OWASYS_APPLICATION_CREATOR_SMOKE_OK`
+- `OWASYS_APPLICATION_EXPORTER_SMOKE_OK`
+- `OPUS_VALIDATE_SITE_OK: owasys`
+- `OPUS_SMOKE_ALL_OK`
 
-Runtime evidence:
+HTTP smokes still run separately from the global non-server runner:
 
-- PHP `odbc`: enabled.
-- PHP `PDO_ODBC`: enabled.
-- Active local PHP: `H:/UwAmp/bin/php/php-8.5.6/php.exe`.
-- Active PHP architecture: x86 / 32-bit.
-- Local ODBC work must use 32-bit drivers while this PHP remains x86.
+- `OWASYS_STRUCTURE_DRAFT_APPLY_UI_HTTP_SMOKE_SEPARATE`
+- `OWASYS_RUNTIME_FSM_HTTP_SMOKE_SEPARATE`
 
-Rules:
+## OWASYS distribution contract
 
-- all database-facing OPUS classes must use `Opus\Database\Odbc`;
-- OPUS must not add official direct MySQL, PostgreSQL, SQLite, PDO-specific or mysqli-facing database classes outside the ODBC boundary;
-- `Opus\Model` is the official representation layer for ODBC tables, rows, fields, types, lengths, nullability and metadata.
+OWASYS is an OPUS user deliverable.
 
-## LSTSAR state
+- Windows and Linux portability on supported OPUS environments;
+- no hardcoded dependency on one machine, one local stack, or one server;
+- installation root resolved at runtime;
+- `OPUS_ENV` defines dev/prod behavior;
+- no generated `src`, `public`, or `resources` roots;
+- canonical distribution contract: `sites/owasys/config/distribution.json`;
+- contract ID: `OWASYS_DISTRIBUTION_V1`.
 
-Validated so far:
+## Generated application profiler
 
-- `P7_LSTSAR_CONTRACT_CORE`
-- `P7_LSTSAR_API_INTEGRATION_CORE`
+Every OWASYS-generated application receives the profiler automatically.
 
-Correction: the current array/schema LSTSAR core is not the final heterogeneous database LSTSAR architecture.
+- mandatory and not selectable;
+- `profiler: false` rejected;
+- generated configuration, PHP runtime, CSS and JavaScript are required;
+- available only for `OPUS_ENV=dev`, `local`, or `development`;
+- unavailable in production even with `?profiler=1`;
+- OWASYS itself does not boot the generated application profiler.
 
-Final target: ODBC to Model to LSTSAR to ODBC.
+The current implementation is functional but should not yet be described as complete coverage of all possible collectors.
 
-## ODBC Explorer state
+## Build pipeline
 
-`P7_ODBC_EXPLORER_CONTRACT_CORE` is validated.
+`Opus/Owasys/BuildPipeline.php` is smoke-validated.
 
-ODBC Explorer target:
+Contract: `OWASYS_BUILD_PIPELINE_RESULT_V1`.
 
-- Adminer/phpMyAdmin-like OPUS database administration surface;
-- ODBC + Model + LSTSAR integration;
-- drivers and DSN;
-- connection tests;
-- catalogs, schemas and tables;
-- column inspection;
-- row preview;
-- SQL console;
-- import/export;
-- guarded CRUD;
-- guarded DDL/schema builder;
-- TableModel generation;
-- LSTSAR draft generation.
+Supported modes:
 
-ODBC Explorer must become a true OPUS site/application:
+- `preview`
+- `build`
+- `build-and-export`
 
-- OPUS routes;
-- controllers;
-- ScoreTemplate `.score` templates;
-- I18N;
-- SSO/ACL;
-- diagnostics;
-- profiler;
-- logs;
-- navigation;
-- admin/dev-only access.
+It reuses `ApplicationCreator` and `ApplicationExporter`.
 
-## Validated milestones
+## Immediate functional gap
 
-- `P7_SCORETEMPLATE_CONTRACT_FINAL`
-- `P7_API_REST_SSO_SECURITY_CORE`
-- `P7_LSTSAR_CONTRACT_CORE`
-- `P7_LSTSAR_API_INTEGRATION_CORE`
-- `P7_MODEL_DATASOURCE_ODBC_CORE`
-- `P7_ODBC_EXPLORER_CONTRACT_CORE`
+The OWASYS Build screen is still mostly descriptive and must be wired to the validated pipeline.
 
-## Validation evidence
+Next steps:
 
-Recent validations passed:
+1. connect Build UI actions to preview/build/validate/export;
+2. complete create -> preview -> generate -> validate -> export from OWASYS;
+3. finish UI/HTTP smoke coverage for that path;
+4. remove placeholder-only behavior from essential screens;
+5. run final functional and visual delivery recipe.
 
-- `P7_ODBC_EXPLORER_CONTRACT_CORE_SMOKE_OK`
-- `P7_MODEL_DATASOURCE_ODBC_CORE_SMOKE_OK`
-- `P7_LSTSAR_API_INTEGRATION_CORE_SMOKE_OK`
-- `P7_LSTSAR_CONTRACT_CORE_SMOKE_OK`
+## I18N
 
-Final local OPUS status observed after tag: `## master...origin/master`.
+Exactly 25 locale catalogs are present: the 24 official EU languages plus Ukrainian.
 
-## Next milestone
+`bg, hr, cs, da, nl, en, et, fi, fr, de, el, hu, ga, it, lv, lt, mt, pl, pt, ro, sk, sl, es, sv, uk`
 
-`P7_ODBC_EXPLORER_READONLY_CORE`.
+Catalog completeness and syntax are smoke-validated. Native professional linguistic review remains pending.
 
-Expected scope:
+## Locked roadmap
 
-- driver/DSN inventory where available;
-- connection test;
-- table listing;
-- column inspection;
-- preview rows;
-- TableModel generation;
-- LSTSAR draft generation.
+1. Finish OWASYS.
+2. Generate the official OPUS demo using OWASYS.
+3. Produce the User Book.
+4. Produce the Reference Book.
+5. Finalize LSTSAR.
+6. Return to KB work.
 
-## Later milestones
+## Retained ODBC / Model / LSTSAR decisions
 
-1. `P7_ODBC_EXPLORER_SITE_APP_CORE`.
-2. `P7_ODBC_EXPLORER_CRUD_CORE`.
-3. `P7_ODBC_SCHEMA_BUILDER_CORE`.
-4. `P7_LSTSAR_MODEL_DRIVEN_ODBC_CORE`.
+These decisions remain valid but are not the immediate active workstream.
+
+- OPUS database-facing architecture is ODBC-only.
+- `Opus\\Model` is the official representation layer for ODBC tables, rows, fields, types, sizes, nullability and metadata.
+- final heterogeneous LSTSAR target is Model-driven + ODBC-driven.
+- LSTSAR validates source and transformed target independently, including length, byte size, precision and scale constraints.
 
 ## Active continuation rule
 
 Before any new OPUS patch, read:
 
-- CONTEXT/HANDOFFS/CURRENT_HANDOFF.md
-- CONTEXT/DECISIONS/DECISION_20260629_OPUS_ODBC_ONLY_MODEL_EXPLORER_SITE.md
-- CONTEXT/HANDOFFS/P7C1_20260629_OPUS_ODBC_MODEL_EXPLORER.md
-- CONTEXT/PROJECTS/PROJECT_INDEX.md
+- `CONTEXT/HANDOFFS/CURRENT_HANDOFF.md`
+- `CONTEXT/HANDOFFS/OWASYS_20260716_DELIVERY_CLOSURE.md`
+- `CONTEXT/PROJECTS/PROJECT_INDEX.md`
