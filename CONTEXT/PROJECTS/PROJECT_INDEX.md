@@ -17,12 +17,12 @@ SCORETEMPLATE BELONGS TO OPUS, NOT ASAP.
 - Rôle : framework PHP principal.
 - Dépôt cible : `philstephibanez-wq/OPUS`.
 - Branche : `master`.
-- Dernier commit OPUS validé enregistré : `4082f3c3ff57c57b560c371b2b01ff1b728cffc2`.
+- Dernier commit OPUS validé enregistré : `25ed28df48d97d6c99a1e2990d739fc4e104cc4d`.
 - Priorité active : terminer OWASYS.
 - ScoreTemplate : composant OPUS, extension `.score`.
 - REST : brique générique OPUS.
 - Accès BDD officiel : ODBC.
-- `Opus\\Model` : représentation officielle des tables, lignes, champs, types, tailles et métadonnées ODBC.
+- `Opus\Model` : représentation officielle des tables, lignes, champs, types, tailles et métadonnées ODBC.
 
 ## OWASYS
 
@@ -34,9 +34,11 @@ SCORETEMPLATE BELONGS TO OPUS, NOT ASAP.
 - Contrat de distribution : `OWASYS_DISTRIBUTION_V1`.
 - Architecture : state-first, sans racines générées `src`, `public` ou `resources`.
 - Profiler : obligatoire dans chaque application générée, disponible seulement en dev/local/development et indisponible en production.
-- Build pipeline : `OWASYS_BUILD_PIPELINE_RESULT_V1`, modes preview/build/build-and-export.
-- État : moteur et recette globale verts ; écran Build encore à brancher au pipeline.
-- Prochain travail : rendre utilisable depuis l’UI create -> preview -> generate -> validate -> export.
+- Build pipeline/UI : validés, avec preview/build/build-and-export.
+- Source + Git core : validé, inspection Git en lecture seule et édition applicative sécurisée.
+- Sécurité éditeur : chemins limités, traversal/secrets refusés, preview sans mutation, verrou SHA-256, validation PHP/JSON, écriture atomique.
+- État : moteurs et recette globale verts.
+- Prochain travail exact : écran Source OWASYS avec arbre, éditeur, aperçu diff, sauvegarde contrôlée et statut Git en lecture seule.
 - Handoff : `CONTEXT/HANDOFFS/OWASYS_20260716_DELIVERY_CLOSURE.md`.
 
 ## OPUS Demo
@@ -84,11 +86,12 @@ SCORETEMPLATE BELONGS TO OPUS, NOT ASAP.
 
 1. Lire `CONTEXT/HANDOFFS/CURRENT_HANDOFF.md`.
 2. Lire `CONTEXT/HANDOFFS/OWASYS_20260716_DELIVERY_CLOSURE.md`.
-3. Terminer l’écran Build et le parcours complet OWASYS.
-4. Générer la démo officielle.
-5. Produire User Book puis Reference Book.
-6. Finaliser LSTSAR.
-7. Revenir à KB.
+3. Implémenter l’écran Source sur le core validé.
+4. Terminer les autres écrans essentiels et la recette finale OWASYS.
+5. Générer la démo officielle.
+6. Produire User Book puis Reference Book.
+7. Finaliser LSTSAR.
+8. Revenir à KB.
 
 ## Contrats associés
 
