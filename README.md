@@ -22,7 +22,7 @@ Aucune livraison n'est complète si le workspace/handoff n'a pas été mis à jo
 
 | Projet | Rôle | État |
 |---|---|---|
-| OWASYS | Livrable OPUS de création/inspection/génération pour les utilisateurs d’OPUS | Priorité absolue ; moteurs et recette globale verts ; écran Build à brancher au pipeline |
+| OWASYS | Livrable OPUS de création, inspection, édition et génération pour les utilisateurs d’OPUS | Priorité absolue ; Build UI et Source + Git core validés ; écran Source à brancher |
 | OPUS Demo | Démonstration officielle générée par OWASYS | À générer après fermeture OWASYS |
 | OPUS User Book | Documentation utilisateur | Après la démo |
 | OPUS Reference Book | Documentation technique officielle | Après le User Book |
@@ -39,7 +39,7 @@ Aucune livraison n'est complète si le workspace/handoff n'a pas été mis à jo
 - Workspace local : `H:/MAESTRO_WORKSPACE`
 - Workspace GitHub : `philstephibanez-wq/MAESTRO_WORKSPACE`
 - Branche OPUS : `master`
-- Dernier commit OPUS validé enregistré : `4082f3c3ff57c57b560c371b2b01ff1b728cffc2`
+- Dernier commit OPUS validé enregistré : `25ed28df48d97d6c99a1e2990d739fc4e104cc4d`
 
 Le chemin Windows, UwAmp et la machine actuelle sont des détails de développement, pas des exigences de distribution.
 
@@ -47,10 +47,12 @@ OWASYS est un livrable portable pour les utilisateurs d’OPUS : Windows/Linux s
 
 ## Validation OWASYS confirmée
 
-Après le commit OPUS `4082f3c`, les validations locales incluent :
+Après le commit OPUS `25ed28d`, les validations locales incluent :
 
 - `OWASYS_DISTRIBUTION_PORTABILITY_SMOKE_OK`
 - `OWASYS_BUILD_PIPELINE_SMOKE_OK`
+- `OWASYS_BUILD_UI_SMOKE_OK`
+- `OWASYS_SOURCE_GIT_CORE_SMOKE_OK`
 - `OWASYS_GENERATED_PROFILER_SMOKE_OK`
 - `OWASYS_APPLICATION_CREATOR_SMOKE_OK`
 - `OWASYS_APPLICATION_EXPORTER_SMOKE_OK`
@@ -59,15 +61,30 @@ Après le commit OPUS `4082f3c`, les validations locales incluent :
 
 Les smokes HTTP runtime restent exécutés séparément du runner global non serveur.
 
+## Source + Git
+
+Le premier noyau sécurisé est validé :
+
+- inspection Git en lecture seule ;
+- branche, HEAD, état propre/modifié, historique récent et diff ;
+- aucune commande Git libre ;
+- édition limitée aux fichiers applicatifs autorisés ;
+- chemins absolus, traversal, `.git`, secrets et stores d’authentification refusés ;
+- aperçu du diff sans mutation ;
+- verrou SHA-256 contre les écrasements concurrents ;
+- validation PHP/JSON ;
+- remplacement atomique.
+
+Le prochain travail exact est l’écran **Source** d’OWASYS : arbre de fichiers, édition, aperçu diff, sauvegarde contrôlée et statut Git en lecture seule.
+
 ## Priorité active
 
 Terminer OWASYS sans dérive périphérique :
 
-1. brancher l’écran Build au pipeline validé ;
-2. finaliser create -> preview -> generate -> validate -> export depuis l’interface ;
-3. compléter les smokes UI/HTTP ;
-4. retirer les comportements essentiels encore purement descriptifs ;
-5. effectuer la recette fonctionnelle et visuelle finale.
+1. brancher l’écran Source sur `RepositoryInspector` et `ApplicationFileEditor` ;
+2. compléter les smokes UI/HTTP de ce parcours ;
+3. retirer les comportements essentiels encore purement descriptifs ;
+4. effectuer la recette fonctionnelle et visuelle finale.
 
 ## Feuille de route verrouillée
 
@@ -83,6 +100,7 @@ Terminer OWASYS sans dérive périphérique :
 - OWASYS distribution : `sites/owasys/config/distribution.json` dans le dépôt OPUS, contrat `OWASYS_DISTRIBUTION_V1`.
 - Profiler généré : obligatoire dans toutes les applications OWASYS, dev/local/development uniquement, indisponible en production.
 - Build pipeline : `OWASYS_BUILD_PIPELINE_RESULT_V1`, modes `preview`, `build`, `build-and-export`.
+- Source + Git core : inspection Git read-only et édition applicative sécurisée.
 - OPUS database : ODBC-only.
 - OPUS Model : représentation officielle des tables/lignes/champs ODBC.
 - LSTSAR final : Model-driven + ODBC-driven, avec validation séparée source/cible et contraintes de tailles/longueurs.
@@ -103,7 +121,7 @@ Terminer OWASYS sans dérive périphérique :
 - OWASYS est un livrable OPUS pour les utilisateurs, pas un outil propre à une machine.
 - ScoreTemplate et `.score` : OPUS uniquement, pas ASAP.
 - OPUS REST : générique, data-driven, contractuel.
-- OPUS database : ODBC-only, via `Opus\\Database\\Odbc`.
+- OPUS database : ODBC-only, via `Opus\Database\Odbc`.
 - OPUS Model : représentation officielle des tables/lignes/champs ODBC.
 - OPUS LSTSAR final : Model-driven + ODBC-driven.
 - Pas de fallback silencieux.
