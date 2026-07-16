@@ -18,7 +18,7 @@ Lire :
 
 | Projet | État |
 |---|---|
-| OWASYS | Priorité absolue ; Build, Source editor et Git stage/commit sécurisé validés ; contrôles Git visuels à terminer |
+| OWASYS | Priorité absolue ; Build, Source editor et Git stage/commit visuel validés ; HTTP/runtime et recette visuelle finale à fermer |
 | OPUS Demo | À générer après fermeture OWASYS |
 | User Book | Après la démo |
 | Reference Book | Après le User Book |
@@ -29,7 +29,7 @@ Lire :
 
 - dépôt : `philstephibanez-wq/OPUS`
 - branche : `master`
-- dernier commit localement validé : `1c948b186e975d0319237849cc6ea730c9dede3f`
+- dernier commit localement validé : `cb2971f6abe3221a91a327fadbbd74366f641a3a`
 - environnement owner actuel : `H:/OPUS`, sans valeur contractuelle pour la distribution
 
 OWASYS est un livrable portable Windows/Linux pour les utilisateurs d'OPUS. Dev/prod dépend de `OPUS_ENV`, pas de la machine.
@@ -38,18 +38,19 @@ OWASYS est un livrable portable Windows/Linux pour les utilisateurs d'OPUS. Dev/
 
 - Build preview/build/build-and-export ;
 - génération, validation et ZIP ;
-- état Source state-first ;
+- état Source state-first et endpoint authentifié ;
 - arbre et édition sécurisée des fichiers applicatifs ;
 - aperçu diff obligatoire, validation PHP/JSON, verrou SHA-256, écriture atomique ;
 - inspection Git ;
 - staging et commit limités à l'application sélectionnée ;
+- contrôles visuels de staging et commit ;
 - aucune commande Git libre, aucun pull/push/reset/changement de branche ;
 - suite globale `OPUS_SMOKE_ALL_OK`.
 
 ## Priorité active
 
-1. ajouter dans Source & Git les contrôles visuels de staging et commit ;
-2. compléter les smokes UI/HTTP ;
+1. compléter le smoke HTTP/runtime Source & Git ;
+2. vérifier la session authentifiée et les gardes réelles ;
 3. retirer les derniers placeholders essentiels ;
 4. exécuter la recette fonctionnelle et visuelle finale.
 
