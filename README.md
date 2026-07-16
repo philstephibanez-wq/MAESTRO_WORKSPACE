@@ -18,7 +18,7 @@ Lire :
 
 | Projet | État |
 |---|---|
-| OWASYS | Priorité absolue ; Build, Source editor et Git stage/commit visuel validés ; HTTP/runtime et recette visuelle finale à fermer |
+| OWASYS | Priorité absolue ; Build, Source editor, Git stage/commit et trois parcours HTTP validés ; recette visuelle finale à exécuter |
 | OPUS Demo | À générer après fermeture OWASYS |
 | User Book | Après la démo |
 | Reference Book | Après le User Book |
@@ -29,7 +29,7 @@ Lire :
 
 - dépôt : `philstephibanez-wq/OPUS`
 - branche : `master`
-- dernier commit localement validé : `cb2971f6abe3221a91a327fadbbd74366f641a3a`
+- dernier commit localement validé : `5104168da5a845ce80baaf5a9ec1ab57a67bb449`
 - environnement owner actuel : `H:/OPUS`, sans valeur contractuelle pour la distribution
 
 OWASYS est un livrable portable Windows/Linux pour les utilisateurs d'OPUS. Dev/prod dépend de `OPUS_ENV`, pas de la machine.
@@ -44,15 +44,19 @@ OWASYS est un livrable portable Windows/Linux pour les utilisateurs d'OPUS. Dev/
 - inspection Git ;
 - staging et commit limités à l'application sélectionnée ;
 - contrôles visuels de staging et commit ;
+- `OWASYS_SOURCE_HTTP_SMOKE_OK` ;
+- `OWASYS_STRUCTURE_DRAFT_APPLY_UI_HTTP_SMOKE_OK` ;
+- `OWASYS_RUNTIME_FSM_HTTP_SMOKE_OK` ;
 - aucune commande Git libre, aucun pull/push/reset/changement de branche ;
 - suite globale `OPUS_SMOKE_ALL_OK`.
 
 ## Priorité active
 
-1. compléter le smoke HTTP/runtime Source & Git ;
-2. vérifier la session authentifiée et les gardes réelles ;
-3. retirer les derniers placeholders essentiels ;
-4. exécuter la recette fonctionnelle et visuelle finale.
+1. exécuter la recette réelle dans le navigateur ;
+2. vérifier connexion, sélection de `demo-app`, Source & Git, sauvegarde, staging et commit ;
+3. vérifier Build preview/build/export ;
+4. corriger tout défaut visuel ou placeholder essentiel ;
+5. décider la fermeture OWASYS.
 
 ## Feuille de route verrouillée
 
