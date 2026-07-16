@@ -14,7 +14,7 @@ SCORETEMPLATE BELONGS TO OPUS, NOT ASAP.
 - Framework PHP principal.
 - Repository: `philstephibanez-wq/OPUS`.
 - Branch: `master`.
-- Latest locally validated commit: `cb2971f6abe3221a91a327fadbbd74366f641a3a`.
+- Latest locally validated commit: `5104168da5a845ce80baaf5a9ec1ab57a67bb449`.
 - Database access: ODBC-only.
 - `Opus\Model`: official representation layer.
 
@@ -28,8 +28,9 @@ SCORETEMPLATE BELONGS TO OPUS, NOT ASAP.
 - Secure preview/save workflow validated.
 - Git inspection, application-scoped staging and commit validated.
 - Visual staging/commit controls validated.
+- Source, Structure draft apply and Runtime FSM HTTP smokes validated.
 - No arbitrary Git command, pull, push, reset or branch mutation.
-- Next exact work: real authenticated HTTP/runtime coverage for Source & Git, then final visual acceptance.
+- Next exact work: final real-browser functional and visual acceptance, then closure decision.
 
 ## OPUS Demo
 
@@ -63,6 +64,6 @@ Global context, decisions and handoffs. OPUS is a sub-project; OPUS is not the w
 
 1. `CONTEXT/HANDOFFS/CURRENT_HANDOFF.md`
 2. `CONTEXT/HANDOFFS/OWASYS_20260716_DELIVERY_CLOSURE.md`
-3. Complete Source & Git HTTP/runtime coverage.
-4. Finish OWASYS closure recipe.
+3. Execute final OWASYS browser acceptance.
+4. Close OWASYS or correct discovered defects.
 5. Demo, User Book, Reference Book, LSTSAR, KB.
