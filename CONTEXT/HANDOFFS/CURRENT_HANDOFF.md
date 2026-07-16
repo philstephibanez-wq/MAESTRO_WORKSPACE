@@ -10,17 +10,17 @@ Finish OWASYS as a portable OPUS deliverable for OPUS users.
 
 Immediate path:
 
-1. complete real HTTP/runtime coverage for Source & Git;
-2. verify authenticated file listing, reading, preview and guarded writes;
-3. keep Git staging and commit limited to the selected application;
-4. do not add pull, push, reset, branch mutation or free-form commands;
-5. remove remaining essential placeholders and run the final functional/visual recipe.
+1. execute the final browser-based functional and visual acceptance;
+2. verify login, application selection, Source & Git editing, preview, guarded save, staging and commit;
+3. confirm Build preview/build/export visually;
+4. remove any remaining essential placeholder discovered during acceptance;
+5. declare OWASYS closed only after that visual recipe is green.
 
 ## Source of truth
 
 - OPUS repository: `philstephibanez-wq/OPUS`
 - OPUS branch: `master`
-- Latest locally validated OPUS commit: `cb2971f6abe3221a91a327fadbbd74366f641a3a`
+- Latest locally validated OPUS commit: `5104168da5a845ce80baaf5a9ec1ab57a67bb449`
 - Workspace repository: `philstephibanez-wq/MAESTRO_WORKSPACE`
 - Owner development root: `H:/OPUS` only as a local detail
 
@@ -40,17 +40,12 @@ Locally green:
 - application-scoped Git staging and commit;
 - mandatory generated profiler in development and unavailable in production;
 - 25 locale catalogs;
-- global suite ending with `OPUS_SMOKE_ALL_OK`.
+- global suite ending with `OPUS_SMOKE_ALL_OK`;
+- `OWASYS_SOURCE_HTTP_SMOKE_OK`;
+- `OWASYS_STRUCTURE_DRAFT_APPLY_UI_HTTP_SMOKE_OK`;
+- `OWASYS_RUNTIME_FSM_HTTP_SMOKE_OK`.
 
-Validated markers include:
-
-- `OWASYS_SOURCE_EDITOR_UI_SMOKE_OK`
-- `OWASYS_REPOSITORY_OPERATOR_SMOKE_OK`
-- `OWASYS_SOURCE_GIT_WRITE_UI_SMOKE_OK`
-- `OPUS_VALIDATE_SITE_OK: owasys`
-- `OPUS_SMOKE_ALL_OK`
-
-HTTP smokes currently remain separate from the non-server global runner.
+All known automated technical and HTTP recipes are green. The remaining gate is real browser acceptance.
 
 ## Source & Git security contract
 
