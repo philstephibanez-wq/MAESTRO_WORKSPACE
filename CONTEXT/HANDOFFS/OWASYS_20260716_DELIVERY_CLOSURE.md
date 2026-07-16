@@ -1,11 +1,11 @@
 # OWASYS DELIVERY CLOSURE HANDOFF
 
-Last updated: 2026-07-16.
+Last updated: 2026-07-17.
 
 ## Source of truth
 
 - OPUS: `philstephibanez-wq/OPUS`, branch `master`
-- Latest locally validated OPUS commit: `cb2971f6abe3221a91a327fadbbd74366f641a3a`
+- Latest locally validated OPUS commit: `5104168da5a845ce80baaf5a9ec1ab57a67bb449`
 - Workspace: `philstephibanez-wq/MAESTRO_WORKSPACE`
 - `H:/OPUS` is a local development detail only
 
@@ -51,21 +51,37 @@ Security boundaries:
 - commit message required, one line, maximum 200 characters;
 - staging and commit restricted to the selected application subtree.
 
-Validated markers include:
+## Automated closure state
+
+Confirmed green:
 
 - `OWASYS_SOURCE_GIT_CORE_SMOKE_OK`
 - `OWASYS_SOURCE_UI_SMOKE_OK`
 - `OWASYS_SOURCE_EDITOR_UI_SMOKE_OK`
 - `OWASYS_REPOSITORY_OPERATOR_SMOKE_OK`
 - `OWASYS_SOURCE_GIT_WRITE_UI_SMOKE_OK`
+- `OWASYS_SOURCE_HTTP_SMOKE_OK`
+- `OWASYS_STRUCTURE_DRAFT_APPLY_UI_HTTP_SMOKE_OK`
+- `OWASYS_RUNTIME_FSM_HTTP_SMOKE_OK`
 - `OPUS_VALIDATE_SITE_OK: owasys`
 - `OPUS_SMOKE_ALL_OK`
 
 ## Current exact gap
 
-Complete HTTP/runtime coverage for Source & Git behind a real authenticated session. HTTP server smokes remain separate from the non-server global runner.
+Only the real browser-based functional and visual acceptance remains before OWASYS can be declared closed.
 
-Do not expand Git capabilities before HTTP/runtime closure and final visual acceptance.
+Required visual path:
+
+1. login;
+2. select `demo-app`;
+3. open Source & Git;
+4. read an authorized file;
+5. edit, preview and save with confirmation;
+6. stage and commit the application change;
+7. verify Build preview/build/export;
+8. inspect responsive layout and absence of essential placeholders.
+
+Do not expand Git capabilities before OWASYS closure.
 
 ## Locked roadmap
 
@@ -91,8 +107,9 @@ Catalog completeness and PHP syntax are validated; professional native linguisti
 ```cmd
 cd /d H:\OPUS
 git pull
-php tools\smoke_owasys_source_editor_ui.php
-php tools\smoke_owasys_source_git_write_ui.php
+php tools\smoke_owasys_source_http.php
+php tools\smoke_owasys_structure_draft_apply_ui_http.php
+php tools\smoke_owasys_runtime_fsm_http.php
 php tools\smoke_all_opus.php
 ```
 
