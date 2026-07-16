@@ -7,7 +7,7 @@ Last updated: 2026-07-16.
 - Local development repo currently used by the owner: `H:/OPUS`
 - Remote: `philstephibanez-wq/OPUS`
 - Branch: `master`
-- Latest validated OPUS commit recorded here: `4082f3c3ff57c57b560c371b2b01ff1b728cffc2`
+- Latest locally validated OPUS commit recorded here: `25ed28df48d97d6c99a1e2990d739fc4e104cc4d`
 
 The local Windows path and UwAmp stack are development details only, not OPUS or OWASYS distribution requirements.
 
@@ -33,7 +33,8 @@ Validated locally by the project owner:
 - application creation and validation;
 - mandatory generated development profiler;
 - application export;
-- build pipeline;
+- Build pipeline and Build UI;
+- secure Source + Git core;
 - 25-locale catalog completeness and syntax;
 - global OPUS smoke suite.
 
@@ -41,6 +42,8 @@ Latest confirmed markers include:
 
 - `OWASYS_DISTRIBUTION_PORTABILITY_SMOKE_OK`
 - `OWASYS_BUILD_PIPELINE_SMOKE_OK`
+- `OWASYS_BUILD_UI_SMOKE_OK`
+- `OWASYS_SOURCE_GIT_CORE_SMOKE_OK`
 - `OWASYS_GENERATED_PROFILER_SMOKE_OK`
 - `OWASYS_APPLICATION_CREATOR_SMOKE_OK`
 - `OWASYS_APPLICATION_EXPORTER_SMOKE_OK`
@@ -70,38 +73,61 @@ Every OWASYS-generated application receives the profiler automatically.
 
 - mandatory and not selectable;
 - `profiler: false` rejected;
-- generated configuration, PHP runtime, CSS and JavaScript are required;
+- generated configuration, PHP runtime, CSS and JavaScript required;
 - available only for `OPUS_ENV=dev`, `local`, or `development`;
 - unavailable in production even with `?profiler=1`;
 - OWASYS itself does not boot the generated application profiler.
 
-The current implementation is functional but should not yet be described as complete coverage of all possible collectors.
+The current implementation is functional but is not yet complete coverage of all possible collectors.
 
-## Build pipeline
+## Build path
 
-`Opus/Owasys/BuildPipeline.php` is smoke-validated.
+Implemented and smoke-validated:
+
+- `Opus/Owasys/BuildPipeline.php`
+- `sites/owasys/www/build-action.php`
+- Build UI injected by `sites/owasys/www/asset/js/owasys.js`
 
 Contract: `OWASYS_BUILD_PIPELINE_RESULT_V1`.
 
-Supported modes:
+Modes:
 
 - `preview`
 - `build`
 - `build-and-export`
 
-It reuses `ApplicationCreator` and `ApplicationExporter`.
+## Source + Git core
+
+Implemented and smoke-validated:
+
+- `Opus/Owasys/RepositoryInspector.php`
+- `Opus/Owasys/ApplicationFileEditor.php`
+
+Capabilities:
+
+- read-only Git inspection: repository, branch, HEAD, status, recent history and diff;
+- no free-form Git command execution;
+- editable application files restricted to `config/`, `application/` and `www/asset/`;
+- traversal, absolute paths, `.git`, secrets and auth stores rejected;
+- diff preview without mutation;
+- SHA-256 optimistic locking;
+- PHP and JSON validation;
+- atomic replacement.
 
 ## Immediate functional gap
 
-The OWASYS Build screen is still mostly descriptive and must be wired to the validated pipeline.
+The Source + Git core is not yet exposed through the OWASYS UI.
 
 Next steps:
 
-1. connect Build UI actions to preview/build/validate/export;
-2. complete create -> preview -> generate -> validate -> export from OWASYS;
-3. finish UI/HTTP smoke coverage for that path;
-4. remove placeholder-only behavior from essential screens;
-5. run final functional and visual delivery recipe.
+1. add Source route/state/view;
+2. show editable file tree for the current application;
+3. read, edit and preview diff;
+4. save with SHA-256 concurrency protection;
+5. show read-only Git status/history/diff;
+6. add UI/HTTP smoke coverage;
+7. continue removing remaining placeholder-only essential screens;
+8. run final functional and visual delivery recipe.
 
 ## I18N
 
@@ -125,7 +151,7 @@ Catalog completeness and syntax are smoke-validated. Native professional linguis
 These decisions remain valid but are not the immediate active workstream.
 
 - OPUS database-facing architecture is ODBC-only.
-- `Opus\\Model` is the official representation layer for ODBC tables, rows, fields, types, sizes, nullability and metadata.
+- `Opus\Model` is the official representation layer for ODBC tables, rows, fields, types, sizes, nullability and metadata.
 - final heterogeneous LSTSAR target is Model-driven + ODBC-driven.
 - LSTSAR validates source and transformed target independently, including length, byte size, precision and scale constraints.
 
