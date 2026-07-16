@@ -1,12 +1,12 @@
 # OPUS CURRENT STATE
 
-Last updated: 2026-07-16.
+Last updated: 2026-07-17.
 
 ## Repository
 
 - Remote: `philstephibanez-wq/OPUS`
 - Branch: `master`
-- Latest locally validated commit: `cb2971f6abe3221a91a327fadbbd74366f641a3a`
+- Latest locally validated commit: `5104168da5a845ce80baaf5a9ec1ab57a67bb449`
 - Owner local development repo: `H:/OPUS` only as a local detail
 
 ## Active milestone
@@ -29,11 +29,17 @@ Locally validated:
 - diff preview, SHA-256 lock, PHP/JSON validation and atomic save;
 - Git inspection, diff, history, application-scoped staging and commit;
 - Source Git visual controls;
+- authenticated Source HTTP smoke;
+- Structure draft apply HTTP smoke;
+- Runtime FSM HTTP smoke;
 - 25 locale catalogs;
 - global suite ending with `OPUS_SMOKE_ALL_OK`.
 
 Latest confirmed markers include:
 
+- `OWASYS_SOURCE_HTTP_SMOKE_OK`
+- `OWASYS_STRUCTURE_DRAFT_APPLY_UI_HTTP_SMOKE_OK`
+- `OWASYS_RUNTIME_FSM_HTTP_SMOKE_OK`
 - `OWASYS_SOURCE_EDITOR_UI_SMOKE_OK`
 - `OWASYS_REPOSITORY_OPERATOR_SMOKE_OK`
 - `OWASYS_SOURCE_GIT_WRITE_UI_SMOKE_OK`
@@ -54,7 +60,7 @@ Latest confirmed markers include:
 
 ## Current functional gap
 
-Add real HTTP/runtime smoke coverage for Source & Git behind an authenticated session, then complete final functional and visual acceptance. HTTP server smokes remain separate from the global non-server runner.
+All known automated technical and HTTP checks are green. The remaining gate is real browser-based functional and visual acceptance of login, application selection, Source & Git, Build and responsive layout.
 
 ## Locked roadmap
 
