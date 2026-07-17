@@ -14,6 +14,7 @@ The current OWASYS implementation contains a confirmed contract violation: too m
 
 - OPUS repository: `philstephibanez-wq/OPUS`
 - OPUS branch: `master`
+- Latest remediation-gate OPUS commit: `81b5944a4d9ed265c253dab19b6f759a85da66f8`
 - Workspace repository: `philstephibanez-wq/MAESTRO_WORKSPACE`
 - OPUS site architecture contract: `CONTEXT/PROJECTS/OPUS/OPUS_SITE_STANDARD_CONTRACT.md`
 - `H:/OPUS` is an owner development detail only
@@ -27,6 +28,15 @@ Visual acceptance is suspended.
 OWASYS must not be declared delivered, visually accepted or ready for official demo until the backend-first architecture is restored and the owner validates the resulting structure.
 
 The previous status `technical-acceptance-complete-visual-acceptance-pending` is no longer sufficient because the architecture itself has been identified as non-conforming.
+
+## Blocking architecture gate now installed
+
+- OPUS smoke: `tools/smoke_owasys_backend_first_architecture.php`
+- Contract marker: `OWASYS_BACKEND_FIRST_ARCHITECTURE_SMOKE_OK`
+- Added to `tools/smoke_all_opus.php`.
+- The global smoke is intentionally red while the current non-conforming architecture remains.
+- The gate rejects a non-minimal `www/index.php`, HTML generation in the public entry point, hard-coded locale ownership in JavaScript, DOM-owned navigation/layout, and missing server-side navigation/layout files.
+- No previous green smoke may be used to declare OWASYS compliant while this gate fails.
 
 ## Confirmed architectural defects
 
@@ -51,15 +61,14 @@ The previous status `technical-acceptance-complete-visual-acceptance-pending` is
 
 ## Exact next work
 
-1. Read `CONTEXT/PROJECTS/OPUS/OPUS_SITE_STANDARD_CONTRACT.md` before any OPUS patch.
-2. Audit every file under `sites/owasys/www` and classify it as public entry point, public asset or misplaced application code.
-3. Produce a migration map from the current files to canonical `application/default` and controller directories.
-4. Identify smokes that currently encode or approve the wrong architecture.
-5. Present the architectural diff and migration sequence before destructive moves.
-6. Migrate atomically and reversibly.
-7. Add structural smokes that reject business logic in `www/index.php` and required navigation logic in JavaScript.
-8. Validate navigation and core forms with JavaScript disabled.
-9. Resume visual acceptance only after owner validation of the backend-first structure.
+1. Audit every file under `sites/owasys/www` and classify it as public entry point, public asset or misplaced application code.
+2. Produce a migration map from the current files to canonical `application/default` and controller directories.
+3. Identify smokes that currently encode or approve the wrong architecture.
+4. Present the architectural diff and migration sequence before destructive moves.
+5. Migrate atomically and reversibly.
+6. Keep the backend-first architecture smoke red until the real structure is compliant.
+7. Validate navigation and core forms with JavaScript disabled.
+8. Resume visual acceptance only after owner validation of the backend-first structure.
 
 ## Security contract
 
