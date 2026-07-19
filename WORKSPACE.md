@@ -29,7 +29,17 @@ Cette référence contient notamment :
 
 À partir de cette référence, le seul travail autorisé est de remettre OWASYS progressivement en conformité avec des scripts modulaires correctement placés dans la structure OPUS.
 
-Rien d’autre n’est dans le périmètre.
+Rien d’autre n’est dans le périmètre, à l’exception de la restauration explicitement demandée de la page de consultation du code source avec coloration syntaxique.
+
+## Invariant absolu de comportement et de présentation
+
+La refactorisation ne doit modifier aucune fonctionnalité existante et aucune présentation existante.
+
+À chaque étape, le HTML visible, la navigation, les libellés, les formulaires, les routes, les redirections, les actions, les styles, la FSM et les données affichées doivent rester équivalents à la version validée.
+
+Toute divergence visible ou fonctionnelle bloque l’étape et impose le retour à l’état précédent.
+
+La restauration de la page de code source est un ajout fonctionnel explicitement autorisé. Elle ne doit entraîner aucune modification de la présentation des pages existantes.
 
 ## Structure cible
 
@@ -44,6 +54,53 @@ Chaque responsabilité doit être déplacée vers son emplacement canonique :
 - point d’entrée public unique : `sites/owasys/www/index.php`.
 
 Le monolithe fonctionnel reste la référence comportementale tant que chaque responsabilité n’a pas été remplacée et validée individuellement.
+
+## Inventaire de décomposition du monolithe
+
+Le monolithe actuel contient 19 responsabilités distinctes :
+
+1. contexte HTTP : méthode, chemin, montage, liens et assets ;
+2. chargement et validation de `site.json` et `routes.json` ;
+3. chargement et validation de la configuration FSM ;
+4. initialisation et gestion de session ;
+5. stockage local des utilisateurs ;
+6. authentification par mot de passe ;
+7. déconnexion ;
+8. changement obligatoire de mot de passe ;
+9. résolution de route ;
+10. chargement du ViewModel de l’état ;
+11. indexation et contexte courant de la FSM ;
+12. gestion de l’application courante ;
+13. actions Registry : sélectionner, désélectionner et créer ;
+14. garde `requires_current_app` ;
+15. construction du menu ;
+16. génération de la navigation Mermaid ;
+17. rendu partagé : shell, navigation, topbar et contexte d’application ;
+18. rendu des états particuliers : login, compte et Registry ;
+19. rendu générique des cartes, sections, contrats, actions et document HTML final.
+
+La responsabilité 1 dispose déjà d’un module préparé mais non branché. Il reste donc 18 migrations comportementales à réaliser avant suppression complète du script monolithique.
+
+Chaque responsabilité doit être migrée séparément. Cette liste ne constitue pas une autorisation de créer 19 nouveaux monolithes.
+
+## Restauration obligatoire de la page Code source
+
+OWASYS doit retrouver une page dédiée à la consultation du code source de l’application courante.
+
+Exigences minimales :
+
+- page accessible depuis la navigation OWASYS autorisée ;
+- consultation de l’arborescence des fichiers de l’application sélectionnée ;
+- ouverture d’un fichier source dans un lecteur dédié ;
+- coloration syntaxique adaptée au type de fichier ;
+- affichage fidèle du contenu sans exécution ni transformation destructive ;
+- protection stricte contre la sortie du répertoire de l’application courante ;
+- aucun accès aux secrets, fichiers runtime sensibles ou chemins non autorisés ;
+- fonctionnement sans altérer les pages ou la présentation existantes ;
+- placement modulaire sous un état OWASYS dédié, avec actions, ViewModel, template et assets correctement séparés ;
+- validation ciblée et contrôle navigateur avant activation.
+
+Cette page doit d’abord être restaurée en lecture seule. Toute fonction d’édition sera traitée ultérieurement, séparément et uniquement après validation explicite.
 
 ## Méthode obligatoire
 
@@ -71,7 +128,8 @@ Chaque étape doit porter sur une seule responsabilité et rester petite, réver
 - la FSM complète, visible et cliquable ;
 - les routes ;
 - les actions déjà disponibles ;
-- les données et contenus déjà visibles.
+- les données et contenus déjà visibles ;
+- la présentation existante, sans changement visuel non demandé.
 
 Un smoke vert ne suffit pas si le navigateur montre une régression.
 
@@ -88,7 +146,8 @@ Sont interdits :
 - toute modification simultanée de plusieurs états ;
 - toute modification du Registry, de la FSM, de l’authentification ou de la navigation sans nécessité directe et validation dédiée ;
 - toute restauration d’un runtime parallèle ;
-- toute affirmation de conformité sans validation ciblée et confirmation navigateur.
+- toute affirmation de conformité sans validation ciblée et confirmation navigateur ;
+- toute fonction d’édition du code source introduite en même temps que sa restauration en lecture seule.
 
 ## État de la remédiation incrémentale
 
