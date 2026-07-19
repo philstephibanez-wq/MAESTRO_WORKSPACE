@@ -103,12 +103,26 @@ Responsabilité couverte : normalisation de la méthode, du chemin, du point de 
 
 Cette première étape est volontairement additive : le module est présent et isolé, mais `www/index.php` n’est pas encore modifié. Aucun comportement fonctionnel de la référence n’a donc été retiré ou remplacé.
 
-Avant branchement dans `www/index.php`, les validations locales obligatoires sont :
+Validations locales obtenues :
 
-- lint du module ;
-- lint du smoke ;
-- exécution du smoke ciblé ;
-- confirmation navigateur que la version fonctionnelle reste intacte.
+- lint du module : OK ;
+- lint du smoke : OK ;
+- smoke ciblé : `OWASYS_REQUEST_CONTEXT_MODULE_SMOKE_OK` ;
+- dépôt local propre après synchronisation.
+
+### Correction de lancement local — routeur de développement
+
+Le lancement direct avec `php -S 127.0.0.1:18080 index.php` route aussi les assets CSS/JS vers `index.php` et produit une interface sans styles.
+
+Le routeur de développement canonique ajouté est :
+
+- `sites/owasys/dev-router.php`.
+
+Il sert directement les fichiers publics existants non-PHP sous `sites/owasys/www` et transmet toutes les routes applicatives à `sites/owasys/www/index.php`.
+
+Commande locale obligatoire :
+
+`php -S 127.0.0.1:18080 -t sites/owasys/www sites/owasys/dev-router.php`
 
 ## Règle de décision
 
