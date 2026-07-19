@@ -90,6 +90,26 @@ Sont interdits :
 - toute restauration d’un runtime parallèle ;
 - toute affirmation de conformité sans validation ciblée et confirmation navigateur.
 
+## État de la remédiation incrémentale
+
+### Étape 1 — contexte HTTP partagé préparé
+
+Ajouts sur la branche OWASYS :
+
+- `sites/owasys/application/default/http/request-context.php` ;
+- `tools/smoke_owasys_request_context_module.php`.
+
+Responsabilité couverte : normalisation de la méthode, du chemin, du point de montage `/owasys`, des liens et des assets.
+
+Cette première étape est volontairement additive : le module est présent et isolé, mais `www/index.php` n’est pas encore modifié. Aucun comportement fonctionnel de la référence n’a donc été retiré ou remplacé.
+
+Avant branchement dans `www/index.php`, les validations locales obligatoires sont :
+
+- lint du module ;
+- lint du smoke ;
+- exécution du smoke ciblé ;
+- confirmation navigateur que la version fonctionnelle reste intacte.
+
 ## Règle de décision
 
 En cas de doute, le comportement du commit de référence prévaut.
