@@ -101,7 +101,7 @@ Ajouts sur la branche OWASYS :
 
 Responsabilité couverte : normalisation de la méthode, du chemin, du point de montage `/owasys`, des liens et des assets.
 
-Cette première étape est volontairement additive : le module est présent et isolé, mais `www/index.php` n’est pas encore modifié. Aucun comportement fonctionnel de la référence n’a donc été retiré ou remplacé.
+Cette première étape est volontairement additive : le module est présent et isolé, mais il n’est pas encore branché dans le traitement applicatif. Aucun comportement fonctionnel de la référence n’a donc été retiré ou remplacé.
 
 Validations locales obtenues :
 
@@ -110,19 +110,17 @@ Validations locales obtenues :
 - smoke ciblé : `OWASYS_REQUEST_CONTEXT_MODULE_SMOKE_OK` ;
 - dépôt local propre après synchronisation.
 
-### Correction de lancement local — routeur de développement
+### Point d’entrée public et lancement local
 
-Le lancement direct avec `php -S 127.0.0.1:18080 index.php` route aussi les assets CSS/JS vers `index.php` et produit une interface sans styles.
+`sites/owasys/www/index.php` est l’unique point d’entrée public et le seul front controller.
 
-Le routeur de développement canonique ajouté est :
+Aucun `dev-router.php` séparé n’est autorisé.
 
-- `sites/owasys/dev-router.php`.
+Sous le serveur PHP intégré, `index.php` laisse le serveur servir directement les assets publics existants non-PHP, puis transmet les autres requêtes à l’implémentation applicative conservée dans `sites/owasys/www/application.php`.
 
-Il sert directement les fichiers publics existants non-PHP sous `sites/owasys/www` et transmet toutes les routes applicatives à `sites/owasys/www/index.php`.
+Commande locale canonique :
 
-Commande locale obligatoire :
-
-`php -S 127.0.0.1:18080 -t sites/owasys/www sites/owasys/dev-router.php`
+`php -S 127.0.0.1:18080 -t sites/owasys/www sites/owasys/www/index.php`
 
 ## Règle de décision
 
