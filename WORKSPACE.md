@@ -20,8 +20,8 @@ Dépôts concernés :
 État courant de `OPUS/master` relu le 2026-07-21 :
 
 ```text
-30fc88a89d180186d6364a0ab2ae05179b93bca3
-p117c
+af99d2037d8750b772f576dfd72f6a20f5da973b
+p117d
 ```
 
 Référence fonctionnelle et visuelle historique à préserver lors des remédiations :
@@ -29,6 +29,12 @@ Référence fonctionnelle et visuelle historique à préserver lors des remédia
 ```text
 371c3757e8e80a62a198bc44a9f1b03d42a0ddec
 branche owasys-backend-first-remediation
+```
+
+Référence historique du schéma FSM Mermaid :
+
+```text
+cc955e8f9e9c09fd30da59f9f639d1b6136bcffa
 ```
 
 Le comportement observé dans le navigateur prime sur une affirmation de conformité ou sur une validation isolée.
@@ -85,7 +91,8 @@ La FSM est la source de vérité pour :
 - les transitions ;
 - les gardes ;
 - les actions ;
-- les exigences d’authentification et de contexte applicatif.
+- les exigences d’authentification et de contexte applicatif ;
+- la projection visuelle Mermaid du workflow.
 
 Le framework dérive les modules requis depuis `states[].module`, avec repli contrôlé sur `states[].id` lorsque `module` est absent. Il vérifie ensuite l’existence de chaque répertoire `application/<module>`.
 
@@ -105,7 +112,7 @@ Sont interdits :
 - la concaténation HTML dans le contrôleur runtime ;
 - un moteur de template de secours silencieux.
 
-`application/default/templates/layout.score` assemble le header, le sélecteur de langue, le menu horizontal, le contexte utilisateur et le contenu du module. Il ne représente aucune page fonctionnelle.
+`application/default/templates/layout.score` assemble le header, le sélecteur de langue, le menu horizontal, le contexte utilisateur, le schéma FSM commun et le contenu du module. Il ne représente aucune page fonctionnelle.
 
 Le ViewModel commun doit fournir toutes les clés strictement référencées par les templates SCORE. Une clé absente constitue une erreur de contrat explicite.
 
@@ -124,6 +131,35 @@ requête/action
 ```
 
 Aucun contrôleur ne doit inventer un état cible ou contourner une transition déclarée.
+
+## Visualisation FSM Mermaid
+
+Le schéma Mermaid OWASYS est une projection de la FSM canonique, jamais une seconde définition du workflow.
+
+Règles :
+
+1. Les nœuds proviennent des états FSM visibles et autorisés par l’ACL.
+2. Les liens proviennent des routes FSM déjà construites par la navigation commune.
+3. Les arêtes proviennent exclusivement des transitions portant `visual: true`.
+4. `visual_from` peut préciser la source d’affichage d’une transition runtime générique `from: "*"` ; cette métadonnée n’altère pas l’exécution de la FSM.
+5. L’état courant est mis en évidence.
+6. Le contexte applicatif courant peut enrichir le libellé d’un nœud sans modifier la FSM.
+7. Le schéma est commun aux pages authentifiées, hors login et compte.
+8. Le rendu utilise le composant OPUS `MermaidDiagram` et le bundle local du framework.
+9. Aucun CDN Mermaid et aucune copie applicative de Mermaid ne sont autorisés.
+10. Mermaid est initialisé avec `securityLevel: strict`.
+11. La navigation clavier et souris est branchée après le rendu sur la table de routes ACL filtrée.
+
+Implantation :
+
+```text
+Opus/Assets/dist/mermaid/opus-mermaid.js
+Opus/Assets/FrameworkAssetResponder.php
+sites/owasys/application/default/services/FsmMermaidBuilder.php
+sites/owasys/application/default/templates/partials/fsm-mermaid.score
+sites/owasys/www/asset/js/fsm-mermaid.js
+sites/owasys/www/asset/css/fsm-mermaid.css
+```
 
 ## SSO
 
@@ -145,7 +181,7 @@ L’ACL OPUS fonctionne en `deny-by-default` sur un couple :
 resource:action
 ```
 
-Le filtrage du menu utilise les mêmes décisions que les contrôles serveur. Masquer un lien ne remplace jamais l’autorisation serveur.
+Le filtrage du menu et du schéma Mermaid utilise les mêmes décisions que les contrôles serveur. Masquer un lien ou un nœud ne remplace jamais l’autorisation serveur.
 
 ## i18n
 
@@ -157,30 +193,28 @@ bg hr cs da nl en et fi fr de el hu ga it lv lt mt pl pt ro sk sl es sv uk
 
 Le sélecteur affiche le nom natif et le drapeau. Toutes les chaînes visibles et accessibles passent par les catalogues i18n.
 
-## État P117C relu
+## État P117D relu
 
-Le runtime courant utilise :
+P117D est appliqué sur `OPUS/master` :
 
-- ScoreTemplate pour le document et les pages fonctionnelles migrées ;
-- la FSM pour les événements, transitions, gardes et actions ;
-- `FsmActionDispatcher` pour les actions déclarées ;
-- SSO pour l’identité et le changement de mot de passe ;
-- ACL pour les accès serveur et la navigation ;
-- un ViewModel strict pour les templates SCORE.
+- `site.json.modules` ne pilote plus le runtime ;
+- les modules sont dérivés des états FSM ;
+- `default` est refusé comme module d’état ;
+- le répertoire `application/home` inutilisé a été supprimé.
 
-Le défaut P117C de clés `labels.language_selector` et `labels.none_selected_short` a été corrigé.
+## Jalon actif — P117E
 
-## Jalon actif — P117D
+Objectif : réintégrer le schéma FSM Mermaid historique dans l’architecture OPUS actuelle.
 
-Objectif : supprimer la double déclaration des modules.
-
-1. Retirer `modules` de `sites/owasys/config/site.json`.
-2. Faire dériver les modules requis de la FSM dans `Opus/Fsm/FsmSiteLoader.php`.
-3. Conserver `application/default` comme couche commune obligatoire hors des états fonctionnels.
-4. Refuser explicitement un état FSM ciblant le module `default`.
-5. Vérifier l’existence des seuls modules réellement ciblés par la FSM.
-6. Supprimer le répertoire OWASYS `application/home` puisqu’aucun état FSM ne le cible.
-7. Ne modifier ni le rendu, ni l’ACL, ni le SSO, ni les transitions fonctionnelles existantes.
+1. Générer le schéma depuis `config/owasys-navigation.fsm.json`.
+2. Conserver la FSM comme source de vérité unique.
+3. Afficher uniquement les états de navigation autorisés par l’ACL.
+4. Mettre en évidence l’état courant et le contexte applicatif.
+5. Restaurer les transitions visuelles historiques par métadonnées `visual` et `visual_from`.
+6. Rendre le schéma dans le layout commun SCORE.
+7. Utiliser exclusivement le bundle Mermaid local du framework OPUS.
+8. Préserver SSO, ACL, Registry, navigation horizontale, i18n et contrôle de mot de passe.
+9. Ne réintroduire ni monolithe, ni CDN, ni copie vendor applicative, ni HTML construit dans le contrôleur.
 
 ## Politique d’écriture GitHub
 
@@ -220,6 +254,7 @@ Doivent rester présents et fonctionnels :
 - le Registry et la sélection d’application ;
 - le contexte applicatif courant ;
 - la FSM complète ;
+- le schéma FSM Mermaid dérivé de la FSM ;
 - ACL et SSO ;
 - les routes et actions ;
 - les 25 locales avec drapeaux ;
