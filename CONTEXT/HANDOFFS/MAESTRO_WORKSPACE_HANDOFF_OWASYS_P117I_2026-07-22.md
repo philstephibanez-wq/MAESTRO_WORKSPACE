@@ -58,7 +58,23 @@ Le correctif ajoute ou remplace :
 - intégration native de `[[ i18n: ... ]]` dans `ScoreTemplateRenderer` ;
 - branchement OWASYS par locale et module FSM actifs ;
 - migration des templates communs, login, compte et registre vers la directive i18n ;
-- surcharge module réelle pour les catalogues login français et anglais.
+- surcharge module réelle pour les catalogues login français et anglais ;
+- normalisation finale des titres, résumés, libellés de navigation et actions Registry par le runtime strict avant rendu SCORE.
+
+## Adaptateur transitoire identifié
+
+`RuntimeController.php` conserve encore le chargeur historique `loadMessages()` et son callable `$translate` pour préparer certains champs du ViewModel, notamment les erreurs dynamiques.
+
+P117I ne le considère plus comme source de vérité pour :
+
+- les textes statiques des templates ;
+- les titres et résumés d’état ;
+- les libellés de navigation ;
+- les boutons de sélection Registry.
+
+Ces champs sont normalisés une seconde fois par `OwasysScorePageRenderer` avec `ApplicationTranslationRuntime`, la locale active et le module de l’état FSM actif.
+
+La suppression physique de `loadMessages()`, `viewLabels()` et des paramètres `callable $translate` du contrôleur nécessite un refactoring ciblé ultérieur du contrôleur complet. Elle ne doit pas être réalisée par remplacement partiel risqué. Les erreurs dynamiques restent temporairement préparées par l’adaptateur historique tant que leurs clés ne sont pas conservées explicitement dans le ViewModel.
 
 ## Syntaxe SCORE
 
@@ -79,13 +95,17 @@ Le rendu est échappé par défaut.
 - combinaison féminin + pluriel ;
 - substitutions `{count}` ;
 - rendu SCORE de la directive i18n ;
+- rendu des templates OWASYS communs, login, compte et Registry ;
+- normalisation stricte des titres et résumés dans `OwasysScorePageRenderer` ;
 - rejet explicite d’une clé absente ;
 - absence de Markdown, smoke et `Opus/Owasys` dans l’archive.
 
-Résultat ciblé :
+Résultats ciblés :
 
 ```text
 OPUS_P117I_I18N_ASAP_SCORE_OK
+OPUS_P117I_OWASYS_TEMPLATES_OK
+OWASYS_P117I_SCORE_PAGE_I18N_OK
 ```
 
 ## Non-régressions imposées
@@ -110,4 +130,5 @@ Après application locale, tester successivement :
 5. module possédant un catalogue local ;
 6. erreur explicite sur clé ou forme manquante ;
 7. rendu Mermaid ;
-8. état Git avant commit.
+8. état Git avant commit ;
+9. futur retrait de l’adaptateur i18n historique du contrôleur après conservation explicite des clés d’erreur dans le ViewModel.
