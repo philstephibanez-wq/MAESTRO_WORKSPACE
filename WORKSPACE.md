@@ -17,11 +17,11 @@ Dépôts :
 
 ## Source relue
 
-État de `OPUS/master` relu le 2026-07-21 :
+État de `OPUS/master` relu le 2026-07-22 :
 
 ```text
-e43955ff2a3db1056fdf2d6887432d11bae50bf1
-p117f
+6df768703f9573f5f634eca7708cfc704ff585aa
+p117h
 ```
 
 Le comportement observé dans le navigateur et les erreurs runtime priment sur toute déclaration de conformité.
@@ -148,7 +148,7 @@ Le moteur générique peut rester dans le framework s’il ne contient aucune ro
 
 L’interface ODBCExplorer ne doit pas vivre sous `Opus/`, ni être pilotée comme une application depuis `packages/opus-odbc-manager`. Le package historique est une source à auditer et à migrer, pas la cible runtime.
 
-## i18n
+## i18n — contrat ASAP restauré
 
 OWASYS expose les 24 langues officielles de l’Union européenne plus l’ukrainien :
 
@@ -156,7 +156,46 @@ OWASYS expose les 24 langues officielles de l’Union européenne plus l’ukrai
 bg hr cs da nl en et fi fr de el hu ga it lv lt mt pl pt ro sk sl es sv uk
 ```
 
-Toutes les chaînes visibles ou accessibles passent par les catalogues i18n.
+L’i18n est un moteur et non un simple tableau de libellés.
+
+Pipeline canonique :
+
+```text
+locale explicite
+  -> catalogue global application/default/local/<locale>
+  -> surcharge catalogue application/<module FSM>/local/<locale>
+  -> sélection de la clé
+  -> sélection du genre masculin/féminin/neutre
+  -> sélection plurielle selon la locale et le nombre
+  -> substitution stricte des paramètres
+  -> échappement par SCORE
+```
+
+Règles :
+
+1. aucune langue de repli implicite ;
+2. aucune clé manquante remplacée par son propre nom ;
+3. le catalogue global est obligatoire ;
+4. le catalogue du module actif surcharge le global lorsqu’il existe ;
+5. les catalogues PHP OPUS et les catalogues JSON ASAP `messages` + `plurals` sont acceptés ;
+6. les formes grammaticales combinent genre et nombre ;
+7. les formes slaves `one`, `few`, `many`, `other` sont sélectionnées par une règle de locale ;
+8. les règles couvrent toutes les locales UE déclarées par OWASYS ainsi que l’ukrainien ;
+9. une forme requise absente provoque une erreur explicite ;
+10. un paramètre de substitution absent provoque une erreur explicite ;
+11. les textes statiques des templates utilisent la directive SCORE native `[[ i18n: ... ]]` ;
+12. SCORE ne charge pas lui-même les fichiers de catalogue : il consomme un `TranslationRuntimeInterface` configuré pour l’application, la locale et le module FSM actifs.
+
+Syntaxes SCORE officielles :
+
+```score
+[[ i18n: auth.login ]]
+[[ i18n: auth.welcome name=identity.label ]]
+[[ i18n: registry.application_count count=sync.total ]]
+[[ i18n: registry.selected count=selection.total gender=selection.gender ]]
+```
+
+Le résultat de la directive i18n est échappé par défaut. Aucun équivalent i18n brut n’est autorisé dans P117I.
 
 ## Politique GitHub et ZIP
 
@@ -174,24 +213,25 @@ Le ZIP ne contient pas :
 
 Les suppressions sont données séparément sous forme de commandes `cmd` exécutables.
 
-## Jalon actif — P117H
+## Jalon actif — P117I
 
 Objectifs :
 
-1. supprimer toute dépendance runtime `Opus\Owasys` ;
-2. relocaliser le Registry dans le module applicatif `registry` ;
-3. préserver la base SQLite runtime existante ;
-4. reconnaître les contrats de site actuels lors de la découverte ;
-5. finaliser les flèches Mermaid et la navigabilité souris/clavier ;
-6. ne modifier ni la FSM fonctionnelle, ni ACL, ni SSO ;
-7. cadrer ODBCExplorer sans déplacer son moteur générique dans une application ;
-8. ne jamais recréer `Opus/Owasys`.
+1. remplacer l’i18n OPUS plate par le moteur compatible ASAP ;
+2. nettoyer et réconcilier `Opus/I18n` autour d’une seule API canonique ;
+3. charger le catalogue global puis le catalogue du module FSM actif ;
+4. gérer substitutions, genres et pluriels complexes ;
+5. intégrer `[[ i18n: ... ]]` dans le parser et l’AST SCORE ;
+6. migrer les textes statiques des templates OWASYS vers la directive i18n ;
+7. préserver FSM, ACL, SSO, Registry et Mermaid ;
+8. ne recréer aucun `Opus/Owasys` ;
+9. ne pousser aucun code OPUS/OWASYS directement.
 
 ## Garanties de non-régression
 
 Doivent rester fonctionnels :
 
-- login SSO et changement de mot de passe ;
+- login SSO et changement de mot de passe avec contrôle de visibilité ;
 - ACL serveur ;
 - Registry et sélection d’application ;
 - contexte applicatif courant ;
