@@ -1,64 +1,95 @@
 # MAESTRO WORKSPACE
 
-## OPUS / OWASYS — référence fonctionnelle obligatoire
+## OPUS / OWASYS — cadre
 
 OPUS est un framework. OWASYS est une application du framework OPUS.
 
-La version fonctionnelle validée d’OWASYS est le commit OPUS suivant :
+Dépôts concernés :
 
-`2361908b674f0dcce17023a4fc90e17dc6f72ede`
+- framework et application : `philstephibanez-wq/OPUS` ;
+- pilotage du travail : `philstephibanez-wq/MAESTRO_WORKSPACE`.
 
-La branche de travail concernée est :
+## Nouvelle référence fonctionnelle obligatoire
+
+La nouvelle version fonctionnelle et visuelle de référence d’OWASYS est le commit OPUS suivant :
+
+`371c3757e8e80a62a198bc44a9f1b03d42a0ddec`
+
+Branche correspondante :
 
 `owasys-backend-first-remediation`
 
-Toute évolution future d’OWASYS repart de cet état exact.
+Toute évolution future d’OWASYS doit préserver exactement le comportement et la présentation validés à ce commit.
 
-Cette référence contient notamment :
+Cette référence comprend notamment :
 
 - toutes les pages fonctionnelles existantes ;
-- le registre d’applications complet ;
-- `demo-app` visible et sélectionnable ;
+- le registre d’applications, dont `demo-app` ;
 - la sélection et le changement d’application ;
 - le contexte d’application courant ;
-- les menus complets autorisés ;
 - la FSM complète, visible, navigable et cliquable ;
-- les routes, actions, données et contenus fonctionnels existants.
+- la page **Code source** en lecture seule ;
+- l’arborescence des sources repliée par défaut ;
+- la coloration syntaxique CodeMirror locale ;
+- les 25 locales : 24 langues officielles de l’Union européenne plus l’ukrainien ;
+- le sélecteur de langue avec drapeaux ;
+- le header distinct de la barre de navigation horizontale ;
+- le menu horizontal complet ;
+- `sites/owasys/www/index.php` comme point d’entrée public unique.
 
-## Priorité immédiate obligatoire — restauration de la page Code source
+## Interdiction absolue de modification directe du dépôt GitHub OPUS
 
-Avant toute autre extraction, modularisation ou refactorisation du monolithe OWASYS, la page **Code source** doit être restaurée et validée.
+À compter de cette référence, ChatGPT ne doit plus effectuer aucune écriture directe dans le dépôt GitHub :
 
-Aucun autre chantier OWASYS ne doit commencer ou continuer tant que cette restauration n’est pas terminée et confirmée dans le navigateur.
+`philstephibanez-wq/OPUS`
 
-La restauration doit rétablir au minimum :
+Cette interdiction couvre notamment :
 
-- un état OWASYS `source` dédié ;
-- une entrée **Code source** dans la navigation autorisée et dans la FSM ;
-- l’arborescence des fichiers de l’application actuellement sélectionnée ;
-- l’ouverture d’un fichier autorisé ;
-- l’affichage de son contenu avec coloration syntaxique locale ;
-- la prise en charge au minimum de PHP, JavaScript, JSON, CSS, HTML, SQL, Markdown et `.score` ;
-- le confinement strict au répertoire de l’application sélectionnée ;
-- l’exclusion des secrets, fichiers runtime sensibles, dépendances et répertoires non autorisés ;
-- le respect de `www/index.php` comme unique point d’entrée public ;
-- la conservation intégrale de toutes les autres fonctionnalités et de la présentation existante.
+- création, modification ou suppression de fichier ;
+- création de commit ;
+- déplacement de branche ou de référence ;
+- création de branche ou de pull request ;
+- toute autre mutation distante du dépôt OPUS.
 
-La première restauration est en lecture seule. Les fonctions d’édition, de preview, de validation, d’écriture atomique et d’inspection Git ne peuvent être réactivées qu’après validation séparée de la page en lecture seule.
+L’accès en lecture au dépôt OPUS reste autorisé pour analyser l’existant, préparer un patch, vérifier une référence ou établir un diagnostic.
 
-Références historiques à utiliser pour restaurer le comportement perdu sans réinventer l’interface :
+Les modifications OPUS doivent désormais être fournies sous forme de patch ou de commandes locales contrôlées, puis appliquées et validées par l’utilisateur dans son dépôt local. Aucun push vers GitHub OPUS ne doit être effectué par ChatGPT.
 
-- `20f1545cbfe762b2c803e6f4535f1707469cfef4` — interface visuelle Code source ;
-- `02a459ea6537e560374dc2d7c16f62bf2ee2ff71` — chargement de la page dans l’état `source` ;
-- `d87a3f10230f2087ca30294472e1704e348293a7` — source CodeMirror 6 et coloration syntaxique ;
-- `d502c5f9aabe50f7769035ef74e2e52ac0765c15` — chargement local du bundle CodeMirror ;
-- `5ddebf4c0c6c521ff34fce839976743e773e8c79` — bundle local CodeMirror 6.
+Cette interdiction vise uniquement le dépôt GitHub OPUS. Le dépôt `MAESTRO_WORKSPACE` peut être mis à jour directement lorsque l’utilisateur le demande.
 
 ## Mandat exclusif de remédiation
 
-Après validation complète de la page Code source, le seul travail autorisé est de remettre OWASYS progressivement en conformité avec des scripts modulaires correctement placés dans la structure OPUS.
+Le seul travail autorisé sur OWASYS est la décomposition incrémentale du monolithe fonctionnel en modules correctement placés, sans aucune modification de fonctionnalité ni de présentation.
 
-Rien d’autre n’est dans le périmètre.
+Le monolithe fonctionnel reste la référence comportementale tant que chaque responsabilité n’a pas été remplacée et validée individuellement.
+
+## Responsabilités à refactorer
+
+Le monolithe OWASYS contient 19 responsabilités principales.
+
+La responsabilité **contexte HTTP partagé** dispose déjà d’un module préparé mais non branché. Il reste donc 18 migrations effectives à réaliser.
+
+1. Contexte HTTP : méthode, chemin, montage `/owasys`, liens et assets — module préparé, non branché.
+2. Chargement et validation de `site.json` et `routes.json`.
+3. Chargement et validation de la configuration FSM.
+4. Initialisation et gestion de session.
+5. Stockage runtime local des utilisateurs.
+6. Authentification par mot de passe.
+7. Déconnexion.
+8. Changement obligatoire de mot de passe.
+9. Résolution des routes.
+10. Chargement du ViewModel de l’état.
+11. Indexation de la FSM et gestion du contexte d’état courant.
+12. Gestion de l’application courante.
+13. Actions Registry : sélectionner, désélectionner et créer une application.
+14. Garde `requires_current_app`.
+15. Construction du menu et de la navigation horizontale.
+16. Génération de la navigation Mermaid.
+17. Rendu partagé : header, authentification, langue, contexte applicatif et shell.
+18. Rendu des états particuliers : login, compte et Registry.
+19. Rendu générique : cartes, sections, contrats, actions et document HTML final.
+
+La page **Code source**, son explorateur, son action de lecture confinée et ses assets constituent désormais une fonctionnalité restaurée à préserver. Ils ne doivent pas être supprimés, simplifiés ou redesignés pendant la décomposition du monolithe.
 
 ## Structure cible
 
@@ -72,75 +103,76 @@ Chaque responsabilité doit être déplacée vers son emplacement canonique :
 - assets publics : `sites/owasys/www/asset` ;
 - point d’entrée public unique : `sites/owasys/www/index.php`.
 
-Le monolithe fonctionnel reste la référence comportementale tant que chaque responsabilité n’a pas été remplacée et validée individuellement.
-
 ## Méthode obligatoire
 
-Chaque étape doit porter sur une seule responsabilité et rester petite, réversible et conservatrice :
+Chaque étape porte sur une seule responsabilité et doit rester petite, réversible et conservatrice :
 
 1. inventorier précisément le comportement existant dans la référence ;
-2. créer le nouveau module dans le bon répertoire ;
-3. brancher uniquement cette responsabilité sur le nouveau module ;
-4. conserver toutes les autres responsabilités inchangées ;
-5. valider la syntaxe ;
-6. exécuter un smoke ciblé ;
-7. vérifier le rendu et le comportement dans le navigateur ;
-8. supprimer l’ancien fragment monolithique uniquement après équivalence démontrée ;
-9. mettre à jour ce WORKSPACE MAESTRO dans le même changement.
+2. préparer le module dans le bon répertoire ;
+3. fournir un patch local, sans écrire directement dans GitHub OPUS ;
+4. appliquer localement uniquement cette responsabilité ;
+5. conserver toutes les autres responsabilités inchangées ;
+6. valider la syntaxe ;
+7. exécuter un smoke ciblé ;
+8. vérifier le rendu et le comportement dans le navigateur ;
+9. supprimer l’ancien fragment uniquement après équivalence démontrée ;
+10. mettre à jour ce WORKSPACE MAESTRO après validation.
 
 ## Garanties de non-régression
 
-À chaque étape, doivent rester présents et fonctionnels :
+À chaque étape doivent rester présents, fonctionnels et visuellement identiques à la référence :
 
 - toutes les pages ;
-- `demo-app` dans la liste ;
+- `demo-app` dans le Registry ;
 - la sélection et le changement d’application ;
 - le contexte d’application courant ;
-- le menu complet autorisé ;
+- le header séparé du menu horizontal ;
+- le menu horizontal complet ;
+- le sélecteur des 25 langues avec drapeaux ;
+- les catalogues i18n ;
+- la page Code source, son arbre replié par défaut et sa coloration CodeMirror ;
 - la FSM complète, visible et cliquable ;
-- les routes ;
-- les actions déjà disponibles ;
-- les données et contenus déjà visibles ;
+- les routes et actions ;
+- les données et contenus visibles ;
 - la présentation existante.
 
 Un smoke vert ne suffit pas si le navigateur montre une régression.
 
-## Interdictions
+## Interdictions fonctionnelles et architecturales
 
 Sont interdits :
 
+- toute écriture directe dans GitHub OPUS par ChatGPT ;
 - tout refactor sans rapport direct avec la responsabilité en cours ;
 - tout redesign visuel ;
 - toute suppression fonctionnelle ;
 - toute suppression avant remplacement validé ;
-- toute réécriture complète d’une classe partagée pour une modification locale ;
-- tout nettoyage global mélangé à une migration ;
-- toute modification simultanée de plusieurs états ;
-- toute modification du Registry, de la FSM, de l’authentification ou de la navigation sans nécessité directe et validation dédiée ;
+- toute réécriture globale pour une modification locale ;
+- tout nettoyage général mélangé à une migration ;
+- toute modification simultanée de plusieurs responsabilités ;
+- toute modification du Registry, de la FSM, de l’authentification, de l’i18n ou de la navigation sans nécessité directe et validation dédiée ;
 - toute restauration d’un runtime parallèle ;
+- tout routeur public séparé de `www/index.php` ;
 - toute affirmation de conformité sans validation ciblée et confirmation navigateur.
 
-## État de la remédiation incrémentale
+## État de la remédiation
 
-### Étape 1 — contexte HTTP partagé préparé
+### Contexte HTTP partagé préparé
 
-Ajouts sur la branche OWASYS :
+Fichiers existants :
 
 - `sites/owasys/application/default/http/request-context.php` ;
 - `tools/smoke_owasys_request_context_module.php`.
 
 Responsabilité couverte : normalisation de la méthode, du chemin, du point de montage `/owasys`, des liens et des assets.
 
-Cette première étape est volontairement additive : le module est présent et isolé, mais il n’est pas encore branché dans le traitement applicatif. Aucun comportement fonctionnel de la référence n’a donc été retiré ou remplacé.
+Le module est additif et n’est pas encore branché dans le traitement applicatif.
 
-Validations locales obtenues :
+Validation locale déjà obtenue :
 
 - lint du module : OK ;
 - lint du smoke : OK ;
-- smoke ciblé : `OWASYS_REQUEST_CONTEXT_MODULE_SMOKE_OK` ;
-- dépôt local propre après synchronisation.
-
-Cette étape reste gelée jusqu’à la restauration et à la validation de la page Code source.
+- smoke ciblé : `OWASYS_REQUEST_CONTEXT_MODULE_SMOKE_OK`.
 
 ### Point d’entrée public et lancement local
 
@@ -148,16 +180,12 @@ Cette étape reste gelée jusqu’à la restauration et à la validation de la p
 
 Aucun `dev-router.php` séparé n’est autorisé.
 
-Sous le serveur PHP intégré, `index.php` laisse le serveur servir directement les assets publics existants non-PHP, puis transmet les autres requêtes à l’implémentation applicative conservée dans `sites/owasys/www/application.php`.
-
 Commande locale canonique :
 
 `php -S 127.0.0.1:18080 -t sites/owasys/www sites/owasys/www/index.php`
 
 ## Règle de décision
 
-En cas de doute, le comportement du commit de référence prévaut.
+En cas de doute, le comportement et la présentation du commit `371c3757e8e80a62a198bc44a9f1b03d42a0ddec` prévalent.
 
-La modularisation doit reproduire le comportement existant avant de le remplacer. Elle ne doit jamais servir de prétexte à le simplifier, le réduire ou le supprimer.
-
-Rien d’autre ne doit être modifié.
+La modularisation doit reproduire l’existant avant de le remplacer. Elle ne doit jamais servir de prétexte à le simplifier, le réduire, le déplacer visuellement ou le supprimer.
