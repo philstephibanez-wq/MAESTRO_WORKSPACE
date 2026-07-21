@@ -1,191 +1,243 @@
 # MAESTRO WORKSPACE
 
-## OPUS / OWASYS — cadre
+## OPUS / OWASYS — cadre impératif
 
-OPUS est un framework. OWASYS est une application du framework OPUS.
+OPUS est un framework. OWASYS est une application autonome du framework OPUS.
+
+Direction de dépendance obligatoire :
+
+```text
+OWASYS -> OPUS Framework
+```
+
+La direction inverse est interdite. OPUS ne possède pas, ne lance pas et ne centralise pas les applications.
 
 Dépôts concernés :
 
-- framework et application : `philstephibanez-wq/OPUS` ;
-- pilotage du travail : `philstephibanez-wq/MAESTRO_WORKSPACE`.
+- code du framework et de l’application : `philstephibanez-wq/OPUS` ;
+- gouvernance, handoffs et spécifications : `philstephibanez-wq/MAESTRO_WORKSPACE`.
 
-## Nouvelle référence fonctionnelle obligatoire
+## Sources de vérité relues
 
-La nouvelle version fonctionnelle et visuelle de référence d’OWASYS est le commit OPUS suivant :
+État courant de `OPUS/master` relu le 2026-07-21 :
 
-`371c3757e8e80a62a198bc44a9f1b03d42a0ddec`
+```text
+0a6041426c0dacec57fec490fd6750510d00ded8
+step7 login password
+```
 
-Branche correspondante :
+Référence fonctionnelle et visuelle historique à préserver lors des remédiations :
 
-`owasys-backend-first-remediation`
+```text
+371c3757e8e80a62a198bc44a9f1b03d42a0ddec
+branche owasys-backend-first-remediation
+```
 
-Toute évolution future d’OWASYS doit préserver exactement le comportement et la présentation validés à ce commit.
+Le comportement observé dans le navigateur prime sur une affirmation de conformité ou sur un smoke isolé.
 
-Cette référence comprend notamment :
+## Contrat d’arborescence OPUS
 
-- toutes les pages fonctionnelles existantes ;
-- le registre d’applications, dont `demo-app` ;
-- la sélection et le changement d’application ;
-- le contexte d’application courant ;
-- la FSM complète, visible, navigable et cliquable ;
-- la page **Code source** en lecture seule ;
-- l’arborescence des sources repliée par défaut ;
-- la coloration syntaxique CodeMirror locale ;
-- les 25 locales : 24 langues officielles de l’Union européenne plus l’ukrainien ;
-- le sélecteur de langue avec drapeaux ;
-- le header distinct de la barre de navigation horizontale ;
-- le menu horizontal complet ;
-- `sites/owasys/www/index.php` comme point d’entrée public unique.
+Chaque application possède son propre arbre :
 
-## Interdiction absolue de modification directe du dépôt GitHub OPUS
+```text
+sites/<application>/
+  application/
+    default/
+    <module>/
+  config/
+  var/
+  www/
+    index.php
+```
 
-À compter de cette référence, ChatGPT ne doit plus effectuer aucune écriture directe dans le dépôt GitHub :
+Règles non négociables :
 
-`philstephibanez-wq/OPUS`
+1. `sites/<application>/www/index.php` est l’unique point d’entrée public de l’application.
+2. `OPUS/www` est interdit.
+3. `application/default` est exclusivement la couche commune héritée par toutes les pages et tous les modules.
+4. `application/default` n’est jamais une page d’accueil, un état `home` ou un module fonctionnel.
+5. Une éventuelle page d’accueil appartient à un module séparé `application/home` et à un état FSM explicite.
+6. Les modules fonctionnels sont directement sous `application/<module>`.
+7. `application/states` est interdit par le contrat du framework.
+8. Les templates applicatifs utilisent l’extension `.score` et le moteur natif OPUS ScoreTemplate.
+9. Les contrôleurs construisent des données de vue ; ils ne construisent pas le document HTML.
+10. `www` ne contient que le front controller et les ressources publiques.
 
-Cette interdiction couvre notamment :
+Frontend/backend et frontoffice/backoffice sont deux axes indépendants. Aucune déduction automatique entre ces notions n’est autorisée.
 
-- création, modification ou suppression de fichier ;
-- création de commit ;
-- déplacement de branche ou de référence ;
-- création de branche ou de pull request ;
-- toute autre mutation distante du dépôt OPUS.
+## Rendu SCORE
 
-L’accès en lecture au dépôt OPUS reste autorisé pour analyser l’existant, préparer un patch, vérifier une référence ou établir un diagnostic.
+Le rendu cible est :
 
-Les modifications OPUS doivent désormais être fournies sous forme de patch ou de commandes locales contrôlées, puis appliquées et validées par l’utilisateur dans son dépôt local. Aucun push vers GitHub OPUS ne doit être effectué par ChatGPT.
+```text
+application/default/templates/       composants communs
+application/<module>/templates/      templates fonctionnels du module
+```
 
-Cette interdiction vise uniquement le dépôt GitHub OPUS. Le dépôt `MAESTRO_WORKSPACE` peut être mis à jour directement lorsque l’utilisateur le demande.
+Sont interdits dans la cible conforme :
 
-## Mandat exclusif de remédiation
+- `application/default/views/layout.php` ;
+- les vues PHP qui produisent l’interface ;
+- la concaténation HTML dans le contrôleur runtime ;
+- un moteur de template de secours silencieux.
 
-Le seul travail autorisé sur OWASYS est la décomposition incrémentale du monolithe fonctionnel en modules correctement placés, sans aucune modification de fonctionnalité ni de présentation.
+Le fichier commun `layout.score` assemble le header, le sélecteur de langue, le menu horizontal, le contexte utilisateur et le contenu du module. Il ne représente aucune page fonctionnelle.
 
-Le monolithe fonctionnel reste la référence comportementale tant que chaque responsabilité n’a pas été remplacée et validée individuellement.
+## Pilotage FSM intégral
 
-## Responsabilités à refactorer
+Toute route et toute action utilisateur doivent être résolues en événement FSM :
 
-Le monolithe OWASYS contient 19 responsabilités principales.
+```text
+requête/action
+  -> résolution de l’événement
+  -> authentification SSO
+  -> autorisation ACL
+  -> transition FSM
+  -> exécution des actions FSM
+  -> état cible
+  -> contrôleur / ViewModel du module
+  -> template SCORE
+```
 
-La responsabilité **contexte HTTP partagé** dispose déjà d’un module préparé mais non branché. Il reste donc 18 migrations effectives à réaliser.
+Les branches de navigation codées en dur dans le contrôleur runtime sont interdites dans la cible finale.
 
-1. Contexte HTTP : méthode, chemin, montage `/owasys`, liens et assets — module préparé, non branché.
-2. Chargement et validation de `site.json` et `routes.json`.
-3. Chargement et validation de la configuration FSM.
-4. Initialisation et gestion de session.
-5. Stockage runtime local des utilisateurs.
-6. Authentification par mot de passe.
-7. Déconnexion.
-8. Changement obligatoire de mot de passe.
-9. Résolution des routes.
-10. Chargement du ViewModel de l’état.
-11. Indexation de la FSM et gestion du contexte d’état courant.
-12. Gestion de l’application courante.
-13. Actions Registry : sélectionner, désélectionner et créer une application.
-14. Garde `requires_current_app`.
-15. Construction du menu et de la navigation horizontale.
-16. Génération de la navigation Mermaid.
-17. Rendu partagé : header, authentification, langue, contexte applicatif et shell.
-18. Rendu des états particuliers : login, compte et Registry.
-19. Rendu générique : cartes, sections, contrats, actions et document HTML final.
+La FSM est la source de vérité pour :
 
-La page **Code source**, son explorateur, son action de lecture confinée et ses assets constituent désormais une fonctionnalité restaurée à préserver. Ils ne doivent pas être supprimés, simplifiés ou redesignés pendant la décomposition du monolithe.
+- l’état courant ;
+- les transitions ;
+- les gardes ;
+- les actions ;
+- les modules cibles ;
+- les besoins d’authentification et de contexte applicatif.
 
-## Structure cible
+## SSO
 
-Chaque responsabilité doit être déplacée vers son emplacement canonique :
+Toute authentification OWASYS passe par l’abstraction SSO OPUS.
 
-- actions d’état : `sites/owasys/application/states/<state>/actions` ;
-- ViewModels d’état : `sites/owasys/application/states/<state>/views` ;
-- templates d’état : `sites/owasys/application/states/<state>/templates` ;
-- services propres à un état : sous `sites/owasys/application/states/<state>` ;
-- code réellement partagé : `sites/owasys/application/default` ;
-- assets publics : `sites/owasys/www/asset` ;
-- point d’entrée public unique : `sites/owasys/www/index.php`.
+Le fournisseur `local-password` est le fournisseur local de développement. Il ne constitue pas une exception au contrat SSO.
+
+Une identité de session normalisée contient au minimum :
+
+- `subject` ;
+- `label` ;
+- `roles` ;
+- `provider` ;
+- `authenticated_at` ;
+- `must_change_password` si applicable.
+
+Aucun mot de passe ou hash n’est versionné. Le store local reste sous :
+
+```text
+sites/owasys/var/auth/local-users.json
+```
+
+## ACL
+
+L’ACL OPUS fonctionne en `deny-by-default`.
+
+Chaque accès serveur est contrôlé sur un couple :
+
+```text
+resource:action
+```
+
+Le filtrage du menu utilise les mêmes décisions ACL, mais masquer un lien ne remplace jamais le contrôle serveur.
+
+Rôles de base :
+
+- `admin` ;
+- `developer` ;
+- `viewer`.
+
+## i18n
+
+OWASYS propose les 24 langues officielles de l’Union européenne plus l’ukrainien :
+
+```text
+bg hr cs da nl en et fi fr de el hu ga it lv lt mt pl pt ro sk sl es sv uk
+```
+
+Le sélecteur unique affiche le nom natif et le drapeau. Aucun choix limité à français/anglais n’est acceptable. Toutes les chaînes visibles, y compris les libellés accessibles des contrôles de mot de passe, passent par les catalogues i18n.
+
+## État réel du step 7
+
+Le step 7 a ajouté :
+
+- les fondations `Opus/Security/Acl` ;
+- les fondations `Opus/Security/Sso` ;
+- `config/acl.json` ;
+- `config/sso.json` ;
+- les premiers templates `.score` ;
+- `OwasysScorePageRenderer` ;
+- `OwasysRuntimeSecurity`.
+
+Cependant, la conformité n’est pas encore atteinte :
+
+- le runtime live charge toujours `application/default/views/layout.php` ;
+- les pages login, compte et Registry utilisent encore des vues PHP ;
+- le contrôleur contient encore des branches spéciales par route ;
+- les services SCORE, ACL et SSO ajoutés ne sont pas encore le chemin runtime unique ;
+- l’action de changement de mot de passe n’est pas encore totalement abstraite par le fournisseur SSO ;
+- le contrôle d’affichage du mot de passe manque dans les formulaires.
+
+## Jalon actif — P117B
+
+Objectif du prochain ZIP local :
+
+1. ajouter un contrôle œil accessible sur tous les champs de mot de passe ;
+2. conserver `default` comme couche commune uniquement ;
+3. brancher réellement ScoreTemplate dans le runtime ;
+4. brancher réellement SSO et ACL ;
+5. exécuter les actions déclarées par la FSM via `FsmActionDispatcher` ;
+6. supprimer les chemins de rendu PHP seulement après équivalence démontrée ;
+7. conserver l’interface, le Registry, les 25 langues et les routes existantes.
+
+P117B n’est pas terminé tant que la recette navigateur et les contrôles serveur ne sont pas verts.
+
+## Politique d’écriture GitHub
+
+ChatGPT ne doit effectuer aucune écriture directe dans :
+
+```text
+philstephibanez-wq/OPUS
+```
+
+Les correctifs OPUS/OWASYS sont fournis sous forme de ZIP local contrôlé.
+
+Le dépôt suivant peut être mis à jour directement lorsque l’utilisateur le demande :
+
+```text
+philstephibanez-wq/MAESTRO_WORKSPACE
+```
 
 ## Méthode obligatoire
 
-Chaque étape porte sur une seule responsabilité et doit rester petite, réversible et conservatrice :
-
-1. inventorier précisément le comportement existant dans la référence ;
-2. préparer le module dans le bon répertoire ;
-3. fournir un patch local, sans écrire directement dans GitHub OPUS ;
-4. appliquer localement uniquement cette responsabilité ;
-5. conserver toutes les autres responsabilités inchangées ;
-6. valider la syntaxe ;
-7. exécuter un smoke ciblé ;
-8. vérifier le rendu et le comportement dans le navigateur ;
-9. supprimer l’ancien fragment uniquement après équivalence démontrée ;
-10. mettre à jour ce WORKSPACE MAESTRO après validation.
+1. Relire `OPUS/master` et `MAESTRO_WORKSPACE/master`.
+2. Identifier les fichiers réellement servis.
+3. Préparer un ZIP local limité au jalon annoncé.
+4. Inclure un manifeste des remplacements et suppressions.
+5. Valider les syntaxes PHP et JSON.
+6. Exécuter les smokes ciblés.
+7. Tester dans le navigateur.
+8. Vérifier les refus anonymes et ACL.
+9. Vérifier les transitions et actions FSM.
+10. Pousser OPUS uniquement depuis le dépôt local de l’utilisateur après validation.
 
 ## Garanties de non-régression
 
-À chaque étape doivent rester présents, fonctionnels et visuellement identiques à la référence :
+Doivent rester présents et fonctionnels :
 
-- toutes les pages ;
-- `demo-app` dans le Registry ;
-- la sélection et le changement d’application ;
-- le contexte d’application courant ;
 - le header séparé du menu horizontal ;
-- le menu horizontal complet ;
-- le sélecteur des 25 langues avec drapeaux ;
-- les catalogues i18n ;
-- la page Code source, son arbre replié par défaut et sa coloration CodeMirror ;
-- la FSM complète, visible et cliquable ;
+- le Registry et la sélection d’application ;
+- le contexte applicatif courant ;
+- la FSM complète ;
 - les routes et actions ;
-- les données et contenus visibles ;
-- la présentation existante.
-
-Un smoke vert ne suffit pas si le navigateur montre une régression.
-
-## Interdictions fonctionnelles et architecturales
-
-Sont interdits :
-
-- toute écriture directe dans GitHub OPUS par ChatGPT ;
-- tout refactor sans rapport direct avec la responsabilité en cours ;
-- tout redesign visuel ;
-- toute suppression fonctionnelle ;
-- toute suppression avant remplacement validé ;
-- toute réécriture globale pour une modification locale ;
-- tout nettoyage général mélangé à une migration ;
-- toute modification simultanée de plusieurs responsabilités ;
-- toute modification du Registry, de la FSM, de l’authentification, de l’i18n ou de la navigation sans nécessité directe et validation dédiée ;
-- toute restauration d’un runtime parallèle ;
-- tout routeur public séparé de `www/index.php` ;
-- toute affirmation de conformité sans validation ciblée et confirmation navigateur.
-
-## État de la remédiation
-
-### Contexte HTTP partagé préparé
-
-Fichiers existants :
-
-- `sites/owasys/application/default/http/request-context.php` ;
-- `tools/smoke_owasys_request_context_module.php`.
-
-Responsabilité couverte : normalisation de la méthode, du chemin, du point de montage `/owasys`, des liens et des assets.
-
-Le module est additif et n’est pas encore branché dans le traitement applicatif.
-
-Validation locale déjà obtenue :
-
-- lint du module : OK ;
-- lint du smoke : OK ;
-- smoke ciblé : `OWASYS_REQUEST_CONTEXT_MODULE_SMOKE_OK`.
-
-### Point d’entrée public et lancement local
-
-`sites/owasys/www/index.php` est l’unique point d’entrée public et le seul front controller.
-
-Aucun `dev-router.php` séparé n’est autorisé.
-
-Commande locale canonique :
-
-`php -S 127.0.0.1:18080 -t sites/owasys/www sites/owasys/www/index.php`
+- les 25 locales avec drapeaux ;
+- les catalogues i18n complets ;
+- la page Code source et sa coloration locale lorsqu’elle est présente dans la référence ;
+- `sites/owasys/www/index.php` comme front controller unique ;
+- le fonctionnement sous Windows et sur un système sensible à la casse.
 
 ## Règle de décision
 
-En cas de doute, le comportement et la présentation du commit `371c3757e8e80a62a198bc44a9f1b03d42a0ddec` prévalent.
-
-La modularisation doit reproduire l’existant avant de le remplacer. Elle ne doit jamais servir de prétexte à le simplifier, le réduire, le déplacer visuellement ou le supprimer.
+En cas de doute, ne pas inventer un autre arbre, un autre lanceur, un autre routeur, un autre layout ou un autre moteur de rendu. Relire le framework et l’application, puis produire le plus petit correctif conforme et vérifiable.
