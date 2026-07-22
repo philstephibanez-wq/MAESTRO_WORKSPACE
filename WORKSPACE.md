@@ -20,8 +20,8 @@ Dépôts :
 État de `OPUS/master` relu le 2026-07-22 :
 
 ```text
-6df768703f9573f5f634eca7708cfc704ff585aa
-p117h
+24a6e7ff7abbce5e13559a0501ec000bc126871a
+p117i
 ```
 
 Le comportement observé dans le navigateur et les erreurs runtime priment sur toute déclaration de conformité.
@@ -128,25 +128,61 @@ codemirror/opus-codemirror.js
 
 Il ne doit pas devenir un serveur générique de fichiers internes OPUS.
 
-## ODBCExplorer
+## ODBC — frontière canonique
 
-La séparation cible est :
+OPUS expose une seule façade publique de base de données :
 
 ```text
-Opus/OdbcExplorer/ ou Opus/Database/Odbc/
-  moteur générique réutilisable
-
-sites/odbcexplorer/
-  application autonome OPUS
-  FSM + ACL + SSO
-  contrôleurs
-  templates .score
-  assets publics
+Opus\Database\Odbc
+Opus/Database/Odbc.php
 ```
 
-Le moteur générique peut rester dans le framework s’il ne contient aucune route, page, template, libellé, menu ou logique d’une application particulière.
+Cette façade agrège les services techniques sans devenir une classe monolithique. Les implémentations spécialisées restent sous :
 
-L’interface ODBCExplorer ne doit pas vivre sous `Opus/`, ni être pilotée comme une application depuis `packages/opus-odbc-manager`. Le package historique est une source à auditer et à migrer, pas la cible runtime.
+```text
+Opus/Database/Odbc/
+  connexion
+  configuration de source
+  métadonnées
+  requêtes
+  mutations préparées
+  capacités
+```
+
+Règles :
+
+1. toute base est accédée par ODBC ;
+2. `Opus\Database\Odbc` est le point d’entrée documenté ;
+3. `Opus\Database\Odbc\*` contient uniquement des briques techniques génériques ;
+4. Model consomme ODBC par `Opus\Model\Adapter\OdbcModelAdapter` ;
+5. LSTSAR consomme les modèles ODBC et ne devient pas une seconde abstraction de base ;
+6. les mutations utilisent des commandes structurées, des paramètres préparés, ACL, confirmation et dry-run ;
+7. le SQL brut provenant d’une interface n’est jamais accepté par la couche de mutation ;
+8. UPDATE et DELETE exigent un prédicat non vide ;
+9. la configuration d’une source peut être DSN ou DSN-less ;
+10. les mots de passe ne sont jamais exposés par les méthodes de description.
+
+Les chemins suivants sont obsolètes et doivent être supprimés après application du correctif de migration :
+
+```text
+Opus/OdbcExplorer/
+packages/opus-odbc-manager/
+```
+
+Le terme `Manager` ou `Explorer` désigne un produit applicatif, jamais la façade framework.
+
+La future interface d’administration appartient exclusivement à :
+
+```text
+sites/odbcexplorer/
+  application/default/
+  application/<module>/
+  config/
+  var/
+  www/index.php
+```
+
+Elle devra être une application OPUS autonome pilotée par FSM, ACL et SSO, rendue par SCORE et utilisant l’i18n canonique. Elle consommera `Opus\Database\Odbc`, `Opus\Model` et `Opus\Lstsar`.
 
 ## i18n — contrat ASAP restauré
 
@@ -195,7 +231,7 @@ Syntaxes SCORE officielles :
 [[ i18n: registry.selected count=selection.total gender=selection.gender ]]
 ```
 
-Le résultat de la directive i18n est échappé par défaut. Aucun équivalent i18n brut n’est autorisé dans P117I.
+Le résultat de la directive i18n est échappé par défaut. Aucun équivalent i18n brut n’est autorisé.
 
 ## Politique GitHub et ZIP
 
@@ -213,19 +249,20 @@ Le ZIP ne contient pas :
 
 Les suppressions sont données séparément sous forme de commandes `cmd` exécutables.
 
-## Jalon actif — P117I
+## Jalon actif — P117J
 
 Objectifs :
 
-1. remplacer l’i18n OPUS plate par le moteur compatible ASAP ;
-2. nettoyer et réconcilier `Opus/I18n` autour d’une seule API canonique ;
-3. charger le catalogue global puis le catalogue du module FSM actif ;
-4. gérer substitutions, genres et pluriels complexes ;
-5. intégrer `[[ i18n: ... ]]` dans le parser et l’AST SCORE ;
-6. migrer les textes statiques des templates OWASYS vers la directive i18n ;
-7. préserver FSM, ACL, SSO, Registry et Mermaid ;
-8. ne recréer aucun `Opus/Owasys` ;
-9. ne pousser aucun code OPUS/OWASYS directement.
+1. créer la façade publique `Opus\Database\Odbc` ;
+2. conserver l’implémentation technique sous `Opus\Database\Odbc\*` ;
+3. ajouter un registre strict de sources ODBC ;
+4. exposer les opérations Model et la préparation LSTSAR depuis la façade ;
+5. déplacer le CRUD générique vers une couche de mutations structurées ODBC ;
+6. imposer paramètres préparés, ACL, confirmation, prédicat et dry-run ;
+7. supprimer localement `Opus/OdbcExplorer` et le package historique s’il existe ;
+8. ne pas créer encore une interface partielle sous `sites/odbcexplorer` ;
+9. préserver OWASYS, sa FSM, son ACL, son SSO, son Registry, Mermaid et son i18n ;
+10. ne pousser aucun code OPUS/OWASYS directement.
 
 ## Garanties de non-régression
 
@@ -239,5 +276,5 @@ Doivent rester fonctionnels :
 - menu horizontal séparé du header ;
 - schéma Mermaid dérivé de la FSM ;
 - 25 locales avec drapeaux ;
-- rendu SCORE ;
+- rendu SCORE et directive i18n ;
 - fonctionnement Windows et système sensible à la casse.
