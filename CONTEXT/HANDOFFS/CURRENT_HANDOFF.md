@@ -1,95 +1,121 @@
 # CURRENT HANDOFF — MAESTRO WORKSPACE
 
+Date: 2026-07-23
+
 ## Purpose
 
 Canonical resume card for a fresh chat.
 
 ## Active priority
 
-Stop OWASYS delivery acceptance and perform an architectural remediation before any further feature, visual patch, demo generation or delivery declaration.
+Migrate every executable or mutating OWASYS operation to an allow-listed Composer command invoked through RCP.
 
-The current OWASYS implementation contains a confirmed contract violation: too much application and rendering logic is located under `sites/owasys/www`, and JavaScript is used to construct or move global interface elements that must be rendered by the backend.
+OWASYS is exclusively the interactive graphical surface. It collects intent, applies SSO + ACL + FSM, requests preview/confirmation, submits a typed RCP command and renders structured results through SCORE.
+
+OWASYS must not own or directly execute site creation, structure mutation, source writes, build/export, Registry writes, Git stage/commit, cleanup, user bootstrap, administrator-password mutation, SSO administration or any future persistent operation.
 
 ## Source of truth
 
 - OPUS repository: `philstephibanez-wq/OPUS`
 - OPUS branch: `master`
-- Latest remediation-gate OPUS commit: `81b5944a4d9ed265c253dab19b6f759a85da66f8`
+- Current OPUS head: `36a8570088fb6084abdc694fd3ab8bf0bffa5d17`
 - Workspace repository: `philstephibanez-wq/MAESTRO_WORKSPACE`
-- OPUS site architecture contract: `CONTEXT/PROJECTS/OPUS/OPUS_SITE_STANDARD_CONTRACT.md`
+- P117R specification: `CONTEXT/SPECIFICATIONS/OWASYS_COMPOSER_RCP_COMMAND_BOUNDARY_SPEC_P117R.md`
+- P117R handoff: `CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OWASYS_COMPOSER_RCP_P117R_2026-07-23.md`
+- Site architecture contract: `CONTEXT/PROJECTS/OPUS/OPUS_SITE_STANDARD_CONTRACT.md`
 - `H:/OPUS` is an owner development detail only
 
-## OWASYS acceptance status
+## P117R differential
 
-Previous automated technical and HTTP results do not authorize delivery.
+- ZIP: `opus_owasys_p117r_composer_rcp_bootstrap.zip`
+- SHA-256: `ea7edbfca0e9df871ac7521cd9f8dd3f55811fc75bca7108259719d9ae884350`
+- Files: 16
+- Base: OPUS `36a8570088fb6084abdc694fd3ab8bf0bffa5d17`
+- OPUS repository was not written directly by the assistant
 
-Visual acceptance is suspended.
+## Implemented in P117R bootstrap
 
-OWASYS must not be declared delivered, visually accepted or ready for official demo until the backend-first architecture is restored and the owner validates the resulting structure.
+- generic OPUS Composer/RCP catalog and client;
+- homonymous interfaces extending the four standard markers;
+- root Composer operation catalog;
+- administrator-password change migrated to Composer/RCP;
+- command-side ACL revalidation;
+- secret payload through standard input, never command-line arguments;
+- stable structured result without passwords or stack traces;
+- local password store migrated to OPUS `File` + `Json` with atomic write;
+- bootstrap and exhaustive boundary audits;
+- CMD validation, launch and guarded post-acceptance cleanup helpers.
 
-The previous status `technical-acceptance-complete-visual-acceptance-pending` is no longer sufficient because the architecture itself has been identified as non-conforming.
+## Deliberately incomplete
 
-## Blocking architecture gate now installed
+Only `security.admin-password.change` is implemented in this bootstrap.
 
-- OPUS smoke: `tools/smoke_owasys_backend_first_architecture.php`
-- Contract marker: `OWASYS_BACKEND_FIRST_ARCHITECTURE_SMOKE_OK`
-- Added to `tools/smoke_all_opus.php`.
-- The global smoke is intentionally red while the current non-conforming architecture remains.
-- The gate rejects a non-minimal `www/index.php`, HTML generation in the public entry point, hard-coded locale ownership in JavaScript, DOM-owned navigation/layout, and missing server-side navigation/layout files.
-- No previous green smoke may be used to declare OWASYS compliant while this gate fails.
+All other declared operations are `implemented=false` and fail explicitly with `OPUS_RCP_OPERATION_NOT_IMPLEMENTED`. No local fallback is authorized.
 
-## Confirmed architectural defects
+The exhaustive gate remains red until all operations are migrated:
 
-- `sites/owasys/www/index.php` contains application bootstrap, routing, session, FSM, I18N, registry access, HTML rendering and menu composition instead of remaining a minimal public entry point.
-- The global header and horizontal menu are partially constructed or moved by JavaScript.
-- `theme.js` mutates the DOM to move navigation, current application and authentication elements.
-- Menu ownership is not clearly located under `application/default`.
-- Some smokes validate implementation markers rather than the canonical OPUS architecture.
-- The presence of a working visual result does not compensate for these contract violations.
+```cmd
+composer opus:audit-owasys-rcp
+```
 
 ## Mandatory target architecture
 
-- `www/index.php` is a minimal PHP entry point calling `application/default/bootstrap.php`.
-- `www` contains only the public entry point and public assets.
-- Shared bootstrap, layouts, navigation, templates, views and I18N live under `application/default`.
-- Controller-specific code lives under its controller directory in `application`.
-- Navigation, current application context, permissions and final HTML are rendered by PHP backend.
-- JavaScript is progressive enhancement only.
-- No site behavior required for navigation or application operation depends on JavaScript.
-- CodeMirror keeps a functional `textarea` fallback.
-- I18N fallback is `[[cle.i18n]]`; a raw key proves an I18N bypass and is blocking.
+```text
+OWASYS SCORE form
+-> authenticated request
+-> SSO identity
+-> deny-by-default ACL
+-> FSM signal and guards
+-> immutable command intent
+-> RCP request
+-> allow-listed Composer command
+-> typed OPUS command handler
+-> structured result
+-> OWASYS ViewModel
+-> SCORE rendering
+```
+
+Generic command/RCP classes belong to OPUS. OWASYS contains only presentation adapters and ViewModel mapping.
+
+Every new concrete OPUS class implements its homonymous interface extending:
+
+- `OpusFrameworkComponentInterface`;
+- `OpusExceptionAwareInterface`;
+- `OpusProfilerAwareInterface`;
+- `OpusSelfDocumentingInterface`.
+
+## Administrator-password rule
+
+Password bootstrap, reset and change are commands.
+
+No password may appear in:
+
+- URL or query string;
+- Composer/PHP command-line arguments;
+- logs, profiler traces or audit details;
+- exception messages;
+- browser-visible raw process output;
+- committed configuration or differential artifacts.
 
 ## Exact next work
 
-1. Audit every file under `sites/owasys/www` and classify it as public entry point, public asset or misplaced application code.
-2. Produce a migration map from the current files to canonical `application/default` and controller directories.
-3. Identify smokes that currently encode or approve the wrong architecture.
-4. Present the architectural diff and migration sequence before destructive moves.
-5. Migrate atomically and reversibly.
-6. Keep the backend-first architecture smoke red until the real structure is compliant.
-7. Validate navigation and core forms with JavaScript disabled.
-8. Resume visual acceptance only after owner validation of the backend-first structure.
+1. Apply the P117R ZIP to clean OPUS `36a8570…`.
+2. Run Composer autoload, bootstrap audit, PHP lint and `git diff --check`.
+3. Test the real Windows administrator-password form through Composer/RCP.
+4. Inventory every remaining OWASYS mutation.
+5. Migrate site create/validate/build/export.
+6. Migrate structure preview/apply and source preview/write.
+7. Migrate Registry writes and Git stage/commit.
+8. Migrate user bootstrap, password reset, SSO/Auth0/bastion administration and cleanup.
+9. Keep the exhaustive audit red until no direct mutation remains.
+10. Complete backend-first, no-JavaScript and browser acceptance.
+11. Delete `sites/owasys_old` only after exhaustive acceptance and explicit owner confirmation.
 
-## Security contract
+## `owasys_old`
 
-- no free-form Git commands;
-- no pull, push, reset or branch mutation from OWASYS;
-- staging and commit limited to the selected application subtree;
-- editor limited to authorized application/config/public-asset paths;
-- traversal, absolute paths, `.git`, secrets and auth stores rejected;
-- preview, validation, SHA-256 lock and atomic write required;
-- backend remains the authority for permissions, writes, Git, build and export.
+Do not delete it now.
 
-## Locked roadmap
-
-1. Remediate OWASYS architecture to backend-first OPUS compliance.
-2. Re-run technical and no-JavaScript acceptance.
-3. Complete owner visual acceptance.
-4. Generate official demo through compliant OWASYS.
-5. User Book.
-6. Reference Book.
-7. LSTSAR.
-8. KB.
+P117Q uses `sites/owasys_old` as an explicit rejected duplicate to prove canonical Registry selection of `sites/owasys`. The guarded cleanup CMD may be used only after the exhaustive RCP audit, reference scan, full acceptance and explicit confirmation.
 
 ## Permanent rules
 
@@ -98,8 +124,11 @@ NO DOC CONTRACT, NO PATCH.
 NO SOURCE OF TRUTH, NO PATCH.
 NO BRICOLAGE DELIVERY.
 NO FALLBACK SILENCIEUX.
+OWASYS IS GUI ONLY.
+ALL OPERATIONS USE COMPOSER THROUGH RCP.
+SECRETS NEVER ENTER COMMAND-LINE ARGUMENTS OR LOGS.
 BACKEND FIRST.
-SERVER-RENDERED HTML FIRST.
+SERVER-RENDERED SCORE FIRST.
 JAVASCRIPT IS PROGRESSIVE ENHANCEMENT ONLY.
 WWW IS PUBLIC ENTRY POINT AND PUBLIC ASSETS ONLY.
 REUSE EXISTING OPUS BRICKS.
