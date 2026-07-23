@@ -9,116 +9,79 @@ Last updated: 2026-07-24.
 - Current remote head reviewed: `96884961248fc82bf5e13187a6ffcfffacb82d9f`
 - Owner local repo: `H:/OPUS`
 
-## Active milestone
+## Framework identity
 
-P117U canonical OWASYS REST + Composer backend with mandatory HF1, HF2, HF3 and HF4.
+OPUS is a generic framework, not an application.
 
-Canonical resume point:
+OWASYS is an application built with OPUS. Its current SCORE pages are its frontend. Secured REST + Composer is its backend. Sites created through OWASYS are independent OPUS applications.
 
-`CONTEXT/HANDOFFS/CURRENT_HANDOFF.md`
-
-HF4 specification:
-
-`CONTEXT/SPECIFICATIONS/OWASYS_P117U_HF4_LOGGER_PROFILER_EXITCODE_SPEC.md`
-
-HF4 handoff:
-
-`CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OWASYS_P117U_HF4_LOGGER_PROFILER_EXITCODE_2026-07-24.md`
-
-## Immutable separation
+## Active artifact stack
 
 ```text
-OPUS = generic framework
-OWASYS = OPUS application and SCORE frontend
-REST + Composer = OWASYS backend
-Created sites = independent OPUS applications
+P117U -> HF1 -> HF2 -> HF3 -> HF4 -> HF5
 ```
 
-## Root contract
+HF5:
 
-Only the owner-confirmed OPUS roots are admitted. Root `bin/`, lowercase root `config/`, root `public/` and new top-level directories remain forbidden.
-
-## Artifact stack
+- ZIP: `opus_owasys_p117u_hf5_composer_working_directory.zip`
+- SHA-256: `862d870b4e77de6fd74c391c4d1ca41a240419b7ea8bc33daebeb1aee9a8279b`
+- files: 1
+- ZIP bytes: 3,741
 
 ```text
-P117U -> HF1 -> HF2 -> HF3 -> HF4
+Opus/Rcp/Composer/ComposerCommandExecutor.php
 ```
 
-HF4:
+## HF5 cause
 
-- ZIP: `opus_owasys_p117u_hf4_logger_profiler_exitcode.zip`
-- SHA-256: `2f48a42be49153a3c67186e26553f884c6401486e42a3747db9716d4fb1e1b07`
-- files: 7
-- payload bytes: 52,274
+HF4 diagnostics proved that Composer found `owasys:registry-sync` but its child command could not open the generic framework entrypoint:
 
-## HF4 framework evolution
+```text
+scripts\opus.php
+```
 
-HF4 modifies existing components only:
+Both observed and closed process codes were `1`.
 
-- `LoggerInterface`;
-- `ProfilerInterface`;
-- `TraceInterface`;
-- `ComposerCommandExecutor`;
-- `RcpRestClient`;
-- `RcpRestServer`;
-- OWASYS backend diagnostic configuration.
+## HF5 correction
 
-No new concrete framework class is introduced.
+The generic Composer executor now passes:
 
-The Logger/Profiler/Trace interfaces now declare the public methods already implemented by their concrete classes while retaining the four standard marker extensions.
+```text
+--working-dir=<validated absolute OPUS root>
+```
 
-## Diagnostics
+The `proc_open` working directory remains the same validated root. No REST or application input can override it.
 
-RCP server and Composer executor now use the existing OPUS Logger and Profiler.
+No OWASYS application file or business implementation is changed.
+
+## Diagnostics state
+
+HF4 remains active:
 
 ```text
 sites/owasys/var/logs/rcp-backend.log
 sites/owasys/var/profiler/<trace_id>.json
 ```
 
-The trace ID is included in REST records and appended to frontend backend-error exceptions.
+Logger/profiler traces remain sanitized and correlated with REST errors.
 
-No request parameters or secrets are logged. Failure excerpts are sanitized and bounded.
+## Framework contracts
 
-## Windows process correction
+Every concrete class under `Opus/` implements its homonymous interface extending all four mandatory markers.
 
-The former process boundary used only the observed `proc_get_status` code and discarded `proc_close`.
+HF5 introduces no class or interface and preserves `ComposerCommandExecutorInterface`.
 
-HF4 records and resolves both. A Windows observed `-1` with close code `0` is now recognized as success. If neither value is valid, execution fails explicitly with `OPUS_RCP_PROCESS_EXIT_CODE_UNAVAILABLE`.
+## Root contract
 
-## Runtime incidents addressed
-
-1. FSM constant: HF1.
-2. Missing backend process: two-process topology.
-3. Composer PHAR discovery and HTML/JSON errors: HF2.
-4. Prefixed/multiline result parsing: HF3.
-5. Generic command failure without diagnostics: HF4.
-
-## Security state
-
-The tracked local environment file was removed from Git and pushed in OPUS commit `96884961248fc82bf5e13187a6ffcfffacb82d9f`.
-
-Previously committed or pasted secret values must not be reused for nonlocal deployment.
-
-## Validation
-
-Green:
-
-- modified PHP lint;
-- backend JSON parse;
-- Logger/Profiler/Trace implementation compatibility;
-- structured log/profiler fixtures;
-- secret redaction;
-- Composer success/failure fixtures;
-- Windows exit-code fixture;
-- ZIP content and integrity.
+No root `bin/`, lowercase root `config/`, root `public/` or new top-level directory is authorized.
 
 ## Pending
 
-1. apply HF4 after HF3;
-2. regenerate autoload;
-3. restart backend then frontend;
-4. reproduce Registry synchronization;
-5. inspect log and trace;
-6. validate remaining Registry/password/browser/Auth0 gates;
-7. commit OPUS after owner acceptance.
+1. apply HF5 after HF4;
+2. regenerate optimized autoload;
+3. start backend and verify `/api/v1/status`;
+4. start frontend;
+5. retest Registry synchronization;
+6. inspect a new trace only if another error occurs;
+7. validate remaining Registry, password, browser, Auth0 and platform gates;
+8. commit OPUS after owner acceptance.
