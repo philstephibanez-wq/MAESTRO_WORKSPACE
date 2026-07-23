@@ -56,6 +56,22 @@ Do not apply:
 - no README, manifest, report, smoke, audit or check helper
 - OPUS not written directly by the assistant
 
+## Mandatory hotfix HF1
+
+The owner runtime exposed a fatal error in `Opus/Fsm/FsmProcessor.php`: `validateFsm()` referenced the nonexistent constant `SUPPORTED_CONTRACTS` while the declared constant was `CANONICAL_CONTRACTS`.
+
+HF1 replaces only:
+
+`Opus/Fsm/FsmProcessor.php`
+
+- ZIP: `opus_owasys_p117u_hf1_fsm_contract.zip`
+- SHA-256: `e711af28142a5ad287569c5107b99d41065498ea3bed70ec13b977007ae605d2`
+- files: 1
+
+The correction uses a generic versioned FSM-contract validator. Canonical OPUS contracts remain explicitly accepted, and application contracts matching `<VENDOR>_<NAME>_FSM_V<n>` are accepted without adding OWASYS-specific identifiers to framework code. A runtime recipe using `OWASYS_NAVIGATION_FSM_V1` passes.
+
+HF1 is mandatory after P117U until a consolidated artifact is accepted.
+
 ## Composer
 
 Composer installs OPUS/dependencies and exposes user commands only. All scripts delegate to `scripts/opus.php`. Smokes, audits, tests and recipes are forbidden in `composer.json`.
@@ -113,7 +129,7 @@ Configuration crosses `File` plus `StructuredFileLoader` and explicit OPUS Json/
 Green in isolated gates:
 
 - exact root and ZIP layout;
-- PHP lint: 49 files;
+- PHP lint: 49 P117U files plus HF1;
 - JSON parse: 7 files;
 - Composer user-command-only check;
 - no OWASYS leakage into generic code;
@@ -121,6 +137,7 @@ Green in isolated gates:
 - one OWASYS public PHP entrypoint;
 - canonical scaffold and atomic writer;
 - standard application validation using signal routes and declared FSM;
+- HF1 runtime construction with `OWASYS_NAVIGATION_FSM_V1`;
 - HMAC success, invalid-signature rejection and ACL rejection;
 - execution FSM and Composer process/stdin boundary;
 - execution storage without parameters;
@@ -128,6 +145,7 @@ Green in isolated gates:
 
 Pending owner gates:
 
+- restart OWASYS with HF1 and continue real browser validation;
 - real Windows `composer.phar` and autoload;
 - existing OPUS tools/recipes outside Composer aliases;
 - Registry/password workflows;
