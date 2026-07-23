@@ -4,26 +4,25 @@ Date: 2026-07-24
 
 ## Active milestone
 
-P117U — canonical OWASYS secured REST + Composer backend, with mandatory HF1, HF2, HF3 and HF4.
+P117U with mandatory HF1, HF2, HF3, HF4 and HF5.
 
 ```text
-OPUS = generic framework
-OWASYS = an OPUS application
-Current OWASYS SCORE pages = frontend
-REST + Composer = OWASYS backend
-Created sites = independent OPUS applications
+OPUS = framework générique
+OWASYS = application construite avec OPUS
+pages OWASYS actuelles = frontend SCORE
+REST + Composer = backend OWASYS
+sites créés = applications OPUS indépendantes
 ```
+
+OPUS n'est pas une application.
 
 ## Source of truth
 
 - OPUS repository: `philstephibanez-wq/OPUS`
 - branch: `master`
 - current remote head reviewed: `96884961248fc82bf5e13187a6ffcfffacb82d9f`
-- canonical specification: `CONTEXT/SPECIFICATIONS/OWASYS_CANONICAL_REST_COMPOSER_BACKEND_SPEC_P117U.md`
-- HF2 specification: `CONTEXT/SPECIFICATIONS/OWASYS_P117U_HF2_COMPOSER_RESOLUTION_SPEC.md`
-- HF3 specification: `CONTEXT/SPECIFICATIONS/OWASYS_P117U_HF3_COMPOSER_RESULT_CONTRACT_SPEC.md`
-- HF4 specification: `CONTEXT/SPECIFICATIONS/OWASYS_P117U_HF4_LOGGER_PROFILER_EXITCODE_SPEC.md`
-- HF4 handoff: `CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OWASYS_P117U_HF4_LOGGER_PROFILER_EXITCODE_2026-07-24.md`
+- HF5 specification: `CONTEXT/SPECIFICATIONS/OPUS_P117U_HF5_COMPOSER_WORKING_DIRECTORY_SPEC.md`
+- HF5 handoff: `CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OPUS_P117U_HF5_COMPOSER_WORKING_DIRECTORY_2026-07-24.md`
 - site contract: `CONTEXT/PROJECTS/OPUS/OPUS_SITE_STANDARD_CONTRACT.md`
 
 ## Only admitted OPUS root
@@ -44,73 +43,60 @@ No root `bin/`, lowercase root `config/`, root `public/` or new root.
 
 ## Mandatory artifact order
 
-### P117U
+```text
+P117U -> HF1 -> HF2 -> HF3 -> HF4 -> HF5
+```
 
-- ZIP: `opus_owasys_p117u_canonical_rest_composer.zip`
-- SHA-256: `43fbcc75384d96b7116d9ee5afe34d997c7b509049bff1b2159f42ee3b43a429`
+### HF5
 
-### HF1
-
-- ZIP: `opus_owasys_p117u_hf1_fsm_contract.zip`
-- SHA-256: `e711af28142a5ad287569c5107b99d41065498ea3bed70ec13b977007ae605d2`
-
-### HF2
-
-- ZIP: `opus_owasys_p117u_hf2_composer_resolution.zip`
-- SHA-256: `c26d32f3b1446c8bb65c668ab8c7c785783162855f8b5b02e57dd61e8e97f980`
-
-### HF3
-
-- ZIP: `opus_owasys_p117u_hf3_composer_result_contract.zip`
-- SHA-256: `f0860491df311a997d92c0a82796e7e11921911721bf02e3a8b45aece4ce6f17`
-
-### HF4
-
-- ZIP: `opus_owasys_p117u_hf4_logger_profiler_exitcode.zip`
-- SHA-256: `2f48a42be49153a3c67186e26553f884c6401486e42a3747db9716d4fb1e1b07`
-- files: 7
-- payload bytes: 52,274
+- ZIP: `opus_owasys_p117u_hf5_composer_working_directory.zip`
+- SHA-256: `862d870b4e77de6fd74c391c4d1ca41a240419b7ea8bc33daebeb1aee9a8279b`
+- files: 1
+- ZIP bytes: 3,741
 
 ```text
-Opus/Log/LoggerInterface.php
-Opus/Profiler/ProfilerInterface.php
-Opus/Profiler/TraceInterface.php
 Opus/Rcp/Composer/ComposerCommandExecutor.php
-Opus/Rcp/Rest/RcpRestClient.php
-Opus/Rcp/Rest/RcpRestServer.php
-sites/owasys/config/backend.rest.json
 ```
 
 P117S and P117T remain rejected.
 
-## Owner runtime incidents
+## Runtime evidence leading to HF5
 
-1. undefined FSM constant — HF1;
-2. absent backend process — mandatory two-process topology;
-3. local Composer PHAR assumption and HTML/JSON boundary — HF2;
-4. multiline/prefixed Composer result not parsed — HF3;
-5. generic `OPUS_RCP_COMPOSER_COMMAND_FAILED` with no log or profiler trace — HF4.
+The HF4 trace `ED5058905D1EF7D3` produced a structured log proving:
 
-## HF4 diagnostics contract
+```text
+Composer alias: owasys:registry-sync
+observed exit code: 1
+closed exit code: 1
+stderr: Could not open input file: scripts\opus.php
+```
 
-The existing OPUS `Logger` and `Profiler` are now injected into the generic RCP server and Composer executor.
+Composer and the OWASYS alias were found. The child script did not run from the OPUS framework root.
 
-Runtime outputs:
+## HF5 framework correction
+
+`Opus\Rcp\Composer\ComposerCommandExecutor` adds:
+
+```text
+--working-dir=<validated absolute OPUS root>
+```
+
+The existing `proc_open` working directory is retained. The explicit Composer option guarantees that the generic framework entrypoint `scripts/opus.php` resolves from the OPUS project root on Windows and Linux.
+
+The working directory cannot be selected by the browser, REST parameters, OWASYS configuration or environment injection.
+
+No OWASYS application file is modified by HF5.
+
+## Logger and profiler
+
+HF4 remains mandatory and active:
 
 ```text
 sites/owasys/var/logs/rcp-backend.log
 sites/owasys/var/profiler/<trace_id>.json
 ```
 
-One trace covers the complete REST execution, authentication, ACL, FSM, Composer process and result boundary. The REST response includes `trace_id`; the client exception appends `:TRACE:<TRACE_ID>`.
-
-The log contains normalized exception information, FSM state, script identifier, process exit values, duration and bounded sanitized output excerpts. Request parameter values and secrets are never logged or profiled.
-
-## Windows exit-code correction
-
-The previous executor discarded `proc_close()` and trusted only `proc_get_status()['exitcode']`. Windows may report `-1` there for an already completed process.
-
-HF4 resolves the process code from valid `proc_close()`, otherwise valid observed code, otherwise raises `OPUS_RCP_PROCESS_EXIT_CODE_UNAVAILABLE`. No silent success fallback exists.
+Every RCP execution remains trace-correlated. Parameters and secrets are excluded from logs and profiler payloads.
 
 ## Framework contract
 
@@ -121,46 +107,27 @@ Every concrete class under `Opus/` implements a homonymous interface extending:
 - `OpusProfilerAwareInterface`;
 - `OpusSelfDocumentingInterface`.
 
-HF4 makes the Logger/Profiler/Trace interfaces operational by declaring their existing public methods. It introduces no new concrete framework class.
+HF5 modifies one existing concrete framework class and introduces no class or interface.
 
 ## Mandatory process topology
 
 ```text
 127.0.0.1:8792 = REST + Composer backend
-127.0.0.1:8000 = current SCORE frontend
+127.0.0.1:8000 = SCORE frontend OWASYS
 ```
 
 Both use the same local environment values and the same canonical `sites/owasys/www/index.php`.
 
-## Critical secret status
-
-The tracked runtime secret file was removed and pushed in OPUS commit `96884961248fc82bf5e13187a6ffcfffacb82d9f`.
-
-Previously committed values remain compromised. Values pasted into diagnostic conversations must not be reused for remote or production deployment. Generate fresh values before nonlocal use.
-
-## HF4 validation
-
-Green:
-
-- PHP lint for six PHP files;
-- JSON configuration parse;
-- existing Logger/Profiler/Trace implementation compatibility;
-- structured log and profiler trace fixtures;
-- output redaction;
-- successful and failed Composer result fixtures;
-- Windows observed `-1`, closed `0` exit-code fixture;
-- exact ZIP content and integrity.
-
 ## Pending owner gates
 
-- apply HF4 after HF3;
+- apply HF5 after HF4;
 - regenerate optimized autoload;
-- restart backend and frontend;
-- verify backend status;
-- reproduce Registry synchronization;
-- inspect correlated log and profiler trace;
-- Registry select/clear/creation-start;
-- password workflow;
+- restart backend and verify status;
+- restart frontend;
+- retest Registry synchronization;
+- inspect new correlated diagnostics only if another failure occurs;
+- validate Registry select/clear/creation-start;
+- validate password workflow;
 - browser/no-JavaScript;
 - HTTPS/Auth0/bastion;
 - Windows/Linux parity.
@@ -173,8 +140,9 @@ NO BRICOLAGE DELIVERY.
 NO FALLBACK SILENCIEUX.
 ONLY THE OWNER-CONFIRMED OPUS ROOT IS ADMITTED.
 COMPOSER EXPOSES USER COMMANDS ONLY.
-OPUS IS THE FRAMEWORK.
-OWASYS IS AN OPUS APPLICATION.
+OPUS IS A FRAMEWORK, NOT AN APPLICATION.
+OWASYS IS AN APPLICATION BUILT WITH OPUS.
+NO OWASYS BUSINESS CODE UNDER `Opus/`.
 REST + COMPOSER IS THE OWASYS BACKEND.
 LOGGER AND PROFILER ARE EXISTING OPUS SERVICES.
 EVERY CONCRETE OPUS CLASS IS EXCEPTION-AWARE AND PROFILER-AWARE.
