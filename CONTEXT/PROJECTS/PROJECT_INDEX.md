@@ -7,79 +7,82 @@ NO DOC CONTRACT, NO PATCH.
 NO SOURCE OF TRUTH, NO PATCH.
 NO BRICOLAGE DELIVERY.
 NO FALLBACK SILENCIEUX.
-NO DELIVERY FILE POLLUTION IN OPUS ROOT.
+ONLY THE OWNER-CONFIRMED OPUS ROOT IS ADMITTED.
+NO ROOT BIN.
+NO ROOT LOWERCASE CONFIG.
+NO ROOT PUBLIC.
 COMPOSER EXPOSES USER COMMANDS ONLY.
+OPUS IS THE FRAMEWORK.
+OWASYS IS AN OPUS APPLICATION.
+OWASYS CURRENT PAGES ARE THE FRONTEND.
+REST + COMPOSER IS THE OWASYS BACKEND.
+CREATED SITES ARE INDEPENDENT OPUS APPLICATIONS.
 BACKEND FIRST.
 SERVER-RENDERED SCORE FIRST.
 JAVASCRIPT IS PROGRESSIVE ENHANCEMENT ONLY.
-WWW IS PUBLIC ENTRY POINT AND PUBLIC ASSETS ONLY.
-OWASYS CURRENT PAGES ARE THE FRONTEND.
-REST + COMPOSER IS THE OWASYS BACKEND.
-ALL OWASYS BUSINESS OPERATIONS CROSS SECURED REST THEN COMPOSER.
-SECRETS NEVER ENTER COMMAND-LINE ARGUMENTS OR LOGS.
+SECRETS NEVER ENTER ARGV OR LOGS.
 WORKSPACE HANDOFF UPDATED AT EVERY STATE CHANGE.
 SCORETEMPLATE BELONGS TO OPUS, NOT ASAP.
 
 ## OPUS
 
-- Framework PHP principal.
-- Repository: `philstephibanez-wq/OPUS`.
-- Branch: `master`.
-- Current committed head / P117T base: `36a8570088fb6084abdc694fd3ab8bf0bffa5d17`.
-- Canonical site architecture: `CONTEXT/PROJECTS/OPUS/OPUS_SITE_STANDARD_CONTRACT.md`.
-- All concrete framework classes implement a homonymous interface extending the four standard markers.
-- Generic console, Composer dispatch, REST, RCP, authentication, FSM and generated-runtime classes belong to OPUS.
-- Configuration crosses `File` plus explicit structured parsers.
-- OPUS code changes are delivered as a differential ZIP; the assistant does not push OPUS directly.
+- Repository: `philstephibanez-wq/OPUS`, branch `master`.
+- Current committed head / P117U base: `36a8570088fb6084abdc694fd3ab8bf0bffa5d17`.
+- Generic framework only; no OWASYS business implementation under `Opus/`.
+- Generic executables use existing `scripts/`.
+- Global configuration uses existing `Config/` only when required.
+- All concrete framework classes implement homonymous four-marker interfaces.
+- Configuration crosses `File` and explicit structured parsers.
+- Canonical site contract: `CONTEXT/PROJECTS/OPUS/OPUS_SITE_STANDARD_CONTRACT.md`.
+
+## Canonical OPUS root
+
+Admitted directories:
+
+`.git`, `.github`, `application`, `Config`, `DOC`, `Opus`, `packages`, `runtime`, `scripts`, `sites`, `tools`, `vendor`.
+
+Admitted root files:
+
+`.gitignore`, `AGENTS.md`, `composer.json`, `composer.lock`, `composer.phar`, `LICENSE`, `README.md`.
+
+Root `bin/`, root lowercase `config/`, root `public/` and new top-level paths are forbidden.
 
 ## OWASYS
 
-- Portable OPUS graphical application-management frontend.
+- One OPUS application under `sites/owasys/`.
 - Current SCORE pages remain the frontend.
-- Secured REST API plus Composer commands form the backend.
-- Frontend owns browser locale, SSO, ACL, FSM, forms, ViewModels and SCORE rendering only.
-- Every business mutation crosses signed typed REST, backend actor validation, execution FSM, operation allow-list, Composer and `bin/opus`.
-- Registry persistence is command-side; the web UI does not open the Registry repository.
-- SCORE-only rendering; no UI-producing `echo`; no mixed PHP/HTML; no client-side command router.
-- P117Q committed baseline: Singleton, regional locale, synchronized FSM navigation and canonical Registry discovery.
-- P117T active contract: `CONTEXT/SPECIFICATIONS/OWASYS_BACKEND_REST_COMPOSER_SPEC_P117T.md`.
-- P117T handoff: `CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OWASYS_BACKEND_REST_COMPOSER_P117T_2026-07-23.md`.
-- P117T differential ZIP: `opus_owasys_p117t_backend_rest_composer.zip`.
-- ZIP SHA-256: `ad1494d92f068789d8363b4b6a7a823ff7b6be189d36f66724f92fec91baf2c5`.
-- Files: 49; bytes: 64,460; only direct root file: `composer.json`.
-- Top-level entries are existing OPUS areas only: `Opus`, `bin`, `config`, `sites`, `composer.json`.
-- P117S ZIP `acb79eec…` is rejected and must not be applied.
-- `sites/owasys_old` remains a rejected duplicate reference until browser acceptance and explicit owner deletion approval.
+- Secured REST + Composer is its backend.
+- One public PHP entrypoint: `sites/owasys/www/index.php`.
+- Frontend owns forms/ViewModels/SCORE; no persistent business mutation.
+- Registry/password implementations remain application-owned and execute through REST then Composer.
+- Browser locale, FSM, I18n, ACL, local SSO and Auth0 proxy/bastion contracts apply.
+- P117U specification: `CONTEXT/SPECIFICATIONS/OWASYS_CANONICAL_REST_COMPOSER_BACKEND_SPEC_P117U.md`.
+- P117U handoff: `CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OWASYS_CANONICAL_REST_COMPOSER_P117U_2026-07-23.md`.
+
+## P117U differential
+
+- ZIP: `opus_owasys_p117u_canonical_rest_composer.zip`.
+- SHA-256: `1ee231cbcbe9e5a4578aa6f50b7a83559f89b46f6916e93f682c50f360401e46`.
+- Files: 55; bytes: 69,473.
+- Top-level entries: `composer.json`, `Opus`, `scripts`, `sites`.
+- P117S and P117T artifacts are rejected.
+- `sites/owasys_old` remains until explicit owner deletion approval.
 
 ## Composer
 
-Composer has only two OPUS product responsibilities:
+Composer installs OPUS/dependencies and exposes stable user commands through `scripts/opus.php`. No smoke, audit, test or recipe alias belongs in `composer.json`.
 
-1. install OPUS and dependencies;
-2. expose stable user commands through `bin/opus`.
+Generic commands belong to OPUS. OWASYS commands are application-owned providers discovered from site configuration.
 
-Smokes, audits, recipes and arbitrary technical commands are forbidden in `composer.json`.
+## Sites created by OWASYS
 
-## OWASYS REST backend
+Independent OPUS applications under `sites/<site>/` using `application`, `config`, `www`, Singleton, FSM-module-first, browser locale, OPUS I18n, deny-by-default ACL, SSO/Auth0 proxy and SCORE.
 
-Minimum resource model:
-
-```text
-GET  /v1/status
-POST /v1/executions
-```
-
-- Site-owned entrypoint: `sites/owasys/www/api/index.php`.
-- Site-owned backend and operation configuration under `sites/owasys/config/`.
-- No new global `public/` tree.
-- Loopback HTTP is local-development only; remote deployment requires HTTPS.
-- Default local security uses bearer plus HMAC environment secrets.
-- Auth0 proxy/bastion stays behind generic OPUS authentication boundaries.
-- SSH may be considered later only as an optional generic OPUS transport using the same typed allow-list.
+`SiteScaffoldPlan` is the only canonical plan. No `public`, `application/states` or alternate fullstack tree is generated.
 
 ## OPUS Demo
 
-Official demonstration to generate through OWASYS only after P117T real Composer/backend/browser/Auth0 acceptance and owner approval.
+After real P117U Composer/backend/browser/Auth0 acceptance and owner approval.
 
 ## User Book
 
@@ -87,33 +90,29 @@ After the compliant demo.
 
 ## Reference Book
 
-After the User Book; official OPUS technical documentation rendered with SCORE `.score`.
+After the User Book; SCORE technical documentation.
 
 ## LSTSAR
 
-Load / Secure / Transform / Store / Audit / Restore. After OWASYS and documentation. Model-driven + ODBC-driven, with independent source and transformed-target validation.
+After OWASYS and documentation.
 
 ## KB
 
-Resume after LSTSAR.
-
-## LOGANDPLAY
-
-Public identity and `logandplay.org` entry map; contractual alignment pending.
+After LSTSAR.
 
 ## MAESTRO_WORKSPACE
 
-Global context, decisions and handoffs. OPUS is a sub-project; OPUS is not the workspace.
+Global decisions, contracts and handoffs. OPUS is a sub-project; OPUS is not the workspace.
 
 ## Resume order
 
 1. `CONTEXT/HANDOFFS/CURRENT_HANDOFF.md`.
-2. `CONTEXT/SPECIFICATIONS/OWASYS_BACKEND_REST_COMPOSER_SPEC_P117T.md`.
-3. `CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OWASYS_BACKEND_REST_COMPOSER_P117T_2026-07-23.md`.
-4. Apply P117T to clean OPUS `36a8570…`.
-5. Remove only known rejected P117S artifacts if they were extracted.
-6. Start REST backend and OWASYS frontend in separate VS Code terminals with identical environment secrets.
-7. Validate real Composer, Registry, password, browser, Auth0 and HTTPS flows.
+2. `CONTEXT/SPECIFICATIONS/OWASYS_CANONICAL_REST_COMPOSER_BACKEND_SPEC_P117U.md`.
+3. `CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OWASYS_CANONICAL_REST_COMPOSER_P117U_2026-07-23.md`.
+4. Apply P117U to clean OPUS `36a8570…`.
+5. Run real Composer/autoload and existing recipes outside Composer aliases.
+6. Start REST backend and current frontend.
+7. Validate Registry, password, browser, Auth0 and HTTPS.
 8. Commit OPUS after owner acceptance.
-9. Decide `owasys_old` deletion separately.
+9. Decide `owasys_old` separately.
 10. Demo, User Book, Reference Book, LSTSAR, KB.
