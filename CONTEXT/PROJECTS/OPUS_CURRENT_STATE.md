@@ -19,31 +19,21 @@ Binding specification:
 
 ## Current committed OWASYS baseline
 
-P117Q is committed on OPUS `master` and provides:
+P117Q is committed on OPUS `master` and provides browser/regional locale policy, synchronized menu and Mermaid-FSM navigation, OWASYS Singleton composition root, canonical Registry discovery, explicit duplicate diagnostics, current-context reconciliation, readable Applications cards, SCORE rendering and the FSM + ACL + SSO pipeline.
 
-- browser/regional locale policy;
-- synchronized menu and Mermaid-FSM navigation;
-- OWASYS Singleton composition root;
-- canonical Registry discovery;
-- explicit duplicate diagnostics;
-- `sites/owasys` selected over `sites/owasys_old`;
-- current-context reconciliation;
-- readable Applications cards;
-- SCORE rendering;
-- FSM + ACL + SSO pipeline.
+## P117R authoritative differential
 
-## P117R differential state
-
-Prepared differential:
-
-- ZIP: `opus_owasys_p117r_composer_rcp_bootstrap.zip`
-- SHA-256: `ea7edbfca0e9df871ac7521cd9f8dd3f55811fc75bca7108259719d9ae884350`
-- Files: 16
+- ZIP: `opus_owasys_p117r_composer_rcp_differential.zip`
+- SHA-256: `587638d2b436a74b41c0ecb3efe5d28468ab9806a7aefbe5051bdd541d491d8d`
+- Files: 11
 - Base: `36a8570088fb6084abdc694fd3ab8bf0bffa5d17`
+- Only root entry: `composer.json`
+
+The previous 16-file bootstrap ZIP with SHA-256 `ea7edbfca0e9df871ac7521cd9f8dd3f55811fc75bca7108259719d9ae884350` is rejected and must not be used because it polluted the OPUS root with delivery-only README, manifest and CMD files.
 
 No OPUS code was pushed directly by the assistant.
 
-The bootstrap implements:
+## P117R bootstrap contents
 
 - generic OPUS RCP command catalog;
 - generic Composer RCP client;
@@ -54,14 +44,11 @@ The bootstrap implements:
 - secret transfer through standard input rather than process arguments;
 - structured result without secrets;
 - OPUS `File` + `Json` password-store access and atomic write;
-- bootstrap and exhaustive audits;
-- Windows CMD validation/launch/guarded-cleanup helpers.
+- bootstrap and exhaustive audits.
 
 ## Explicit incompleteness
 
-Only `security.admin-password.change` is implemented in the P117R bootstrap.
-
-All remaining commands are declared but marked `implemented=false`. They fail explicitly; no direct OWASYS fallback is allowed.
+Only `security.admin-password.change` is implemented. All remaining commands are declared but marked `implemented=false`; they fail explicitly and have no direct OWASYS fallback.
 
 The exhaustive gate must remain red until every operation is migrated:
 
@@ -95,7 +82,8 @@ Generic command and RCP implementation belongs to OPUS. OWASYS owns presentation
 - no silent format fallback;
 - every concrete OPUS class implements a homonymous interface;
 - every homonymous interface extends the four standard markers;
-- P117M-R1 remains a release gate.
+- P117M-R1 remains a release gate;
+- no delivery README, report, manifest or helper CMD belongs at OPUS root.
 
 ## Security rules
 
@@ -110,19 +98,15 @@ Generic command and RCP implementation belongs to OPUS. OWASYS owns presentation
 
 ## Current exact gap
 
-The P117R ZIP must be applied and validated on the owner Windows installation.
-
-After the administrator-password path is confirmed, every remaining mutation must be moved to Composer/RCP: site create/validate/build/export, structure, source, Registry writes, Git stage/commit, bootstrap, password reset, SSO/Auth0/bastion configuration and cleanup.
+Apply and validate the clean P117R differential on the owner Windows installation. Then migrate site create/validate/build/export, structure, source, Registry writes, Git stage/commit, bootstrap, password reset, SSO/Auth0/bastion configuration and cleanup.
 
 ## `owasys_old`
 
-Do not delete `sites/owasys_old` yet.
-
-P117Q uses it as a rejected duplicate for canonical Registry integrity. Delete it only after the exhaustive RCP audit, reference scan, backend-first/no-JavaScript/browser acceptance and explicit owner confirmation.
+Do not delete `sites/owasys_old` yet. P117Q uses it as a rejected duplicate for canonical Registry integrity. Delete it only after the exhaustive RCP audit, reference scan, backend-first/no-JavaScript/browser acceptance and explicit owner confirmation.
 
 ## Locked roadmap
 
-1. Apply and validate P117R bootstrap.
+1. Apply and validate the clean P117R differential.
 2. Migrate every remaining OWASYS command to Composer/RCP.
 3. Make the exhaustive RCP audit green.
 4. Complete backend-first and no-JavaScript acceptance.
