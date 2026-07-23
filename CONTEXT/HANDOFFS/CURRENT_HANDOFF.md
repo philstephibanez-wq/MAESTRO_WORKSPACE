@@ -25,13 +25,33 @@ OWASYS must not own or directly execute site creation, structure mutation, sourc
 - Site architecture contract: `CONTEXT/PROJECTS/OPUS/OPUS_SITE_STANDARD_CONTRACT.md`
 - `H:/OPUS` is an owner development detail only
 
-## P117R differential
+## P117R differential — replacement authoritative artifact
 
-- ZIP: `opus_owasys_p117r_composer_rcp_bootstrap.zip`
-- SHA-256: `ea7edbfca0e9df871ac7521cd9f8dd3f55811fc75bca7108259719d9ae884350`
-- Files: 16
+- ZIP: `opus_owasys_p117r_composer_rcp_differential.zip`
+- SHA-256: `587638d2b436a74b41c0ecb3efe5d28468ab9806a7aefbe5051bdd541d491d8d`
+- Files: 11
 - Base: OPUS `36a8570088fb6084abdc694fd3ab8bf0bffa5d17`
+- Only legitimate root file: `composer.json`
+- No README, manifest, report, launch script, cleanup script or validation script is included at OPUS root
 - OPUS repository was not written directly by the assistant
+
+The previous artifact `opus_owasys_p117r_composer_rcp_bootstrap.zip` with SHA-256 `ea7edbfca0e9df871ac7521cd9f8dd3f55811fc75bca7108259719d9ae884350` is rejected and must not be used because it polluted the OPUS root.
+
+## Files in the authoritative differential
+
+```text
+composer.json
+config/rcp-commands.json
+Opus/Rcp/ComposerRcpClient.php
+Opus/Rcp/ComposerRcpClientInterface.php
+Opus/Rcp/RcpCommandCatalog.php
+Opus/Rcp/RcpCommandCatalogInterface.php
+Opus/Security/Sso/LocalPasswordSsoProvider.php
+sites/owasys/application/default/services/RuntimeSecurity.php
+sites/owasys/config/rcp.json
+tools/audit_owasys_composer_rcp_boundary.php
+tools/opus_rcp_dispatch.php
+```
 
 ## Implemented in P117R bootstrap
 
@@ -43,8 +63,7 @@ OWASYS must not own or directly execute site creation, structure mutation, sourc
 - secret payload through standard input, never command-line arguments;
 - stable structured result without passwords or stack traces;
 - local password store migrated to OPUS `File` + `Json` with atomic write;
-- bootstrap and exhaustive boundary audits;
-- CMD validation, launch and guarded post-acceptance cleanup helpers.
+- bootstrap and exhaustive boundary audits.
 
 ## Deliberately incomplete
 
@@ -88,34 +107,21 @@ Every new concrete OPUS class implements its homonymous interface extending:
 
 Password bootstrap, reset and change are commands.
 
-No password may appear in:
-
-- URL or query string;
-- Composer/PHP command-line arguments;
-- logs, profiler traces or audit details;
-- exception messages;
-- browser-visible raw process output;
-- committed configuration or differential artifacts.
+No password may appear in URL/query, Composer or PHP command-line arguments, logs, profiler traces, audit details, exceptions, raw process output, committed configuration or differential artifacts.
 
 ## Exact next work
 
-1. Apply the P117R ZIP to clean OPUS `36a8570…`.
+1. Extract the authoritative differential into clean OPUS `36a8570…`.
 2. Run Composer autoload, bootstrap audit, PHP lint and `git diff --check`.
 3. Test the real Windows administrator-password form through Composer/RCP.
-4. Inventory every remaining OWASYS mutation.
-5. Migrate site create/validate/build/export.
-6. Migrate structure preview/apply and source preview/write.
-7. Migrate Registry writes and Git stage/commit.
-8. Migrate user bootstrap, password reset, SSO/Auth0/bastion administration and cleanup.
-9. Keep the exhaustive audit red until no direct mutation remains.
-10. Complete backend-first, no-JavaScript and browser acceptance.
-11. Delete `sites/owasys_old` only after exhaustive acceptance and explicit owner confirmation.
+4. Inventory and migrate every remaining OWASYS mutation.
+5. Keep the exhaustive audit red until no direct mutation remains.
+6. Complete backend-first, no-JavaScript and browser acceptance.
+7. Delete `sites/owasys_old` only after exhaustive acceptance and explicit owner confirmation.
 
 ## `owasys_old`
 
-Do not delete it now.
-
-P117Q uses `sites/owasys_old` as an explicit rejected duplicate to prove canonical Registry selection of `sites/owasys`. The guarded cleanup CMD may be used only after the exhaustive RCP audit, reference scan, full acceptance and explicit confirmation.
+Do not delete it now. P117Q uses it as an explicit rejected duplicate to prove canonical Registry selection of `sites/owasys`.
 
 ## Permanent rules
 
@@ -124,6 +130,7 @@ NO DOC CONTRACT, NO PATCH.
 NO SOURCE OF TRUTH, NO PATCH.
 NO BRICOLAGE DELIVERY.
 NO FALLBACK SILENCIEUX.
+NO DELIVERY FILE POLLUTION IN OPUS ROOT.
 OWASYS IS GUI ONLY.
 ALL OPERATIONS USE COMPOSER THROUGH RCP.
 SECRETS NEVER ENTER COMMAND-LINE ARGUMENTS OR LOGS.
