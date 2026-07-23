@@ -69,7 +69,7 @@ sites/<site>/
 
 `www`, never `public`, is the public root. A site has one minimal `www/index.php`, delegating only to `application/default/bootstrap.php`. No second REST front controller or `www/api/index.php` is authorized.
 
-Layouts belong under `application/default/layouts`. OWASYS therefore renders its canonical layout from `application/default/layouts/layout.score`; the obsolete `application/default/templates/layout.score` must be removed after applying the differential.
+Layouts belong under `application/default/layouts`. OWASYS renders its canonical layout from `application/default/layouts/layout.score`; obsolete `application/default/templates/layout.score` must be removed.
 
 OWASYS REST and frontend routes pass through the same front controller. The application Singleton delegates `/api/v1/...` to the OWASYS API controller and all other routes to the current SCORE frontend.
 
@@ -107,7 +107,34 @@ OWASYS SCORE frontend
 
 No frontend business mutation, direct Registry write, direct password mutation, arbitrary shell command, browser-supplied Composer script, executable path, working directory or environment injection is authorized.
 
-## 6. Security
+## 6. Mandatory local process topology
+
+The secured REST boundary requires two independent processes in local development.
+
+```text
+127.0.0.1:8792 = OWASYS REST + Composer backend
+127.0.0.1:8000 = OWASYS SCORE frontend
+```
+
+Both processes use the same canonical `sites/owasys/www/index.php`. HTTP routing selects REST `/api/v1/...` requests or normal frontend routes.
+
+The frontend REST client endpoint is:
+
+```text
+http://127.0.0.1:8792/api/v1/executions
+```
+
+Both processes must load the same environment values:
+
+- `OPUS_OWASYS_BACKEND_TOKEN`;
+- `OPUS_OWASYS_BACKEND_HMAC`;
+- `OPUS_OWASYS_AUTH0_PROXY_SECRET`.
+
+The backend process must be started and its status resource verified before opening the frontend.
+
+Starting the frontend process alone is an incomplete launch and produces the blocking error `OPUS_RCP_CONNECTION_FAILED`. No direct-local Registry or password fallback is authorized.
+
+## 7. Security
 
 Local development may use HTTP only on loopback. Remote deployment requires HTTPS through the declared proxy/bastion boundary.
 
@@ -119,7 +146,7 @@ Passwords and other secrets remain in the protected request body and Composer pr
 
 OPUS supplies a generic `Auth0ProxySsoProvider`; OWASYS configures trusted proxy/bastion addresses and secret/header contracts under its own `config/sso.json`.
 
-## 7. Framework class contract
+## 8. Framework class contract
 
 Every concrete class under `Opus/` implements a homonymous interface extending:
 
@@ -130,51 +157,50 @@ Every concrete class under `Opus/` implements a homonymous interface extending:
 
 Application-owned classes do not become framework classes merely because they use OPUS interfaces.
 
-## 8. File and configuration boundary
+## 9. File and configuration boundary
 
 Configuration files are read through `Opus\File\File` and parsed through `StructuredFileLoader`, selecting OPUS `Json`, `Yaml`/`Yml` or `Xml` by extension.
 
 No direct `file_get_contents()` plus local JSON/XML/YAML parsing is authorized for configuration. No silent parser fallback is authorized. Scaffold writes cross `File::writeAtomic`; generated configuration uses the OPUS JSON encoder.
 
-## 9. Application validation
+## 10. Application validation
 
-The generic validator accepts the two declared OPUS application roles:
+The generic validator accepts:
 
 - `generated-opus-application`, using the generated route registry contract;
 - `standard-opus-application`, used by OWASYS and validated through its declared signal-route registry and FSM path.
 
 The FSM path is resolved from `site.json`, not hardcoded. Both roles remain subject to the same canonical roots, Singleton, module-directory, ACL deny-by-default, SSO, SCORE layout and no-`application/states` requirements.
 
-## 10. Generated application contract
+## 11. Generated application contract
 
 Composer-generated applications are immediately Singleton, FSM-module-first, `application/default + application/<module>`, browser-locale aware, OPUS I18n based, deny-by-default ACL, session/Auth0-proxy SSO ready, SCORE-only, free of UI-producing `echo`, free of mixed HTML/PHP and JavaScript-independent for required behavior.
 
 `SiteScaffoldPlan` is the unique canonical plan. `FullstackApplicationScaffoldPlan` is only a compatibility adapter delegating to it.
 
-## 11. Delivery
+## 12. Delivery
 
 OPUS code is delivered as a differential ZIP. The assistant does not push OPUS code directly.
 
 The ZIP contains no README, manifest, report, smoke, audit, check helper, cache or temporary file and introduces no root outside the admitted OPUS root.
 
-Authoritative artifact:
+Authoritative base artifact:
 
 - ZIP: `opus_owasys_p117u_canonical_rest_composer.zip`
 - SHA-256: `43fbcc75384d96b7116d9ee5afe34d997c7b509049bff1b2159f42ee3b43a429`
 - Files: 57
 - Bytes: 73,261
-- Top-level entries: `composer.json`, `Opus/`, `scripts/`, `sites/`
 
-## 12. Rejected artifacts
+Mandatory hotfix:
 
-Do not apply:
+- ZIP: `opus_owasys_p117u_hf1_fsm_contract.zip`
+- SHA-256: `e711af28142a5ad287569c5107b99d41065498ea3bed70ec13b977007ae605d2`
 
-- P117S SHA-256 `acb79eec5cc0ce4023e79e53963f203a2c143b78fa754a4411036170f3c4220e`;
-- P117T SHA-256 `ad1494d92f068789d8363b4b6a7a823ff7b6be189d36f66724f92fec91baf2c5`.
+## 13. Rejected artifacts
 
-P117T is rejected because it introduced root `bin/` and lowercase root `config/`.
+Do not apply P117S or P117T. P117T is rejected because it introduced root `bin/` and lowercase root `config/`.
 
-## 13. Acceptance
+## 14. Acceptance
 
 P117U is accepted only when:
 
@@ -191,4 +217,6 @@ P117U is accepted only when:
 11. standard and generated OPUS site validation recipes pass;
 12. HMAC, signature rejection, ACL rejection, execution FSM and Composer process boundary pass;
 13. Auth0 proxy trusted/untrusted recipes pass;
-14. real Windows Composer, Registry, password, browser/no-JavaScript and HTTPS/bastion gates pass in the owner environment.
+14. backend status on port `8792` succeeds before frontend validation;
+15. Registry/password flows pass through REST then Composer;
+16. real Windows browser/no-JavaScript and HTTPS/bastion gates pass.
