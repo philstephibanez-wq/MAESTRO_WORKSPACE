@@ -4,7 +4,7 @@ Date: 2026-07-23
 
 ## Active milestone
 
-P117U — canonical OWASYS secured REST + Composer backend.
+P117U — canonical OWASYS secured REST + Composer backend, with mandatory HF1 FSM correction.
 
 ```text
 OPUS = generic framework
@@ -38,39 +38,75 @@ Root files:
 
 Casing is contractual. No root `bin/`, lowercase root `config/`, root `public/` or new root.
 
-## Rejected artifacts
+## Authoritative code artifacts
 
-Do not apply:
-
-- P117S SHA-256 `acb79eec5cc0ce4023e79e53963f203a2c143b78fa754a4411036170f3c4220e`;
-- P117T SHA-256 `ad1494d92f068789d8363b4b6a7a823ff7b6be189d36f66724f92fec91baf2c5`.
-
-## Authoritative differential
+Base differential:
 
 - ZIP: `opus_owasys_p117u_canonical_rest_composer.zip`
 - SHA-256: `43fbcc75384d96b7116d9ee5afe34d997c7b509049bff1b2159f42ee3b43a429`
 - files: 57
 - bytes: 73,261
-- top-level entries: `composer.json`, `Opus`, `scripts`, `sites`
-- ZIP integrity verified
-- no README, manifest, report, smoke, audit or check helper
-- OPUS not written directly by the assistant
 
-## Mandatory hotfix HF1
-
-The owner runtime exposed a fatal error in `Opus/Fsm/FsmProcessor.php`: `validateFsm()` referenced the nonexistent constant `SUPPORTED_CONTRACTS` while the declared constant was `CANONICAL_CONTRACTS`.
-
-HF1 replaces only:
-
-`Opus/Fsm/FsmProcessor.php`
+Mandatory hotfix after P117U:
 
 - ZIP: `opus_owasys_p117u_hf1_fsm_contract.zip`
 - SHA-256: `e711af28142a5ad287569c5107b99d41065498ea3bed70ec13b977007ae605d2`
-- files: 1
+- file: `Opus/Fsm/FsmProcessor.php`
+- cause: invalid reference to undefined `SUPPORTED_CONTRACTS` constant
 
-The correction uses a generic versioned FSM-contract validator. Canonical OPUS contracts remain explicitly accepted, and application contracts matching `<VENDOR>_<NAME>_FSM_V<n>` are accepted without adding OWASYS-specific identifiers to framework code. A runtime recipe using `OWASYS_NAVIGATION_FSM_V1` passes.
+Rejected: P117S and P117T.
 
-HF1 is mandatory after P117U until a consolidated artifact is accepted.
+## Mandatory OWASYS process topology
+
+OWASYS is not a single-process application after the secured REST/Composer boundary is enabled.
+
+Two independent PHP processes are mandatory:
+
+```text
+127.0.0.1:8792 = OWASYS REST + Composer backend
+127.0.0.1:8000 = current OWASYS SCORE frontend
+```
+
+Both processes use the same canonical `sites/owasys/www/index.php`; routing selects `/api/v1/...` for the backend and normal locale routes for the frontend.
+
+The frontend client configuration targets:
+
+```text
+http://127.0.0.1:8792/api/v1/executions
+```
+
+Starting only the frontend produces the explicit blocking error:
+
+```text
+OPUS_RCP_CONNECTION_FAILED
+```
+
+This is not a permitted local fallback condition. It means the required backend process is absent or unreachable.
+
+The two terminals must load identical values for:
+
+- `OPUS_OWASYS_BACKEND_TOKEN`;
+- `OPUS_OWASYS_BACKEND_HMAC`;
+- `OPUS_OWASYS_AUTH0_PROXY_SECRET`.
+
+The backend must be started and its status endpoint verified before the frontend is opened.
+
+## Canonical launch order
+
+1. Generate a temporary `runtime/owasys/backend-env.cmd` containing the three environment secrets.
+2. Terminal backend: call that file, then start port `8792`.
+3. Verify `GET http://127.0.0.1:8792/api/v1/status`.
+4. Terminal frontend: call the same file, then start port `8000`.
+5. Open `http://127.0.0.1:8000/fr-FR/applications`.
+6. Delete the environment file after both servers are stopped.
+
+A mono-process command such as only:
+
+```text
+php -S 127.0.0.1:8000 -t sites\owasys\www sites\owasys\www\index.php
+```
+
+is incomplete and must never be presented as a complete OWASYS launch recipe.
 
 ## Composer
 
@@ -102,9 +138,9 @@ The web Registry model opens no SQLite database. Registry persistence and passwo
 
 ## Canonical OWASYS site
 
-OWASYS declares `OPUS_SITE_STANDARD_CONTRACT_CORE` with role `standard-opus-application`. Its FSM path is resolved from `site.json`; its signal-route registry, declared FSM, ACL, SSO and Singleton are validated without treating OWASYS as a generated site.
+OWASYS declares `OPUS_SITE_STANDARD_CONTRACT_CORE` with role `standard-opus-application`.
 
-OWASYS has one PHP file under `www/`:
+One PHP file exists under `www`:
 
 `sites/owasys/www/index.php`
 
@@ -114,7 +150,7 @@ Canonical layout:
 
 `sites/owasys/application/default/layouts/layout.score`
 
-Delete the obsolete `sites/owasys/application/default/templates/layout.score` after extracting P117U.
+Delete obsolete `sites/owasys/application/default/templates/layout.score` after applying P117U.
 
 ## Framework rules
 
@@ -124,38 +160,19 @@ Configuration crosses `File` plus `StructuredFileLoader` and explicit OPUS Json/
 
 `SiteScaffoldPlan` is the unique canonical plan; `FullstackApplicationScaffoldPlan` is only its compatibility adapter.
 
-## Validation state
+## Owner incidents recorded
 
-Green in isolated gates:
+1. `Undefined constant Opus\Fsm\FsmProcessor::SUPPORTED_CONTRACTS` — corrected by mandatory HF1.
+2. `OPUS_RCP_CONNECTION_FAILED` while only port `8000` was running — operational cause confirmed: backend port `8792` not started.
 
-- exact root and ZIP layout;
-- PHP lint: 49 P117U files plus HF1;
-- JSON parse: 7 files;
-- Composer user-command-only check;
-- no OWASYS leakage into generic code;
-- 21 concrete framework interface checks;
-- one OWASYS public PHP entrypoint;
-- canonical scaffold and atomic writer;
-- standard application validation using signal routes and declared FSM;
-- HF1 runtime construction with `OWASYS_NAVIGATION_FSM_V1`;
-- HMAC success, invalid-signature rejection and ACL rejection;
-- execution FSM and Composer process/stdin boundary;
-- execution storage without parameters;
-- Auth0 trusted/untrusted recipes.
+## Pending owner gates
 
-Pending owner gates:
-
-- restart OWASYS with HF1 and continue real browser validation;
-- real Windows `composer.phar` and autoload;
-- existing OPUS tools/recipes outside Composer aliases;
+- real Windows Composer/autoload;
+- backend status response on `8792`;
 - Registry/password workflows;
 - browser/no-JavaScript acceptance;
 - Auth0/HTTPS/bastion;
 - Windows/Linux parity.
-
-## `owasys_old`
-
-Do not delete `sites/owasys_old`. Deletion requires owner authorization after browser acceptance and reference scan.
 
 ## Permanent rules
 
@@ -169,6 +186,7 @@ OPUS IS THE FRAMEWORK.
 OWASYS IS AN OPUS APPLICATION.
 OWASYS PAGES ARE THE FRONTEND.
 REST + COMPOSER IS THE OWASYS BACKEND.
+THE REST BACKEND IS A MANDATORY SEPARATE PROCESS.
 CREATED SITES ARE INDEPENDENT OPUS APPLICATIONS.
 SECRETS NEVER ENTER ARGV OR LOGS.
 SCORE AND BACKEND-FIRST ARE MANDATORY.
