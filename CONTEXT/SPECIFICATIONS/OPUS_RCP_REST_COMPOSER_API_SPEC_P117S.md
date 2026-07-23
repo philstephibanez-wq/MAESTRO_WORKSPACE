@@ -3,7 +3,7 @@
 Date: 2026-07-23
 Status: REJECTED — NON-AUTHORITATIVE
 
-P117S is retained only as historical context. It must not be used as a source of implementation truth.
+P117S is historical context only and must not be applied.
 
 Rejected artifact:
 
@@ -12,24 +12,16 @@ Rejected artifact:
 
 Rejection reasons:
 
-- introduced a new global `public/rcp` tree;
+- global `public/rcp` tree;
 - embedded delivery audit/check helpers;
 - excessive delivery footprint;
-- conflicted with the no-root-pollution rule.
+- conflict with the closed OPUS root.
 
 Authoritative replacement:
 
-`CONTEXT/SPECIFICATIONS/OWASYS_BACKEND_REST_COMPOSER_SPEC_P117T.md`
+- specification: `CONTEXT/SPECIFICATIONS/OWASYS_CANONICAL_REST_COMPOSER_BACKEND_SPEC_P117U.md`;
+- handoff: `CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OWASYS_CANONICAL_REST_COMPOSER_P117U_2026-07-23.md`;
+- ZIP: `opus_owasys_p117u_canonical_rest_composer.zip`;
+- SHA-256: `43fbcc75384d96b7116d9ee5afe34d997c7b509049bff1b2159f42ee3b43a429`.
 
-Canonical handoff:
-
-`CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OWASYS_BACKEND_REST_COMPOSER_P117T_2026-07-23.md`
-
-Binding P117T product split:
-
-```text
-Current OWASYS SCORE pages = frontend
-Secured OPUS REST API + Composer = backend
-```
-
-Do not apply the P117S ZIP.
+Do not apply P117S.
