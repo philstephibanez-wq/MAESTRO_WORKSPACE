@@ -6,122 +6,182 @@ Date: 2026-07-23
 
 Canonical resume card for a fresh chat.
 
-## Active priority
+## Active milestone
 
-Migrate every executable or mutating OWASYS operation to an allow-listed Composer command invoked through RCP.
+P117S — OPUS REST RCP / Composer API.
 
-OWASYS is exclusively the interactive graphical surface. It collects intent, applies SSO + ACL + FSM, requests preview/confirmation, submits a typed RCP command and renders structured results through SCORE.
+OWASYS is only the web UI. Every OWASYS business execution or persistent mutation crosses SSO + ACL + FSM, then the generic OPUS REST RCP server, then an allow-listed public Composer command, then `bin/opus` and a typed OPUS/application command handler.
 
-OWASYS must not own or directly execute site creation, structure mutation, source writes, build/export, Registry writes, Git stage/commit, cleanup, user bootstrap, administrator-password mutation, SSO administration or any future persistent operation.
+Composer exposes user OPUS commands only. Smokes, audits, recipes and arbitrary technical commands are forbidden in `composer.json`.
 
 ## Source of truth
 
 - OPUS repository: `philstephibanez-wq/OPUS`
 - OPUS branch: `master`
-- Current OPUS head: `36a8570088fb6084abdc694fd3ab8bf0bffa5d17`
+- Differential base: `36a8570088fb6084abdc694fd3ab8bf0bffa5d17`
 - Workspace repository: `philstephibanez-wq/MAESTRO_WORKSPACE`
-- P117R specification: `CONTEXT/SPECIFICATIONS/OWASYS_COMPOSER_RCP_COMMAND_BOUNDARY_SPEC_P117R.md`
-- P117R handoff: `CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OWASYS_COMPOSER_RCP_P117R_2026-07-23.md`
+- P117S specification: `CONTEXT/SPECIFICATIONS/OPUS_RCP_REST_COMPOSER_API_SPEC_P117S.md`
+- P117S handoff: `CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OPUS_RCP_REST_COMPOSER_P117S_2026-07-23.md`
 - Site architecture contract: `CONTEXT/PROJECTS/OPUS/OPUS_SITE_STANDARD_CONTRACT.md`
-- `H:/OPUS` is an owner development detail only
+- `H:/OPUS` is an owner-local development detail only
 
-## P117R differential — replacement authoritative artifact
+## Authoritative differential
 
-- ZIP: `opus_owasys_p117r_composer_rcp_differential.zip`
-- SHA-256: `587638d2b436a74b41c0ecb3efe5d28468ab9806a7aefbe5051bdd541d491d8d`
-- Files: 11
-- Base: OPUS `36a8570088fb6084abdc694fd3ab8bf0bffa5d17`
-- Only legitimate root file: `composer.json`
-- No README, manifest, report, launch script, cleanup script or validation script is included at OPUS root
+- ZIP: `opus_owasys_p117s_rest_composer_api.zip`
+- SHA-256: `acb79eec5cc0ce4023e79e53963f203a2c143b78fa754a4411036170f3c4220e`
+- Files: 58
+- Bytes: 65,973
+- Only root entry: `composer.json`
+- ZIP integrity: verified
 - OPUS repository was not written directly by the assistant
 
-The previous artifact `opus_owasys_p117r_composer_rcp_bootstrap.zip` with SHA-256 `ea7edbfca0e9df871ac7521cd9f8dd3f55811fc75bca7108259719d9ae884350` is rejected and must not be used because it polluted the OPUS root.
+All P117R code artifacts are rejected and superseded.
 
-## Files in the authoritative differential
+## Composer contract
 
-```text
-composer.json
-config/rcp-commands.json
-Opus/Rcp/ComposerRcpClient.php
-Opus/Rcp/ComposerRcpClientInterface.php
-Opus/Rcp/RcpCommandCatalog.php
-Opus/Rcp/RcpCommandCatalogInterface.php
-Opus/Security/Sso/LocalPasswordSsoProvider.php
-sites/owasys/application/default/services/RuntimeSecurity.php
-sites/owasys/config/rcp.json
-tools/audit_owasys_composer_rcp_boundary.php
-tools/opus_rcp_dispatch.php
-```
+Composer has exactly two OPUS product responsibilities:
 
-## Implemented in P117R bootstrap
+1. install OPUS and dependencies;
+2. expose stable user OPUS commands.
 
-- generic OPUS Composer/RCP catalog and client;
-- homonymous interfaces extending the four standard markers;
-- root Composer operation catalog;
-- administrator-password change migrated to Composer/RCP;
-- command-side ACL revalidation;
-- secret payload through standard input, never command-line arguments;
-- stable structured result without passwords or stack traces;
-- local password store migrated to OPUS `File` + `Json` with atomic write;
-- bootstrap and exhaustive boundary audits.
+Public command families delivered in P117S:
 
-## Deliberately incomplete
+- application/site create;
+- OWASYS create/export;
+- language add;
+- site serve/validate;
+- route list;
+- page/rubric create;
+- administrator-password change;
+- Registry synchronize/select/clear/creation-start.
 
-Only `security.admin-password.change` is implemented in this bootstrap.
+Every Composer script delegates to `bin/opus`. No smoke or audit alias remains.
 
-All other declared operations are `implemented=false` and fail explicitly with `OPUS_RCP_OPERATION_NOT_IMPLEMENTED`. No local fallback is authorized.
-
-The exhaustive gate remains red until all operations are migrated:
-
-```cmd
-composer opus:audit-owasys-rcp
-```
-
-## Mandatory target architecture
+## REST RCP architecture
 
 ```text
-OWASYS SCORE form
--> authenticated request
+OWASYS SCORE UI
+-> browser locale
 -> SSO identity
 -> deny-by-default ACL
--> FSM signal and guards
--> immutable command intent
--> RCP request
--> allow-listed Composer command
--> typed OPUS command handler
+-> OWASYS FSM
+-> typed REST execution
+-> OPUS REST authentication
+-> delegated actor validation
+-> RCP execution FSM
+-> allow-listed Composer script
+-> bin/opus
+-> OPUS service or application command provider
 -> structured result
--> OWASYS ViewModel
--> SCORE rendering
+-> OWASYS projection/ViewModel
+-> SCORE
 ```
 
-Generic command/RCP classes belong to OPUS. OWASYS contains only presentation adapters and ViewModel mapping.
+REST resources:
 
-Every new concrete OPUS class implements its homonymous interface extending:
+```text
+GET  /v1/status
+GET  /v1/operations
+POST /v1/executions
+GET  /v1/executions/{execution_id}
+```
+
+HTTP is accepted only on loopback for local development. Remote deployment requires HTTPS.
+
+## Framework rules
+
+Every concrete framework class implements its homonymous interface extending:
 
 - `OpusFrameworkComponentInterface`;
 - `OpusExceptionAwareInterface`;
 - `OpusProfilerAwareInterface`;
 - `OpusSelfDocumentingInterface`.
 
-## Administrator-password rule
+P117S adds generic OPUS console, scaffold, runtime, Composer, REST and RCP classes behind such interfaces.
 
-Password bootstrap, reset and change are commands.
+Modified `Response`, `FsmProcessor` and `FsmSiteLoader` remain behind their existing homonymous four-marker interfaces.
 
-No password may appear in URL/query, Composer or PHP command-line arguments, logs, profiler traces, audit details, exceptions, raw process output, committed configuration or differential artifacts.
+## Generated applications
 
-## Exact next work
+Composer creates a complete module-first OPUS application:
 
-1. Extract the authoritative differential into clean OPUS `36a8570…`.
-2. Run Composer autoload, bootstrap audit, PHP lint and `git diff --check`.
-3. Test the real Windows administrator-password form through Composer/RCP.
-4. Inventory and migrate every remaining OWASYS mutation.
-5. Keep the exhaustive audit red until no direct mutation remains.
-6. Complete backend-first, no-JavaScript and browser acceptance.
-7. Delete `sites/owasys_old` only after exhaustive acceptance and explicit owner confirmation.
+- Singleton composition root;
+- `application/default + application/<module>`;
+- no `application/states`;
+- FSM-module-first routing;
+- browser-locale negotiation;
+- canonical OPUS I18n catalogs;
+- deny-by-default ACL;
+- session and Auth0-proxy SSO boundaries;
+- SCORE-only rendering;
+- minimal `www/index.php`;
+- no UI-producing `echo`;
+- no mixed HTML/PHP views.
+
+## OWASYS migration
+
+The OWASYS web process no longer executes persistent Registry or password mutations.
+
+The Registry web model does not open SQLite. It consumes an in-memory snapshot returned by the Composer-side command provider.
+
+Migrated operations include create, validate, route list, language/page/rubric creation, export, password change and Registry synchronize/select/clear/creation-start.
+
+## Configuration
+
+Configuration crosses `Opus\File\File` and `StructuredFileLoader`, selecting OPUS JSON/YAML/YML/XML parsers. `FsmProcessor` and `FsmSiteLoader` were corrected to remove direct JSON configuration reads.
+
+## Validation state
+
+Green in isolated artifact recipes:
+
+- PHP lint;
+- JSON parse;
+- Composer catalogue audit;
+- homonymous-interface/four-marker audit;
+- scaffold and site-command recipes;
+- REST server and authentication recipes;
+- Composer process-boundary recipe;
+- Registry command/snapshot recipe;
+- FSM structured-loader recipe;
+- response-stream/no-echo recipe;
+- ZIP integrity and root-entry validation.
+
+Pending owner gates:
+
+- real Windows Composer and autoload;
+- real nested Composer/stdin execution;
+- full existing OPUS recipes;
+- real Registry/password workflows;
+- browser/no-JavaScript acceptance;
+- Auth0 proxy and HTTPS/bastion deployment;
+- Windows/Linux parity.
+
+## Target commands
+
+```cmd
+cd /d H:\OPUS
+bin\cmd\CLEAN_P117R_REJECTED_RCP.cmd
+bin\cmd\CHECK_P117S_REST_COMPOSER.cmd
+bin\cmd\INIT_LOCAL_RCP_SECRET.cmd
+```
+
+Terminal 1:
+
+```cmd
+cd /d H:\OPUS
+bin\cmd\START_OPUS_RCP_REST.cmd
+```
+
+Terminal 2:
+
+```cmd
+cd /d H:\OPUS
+bin\cmd\START_OWASYS.cmd
+```
 
 ## `owasys_old`
 
-Do not delete it now. P117Q uses it as an explicit rejected duplicate to prove canonical Registry selection of `sites/owasys`.
+Do not delete it now. P117Q still uses `sites/owasys_old` as a rejected duplicate for canonical Registry integrity. Deletion requires reference scan, browser acceptance and explicit owner confirmation.
 
 ## Permanent rules
 
@@ -131,8 +191,9 @@ NO SOURCE OF TRUTH, NO PATCH.
 NO BRICOLAGE DELIVERY.
 NO FALLBACK SILENCIEUX.
 NO DELIVERY FILE POLLUTION IN OPUS ROOT.
-OWASYS IS GUI ONLY.
-ALL OPERATIONS USE COMPOSER THROUGH RCP.
+COMPOSER EXPOSES USER COMMANDS ONLY.
+OWASYS IS WEB UI ONLY.
+OWASYS BUSINESS OPERATIONS USE REST RCP THEN COMPOSER.
 SECRETS NEVER ENTER COMMAND-LINE ARGUMENTS OR LOGS.
 BACKEND FIRST.
 SERVER-RENDERED SCORE FIRST.
