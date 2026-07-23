@@ -6,72 +6,78 @@ OPUS fait partie du workspace ; OPUS n'est pas le workspace.
 
 ## Reprise immédiate
 
-Lire :
+Lire dans cet ordre :
 
 1. `README.md`
 2. `CONTEXT/HANDOFFS/CURRENT_HANDOFF.md`
-3. `CONTEXT/HANDOFFS/OWASYS_20260716_DELIVERY_CLOSURE.md`
-4. `CONTEXT/PROJECTS/OPUS_CURRENT_STATE.md`
-5. `CONTEXT/PROJECTS/PROJECT_INDEX.md`
-
-## Vue rapide
-
-| Projet | État |
-|---|---|
-| OWASYS | Priorité absolue ; Build, Source editor, Git stage/commit et trois parcours HTTP validés ; recette visuelle finale à exécuter |
-| OPUS Demo | À générer après fermeture OWASYS |
-| User Book | Après la démo |
-| Reference Book | Après le User Book |
-| LSTSAR | Après la documentation |
-| KB | Après LSTSAR |
-
-## État OPUS / OWASYS
-
-- dépôt : `philstephibanez-wq/OPUS`
-- branche : `master`
-- dernier commit localement validé : `5104168da5a845ce80baaf5a9ec1ab57a67bb449`
-- environnement owner actuel : `H:/OPUS`, sans valeur contractuelle pour la distribution
-
-OWASYS est un livrable portable Windows/Linux pour les utilisateurs d'OPUS. Dev/prod dépend de `OPUS_ENV`, pas de la machine.
-
-## Capacités validées
-
-- Build preview/build/build-and-export ;
-- génération, validation et ZIP ;
-- état Source state-first et endpoint authentifié ;
-- arbre et édition sécurisée des fichiers applicatifs ;
-- aperçu diff obligatoire, validation PHP/JSON, verrou SHA-256, écriture atomique ;
-- inspection Git ;
-- staging et commit limités à l'application sélectionnée ;
-- contrôles visuels de staging et commit ;
-- `OWASYS_SOURCE_HTTP_SMOKE_OK` ;
-- `OWASYS_STRUCTURE_DRAFT_APPLY_UI_HTTP_SMOKE_OK` ;
-- `OWASYS_RUNTIME_FSM_HTTP_SMOKE_OK` ;
-- aucune commande Git libre, aucun pull/push/reset/changement de branche ;
-- suite globale `OPUS_SMOKE_ALL_OK`.
+3. `CONTEXT/SPECIFICATIONS/OWASYS_CANONICAL_REST_COMPOSER_BACKEND_SPEC_P117U.md`
+4. `CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OWASYS_CANONICAL_REST_COMPOSER_P117U_2026-07-23.md`
+5. `CONTEXT/PROJECTS/OPUS_CURRENT_STATE.md`
+6. `CONTEXT/PROJECTS/PROJECT_INDEX.md`
 
 ## Priorité active
 
-1. exécuter la recette réelle dans le navigateur ;
-2. vérifier connexion, sélection de `demo-app`, Source & Git, sauvegarde, staging et commit ;
-3. vérifier Build preview/build/export ;
-4. corriger tout défaut visuel ou placeholder essentiel ;
-5. décider la fermeture OWASYS.
+OWASYS P117U : conserver les pages SCORE actuelles comme frontend et fournir leur backend sécurisé REST + Composer sans mélanger OPUS, OWASYS et les sites générés.
 
-## Feuille de route verrouillée
+```text
+OPUS = framework générique
+OWASYS = application OPUS
+pages OWASYS = frontend
+REST + Composer = backend OWASYS
+sites créés = applications OPUS indépendantes
+```
 
-1. OWASYS.
-2. Démo officielle.
-3. User Book.
-4. Reference Book.
-5. LSTSAR.
-6. KB.
+## Source de vérité
 
-## Règles
+- OPUS : `philstephibanez-wq/OPUS`, branche `master`
+- base P117U : `36a8570088fb6084abdc694fd3ab8bf0bffa5d17`
+- workspace : `philstephibanez-wq/MAESTRO_WORKSPACE`
+- OPUS local owner : `H:/OPUS`, détail local sans valeur distributive
+
+## Racine OPUS verrouillée
+
+Répertoires admis uniquement :
+
+`.git`, `.github`, `application`, `Config`, `DOC`, `Opus`, `packages`, `runtime`, `scripts`, `sites`, `tools`, `vendor`.
+
+Fichiers racine admis uniquement :
+
+`.gitignore`, `AGENTS.md`, `composer.json`, `composer.lock`, `composer.phar`, `LICENSE`, `README.md`.
+
+Interdictions : root `bin/`, root `config/` minuscule, root `public/`, toute nouvelle racine.
+
+## Livrable actif
+
+- ZIP : `opus_owasys_p117u_canonical_rest_composer.zip`
+- SHA-256 : `1ee231cbcbe9e5a4578aa6f50b7a83559f89b46f6916e93f682c50f360401e46`
+- fichiers : 55
+- entrées de premier niveau : `composer.json`, `Opus`, `scripts`, `sites`
+
+P117S et P117T sont rejetés. P117T a violé la racine avec `bin/` et `config/` minuscule.
+
+## Règles permanentes
 
 - NO CONTRACT, NO PATCH.
 - NO SOURCE OF TRUTH, NO PATCH.
 - NO BRICOLAGE DELIVERY.
 - NO FALLBACK SILENCIEUX.
+- ONLY THE OWNER-CONFIRMED OPUS ROOT IS ADMITTED.
+- COMPOSER EXPOSES USER COMMANDS ONLY.
+- OPUS IS THE FRAMEWORK.
+- OWASYS IS AN OPUS APPLICATION.
+- OWASYS PAGES ARE THE FRONTEND.
+- REST + COMPOSER IS THE OWASYS BACKEND.
+- CREATED SITES ARE INDEPENDENT OPUS APPLICATIONS.
+- SCORE AND BACKEND-FIRST ARE MANDATORY.
 - WORKSPACE HANDOFF UPDATED AT EVERY STATE CHANGE.
 - SCORETEMPLATE BELONGS TO OPUS, NOT ASAP.
+
+## Feuille de route
+
+1. appliquer P117U sur une base OPUS propre ;
+2. valider Composer/autoload et les recettes existantes hors aliases Composer ;
+3. démarrer backend REST et frontend OWASYS ;
+4. valider Registry, mot de passe, navigateur sans JavaScript, Auth0, HTTPS et bastion ;
+5. committer OPUS après acceptation owner ;
+6. décider séparément de `sites/owasys_old` ;
+7. Démo officielle, User Book, Reference Book, LSTSAR, KB.
