@@ -4,10 +4,11 @@
 
 - Repository: `philstephibanez-wq/OPUS`
 - Branch: `master`
-- Current remote head reviewed: `05a0639cda2e271e8aa6e77e2b5d8f762d15f6b9`
+- Current remote head reviewed: `96884961248fc82bf5e13187a6ffcfffacb82d9f`
 - OPUS is the generic framework.
 - Generic command entrypoint: `scripts/opus.php`.
-- Framework classes use homonymous four-marker interfaces.
+- Every concrete framework class uses a homonymous four-marker interface.
+- `OpusExceptionAwareInterface` and `OpusProfilerAwareInterface` are operational runtime contracts.
 - Configuration uses `File` and explicit structured parsers.
 
 ## OPUS root
@@ -32,74 +33,61 @@ No root `bin/`, lowercase root `config/`, root `public/` or new top-level path.
 - Current SCORE pages are its frontend.
 - Secured REST plus Composer is its backend.
 - Generated sites are independent OPUS applications.
-- Contract: `OPUS_SITE_STANDARD_CONTRACT_CORE`.
-- Role: `standard-opus-application`.
-- Public entrypoint: `sites/owasys/www/index.php`.
-- Backend process: `127.0.0.1:8792`.
-- Frontend process: `127.0.0.1:8000`.
+- Backend: `127.0.0.1:8792`.
+- Frontend: `127.0.0.1:8000`.
+- Backend log: `sites/owasys/var/logs/rcp-backend.log`.
+- Profiler traces: `sites/owasys/var/profiler/<trace_id>.json`.
 
-## Mandatory code artifacts
+## Mandatory artifacts
 
 ### P117U
 
-- ZIP: `opus_owasys_p117u_canonical_rest_composer.zip`
-- SHA-256: `43fbcc75384d96b7116d9ee5afe34d997c7b509049bff1b2159f42ee3b43a429`
+SHA-256: `43fbcc75384d96b7116d9ee5afe34d997c7b509049bff1b2159f42ee3b43a429`
 
 ### HF1
 
-- ZIP: `opus_owasys_p117u_hf1_fsm_contract.zip`
-- SHA-256: `e711af28142a5ad287569c5107b99d41065498ea3bed70ec13b977007ae605d2`
+SHA-256: `e711af28142a5ad287569c5107b99d41065498ea3bed70ec13b977007ae605d2`
 
 ### HF2
 
-- ZIP: `opus_owasys_p117u_hf2_composer_resolution.zip`
-- SHA-256: `c26d32f3b1446c8bb65c668ab8c7c785783162855f8b5b02e57dd61e8e97f980`
+SHA-256: `c26d32f3b1446c8bb65c668ab8c7c785783162855f8b5b02e57dd61e8e97f980`
 
 ### HF3
 
-- ZIP: `opus_owasys_p117u_hf3_composer_result_contract.zip`
-- SHA-256: `f0860491df311a997d92c0a82796e7e11921911721bf02e3a8b45aece4ce6f17`
-- Files: 3
-- Bytes: 5,965
+SHA-256: `f0860491df311a997d92c0a82796e7e11921911721bf02e3a8b45aece4ce6f17`
 
-HF3 corrects the Composer machine-result contract and adds the exact local secret file to the existing `.gitignore`.
+### HF4
+
+- ZIP: `opus_owasys_p117u_hf4_logger_profiler_exitcode.zip`
+- SHA-256: `2f48a42be49153a3c67186e26553f884c6401486e42a3747db9716d4fb1e1b07`
+- Files: 7
+- Payload bytes: 52,274
+
+HF4 connects the existing Logger/Profiler to RCP, adds trace correlation, sanitizes process diagnostics and corrects Windows process exit-code resolution.
 
 P117S and P117T remain rejected.
 
-## Critical security gate
+## Security gate
 
-The public OPUS repository tracks `runtime/owasys/backend-env.cmd` containing OWASYS service secrets.
+The tracked OWASYS runtime secret file was removed in OPUS commit `96884961248fc82bf5e13187a6ffcfffacb82d9f`.
 
-Before further acceptance:
-
-1. remove the file from Git and local storage;
-2. rotate all three values;
-3. commit and push the deletion and ignore rule;
-4. restart both OWASYS processes with the new values.
-
-Previous values are compromised because they entered public history.
+Previously committed or pasted values must not be reused for nonlocal deployment.
 
 ## Canonical documents
 
 1. `CONTEXT/HANDOFFS/CURRENT_HANDOFF.md`
 2. `CONTEXT/SPECIFICATIONS/OWASYS_CANONICAL_REST_COMPOSER_BACKEND_SPEC_P117U.md`
-3. `CONTEXT/SPECIFICATIONS/OWASYS_P117U_HF2_COMPOSER_RESOLUTION_SPEC.md`
-4. `CONTEXT/SPECIFICATIONS/OWASYS_P117U_HF3_COMPOSER_RESULT_CONTRACT_SPEC.md`
-5. `CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OWASYS_CANONICAL_REST_COMPOSER_P117U_2026-07-23.md`
-6. `CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OWASYS_P117U_HF2_COMPOSER_RESOLUTION_2026-07-23.md`
-7. `CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OWASYS_P117U_HF3_COMPOSER_RESULT_CONTRACT_2026-07-23.md`
-8. `CONTEXT/PROJECTS/OPUS_CURRENT_STATE.md`
+3. `CONTEXT/SPECIFICATIONS/OWASYS_P117U_HF4_LOGGER_PROFILER_EXITCODE_SPEC.md`
+4. `CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OWASYS_P117U_HF4_LOGGER_PROFILER_EXITCODE_2026-07-24.md`
+5. `CONTEXT/PROJECTS/OPUS_CURRENT_STATE.md`
 
 ## Resume order
 
-1. Apply P117U.
-2. Apply HF1.
-3. Apply HF2.
-4. Apply HF3.
-5. remove and rotate exposed secrets.
-6. regenerate Composer autoload.
-7. start backend on `8792` and verify `/api/v1/status`.
-8. start frontend on `8000` with identical new secrets.
-9. validate Registry and password workflows.
-10. commit OPUS after owner acceptance.
-11. decide `sites/owasys_old` separately.
+1. Apply P117U, HF1, HF2, HF3, HF4.
+2. Regenerate Composer autoload.
+3. Start backend and verify status.
+4. Start frontend with the same local environment.
+5. Reproduce Registry synchronization.
+6. Inspect the trace-correlated log and profiler file.
+7. Validate Registry/password/browser/Auth0 gates.
+8. Commit OPUS after owner acceptance.
