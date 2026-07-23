@@ -1,173 +1,124 @@
 # OPUS CURRENT STATE
 
-Last updated: 2026-07-23.
+Last updated: 2026-07-24.
 
 ## Repository
 
 - Remote: `philstephibanez-wq/OPUS`
 - Branch: `master`
-- Current remote head reviewed: `05a0639cda2e271e8aa6e77e2b5d8f762d15f6b9`
-- Owner local repo: `H:/OPUS` only as a local detail
+- Current remote head reviewed: `96884961248fc82bf5e13187a6ffcfffacb82d9f`
+- Owner local repo: `H:/OPUS`
 
 ## Active milestone
 
-P117U — canonical secured REST + Composer backend for the current OWASYS SCORE frontend, with mandatory HF1, HF2 and HF3.
+P117U canonical OWASYS REST + Composer backend with mandatory HF1, HF2, HF3 and HF4.
 
-- canonical specification: `CONTEXT/SPECIFICATIONS/OWASYS_CANONICAL_REST_COMPOSER_BACKEND_SPEC_P117U.md`
-- HF2 specification: `CONTEXT/SPECIFICATIONS/OWASYS_P117U_HF2_COMPOSER_RESOLUTION_SPEC.md`
-- HF3 specification: `CONTEXT/SPECIFICATIONS/OWASYS_P117U_HF3_COMPOSER_RESULT_CONTRACT_SPEC.md`
-- canonical handoff: `CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OWASYS_CANONICAL_REST_COMPOSER_P117U_2026-07-23.md`
-- HF2 handoff: `CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OWASYS_P117U_HF2_COMPOSER_RESOLUTION_2026-07-23.md`
-- HF3 handoff: `CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OWASYS_P117U_HF3_COMPOSER_RESULT_CONTRACT_2026-07-23.md`
+Canonical resume point:
+
+`CONTEXT/HANDOFFS/CURRENT_HANDOFF.md`
+
+HF4 specification:
+
+`CONTEXT/SPECIFICATIONS/OWASYS_P117U_HF4_LOGGER_PROFILER_EXITCODE_SPEC.md`
+
+HF4 handoff:
+
+`CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OWASYS_P117U_HF4_LOGGER_PROFILER_EXITCODE_2026-07-24.md`
 
 ## Immutable separation
 
 ```text
-OPUS = framework
-OWASYS = OPUS application
-OWASYS current pages = frontend
+OPUS = generic framework
+OWASYS = OPUS application and SCORE frontend
 REST + Composer = OWASYS backend
 Created sites = independent OPUS applications
 ```
 
-Generic code contains no OWASYS business implementation. Registry and password implementations remain under `sites/owasys/`.
-
 ## Root contract
 
-The owner-confirmed root admits only `.git`, `.github`, `application`, `Config`, `DOC`, `Opus`, `packages`, `runtime`, `scripts`, `sites`, `tools`, `vendor` and declared root files.
+Only the owner-confirmed OPUS roots are admitted. Root `bin/`, lowercase root `config/`, root `public/` and new top-level directories remain forbidden.
 
-Root `bin/`, lowercase root `config/`, root `public/` and every new top-level directory are forbidden.
-
-## Mandatory artifact stack
-
-### P117U
-
-- ZIP: `opus_owasys_p117u_canonical_rest_composer.zip`
-- SHA-256: `43fbcc75384d96b7116d9ee5afe34d997c7b509049bff1b2159f42ee3b43a429`
-
-### HF1
-
-- ZIP: `opus_owasys_p117u_hf1_fsm_contract.zip`
-- SHA-256: `e711af28142a5ad287569c5107b99d41065498ea3bed70ec13b977007ae605d2`
-
-### HF2
-
-- ZIP: `opus_owasys_p117u_hf2_composer_resolution.zip`
-- SHA-256: `c26d32f3b1446c8bb65c668ab8c7c785783162855f8b5b02e57dd61e8e97f980`
-
-### HF3
-
-- ZIP: `opus_owasys_p117u_hf3_composer_result_contract.zip`
-- SHA-256: `f0860491df311a997d92c0a82796e7e11921911721bf02e3a8b45aece4ce6f17`
-- files: 3
-- bytes: 5,965
+## Artifact stack
 
 ```text
-.gitignore
-Opus/Console/OpusConsoleApplication.php
-Opus/Rcp/Composer/ComposerCommandExecutor.php
+P117U -> HF1 -> HF2 -> HF3 -> HF4
 ```
 
-P117S and P117T remain rejected.
+HF4:
 
-## Owner runtime incidents
+- ZIP: `opus_owasys_p117u_hf4_logger_profiler_exitcode.zip`
+- SHA-256: `2f48a42be49153a3c67186e26553f884c6401486e42a3747db9716d4fb1e1b07`
+- files: 7
+- payload bytes: 52,274
 
-### HF1
+## HF4 framework evolution
 
-`Undefined constant Opus\Fsm\FsmProcessor::SUPPORTED_CONTRACTS` — corrected by HF1.
+HF4 modifies existing components only:
 
-### Process topology
+- `LoggerInterface`;
+- `ProfilerInterface`;
+- `TraceInterface`;
+- `ComposerCommandExecutor`;
+- `RcpRestClient`;
+- `RcpRestServer`;
+- OWASYS backend diagnostic configuration.
 
-`OPUS_RCP_CONNECTION_FAILED` — backend process absent while frontend was running.
+No new concrete framework class is introduced.
 
-### HF2
+The Logger/Profiler/Trace interfaces now declare the public methods already implemented by their concrete classes while retaining the four standard marker extensions.
 
-`OPUS_RCP_COMPOSER_PHAR_MISSING:composer.phar` and HTML backend fatal parsed as JSON — corrected by HF2.
+## Diagnostics
 
-### HF3
-
-`OPUS_RCP_COMPOSER_RESULT_MISSING` — the executor accepted only one-line JSON output. Composer-prefixed or multiline OPUS console output could not be reconstructed.
-
-HF3 forces machine JSON for RCP stdin requests and extracts balanced JSON objects from Composer stdout while accepting only declared OPUS console contracts.
-
-## Critical public-secret incident
-
-The public OPUS repository currently tracks `runtime/owasys/backend-env.cmd` with the three OWASYS backend secret values.
-
-The values are compromised and must be rotated. Required actions:
-
-1. remove the file from the Git index and working tree;
-2. commit and push the deletion plus HF3 `.gitignore` protection;
-3. generate new token, HMAC and Auth0-proxy secrets;
-4. restart backend and frontend with the new values.
-
-The previous values remain compromised even after deletion because they entered public history. History purification is a separate explicit owner operation.
-
-## Composer state
-
-`composer.json` exposes user commands only and delegates to `scripts/opus.php`. No smoke, audit, test or recipe alias belongs in Composer.
-
-For RCP execution, `OpusConsoleApplication` now forces `OPUS_CONSOLE_COMMAND_RESULT_V1` or `OPUS_CONSOLE_ERROR_V1` machine output from the stdin request contract.
-
-`ComposerCommandExecutor` supports Composer preamble plus compact or multiline result envelopes. It does not return raw process output.
-
-## OWASYS state
-
-OWASYS remains `OPUS_SITE_STANDARD_CONTRACT_CORE`, role `standard-opus-application`, Singleton, FSM/I18n/ACL/SSO driven and SCORE-rendered.
-
-One public PHP entrypoint exists: `sites/owasys/www/index.php`.
-
-The web Registry model performs no SQLite access. Registry and password mutations remain application-owned Composer commands executed backend-side.
-
-Two processes are mandatory:
+RCP server and Composer executor now use the existing OPUS Logger and Profiler.
 
 ```text
-127.0.0.1:8792 = REST + Composer backend
-127.0.0.1:8000 = SCORE frontend
+sites/owasys/var/logs/rcp-backend.log
+sites/owasys/var/profiler/<trace_id>.json
 ```
 
-## Framework contracts
+The trace ID is included in REST records and appended to frontend backend-error exceptions.
 
-Every concrete framework class implements its homonymous four-marker interface. HF3 modifies two existing classes and introduces no new concrete class.
+No request parameters or secrets are logged. Failure excerpts are sanitized and bounded.
 
-Configuration reads cross `File` plus `StructuredFileLoader` and explicit OPUS Json/Yaml/Xml parsers.
+## Windows process correction
 
-## HF3 validation
+The former process boundary used only the observed `proc_get_status` code and discarded `proc_close`.
+
+HF4 records and resolves both. A Windows observed `-1` with close code `0` is now recognized as success. If neither value is valid, execution fails explicitly with `OPUS_RCP_PROCESS_EXIT_CODE_UNAVAILABLE`.
+
+## Runtime incidents addressed
+
+1. FSM constant: HF1.
+2. Missing backend process: two-process topology.
+3. Composer PHAR discovery and HTML/JSON errors: HF2.
+4. Prefixed/multiline result parsing: HF3.
+5. Generic command failure without diagnostics: HF4.
+
+## Security state
+
+The tracked local environment file was removed from Git and pushed in OPUS commit `96884961248fc82bf5e13187a6ffcfffacb82d9f`.
+
+Previously committed or pasted secret values must not be reused for nonlocal deployment.
+
+## Validation
 
 Green:
 
-- exact reproduction of pre-HF3 `OPUS_RCP_COMPOSER_RESULT_MISSING`;
-- Composer preamble plus multiline OPUS result accepted after HF3;
-- nested objects, braces and escaped quotes handled;
-- RCP stdin forces compact machine JSON;
-- safe stderr code propagation;
-- PHP lint;
-- homonymous interfaces retained;
-- exact ZIP content and integrity.
+- modified PHP lint;
+- backend JSON parse;
+- Logger/Profiler/Trace implementation compatibility;
+- structured log/profiler fixtures;
+- secret redaction;
+- Composer success/failure fixtures;
+- Windows exit-code fixture;
+- ZIP content and integrity.
 
-Pending owner validation:
+## Pending
 
-- apply HF3;
-- remove and rotate exposed secrets;
-- regenerate autoload;
-- restart backend then frontend;
-- Registry sync/select/clear/creation-start;
-- password workflow;
-- browser/no-JavaScript;
-- HTTPS/Auth0/bastion;
-- Windows/Linux parity.
-
-## `owasys_old`
-
-Do not delete until explicit owner authorization after browser acceptance and reference scan.
-
-## Roadmap
-
-1. Apply P117U, HF1, HF2, then HF3.
-2. Remove tracked secret file and rotate all three values.
-3. Start backend on `8792` and verify status.
-4. Start frontend on `8000` with identical new secrets.
-5. Validate Registry and password workflows.
-6. Commit OPUS after owner acceptance.
-7. Decide `owasys_old` separately.
-8. Demo, User Book, Reference Book, LSTSAR, KB.
+1. apply HF4 after HF3;
+2. regenerate autoload;
+3. restart backend then frontend;
+4. reproduce Registry synchronization;
+5. inspect log and trace;
+6. validate remaining Registry/password/browser/Auth0 gates;
+7. commit OPUS after owner acceptance.
