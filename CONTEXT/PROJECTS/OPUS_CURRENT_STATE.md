@@ -11,10 +11,12 @@ Last updated: 2026-07-23.
 
 ## Active milestone
 
-P117U — canonical secured REST + Composer backend for the current OWASYS SCORE frontend.
+P117U — canonical secured REST + Composer backend for the current OWASYS SCORE frontend, with mandatory HF1 and HF2.
 
-- specification: `CONTEXT/SPECIFICATIONS/OWASYS_CANONICAL_REST_COMPOSER_BACKEND_SPEC_P117U.md`
-- handoff: `CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OWASYS_CANONICAL_REST_COMPOSER_P117U_2026-07-23.md`
+- canonical specification: `CONTEXT/SPECIFICATIONS/OWASYS_CANONICAL_REST_COMPOSER_BACKEND_SPEC_P117U.md`
+- HF2 specification: `CONTEXT/SPECIFICATIONS/OWASYS_P117U_HF2_COMPOSER_RESOLUTION_SPEC.md`
+- canonical handoff: `CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OWASYS_CANONICAL_REST_COMPOSER_P117U_2026-07-23.md`
+- HF2 handoff: `CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OWASYS_P117U_HF2_COMPOSER_RESOLUTION_2026-07-23.md`
 
 ## Immutable separation
 
@@ -26,108 +28,150 @@ REST + Composer = OWASYS backend
 Created sites = independent OPUS applications
 ```
 
-Generic code contains no OWASYS identifier. Registry/password implementations remain under `sites/owasys/`.
+Generic code contains no OWASYS business implementation. Registry/password implementations remain under `sites/owasys/`.
 
 ## Root contract
 
-The owner-confirmed root admits only `.git`, `.github`, `application`, `Config`, `DOC`, `Opus`, `packages`, `runtime`, `scripts`, `sites`, `tools`, `vendor` and the declared root files.
+The owner-confirmed root admits only `.git`, `.github`, `application`, `Config`, `DOC`, `Opus`, `packages`, `runtime`, `scripts`, `sites`, `tools`, `vendor` and declared root files.
 
 Root `bin/`, lowercase root `config/`, root `public/` and every new top-level directory are forbidden.
 
-## Differential
+## Mandatory artifact order
+
+### P117U
 
 - ZIP: `opus_owasys_p117u_canonical_rest_composer.zip`
 - SHA-256: `43fbcc75384d96b7116d9ee5afe34d997c7b509049bff1b2159f42ee3b43a429`
 - files: 57
 - bytes: 73,261
-- base: `36a8570088fb6084abdc694fd3ab8bf0bffa5d17`
-- top-level entries: `composer.json`, `Opus`, `scripts`, `sites`
-- integrity verified
-- OPUS not pushed directly
 
-P117S and P117T are rejected. P117T violated the root with `bin/` and lowercase `config/`.
-
-## Mandatory HF1
-
-Owner runtime failure:
-
-`Undefined constant Opus\Fsm\FsmProcessor::SUPPORTED_CONTRACTS`
-
-Cause: `FsmProcessor::validateFsm()` referenced a nonexistent constant while the class declared `CANONICAL_CONTRACTS`.
-
-HF1:
+### HF1
 
 - ZIP: `opus_owasys_p117u_hf1_fsm_contract.zip`
 - SHA-256: `e711af28142a5ad287569c5107b99d41065498ea3bed70ec13b977007ae605d2`
-- file: `Opus/Fsm/FsmProcessor.php`
+- fixes undefined `SUPPORTED_CONTRACTS`
 
-The corrected processor validates canonical contracts and generic versioned application contracts matching `<VENDOR>_<NAME>_FSM_V<n>`. The runtime construction recipe with `OWASYS_NAVIGATION_FSM_V1` passes. HF1 must be applied after P117U.
+### HF2
 
-## Composer state
+- ZIP: `opus_owasys_p117u_hf2_composer_resolution.zip`
+- SHA-256: `c26d32f3b1446c8bb65c668ab8c7c785783162855f8b5b02e57dd61e8e97f980`
+- files: 4
+- bytes: 10,447
 
-`composer.json` exposes user commands only and delegates to `scripts/opus.php`.
+HF2 changes only:
 
-Generic OPUS commands cover create, language, validate, routes, page, rubric, export and serve. Application-owned commands are discovered through `sites/*/config/composer.commands.json`.
+```text
+Opus/Rcp/Rest/RcpRestServer.php
+Opus/Rcp/Rest/RcpRestClient.php
+sites/owasys/application/api/controllers/BackendApiController.php
+sites/owasys/config/backend.rest.json
+```
 
-No smoke, audit, test or recipe alias remains.
+P117S and P117T are rejected.
 
-## Framework evolution
+## Owner runtime incidents
 
-P117U contains generic console, site service, application-command discovery, REST/RCP client/server, operation registry, Composer executor, execution FSM/store, Auth0 proxy provider, generated runtime and canonical scaffold components.
+### HF1 incident
 
-Every new concrete framework class implements its homonymous four-marker interface. Modified existing classes retain their existing interfaces.
+```text
+Undefined constant Opus\Fsm\FsmProcessor::SUPPORTED_CONTRACTS
+```
 
-`SiteScaffoldPlan` is the sole architecture. `FullstackApplicationScaffoldPlan` delegates to it. `ScaffoldWriter` uses atomic OPUS File writes.
+Corrected by HF1.
 
-`FsmProcessor`, `FsmSiteLoader`, `LocalPasswordSsoProvider` and `Response` are corrected for generic contracts, structured file boundaries and no-echo response emission.
+### Process-topology incident
+
+```text
+OPUS_RCP_CONNECTION_FAILED
+```
+
+Cause: frontend port `8000` running without mandatory backend port `8792`.
+
+### HF2 incident
+
+Backend:
+
+```text
+OPUS_RCP_COMPOSER_PHAR_MISSING:composer.phar
+```
+
+Frontend consequence:
+
+```text
+OPUS_JSON_PARSE_FAILED:http://127.0.0.1:8792/api/v1/executions:Syntax error
+```
+
+Cause: backend hardcoded a local `composer.phar` absent from the owner-confirmed root; client parsed the resulting HTML fatal page as JSON.
+
+Corrected by HF2.
+
+## Composer runtime after HF2
+
+`backend.rest.json` declares the generic token `@composer`.
+
+Trusted resolution order:
+
+1. absolute `OPUS_COMPOSER_PHAR` operator override;
+2. root-local `composer.phar`;
+3. `composer.phar` discovered through `PATH` directories;
+4. standard Windows Composer locations.
+
+Execution remains `PHP_BINARY <absolute-composer.phar>` through an argument array with shell bypass. Browser and REST payloads cannot select an executable, PHAR, working directory or shell fragment.
+
+## REST error boundary after HF2
+
+The generic client validates HTTP status and JSON media type before parsing.
+
+- HTML backend 500 becomes `OPUS_RCP_BACKEND_HTTP_ERROR:500`.
+- malformed backend JSON becomes a stable OPUS response error.
+- a controlled JSON 503 may propagate only a validated uppercase error code.
+
+The OWASYS API controller emits initialization failures as JSON 503 using `OPUS_RCP_REST_ERROR_V1`, without HTML, stack trace or `echo`.
 
 ## OWASYS state
 
-OWASYS declares `OPUS_SITE_STANDARD_CONTRACT_CORE` with role `standard-opus-application`. Its signal routes and FSM are validated from the paths declared in `site.json`, while generated sites retain their stricter generated-route contract.
+OWASYS remains `OPUS_SITE_STANDARD_CONTRACT_CORE`, role `standard-opus-application`, Singleton, FSM/I18n/ACL/SSO driven and SCORE-rendered.
 
-The application remains Singleton, FSM/I18n/ACL/SSO driven and SCORE-rendered.
+One public PHP entrypoint exists: `sites/owasys/www/index.php`.
 
-One public PHP entrypoint exists: `sites/owasys/www/index.php`, delegating to `application/default/bootstrap.php`.
+The web Registry model performs no SQLite access. Registry and password mutations remain application-owned Composer commands executed backend-side.
 
-Canonical layout: `sites/owasys/application/default/layouts/layout.score`. The obsolete `application/default/templates/layout.score` must be removed after applying P117U.
+Two processes are mandatory:
 
-The frontend Registry model performs no SQLite access. Registry and password mutations are application-owned Composer commands executed backend-side.
+```text
+127.0.0.1:8792 = REST + Composer backend
+127.0.0.1:8000 = SCORE frontend
+```
 
-Local service security uses bearer plus HMAC. The generic Auth0 proxy provider validates proxy/bastion address and secret before accepting identity headers.
+Both processes load the same secret environment file.
 
-## Generated application standard
+## Framework contracts
 
-Composer creates Singleton, FSM-module-first applications with `application/default + application/<module>`, `config`, `www`, browser locale, OPUS I18n, deny-by-default ACL, session/Auth0-proxy SSO and SCORE-only output. `application/states` and `public` are not generated.
+Every concrete framework class implements its homonymous four-marker interface. HF2 introduces no new concrete framework class.
 
-## Configuration
-
-Changed configuration reads use `File` plus `StructuredFileLoader` and explicit OPUS Json/Yaml/Xml parsers. No direct configuration `file_get_contents` or `json_decode` path remains in the differential.
+Configuration reads cross `File` plus `StructuredFileLoader` and explicit OPUS Json/Yaml/Xml parsers.
 
 ## Validation
 
-Green:
+Green before owner retest:
 
-- root/ZIP contract;
-- PHP lint: 49 P117U files plus HF1;
-- JSON parse: 7 files;
-- Composer catalogue;
-- no generic OWASYS leakage;
-- 21 concrete framework interface checks;
-- one OWASYS public PHP entrypoint;
-- canonical scaffold and actual atomic write;
-- standard-application validation with signal routes and declared FSM;
-- HF1 runtime construction with `OWASYS_NAVIGATION_FSM_V1`;
-- HMAC success, signature rejection, ACL rejection;
-- execution FSM and Composer process/stdin;
-- secret-free execution storage;
-- Auth0 trusted/untrusted recipes.
+- P117U root/ZIP contract;
+- HF1 FSM construction;
+- HF2 PHP lint and JSON parse;
+- Composer PHAR discovery through `PATH`;
+- Composer execution from a path containing spaces;
+- HTML HTTP 500 error boundary;
+- controlled JSON 503 error propagation;
+- backend initialization JSON 503;
+- HF2 ZIP integrity.
 
 Pending owner validation:
 
-- restart OWASYS after HF1;
-- Windows Composer/autoload;
-- existing tools/recipes outside Composer aliases;
-- Registry/password real data;
+- apply HF2;
+- restart backend then frontend;
+- verify backend `/api/v1/status`;
+- verify Registry synchronization through real Composer;
+- password workflow;
 - browser/no-JavaScript;
 - HTTPS/Auth0/bastion;
 - Windows/Linux parity.
@@ -138,10 +182,10 @@ Do not delete until explicit owner authorization after browser acceptance and re
 
 ## Roadmap
 
-1. Apply HF1 over the extracted P117U tree.
-2. Restart OWASYS and continue browser validation.
-3. Run Composer validation/autoload and repository recipes.
-4. Validate Registry, password, current pages, Auth0 and HTTPS.
+1. Apply P117U, HF1, then HF2.
+2. Start backend on `8792` and verify status.
+3. Start frontend on `8000` with identical secrets.
+4. Validate Registry and password workflows.
 5. Commit OPUS after owner acceptance.
 6. Decide `owasys_old` separately.
 7. Demo, User Book, Reference Book, LSTSAR, KB.
