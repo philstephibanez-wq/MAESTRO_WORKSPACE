@@ -47,6 +47,22 @@ Root `bin/`, lowercase root `config/`, root `public/` and every new top-level di
 
 P117S and P117T are rejected. P117T violated the root with `bin/` and lowercase `config/`.
 
+## Mandatory HF1
+
+Owner runtime failure:
+
+`Undefined constant Opus\Fsm\FsmProcessor::SUPPORTED_CONTRACTS`
+
+Cause: `FsmProcessor::validateFsm()` referenced a nonexistent constant while the class declared `CANONICAL_CONTRACTS`.
+
+HF1:
+
+- ZIP: `opus_owasys_p117u_hf1_fsm_contract.zip`
+- SHA-256: `e711af28142a5ad287569c5107b99d41065498ea3bed70ec13b977007ae605d2`
+- file: `Opus/Fsm/FsmProcessor.php`
+
+The corrected processor validates canonical contracts and generic versioned application contracts matching `<VENDOR>_<NAME>_FSM_V<n>`. The runtime construction recipe with `OWASYS_NAVIGATION_FSM_V1` passes. HF1 must be applied after P117U.
+
 ## Composer state
 
 `composer.json` exposes user commands only and delegates to `scripts/opus.php`.
@@ -92,7 +108,7 @@ Changed configuration reads use `File` plus `StructuredFileLoader` and explicit 
 Green:
 
 - root/ZIP contract;
-- PHP lint: 49 files;
+- PHP lint: 49 P117U files plus HF1;
 - JSON parse: 7 files;
 - Composer catalogue;
 - no generic OWASYS leakage;
@@ -100,6 +116,7 @@ Green:
 - one OWASYS public PHP entrypoint;
 - canonical scaffold and actual atomic write;
 - standard-application validation with signal routes and declared FSM;
+- HF1 runtime construction with `OWASYS_NAVIGATION_FSM_V1`;
 - HMAC success, signature rejection, ACL rejection;
 - execution FSM and Composer process/stdin;
 - secret-free execution storage;
@@ -107,6 +124,7 @@ Green:
 
 Pending owner validation:
 
+- restart OWASYS after HF1;
 - Windows Composer/autoload;
 - existing tools/recipes outside Composer aliases;
 - Registry/password real data;
@@ -120,12 +138,10 @@ Do not delete until explicit owner authorization after browser acceptance and re
 
 ## Roadmap
 
-1. Apply P117U to clean OPUS base.
-2. Remove rejected P117S/P117T paths only if previously extracted.
-3. Remove the obsolete OWASYS template layout after the canonical layout is installed.
-4. Run Composer validation/autoload and repository recipes.
-5. Start backend and frontend with shared environment secrets.
-6. Validate Registry, password, current pages, Auth0 and HTTPS.
-7. Commit OPUS after owner acceptance.
-8. Decide `owasys_old` separately.
-9. Demo, User Book, Reference Book, LSTSAR, KB.
+1. Apply HF1 over the extracted P117U tree.
+2. Restart OWASYS and continue browser validation.
+3. Run Composer validation/autoload and repository recipes.
+4. Validate Registry, password, current pages, Auth0 and HTTPS.
+5. Commit OPUS after owner acceptance.
+6. Decide `owasys_old` separately.
+7. Demo, User Book, Reference Book, LSTSAR, KB.
