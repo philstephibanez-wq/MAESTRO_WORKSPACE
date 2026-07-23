@@ -1,79 +1,135 @@
 # OPUS CURRENT STATE
 
-Last updated: 2026-07-17.
+Last updated: 2026-07-23.
 
 ## Repository
 
 - Remote: `philstephibanez-wq/OPUS`
 - Branch: `master`
-- Latest locally validated commit: `5104168da5a845ce80baaf5a9ec1ab57a67bb449`
+- Current remote head: `36a8570088fb6084abdc694fd3ab8bf0bffa5d17`
 - Owner local development repo: `H:/OPUS` only as a local detail
 
 ## Active milestone
 
-Finish OWASYS as a portable OPUS deliverable for OPUS users.
+P117R — make OWASYS exclusively the interactive graphical surface and move every executable or mutating operation behind an allow-listed Composer command invoked through RCP.
 
-## Validated OWASYS state
+Binding specification:
 
-Locally validated:
+`CONTEXT/SPECIFICATIONS/OWASYS_COMPOSER_RCP_COMMAND_BOUNDARY_SPEC_P117R.md`
 
-- portable Windows/Linux distribution contract;
-- state-first navigation and runtime FSM;
-- local password authentication and SQLite registry;
-- structure inspection and draft workflows;
-- application creation, validation and export;
-- Build pipeline and Build UI;
-- mandatory generated development profiler, unavailable in production;
-- Source route/state and authenticated endpoint;
-- visual source editor with file tree;
-- diff preview, SHA-256 lock, PHP/JSON validation and atomic save;
-- Git inspection, diff, history, application-scoped staging and commit;
-- Source Git visual controls;
-- authenticated Source HTTP smoke;
-- Structure draft apply HTTP smoke;
-- Runtime FSM HTTP smoke;
-- 25 locale catalogs;
-- global suite ending with `OPUS_SMOKE_ALL_OK`.
+## Current committed OWASYS baseline
 
-Latest confirmed markers include:
+P117Q is committed on OPUS `master` and provides:
 
-- `OWASYS_SOURCE_HTTP_SMOKE_OK`
-- `OWASYS_STRUCTURE_DRAFT_APPLY_UI_HTTP_SMOKE_OK`
-- `OWASYS_RUNTIME_FSM_HTTP_SMOKE_OK`
-- `OWASYS_SOURCE_EDITOR_UI_SMOKE_OK`
-- `OWASYS_REPOSITORY_OPERATOR_SMOKE_OK`
-- `OWASYS_SOURCE_GIT_WRITE_UI_SMOKE_OK`
-- `OPUS_VALIDATE_SITE_OK: owasys`
-- `OPUS_SMOKE_ALL_OK`
+- browser/regional locale policy;
+- synchronized menu and Mermaid-FSM navigation;
+- OWASYS Singleton composition root;
+- canonical Registry discovery;
+- explicit duplicate diagnostics;
+- `sites/owasys` selected over `sites/owasys_old`;
+- current-context reconciliation;
+- readable Applications cards;
+- SCORE rendering;
+- FSM + ACL + SSO pipeline.
 
-## Source & Git security contract
+## P117R differential state
 
-- editor roots limited to `config/`, `application/`, `www/asset/`;
-- traversal, absolute paths, `.git`, secrets and auth stores rejected;
-- preview before mutation;
-- optimistic SHA-256 concurrency protection;
-- PHP and JSON validation;
-- atomic replacement;
-- staging and commit restricted to the selected application subtree;
-- commit message single-line and bounded;
-- no arbitrary command, pull, push, reset or branch mutation.
+Prepared differential:
 
-## Current functional gap
+- ZIP: `opus_owasys_p117r_composer_rcp_bootstrap.zip`
+- SHA-256: `ea7edbfca0e9df871ac7521cd9f8dd3f55811fc75bca7108259719d9ae884350`
+- Files: 16
+- Base: `36a8570088fb6084abdc694fd3ab8bf0bffa5d17`
 
-All known automated technical and HTTP checks are green. The remaining gate is real browser-based functional and visual acceptance of login, application selection, Source & Git, Build and responsive layout.
+No OPUS code was pushed directly by the assistant.
+
+The bootstrap implements:
+
+- generic OPUS RCP command catalog;
+- generic Composer RCP client;
+- homonymous interfaces with the four framework markers;
+- complete target command catalog;
+- administrator-password change through Composer/RCP;
+- command-side ACL revalidation;
+- secret transfer through standard input rather than process arguments;
+- structured result without secrets;
+- OPUS `File` + `Json` password-store access and atomic write;
+- bootstrap and exhaustive audits;
+- Windows CMD validation/launch/guarded-cleanup helpers.
+
+## Explicit incompleteness
+
+Only `security.admin-password.change` is implemented in the P117R bootstrap.
+
+All remaining commands are declared but marked `implemented=false`. They fail explicitly; no direct OWASYS fallback is allowed.
+
+The exhaustive gate must remain red until every operation is migrated:
+
+```cmd
+composer opus:audit-owasys-rcp
+```
+
+## Mandatory command boundary
+
+```text
+OWASYS SCORE form
+-> authenticated request
+-> SSO identity
+-> deny-by-default ACL
+-> FSM signal and guards
+-> immutable command intent
+-> RCP request
+-> allow-listed Composer command
+-> typed OPUS command handler
+-> structured result
+-> OWASYS ViewModel
+-> SCORE
+```
+
+Generic command and RCP implementation belongs to OPUS. OWASYS owns presentation adapters only.
+
+## Configuration and framework contracts
+
+- configuration files are read through `Opus\File\File`;
+- JSON/YAML/YML/XML parsing is selected through OPUS structured parsers;
+- no silent format fallback;
+- every concrete OPUS class implements a homonymous interface;
+- every homonymous interface extends the four standard markers;
+- P117M-R1 remains a release gate.
+
+## Security rules
+
+- no free-form command;
+- no browser-supplied executable or absolute path;
+- no shell fallback;
+- no direct OWASYS process execution;
+- no password in URL, process arguments, logs, profiler or raw output;
+- command handlers revalidate ACL and identity;
+- destructive commands require preview and explicit confirmation;
+- Auth0 proxy and bastion remain behind OPUS SSO/RCP boundaries.
+
+## Current exact gap
+
+The P117R ZIP must be applied and validated on the owner Windows installation.
+
+After the administrator-password path is confirmed, every remaining mutation must be moved to Composer/RCP: site create/validate/build/export, structure, source, Registry writes, Git stage/commit, bootstrap, password reset, SSO/Auth0/bastion configuration and cleanup.
+
+## `owasys_old`
+
+Do not delete `sites/owasys_old` yet.
+
+P117Q uses it as a rejected duplicate for canonical Registry integrity. Delete it only after the exhaustive RCP audit, reference scan, backend-first/no-JavaScript/browser acceptance and explicit owner confirmation.
 
 ## Locked roadmap
 
-1. Finish OWASYS.
-2. Generate the official OPUS demo using OWASYS.
-3. Produce the User Book.
-4. Produce the Reference Book.
-5. Finalize LSTSAR.
-6. Return to KB.
-
-## Retained architecture decisions
-
-- OPUS database-facing architecture is ODBC-only.
-- `Opus\Model` is the official ODBC representation layer.
-- final LSTSAR target is Model-driven + ODBC-driven.
-- LSTSAR validates source and transformed target independently.
+1. Apply and validate P117R bootstrap.
+2. Migrate every remaining OWASYS command to Composer/RCP.
+3. Make the exhaustive RCP audit green.
+4. Complete backend-first and no-JavaScript acceptance.
+5. Complete owner browser acceptance.
+6. Decide `owasys_old` deletion.
+7. Generate the official OPUS demo through compliant OWASYS.
+8. User Book.
+9. Reference Book.
+10. LSTSAR.
+11. KB.
