@@ -13,7 +13,7 @@ Rejected artifact:
 Rejection reason:
 
 - introduced root `bin/`;
-- introduced root lowercase `config/`;
+- introduced lowercase root `config/`;
 - both paths violate the only owner-confirmed OPUS root.
 
 Authoritative replacement:
@@ -21,7 +21,7 @@ Authoritative replacement:
 - specification: `CONTEXT/SPECIFICATIONS/OWASYS_CANONICAL_REST_COMPOSER_BACKEND_SPEC_P117U.md`;
 - handoff: `CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OWASYS_CANONICAL_REST_COMPOSER_P117U_2026-07-23.md`;
 - ZIP: `opus_owasys_p117u_canonical_rest_composer.zip`;
-- SHA-256: `1ee231cbcbe9e5a4578aa6f50b7a83559f89b46f6916e93f682c50f360401e46`.
+- SHA-256: `43fbcc75384d96b7116d9ee5afe34d997c7b509049bff1b2159f42ee3b43a429`.
 
 Binding separation:
 
