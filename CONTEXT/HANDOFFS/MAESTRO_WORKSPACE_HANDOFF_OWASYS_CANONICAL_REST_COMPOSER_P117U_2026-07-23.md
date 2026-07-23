@@ -14,11 +14,11 @@ Secured REST + Composer = OWASYS backend
 Created sites = independent OPUS applications
 ```
 
-No OWASYS identifier or business implementation exists in the delivered `Opus/` or `scripts/` code.
+No OWASYS identifier or business implementation exists in delivered `Opus/` or `scripts/` code.
 
 ## Canonical root
 
-The owner-confirmed OPUS root is closed. P117U introduces only:
+P117U introduces only:
 
 ```text
 composer.json
@@ -27,24 +27,24 @@ scripts/
 sites/
 ```
 
-No `bin/`, root lowercase `config/`, root `public/` or new top-level directory exists.
+No root `bin/`, lowercase root `config/`, root `public/` or new top-level directory exists.
 
 ## Rejected artifacts
 
 Do not apply:
 
-- P117S ZIP SHA-256 `acb79eec5cc0ce4023e79e53963f203a2c143b78fa754a4411036170f3c4220e`;
-- P117T ZIP SHA-256 `ad1494d92f068789d8363b4b6a7a823ff7b6be189d36f66724f92fec91baf2c5`.
+- P117S SHA-256 `acb79eec5cc0ce4023e79e53963f203a2c143b78fa754a4411036170f3c4220e`;
+- P117T SHA-256 `ad1494d92f068789d8363b4b6a7a823ff7b6be189d36f66724f92fec91baf2c5`.
 
-P117T is rejected because its root `bin/` and root lowercase `config/` violate the only admitted OPUS root.
+P117T is rejected because root `bin/` and lowercase root `config/` violate the admitted OPUS root.
 
 ## Authoritative differential
 
 - ZIP: `opus_owasys_p117u_canonical_rest_composer.zip`
-- SHA-256: `1ee231cbcbe9e5a4578aa6f50b7a83559f89b46f6916e93f682c50f360401e46`
-- Files: 55
-- Bytes: 69,473
-- Base: OPUS `36a8570088fb6084abdc694fd3ab8bf0bffa5d17`
+- SHA-256: `43fbcc75384d96b7116d9ee5afe34d997c7b509049bff1b2159f42ee3b43a429`
+- Files: 57
+- Bytes: 73,261
+- Base: `36a8570088fb6084abdc694fd3ab8bf0bffa5d17`
 - Top-level entries: `composer.json`, `Opus`, `scripts`, `sites`
 - ZIP integrity verified
 - no README, manifest, report, smoke, audit or check helper
@@ -52,50 +52,49 @@ P117T is rejected because its root `bin/` and root lowercase `config/` violate t
 
 ## Framework evolution
 
-P117U provides generic OPUS components for:
+P117U supplies generic OPUS components for:
 
 - Composer-facing console under `scripts/opus.php`;
 - site command service and export;
 - application-owned command-provider discovery;
-- secured typed REST/RCP client and server;
+- typed REST/RCP client and server;
 - Composer operation registry and process executor;
 - bearer/HMAC and Auth0-proxy authentication;
 - execution FSM and idempotency store;
 - generated application runtime;
 - canonical site scaffold and compatibility adapter.
 
-`SiteScaffoldPlan` is the only architecture source. The obsolete `FullstackApplicationScaffoldPlan` implementation becomes a compatibility adapter to `SiteScaffoldPlan`.
+`SiteScaffoldPlan` is the only architecture source. `FullstackApplicationScaffoldPlan` delegates to it.
 
-`ScaffoldWriter` is corrected to use `File::writeAtomic` and explicit CLI stream output. `FsmProcessor`, `FsmSiteLoader`, `LocalPasswordSsoProvider` and `Response` are corrected to use generic contracts, structured File/parsers and non-echo emission.
+`ScaffoldWriter` uses `File::writeAtomic` and explicit CLI stream output. `FsmProcessor`, `FsmSiteLoader`, `LocalPasswordSsoProvider` and `Response` use generic contracts, structured File/parsers and non-echo emission.
 
-Every new concrete framework class implements its homonymous four-marker interface. Existing modified framework classes retain their existing homonymous four-marker interfaces.
+Every new concrete framework class implements its homonymous four-marker interface. Existing modified classes retain their existing homonymous four-marker interfaces.
 
-## OWASYS application evolution
+## OWASYS canonicalization
 
-All OWASYS-specific implementation remains under `sites/owasys/`:
+All OWASYS-specific implementation remains under `sites/owasys/`.
 
-- `application/api/controllers/BackendApiController.php`;
-- application Singleton and bootstrap;
-- REST frontend client integration;
-- Registry REST projection;
-- OWASYS Composer command provider;
-- operation, server, client and provider configuration.
+OWASYS is now declared with the canonical `OPUS_SITE_STANDARD_CONTRACT_CORE` while retaining role `standard-opus-application`. The generic validator resolves its FSM path from `site.json`, validates `OPUS_SIGNAL_ROUTES_V2`, the declared FSM, ACL deny-by-default, SSO and Singleton without pretending that OWASYS is a generated site.
 
-The web Registry model no longer opens SQLite. Registry persistence and password changes occur only in the OWASYS application command provider reached through REST then Composer.
+The canonical OWASYS layout is:
+
+`sites/owasys/application/default/layouts/layout.score`
+
+`OwasysScorePageRenderer` renders that path. The obsolete `sites/owasys/application/default/templates/layout.score` must be deleted after applying the ZIP.
+
+The web Registry model opens no SQLite database. Registry persistence and password changes occur only in the OWASYS command provider reached through REST then Composer.
 
 OWASYS has one public PHP entrypoint only:
 
 `sites/owasys/www/index.php`
 
-It delegates only to `application/default/bootstrap.php`. REST and frontend routes pass through that same canonical front controller.
+It delegates only to `application/default/bootstrap.php`; REST and frontend routes use this same front controller.
 
 ## Composer
 
-`composer.json` contains user commands only and delegates to `scripts/opus.php`.
+`composer.json` contains user commands only and delegates to `scripts/opus.php`. No smoke, audit, test or recipe alias remains.
 
-No smoke, audit, test or recipe alias remains.
-
-Generic OPUS commands create/validate/export/serve sites and manage language/page/rubric structure. OWASYS command scripts invoke application-owned Registry and password commands discovered from `sites/owasys/config/composer.commands.json`.
+Generic commands create, validate, export and serve sites and manage language/page/rubric structures. OWASYS command scripts invoke application-owned Registry/password commands discovered from `sites/owasys/config/composer.commands.json`.
 
 ## Security
 
@@ -104,32 +103,33 @@ Generic OPUS commands create/validate/export/serve sites and manage language/pag
 - timestamp, expiry, nonce and replay checks;
 - backend operation ACL;
 - OWASYS provider ACL revalidation;
-- Composer process uses an argument array with shell bypass;
-- secrets use request body and process stdin only;
+- Composer process argument array with shell bypass;
+- secret input through request body and process stdin only;
 - execution records contain no input parameters;
 - generic Auth0 proxy provider validates trusted proxy/bastion address and shared secret.
 
 ## Configuration
 
-All changed configuration reads use `File` plus `StructuredFileLoader` and explicit OPUS parsers. The differential contains no direct `file_get_contents()` or `json_decode()` configuration path.
+Changed configuration reads use `File` plus `StructuredFileLoader` and explicit OPUS parsers. The differential contains no direct configuration `file_get_contents()` or `json_decode()` path.
 
 ## Isolated gates completed
 
 - exact top-level root gate;
 - Composer user-command-only gate;
-- PHP lint;
-- JSON parse;
-- no OWASYS leakage into generic framework code;
-- homonymous four-marker interface audit: 21 concrete framework classes;
+- PHP lint: 49 PHP files;
+- JSON parse: 7 JSON files;
+- no OWASYS leakage into generic code;
+- homonymous four-marker audit: 21 concrete framework classes;
 - one OWASYS public PHP entrypoint;
-- canonical scaffold and actual atomic scaffold write;
+- canonical scaffold and actual atomic write;
+- canonical standard-application validation with signal routes and declared FSM;
 - HMAC-authenticated REST execution;
 - invalid-signature rejection;
 - insufficient-role rejection;
 - execution FSM success path;
 - allow-listed Composer process/stdin boundary;
 - execution storage without parameters;
-- Auth0 proxy trusted and untrusted recipes;
+- Auth0 trusted/untrusted recipes;
 - ZIP integrity.
 
 ## Pending owner gates
