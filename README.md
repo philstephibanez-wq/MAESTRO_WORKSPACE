@@ -2,15 +2,15 @@
 
 Workspace global de coordination pour MAESTRO, OPUS, OWASYS, la documentation OPUS, LSTSAR, KB et LOGANDPLAY.
 
-OPUS fait partie du workspace ; OPUS n'est pas le workspace.
+OPUS fait partie du workspace ; OPUS n'est pas le workspace et n'est pas une application.
 
 ## Reprise immédiate
 
 Lire dans cet ordre :
 
 1. `CONTEXT/HANDOFFS/CURRENT_HANDOFF.md`
-2. `CONTEXT/SPECIFICATIONS/OPUS_P117U_HF6_COMPOSER_AUTOLOAD_CALLBACK_SPEC.md`
-3. `CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OPUS_P117U_HF6_COMPOSER_AUTOLOAD_CALLBACK_2026-07-24.md`
+2. `CONTEXT/SPECIFICATIONS/OPUS_OWASYS_P117U_HF7_APPLICATION_CREATION_PROFILES_SPEC.md`
+3. `CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OPUS_OWASYS_P117U_HF7_APPLICATION_CREATION_PROFILES_2026-07-24.md`
 4. `CONTEXT/PROJECTS/OPUS_CURRENT_STATE.md`
 5. `CONTEXT/PROJECTS/PROJECT_INDEX.md`
 
@@ -24,12 +24,10 @@ REST + Composer = backend OWASYS
 sites créés = applications OPUS indépendantes
 ```
 
-OPUS n'est pas une application.
-
 ## Source de vérité
 
 - OPUS : `philstephibanez-wq/OPUS`, branche `master`
-- head relu : `96884961248fc82bf5e13187a6ffcfffacb82d9f`
+- head distant relu : `96884961248fc82bf5e13187a6ffcfffacb82d9f`
 - workspace : `philstephibanez-wq/MAESTRO_WORKSPACE`
 
 ## Racine OPUS verrouillée
@@ -43,18 +41,34 @@ Interdictions : root `bin/`, root `config/` minuscule, root `public/`, toute nou
 ## Livrables applicables
 
 ```text
-P117U -> HF1 -> HF2 -> HF3 -> HF4 -> HF6
+P117U -> HF1 -> HF2 -> HF3 -> HF4 -> HF6 -> HF7
 ```
 
-HF5 est remplacé par HF6 et n'est pas nécessaire sur une base propre.
+HF5 reste remplacé par HF6.
 
-HF6 :
+HF7 :
 
-- ZIP : `opus_owasys_p117u_hf6_composer_autoload_callback.zip`
-- SHA-256 : `d482f4b352c958557e63095f5eacb5fdd9fcbb783853dd2c6202c16ccf79505c`
-- fichiers : 4
+- ZIP : `opus_owasys_p117u_hf7_application_creation_profiles.zip`
+- SHA-256 : `16e06b55f3cf2ffcc5118fe0e5c4f17cbc7b51fa437fd06f17bf3dc16ab48141`
+- fichiers : 45
+- taille ZIP : 54,906 octets
 
-HF6 supprime la dépendance des commandes Composer au chemin relatif `scripts/opus.php`. Composer appelle désormais une classe callback générique OPUS autoloadée. Les alias applicatifs restent déclarés dans la configuration de chaque application.
+## Création d’applications
+
+Le chemin canonique est désormais :
+
+```text
+Registry
+-> Creation
+-> choix frontend / backend / fullstack
+-> REST sécurisé
+-> Composer
+-> scaffold générique OPUS
+-> sélection Registry
+-> Construction et validation
+```
+
+Le raccourci historique `Registry -> Build` hérité de `owasys_old` est rejeté.
 
 ## OWASYS canonique
 
@@ -63,8 +77,10 @@ HF6 supprime la dépendance des commandes Composer au chemin relatif `scripts/op
 - point d'entrée unique : `sites/owasys/www/index.php`
 - frontend : pages SCORE actuelles
 - backend : API REST sécurisée puis Composer
+- création : module applicatif `sites/owasys/application/creation/`
 - Registry et mot de passe : commandes applicatives backend
-- log : `sites/owasys/var/logs/rcp-backend.log`
+- log backend : `sites/owasys/var/logs/rcp-backend.log`
+- log frontend : `sites/owasys/var/logs/owasys-frontend.log`
 - profiler : `sites/owasys/var/profiler/<trace_id>.json`
 
 ## Règles permanentes
@@ -78,17 +94,18 @@ HF6 supprime la dépendance des commandes Composer au chemin relatif `scripts/op
 - OPUS IS A FRAMEWORK, NOT AN APPLICATION.
 - OWASYS IS AN APPLICATION BUILT WITH OPUS.
 - NO OWASYS BUSINESS IMPLEMENTATION UNDER `Opus/`.
-- REST + COMPOSER IS THE OWASYS BACKEND.
+- ALL OWASYS BUSINESS WRITES CROSS SECURED REST THEN COMPOSER.
 - LOGGER AND PROFILER ARE MANDATORY.
 - SCORE AND BACKEND-FIRST ARE MANDATORY.
 - WORKSPACE HANDOFF UPDATED AT EVERY STATE CHANGE.
 
 ## Feuille de route
 
-1. appliquer HF6 après HF4 ;
+1. appliquer HF7 après HF6 ;
 2. régénérer l'autoload Composer ;
-3. démarrer le backend REST puis vérifier son status ;
-4. démarrer le frontend OWASYS ;
-5. valider Registry, mot de passe, navigateur sans JavaScript, Auth0, HTTPS et bastion ;
-6. committer OPUS après acceptation owner ;
-7. décider séparément de `sites/owasys_old`.
+3. valider OWASYS et ses routes ;
+4. démarrer backend puis frontend ;
+5. valider les profils frontend/backend/fullstack et la transition Registry vers Build ;
+6. valider mot de passe, navigateur sans JavaScript, Auth0, HTTPS et bastion ;
+7. committer OPUS après acceptation owner ;
+8. décider séparément de `sites/owasys_old`.
