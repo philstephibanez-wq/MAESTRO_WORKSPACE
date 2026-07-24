@@ -47,17 +47,24 @@ P117U -> HF1 -> HF2 -> HF3 -> HF4 -> HF6 -> HF7R1
 
 HF5 reste remplacé par HF6.
 
-## Différentiel HF7R1
+## Différentiel HF7R1 installable
 
 ```text
 ZIP    : opus_owasys_p117u_hf7r1_application_creation_profiles.zip
-SHA256 : 2317f0f3a76de22f4c51e5c568b8176d2cebb4169d50fc62b75d22458d6a959d
-PATCH  : opus_owasys_p117u_hf7r1_application_creation_profiles.patch
-SHA256 : 4e90d025a26474d0c19eaecae92048d1bf6b7ab403f4bfea2db796b9b05e53c8
+SHA256 : 16b8006dae07b88555c7149fa14bb4f9a1230e47f5d32f973933e0597dcb7858
 PATHS  : 45
 ```
 
-HF7R1 est reconstruit depuis le head GitHub HF6 et les contrats versionnés. Il constitue le différentiel courant traçable ; il n’est pas présenté comme octet-identique à l’ancien ZIP HF7.
+Contenu :
+
+```text
+INSTALL_HF7R1.cmd
+START_OWASYS_BACKEND.cmd
+START_OWASYS_FRONTEND.cmd
+payload/opus_owasys_p117u_hf7r1_application_creation_profiles.patch
+```
+
+Le précédent ZIP contenant seulement le patch est remplacé. Le propriétaire extrait le ZIP dans un dossier temporaire et lance uniquement `INSTALL_HF7R1.cmd`. Aucune commande `git apply` n’est à saisir manuellement.
 
 ## Création d’applications
 
@@ -85,16 +92,8 @@ Le raccourci historique `Registry -> Build` hérité de `owasys_old` est rejeté
 - besoin générique proposé comme évolution OPUS avant toute solution locale ;
 - OWASYS UI uniquement, toute mutation via REST sécurisé puis Composer ;
 - Logger et Profiler obligatoires ;
-- code OPUS/OWASYS livré uniquement par ZIP différentiel ;
+- code OPUS/OWASYS livré uniquement par ZIP différentiel installable ;
 - secrets interdits dans Git, argv, logs, profiler et artefacts.
-
-## Racine OPUS verrouillée
-
-Répertoires admis : `.git`, `.github`, `application`, `Config`, `DOC`, `Opus`, `packages`, `runtime`, `scripts`, `sites`, `tools`, `vendor`.
-
-Fichiers racine admis : `.gitignore`, `AGENTS.md`, `composer.json`, `composer.lock`, `composer.phar`, `LICENSE`, `README.md`.
-
-Interdictions : root `bin/`, root `config` minuscule, root `public`, toute nouvelle racine.
 
 ## OWASYS canonique
 
@@ -109,14 +108,12 @@ Interdictions : root `bin/`, root `config` minuscule, root `public`, toute nouve
 - log frontend : `sites/owasys/var/logs/owasys-frontend.log` ;
 - profiler : `sites/owasys/var/profiler/<trace_id>.json`.
 
-## Commandes de lancement
+## Installation et lancement
 
 ```text
-composer dump-autoload -o
-composer opus:validate-site -- owasys
-composer opus:list-routes -- owasys
-composer opus:serve-site -- owasys --host=127.0.0.1 --port=8792
-composer opus:serve-site -- owasys --host=127.0.0.1 --port=8000
+INSTALL_HF7R1.cmd
+START_OWASYS_BACKEND.cmd
+START_OWASYS_FRONTEND.cmd
 ```
 
 `OPUS_OWASYS_BACKEND_TOKEN` et `OPUS_OWASYS_BACKEND_HMAC` proviennent uniquement de l’environnement sécurisé.
