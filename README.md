@@ -12,9 +12,10 @@ Lire dans cet ordre :
 2. `CONTEXT/SPECIFICATIONS/MAESTRO_OPUS_OWASYS_GLOBAL_DEVELOPMENT_RULES_2026-07-24.md`
 3. `CONTEXT/SPECIFICATIONS/OPUS_OWASYS_GOVERNANCE_EXECUTION_SPEC_2026-07-24.md`
 4. `CONTEXT/SPECIFICATIONS/OPUS_OWASYS_P117U_HF7R1_CONTINUITY_REBUILD_SPEC_2026-07-24.md`
-5. `CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OPUS_OWASYS_P117U_HF7R1_CONTINUITY_REBUILD_2026-07-24.md`
-6. `CONTEXT/PROJECTS/OPUS_CURRENT_STATE.md`
-7. `CONTEXT/PROJECTS/PROJECT_INDEX.md`
+5. `CONTEXT/SPECIFICATIONS/OPUS_OWASYS_P117U_HF7R1_RUNTIME_CHECKPOINT_SPEC_2026-07-24.md`
+6. `CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OPUS_OWASYS_P117U_HF7R1_RUNTIME_CHECKPOINT_2026-07-24.md`
+7. `CONTEXT/PROJECTS/OPUS_CURRENT_STATE.md`
+8. `CONTEXT/PROJECTS/PROJECT_INDEX.md`
 
 La continuité vient des dépôts GitHub et du workspace versionné, pas du contexte d’un chat.
 
@@ -25,6 +26,7 @@ OPUS repository : philstephibanez-wq/OPUS
 branch          : master
 head HF6 relu   : 79f261854ee06a9f828fec389adca77d57323d00
 workspace       : philstephibanez-wq/MAESTRO_WORKSPACE
+local owner     : HF7R1 appliqué et actif, non encore committé
 ```
 
 OWASYS appartient à `sites/owasys/` dans OPUS. Aucun dépôt OWASYS autonome n’est canonique.
@@ -55,16 +57,37 @@ SHA256 : 16b8006dae07b88555c7149fa14bb4f9a1230e47f5d32f973933e0597dcb7858
 PATHS  : 45
 ```
 
-Contenu :
+Le précédent ZIP contenant seulement le patch est remplacé. Le propriétaire extrait le ZIP dans un dossier temporaire et lance uniquement `INSTALL_HF7R1.cmd`.
+
+## Runtime HF7R1 confirmé
+
+Les preuves owner reçues valident :
 
 ```text
-INSTALL_HF7R1.cmd
-START_OWASYS_BACKEND.cmd
-START_OWASYS_FRONTEND.cmd
-payload/opus_owasys_p117u_hf7r1_application_creation_profiles.patch
+Créer une nouvelle application : visible
+Candidats : 1
+Applications canoniques : 1
+Identifiants dupliqués : 0
+Racines ignorées : 0
+Singleton conformes : 1
+Singleton non conformes : 0
 ```
 
-Le précédent ZIP contenant seulement le patch est remplacé. Le propriétaire extrait le ZIP dans un dossier temporaire et lance uniquement `INSTALL_HF7R1.cmd`. Aucune commande `git apply` n’est à saisir manuellement.
+OWASYS est découvert comme :
+
+```text
+fullstack
+standard-opus-application
+sites/owasys
+fr-FR
+owasys
+discovered
+OwasysApplication
+```
+
+Le journal backend contient cinq `registry.sync` réussis par REST sécurisé puis Composer. Chaque commande `owasys:registry-sync` termine avec `exit_code=0`, `stderr_bytes=0` et FSM `succeeded`.
+
+Le contexte courant reste vide avant l’action `Travailler sur cette application`, donc avant `registry.select`.
 
 ## Création d’applications
 
@@ -80,6 +103,26 @@ Registry
 ```
 
 Le raccourci historique `Registry -> Build` hérité de `owasys_old` est rejeté.
+
+## Prochaine validation
+
+Ouvrir :
+
+```text
+http://localhost:8000/fr-FR/applications/new
+```
+
+Valider visuellement le formulaire Creation, puis utiliser `Annuler` avant toute création de fixture.
+
+Fixtures prévues ensuite :
+
+```text
+hf7r1-frontend-check
+hf7r1-backend-check
+hf7r1-fullstack-check
+```
+
+Aucune suppression de fixture n’est autorisée avant confirmation explicite de son caractère jetable.
 
 ## Contrat global
 
