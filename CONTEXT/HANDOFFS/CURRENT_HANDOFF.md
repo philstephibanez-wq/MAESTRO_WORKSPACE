@@ -44,26 +44,39 @@ P117U -> HF1 -> HF2 -> HF3 -> HF4 -> HF6 -> HF7R1
 
 HF5 reste remplacé par HF6.
 
-## Écarts confirmés sur OPUS/master
-
-- Registry passe encore directement à Build pour `create_new_app` ;
-- `start_creation_flow` est encore actif ;
-- `registry.creation.start`, `owasys:registry-creation-start` et `owasys:registry:creation:start` existent encore ;
-- `site.create` ne transporte pas de profil ;
-- le scaffold ne différencie pas frontend/backend/fullstack ;
-- la découverte Registry ne projette pas encore `OPUS_SITE_STANDARD_CONTRACT_CORE`.
-
-## Différentiel courant
+## Différentiel installable courant
 
 ```text
 ZIP    : opus_owasys_p117u_hf7r1_application_creation_profiles.zip
-SHA256 : 2317f0f3a76de22f4c51e5c568b8176d2cebb4169d50fc62b75d22458d6a959d
-PATCH  : opus_owasys_p117u_hf7r1_application_creation_profiles.patch
-SHA256 : 4e90d025a26474d0c19eaecae92048d1bf6b7ab403f4bfea2db796b9b05e53c8
+SHA256 : 16b8006dae07b88555c7149fa14bb4f9a1230e47f5d32f973933e0597dcb7858
 PATHS  : 45
 ```
 
-HF7R1 a été reconstruit depuis le head GitHub HF6 et les contrats versionnés. Il n’est pas présenté comme octet-identique à l’ancien ZIP HF7 ; il constitue le différentiel courant traçable de continuité.
+Contenu :
+
+```text
+INSTALL_HF7R1.cmd
+START_OWASYS_BACKEND.cmd
+START_OWASYS_FRONTEND.cmd
+payload/opus_owasys_p117u_hf7r1_application_creation_profiles.patch
+```
+
+Le ZIP précédent contenant uniquement le patch est remplacé et ne doit pas être utilisé.
+
+Le propriétaire n’exécute aucune commande `git apply`. Il extrait le ZIP dans un dossier temporaire et lance uniquement `INSTALL_HF7R1.cmd`.
+
+## Installation automatique
+
+`INSTALL_HF7R1.cmd` vérifie puis exécute :
+
+1. présence de `H:\OPUS` ;
+2. head exact HF6 ;
+3. dépôt Git propre ;
+4. contrôle du différentiel ;
+5. application ;
+6. autoload Composer optimisé ;
+7. validation OWASYS ;
+8. liste des routes.
 
 ## Workflow résultant
 
@@ -106,8 +119,8 @@ sites/owasys/var/profiler/<trace_id>.json
 ## Lancement
 
 ```text
-backend  : composer opus:serve-site -- owasys --host=127.0.0.1 --port=8792
-frontend : composer opus:serve-site -- owasys --host=127.0.0.1 --port=8000
+START_OWASYS_BACKEND.cmd
+START_OWASYS_FRONTEND.cmd
 ```
 
 Les variables `OPUS_OWASYS_BACKEND_TOKEN` et `OPUS_OWASYS_BACKEND_HMAC` sont injectées par l’environnement sécurisé et ne sont jamais committées.
@@ -127,21 +140,18 @@ La suppression de `sites/owasys_old` reste une décision owner séparée.
 
 ## Gates owner
 
-1. clone `H:\OPUS` propre sur `79f261854ee06a9f828fec389adca77d57323d00` ;
-2. `git apply --check` puis application de HF7R1 ;
-3. `composer dump-autoload -o` ;
-4. audit tokenizer P117M et lint/parsing complets ;
-5. validation site et routes ;
-6. démarrage backend puis frontend ;
-7. test des trois profils ;
-8. Registry select puis Build ;
-9. corrélation Logger/Profiler ;
-10. no-JavaScript, mot de passe, Auth0, HTTPS, bastion et Windows/Linux ;
-11. commit et push OPUS après acceptation owner.
+1. exécuter `INSTALL_HF7R1.cmd` ;
+2. audit tokenizer P117M et lint/parsing complets ;
+3. démarrage backend puis frontend par les lanceurs fournis ;
+4. test des trois profils ;
+5. Registry select puis Build ;
+6. corrélation Logger/Profiler ;
+7. no-JavaScript, mot de passe, Auth0, HTTPS, bastion et Windows/Linux ;
+8. commit et push OPUS après acceptation owner.
 
 ## Politique GitHub
 
-La gouvernance est écrite directement dans `MAESTRO_WORKSPACE`. Le code OPUS/OWASYS n’est pas poussé directement par l’assistant ; il est livré par ZIP différentiel.
+La gouvernance est écrite directement dans `MAESTRO_WORKSPACE`. Le code OPUS/OWASYS n’est pas poussé directement par l’assistant ; il est livré par ZIP différentiel installable.
 
 NO CONTRACT, NO PATCH.  
 NO SOURCE OF TRUTH, NO PATCH.  
