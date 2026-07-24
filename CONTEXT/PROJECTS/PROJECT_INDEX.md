@@ -3,6 +3,8 @@
 ## Global development contract
 
 - Binding specification: `CONTEXT/SPECIFICATIONS/MAESTRO_OPUS_OWASYS_GLOBAL_DEVELOPMENT_RULES_2026-07-24.md`
+- Execution addendum: `CONTEXT/SPECIFICATIONS/OPUS_OWASYS_GOVERNANCE_EXECUTION_SPEC_2026-07-24.md`
+- Current handoff: `CONTEXT/HANDOFFS/CURRENT_HANDOFF.md`
 - Governance and handoffs are written directly to `MAESTRO_WORKSPACE`.
 - OPUS/OWASYS source corrections are delivered only as source-grounded differential ZIPs.
 - No source of truth means no patch.
@@ -13,7 +15,7 @@
 - Branch: `master`
 - Current remote head reviewed: `79f261854ee06a9f828fec389adca77d57323d00`
 - Current committed state: HF6
-- HF7: documented but not committed and its original artifact is not available in GitHub
+- HF7: exact artifact recovered and verified; not committed on `OPUS/master`
 - OPUS is a framework, not an application.
 - Composer user callback: `Opus\Composer\ComposerScripts::run`.
 - Generic application profiles specified by HF7: `frontend`, `backend`, `fullstack`.
@@ -24,7 +26,7 @@
 
 ## OWASYS
 
-- OWASYS is an application built with OPUS.
+- OWASYS is an application built with OPUS under `sites/owasys/`.
 - Current SCORE pages are its frontend.
 - Secured REST plus Composer is its backend.
 - Created sites are independent OPUS applications.
@@ -62,9 +64,7 @@ Canonical FSM path specified by HF7:
 Registry -> Creation -> frontend/backend/fullstack -> REST -> Composer -> Registry select -> Build
 ```
 
-The direct `Registry -> Build` path inherited from `owasys_old` is rejected.
-
-Obsolete creation-start Registry operations and Composer aliases are removed by HF7. The actual mutation is the typed REST operation `site.create`.
+The direct `Registry -> Build` path inherited from `owasys_old` is rejected. Obsolete creation-start Registry operations and Composer aliases are removed by HF7. The actual mutation is the typed REST operation `site.create`.
 
 ## OPUS root
 
@@ -90,7 +90,7 @@ P117U -> HF1 -> HF2 -> HF3 -> HF4 -> HF6 -> HF7
 
 HF5 is superseded.
 
-### HF7 record
+### HF7 verified record
 
 - ZIP: `opus_owasys_p117u_hf7_application_creation_profiles.zip`
 - SHA-256: `16e06b55f3cf2ffcc5118fe0e5c4f17cbc7b51fa437fd06f17bf3dc16ab48141`
@@ -98,9 +98,9 @@ HF5 is superseded.
 - ZIP bytes: 54,906
 - payload bytes: 176,634
 - roots: `composer.json`, `Opus/`, `sites/`
-- current availability: absent from GitHub and from the supplied attachment
+- current availability: recovered from the retained artifact library; integrity and hash verified
 
-HF7 adds profile-aware generic OPUS scaffolding and the OWASYS application-owned SCORE/FSM creation workflow. No replacement code archive may be reconstructed from the specification alone.
+HF7 adds profile-aware generic OPUS scaffolding and the OWASYS application-owned SCORE/FSM creation workflow.
 
 ## CMD command policy
 
@@ -109,16 +109,17 @@ HF7 adds profile-aware generic OPUS scaffolding and the OWASYS application-owned
 - No prompt, comments, expected output, diagnostics or `exit /b` are included.
 - `sites/owasys_old` must not be deleted before explicit owner approval.
 
-Current validated frontend command surface:
+Validated command surface:
 
 ```text
 composer dump-autoload -o
 composer opus:validate-site -- owasys
 composer opus:list-routes -- owasys
+composer opus:serve-site -- owasys --host=127.0.0.1 --port=8792
 composer opus:serve-site -- owasys --host=127.0.0.1 --port=8000
 ```
 
-No committed public Composer alias currently starts the REST backend. Its real owner launcher must be recovered or introduced through an explicit generic OPUS evolution.
+The OWASYS REST client targets `http://127.0.0.1:8792/api/v1/executions`.
 
 ## Other repositories reviewed
 
@@ -142,19 +143,20 @@ No committed public Composer alias currently starts the REST backend. Its real o
 
 1. `CONTEXT/HANDOFFS/CURRENT_HANDOFF.md`
 2. `CONTEXT/SPECIFICATIONS/MAESTRO_OPUS_OWASYS_GLOBAL_DEVELOPMENT_RULES_2026-07-24.md`
-3. `CONTEXT/SPECIFICATIONS/OPUS_OWASYS_P117U_HF7_APPLICATION_CREATION_PROFILES_SPEC.md`
-4. `CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OPUS_OWASYS_P117U_HF7_APPLICATION_CREATION_PROFILES_2026-07-24.md`
-5. `CONTEXT/PROJECTS/OPUS_CURRENT_STATE.md`
+3. `CONTEXT/SPECIFICATIONS/OPUS_OWASYS_GOVERNANCE_EXECUTION_SPEC_2026-07-24.md`
+4. `CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OPUS_OWASYS_GOVERNANCE_EXECUTION_2026-07-24.md`
+5. `CONTEXT/SPECIFICATIONS/OPUS_OWASYS_P117U_HF7_APPLICATION_CREATION_PROFILES_SPEC.md`
+6. `CONTEXT/PROJECTS/OPUS_CURRENT_STATE.md`
 
 ## Resume order
 
-1. Recover the original HF7 differential or the exact HF7 working source tree.
-2. Confirm the local owner base and divergence from `79f261854ee06a9f828fec389adca77d57323d00`.
-3. Apply or regenerate HF7 only from that exact source base.
-4. Regenerate optimized autoload.
+1. Confirm the owner local base and divergence from `79f261854ee06a9f828fec389adca77d57323d00`.
+2. Apply the recovered HF7 differential.
+3. Regenerate optimized autoload.
+4. Run the exhaustive P117M tokenizer gate and full lint.
 5. Validate OWASYS site and routes.
-6. Start the secured backend with its real contractual launcher.
-7. Start the SCORE frontend.
+6. Start the secured backend on port 8792.
+7. Start the SCORE frontend on port 8000.
 8. Validate Creation and the three profiles.
 9. Validate generated applications, Registry selection and Build transition.
 10. Inspect correlated logs/profiler only on failure.
