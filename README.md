@@ -11,9 +11,9 @@ Lire dans cet ordre :
 1. `CONTEXT/HANDOFFS/CURRENT_HANDOFF.md`
 2. `CONTEXT/SPECIFICATIONS/MAESTRO_OPUS_OWASYS_GLOBAL_DEVELOPMENT_RULES_2026-07-24.md`
 3. `CONTEXT/SPECIFICATIONS/OPUS_OWASYS_GOVERNANCE_EXECUTION_SPEC_2026-07-24.md`
-4. `CONTEXT/SPECIFICATIONS/OPUS_OWASYS_P117U_HF7R1_CONTINUITY_REBUILD_SPEC_2026-07-24.md`
-5. `CONTEXT/SPECIFICATIONS/OPUS_OWASYS_P117U_HF7R1_RUNTIME_CHECKPOINT_SPEC_2026-07-24.md`
-6. `CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OPUS_OWASYS_P117U_HF7R1_RUNTIME_CHECKPOINT_2026-07-24.md`
+4. `CONTEXT/SPECIFICATIONS/OPUS_P117U_HF8_GENERATED_SITE_I18N_EU_UK_DIAGNOSTICS_SPEC_2026-07-24.md`
+5. `CONTEXT/SPECIFICATIONS/OPUS_OWASYS_P117U_HF9_CREATION_FORM_LAYOUT_SPEC_2026-07-24.md`
+6. `CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OPUS_OWASYS_P117U_HF9_CREATION_FORM_LAYOUT_2026-07-24.md`
 7. `CONTEXT/PROJECTS/OPUS_CURRENT_STATE.md`
 8. `CONTEXT/PROJECTS/PROJECT_INDEX.md`
 
@@ -24,9 +24,9 @@ La continuité vient des dépôts GitHub et du workspace versionné, pas du cont
 ```text
 OPUS repository : philstephibanez-wq/OPUS
 branch          : master
-head HF6 relu   : 79f261854ee06a9f828fec389adca77d57323d00
+current head    : f9d01dca6644f41c10b85fd6da47eb8c21bf15b6
+milestone       : P117U + HF1 + HF2 + HF3 + HF4 + HF6 + HF7 + HF8
 workspace       : philstephibanez-wq/MAESTRO_WORKSPACE
-local owner     : HF7R1 appliqué et actif, non encore committé
 ```
 
 OWASYS appartient à `sites/owasys/` dans OPUS. Aucun dépôt OWASYS autonome n’est canonique.
@@ -41,53 +41,53 @@ REST sécurisé + Composer = backend OWASYS
 sites créés = applications OPUS indépendantes
 ```
 
-## Ordre applicable
+## État runtime
+
+Les preuves owner valident :
 
 ```text
-P117U -> HF1 -> HF2 -> HF3 -> HF4 -> HF6 -> HF7R1
-```
-
-HF5 reste remplacé par HF6.
-
-## Différentiel HF7R1 installable
-
-```text
-ZIP    : opus_owasys_p117u_hf7r1_application_creation_profiles.zip
-SHA256 : 16b8006dae07b88555c7149fa14bb4f9a1230e47f5d32f973933e0597dcb7858
-PATHS  : 45
-```
-
-Le précédent ZIP contenant seulement le patch est remplacé. Le propriétaire extrait le ZIP dans un dossier temporaire et lance uniquement `INSTALL_HF7R1.cmd`.
-
-## Runtime HF7R1 confirmé
-
-Les preuves owner reçues valident :
-
-```text
-Créer une nouvelle application : visible
+Applications active
+Creation accessible
 Candidats : 1
 Applications canoniques : 1
 Identifiants dupliqués : 0
 Racines ignorées : 0
 Singleton conformes : 1
 Singleton non conformes : 0
+OWASYS découvert comme fullstack standard-opus-application
 ```
 
-OWASYS est découvert comme :
+Le journal backend contient sept `registry.sync` réussis par REST sécurisé puis Composer. Chaque commande `owasys:registry-sync` termine avec `exit_code=0`, `stderr_bytes=0` et FSM `succeeded`. Aucune opération `site.create` n’a encore été soumise.
+
+## HF8 committé
+
+Les applications générées reçoivent :
+
+- les 24 langues officielles de l’Union européenne plus l’ukrainien ;
+- la locale initiale négociée depuis `Accept-Language` ;
+- un fallback français explicite et diagnostiqué ;
+- Logger et Profiler obligatoires.
+
+## HF9 à installer
+
+La route `/fr-FR/applications/new` fonctionne, mais le sélecteur frontend/backend/fullstack se chevauche faute de CSS dédié.
 
 ```text
-fullstack
-standard-opus-application
-sites/owasys
-fr-FR
-owasys
-discovered
-OwasysApplication
+ZIP     : opus_owasys_p117u_hf9_creation_form_layout.zip
+SHA-256 : 1db0628b87961e098df9500924a496548ea2029702628eb8012c9313636505f0
+PATHS   : 3
+BASE    : f9d01dca6644f41c10b85fd6da47eb8c21bf15b6
 ```
 
-Le journal backend contient cinq `registry.sync` réussis par REST sécurisé puis Composer. Chaque commande `owasys:registry-sync` termine avec `exit_code=0`, `stderr_bytes=0` et FSM `succeeded`.
+Contenu :
 
-Le contexte courant reste vide avant l’action `Travailler sur cette application`, donc avant `registry.select`.
+```text
+sites/owasys/application/creation/controllers/CreationController.php
+sites/owasys/application/default/layouts/layout.score
+sites/owasys/www/asset/css/creation.css
+```
+
+HF9 est une correction de présentation OWASYS. Il ne modifie ni REST, ni Composer, ni Registry, ni les transitions FSM, ni les classes du framework sous `Opus/`.
 
 ## Création d’applications
 
@@ -97,32 +97,12 @@ Registry
 -> frontend | backend | fullstack
 -> REST site.create
 -> Composer opus:create-site
--> scaffold générique OPUS
+-> scaffold OPUS 25 locales + diagnostics
 -> Registry synchronize/select
 -> Build
 ```
 
 Le raccourci historique `Registry -> Build` hérité de `owasys_old` est rejeté.
-
-## Prochaine validation
-
-Ouvrir :
-
-```text
-http://localhost:8000/fr-FR/applications/new
-```
-
-Valider visuellement le formulaire Creation, puis utiliser `Annuler` avant toute création de fixture.
-
-Fixtures prévues ensuite :
-
-```text
-hf7r1-frontend-check
-hf7r1-backend-check
-hf7r1-fullstack-check
-```
-
-Aucune suppression de fixture n’est autorisée avant confirmation explicite de son caractère jetable.
 
 ## Contrat global
 
@@ -135,7 +115,7 @@ Aucune suppression de fixture n’est autorisée avant confirmation explicite de
 - besoin générique proposé comme évolution OPUS avant toute solution locale ;
 - OWASYS UI uniquement, toute mutation via REST sécurisé puis Composer ;
 - Logger et Profiler obligatoires ;
-- code OPUS/OWASYS livré uniquement par ZIP différentiel installable ;
+- code OPUS/OWASYS livré uniquement par ZIP différentiel ;
 - secrets interdits dans Git, argv, logs, profiler et artefacts.
 
 ## OWASYS canonique
@@ -151,10 +131,9 @@ Aucune suppression de fixture n’est autorisée avant confirmation explicite de
 - log frontend : `sites/owasys/var/logs/owasys-frontend.log` ;
 - profiler : `sites/owasys/var/profiler/<trace_id>.json`.
 
-## Installation et lancement
+## Lancement
 
 ```text
-INSTALL_HF7R1.cmd
 START_OWASYS_BACKEND.cmd
 START_OWASYS_FRONTEND.cmd
 ```
@@ -163,7 +142,7 @@ START_OWASYS_FRONTEND.cmd
 
 ## Nettoyage
 
-Ne pas supprimer `sites/owasys_old`, les logs, le profiler ou le Registry dans ce jalon. Le sort de `sites/owasys_old` reste une décision owner séparée.
+Aucun nettoyage n’est requis. Ne pas supprimer `sites/owasys_old`, les logs, le profiler ou le Registry. Le sort de `sites/owasys_old` reste une décision owner séparée.
 
 ## Règles permanentes
 
