@@ -9,7 +9,9 @@ CONTEXT/SPECIFICATIONS/MAESTRO_OPUS_OWASYS_GLOBAL_DEVELOPMENT_RULES_2026-07-24.m
 CONTEXT/SPECIFICATIONS/OPUS_OWASYS_GOVERNANCE_EXECUTION_SPEC_2026-07-24.md
 CONTEXT/SPECIFICATIONS/OPUS_OWASYS_P117U_HF7R1_CONTINUITY_REBUILD_SPEC_2026-07-24.md
 CONTEXT/SPECIFICATIONS/OPUS_OWASYS_P117U_HF7R1_RUNTIME_CHECKPOINT_SPEC_2026-07-24.md
+CONTEXT/SPECIFICATIONS/OPUS_P117U_HF7R2_GENERATED_SITE_I18N_DECISION_SPEC_R1_2026-07-24.md
 CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OPUS_OWASYS_P117U_HF7R1_RUNTIME_CHECKPOINT_2026-07-24.md
+CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OPUS_P117U_HF7R2_GENERATED_SITE_I18N_DECISION_2026-07-24.md
 ```
 
 ## Continuité GitHub
@@ -41,7 +43,7 @@ OWASYS est l’application `sites/owasys/` du dépôt OPUS. Il s’agit de l’U
 ## Ordre actif
 
 ```text
-P117U -> HF1 -> HF2 -> HF3 -> HF4 -> HF6 -> HF7R1
+P117U -> HF1 -> HF2 -> HF3 -> HF4 -> HF6 -> HF7R1 -> décision HF7R2
 ```
 
 HF5 reste remplacé par HF6.
@@ -58,7 +60,7 @@ Le ZIP précédent contenant uniquement le patch est remplacé et ne doit pas ê
 
 ## Checkpoint runtime validé
 
-Les captures et le journal backend reçus valident :
+Les trois captures et le journal backend reçus valident :
 
 - backend et frontend OWASYS démarrés ;
 - surface Applications accessible ;
@@ -76,6 +78,30 @@ Les captures et le journal backend reçus valident :
 - les opérations sont corrélables par `trace_id`.
 
 Le contexte courant reste vide avant l’action `Travailler sur cette application`, ce qui est conforme tant que `registry.select` n’a pas été exécuté.
+
+## Écart générique OPUS identifié
+
+Le fichier réel `Opus/Scaffold/SiteScaffoldPlan.php` du différentiel HF7R1 génère encore :
+
+```text
+default_locale : fr
+locales        : fr, en, es
+```
+
+Il ne génère que les catalogues `fr`, `en` et `es` dans les nouvelles applications.
+
+Le module OWASYS Creation contient bien les 25 catalogues attendus, mais cette couverture n’est pas propagée aux sites générés.
+
+Ce besoin est générique. Il relève du framework OPUS et ne doit pas être corrigé localement dans OWASYS.
+
+## Décision owner obligatoire
+
+```text
+OUI : faire évoluer OPUS pour générer les 24 langues officielles de l’Union européenne + l’ukrainien, avec locale initiale Accept-Language et fallback explicite diagnostiqué.
+NON : conserver le scaffold fr/en/es ; aucune solution locale OWASYS ne sera ajoutée.
+```
+
+Aucun ZIP HF8 n’est produit avant cette décision.
 
 ## Workflow résultant
 
@@ -137,48 +163,25 @@ sites/owasys_old
 
 La suppression de `sites/owasys_old` reste une décision owner séparée.
 
-## Prochaine action owner
-
-Ouvrir :
-
-```text
-http://localhost:8000/fr-FR/applications/new
-```
-
-Vérifier l’état Creation et la présence des profils frontend, backend et fullstack. Effectuer d’abord `Annuler` afin de valider `Creation -> Registry`, puis rouvrir Creation.
-
-Aucune fixture n’est créée avant validation visuelle de l’écran.
-
-## Fixtures prévues ensuite
-
-```text
-hf7r1-frontend-check
-hf7r1-backend-check
-hf7r1-fullstack-check
-```
-
-Aucune commande de suppression n’est autorisée avant confirmation explicite de leur caractère jetable.
-
 ## Gates owner encore ouverts
 
-1. audit tokenizer P117M et lint/parsing complets ;
-2. affichage du formulaire Creation ;
-3. annulation Creation vers Registry ;
-4. erreurs contrôlées avec trace corrélée ;
-5. création frontend ;
-6. création backend ;
-7. création fullstack ;
-8. Registry select puis Build ;
-9. conformité des trois applications ;
-10. navigation sans JavaScript ;
-11. mot de passe, Auth0, HTTPS, bastion et Windows/Linux ;
-12. commit et push OPUS après acceptation owner.
+1. décision `OUI` ou `NON` sur l’évolution I18n générique du scaffold ;
+2. audit tokenizer P117M et lint/parsing complets ;
+3. affichage du formulaire Creation ;
+4. annulation Creation vers Registry ;
+5. erreurs contrôlées avec trace corrélée ;
+6. création frontend ;
+7. création backend ;
+8. création fullstack ;
+9. Registry select puis Build ;
+10. conformité des trois applications ;
+11. navigation sans JavaScript ;
+12. mot de passe, Auth0, HTTPS, bastion et Windows/Linux ;
+13. commit et push OPUS après acceptation owner.
 
 ## Politique GitHub
 
 La gouvernance est écrite directement dans `MAESTRO_WORKSPACE`. Le code OPUS/OWASYS n’est pas poussé directement par l’assistant ; il est livré par ZIP différentiel installable.
-
-Aucun nouveau ZIP n’est généré à ce checkpoint : les preuves reçues ne démontrent aucun défaut de code.
 
 NO CONTRACT, NO PATCH.  
 NO SOURCE OF TRUTH, NO PATCH.  
