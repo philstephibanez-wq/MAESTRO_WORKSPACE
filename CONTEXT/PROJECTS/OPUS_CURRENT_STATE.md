@@ -6,91 +6,135 @@ Last updated: 2026-07-24.
 
 - Remote: `philstephibanez-wq/OPUS`
 - Branch: `master`
-- Current remote head reviewed: `96884961248fc82bf5e13187a6ffcfffacb82d9f`
+- Remote head reviewed: `96884961248fc82bf5e13187a6ffcfffacb82d9f`
 - Owner local repo: `H:/OPUS`
 
 ## Framework identity
 
 OPUS is a generic framework, not an application.
 
-OWASYS is an application built with OPUS. Its current SCORE pages are its frontend. Secured REST + Composer is its backend. Sites created through OWASYS are independent OPUS applications.
+OWASYS is an application built with OPUS. Its current SCORE pages are its frontend. Secured REST + Composer is its backend. Created sites are independent OPUS applications.
 
 ## Active artifact stack
 
 ```text
-P117U -> HF1 -> HF2 -> HF3 -> HF4 -> HF6
+P117U -> HF1 -> HF2 -> HF3 -> HF4 -> HF6 -> HF7
 ```
 
-HF5 is superseded and is not required on a clean base.
+HF5 remains superseded.
 
-## HF6
+## Confirmed backend state
 
-- ZIP: `opus_owasys_p117u_hf6_composer_autoload_callback.zip`
-- SHA-256: `d482f4b352c958557e63095f5eacb5fdd9fcbb783853dd2c6202c16ccf79505c`
-- files: 4
-- ZIP bytes: 3,332
+HF6 is operational in the owner environment. Registry synchronization completed through secured REST and Composer with process exit code `0` and execution FSM state `succeeded`.
+
+## HF7 cause
+
+Both `owasys_old` and current OWASYS transitioned `create_new_app` directly from Registry to Build/Validate. The current implementation also invoked an obsolete creation-start Registry command.
+
+## HF7 workflow
 
 ```text
-composer.json
-Opus/Composer/ComposerScriptsInterface.php
-Opus/Composer/ComposerScripts.php
-sites/owasys/config/composer.commands.json
+registry
+-> creation
+-> choose frontend/backend/fullstack
+-> REST site.create
+-> Composer opus:create-site
+-> OPUS scaffold
+-> Registry synchronize/select
+-> build
 ```
 
-## HF6 cause
+Failure stays in Creation. Cancellation returns to Registry.
 
-Post-HF5 Logger/Profiler evidence showed the same error twice:
+## OPUS profile support
+
+The existing generic `SiteScaffoldPlan` is profile-aware:
 
 ```text
-Could not open input file: scripts\opus.php
+frontend
+backend
+fullstack
 ```
 
-Composer found `owasys:registry-sync`, but the Composer script definition still depended on a relative subprocess path.
+`SiteCommandService` and `OpusConsoleApplication` expose `--profile`. Direct CLI defaults to fullstack. The secured OWASYS REST operation requires an explicit profile.
 
-## HF6 correction
+Generated sites declare `OPUS_APPLICATION_PROFILE_V1`, matching kind/capabilities and remain Singleton, FSM-module-first, I18n/browser-locale aware, ACL deny-by-default, SSO/Auth0-proxy ready and SCORE-rendered.
 
-Every public Composer alias now invokes the generic autoloaded callback:
+Modified concrete framework classes retain their homonymous four-marker interfaces. No new concrete OPUS class is introduced.
+
+## OWASYS creation module
+
+Application-owned location:
 
 ```text
-Opus\Composer\ComposerScripts::run
+sites/owasys/application/creation/
 ```
 
-The callback derives the OPUS root from its own file location. It resolves framework aliases generically and application aliases from application-owned configuration through `File` and `StructuredFileLoader`.
+The module contains a SCORE form, FSM controller, REST projection model and base-language I18n catalogs. It performs no direct site write or process execution.
 
-The direct CLI entrypoint `scripts/opus.php` remains available but is no longer invoked as a relative Composer subprocess.
+Removed obsolete active artifacts:
 
-## Separation
+```text
+registry.creation.start
+owasys:registry-creation-start
+owasys:registry:creation:start
+start_creation_flow
+```
 
-The generic callback contains no OWASYS name or command.
+The Registry command provider projects canonical standard OPUS sites and maps application profile type to Registry kind. Created sites are selected through secured Registry commands before Build.
 
-OWASYS owns its alias map in `sites/owasys/config/composer.commands.json`; business implementations remain under `sites/owasys/application/`.
+## Diagnostics
 
-## Framework contract
-
-The new concrete `ComposerScripts` class implements `ComposerScriptsInterface`, which extends all four mandatory markers.
-
-## Diagnostics state
-
-HF4 remains active:
+Backend:
 
 ```text
 sites/owasys/var/logs/rcp-backend.log
 sites/owasys/var/profiler/<trace_id>.json
 ```
 
-No execution failure is swallowed.
+Frontend creation:
 
-## Root contract
+```text
+sites/owasys/var/logs/owasys-frontend.log
+sites/owasys/var/profiler/<trace_id>.json
+```
 
-No root `bin/`, lowercase root `config/`, root `public/` or new top-level directory is authorized.
+No secret or raw form parameter is recorded.
+
+## HF7 artifact
+
+- ZIP: `opus_owasys_p117u_hf7_application_creation_profiles.zip`
+- SHA-256: `16e06b55f3cf2ffcc5118fe0e5c4f17cbc7b51fa437fd06f17bf3dc16ab48141`
+- files: 45
+- ZIP bytes: 54,906
+- payload bytes: 176,634
+- roots: `composer.json`, `Opus/`, `sites/`
+
+## Validation
+
+Green:
+
+- PHP lint and JSON parse;
+- ZIP integrity;
+- Composer aliases contain no smoke/audit/test/recipe;
+- profile CLI and RCP argument forwarding;
+- frontend/backend/fullstack scaffold generation;
+- generated file and generated-site validation;
+- FSM creation transitions;
+- creation model REST fixture;
+- standard site Registry discovery;
+- interface/four-marker checks;
+- no obsolete creation-start operation;
+- no UI echo/config-parser bypass.
 
 ## Pending
 
-1. apply HF6 after HF4;
+1. apply HF7 after HF6;
 2. regenerate optimized autoload;
-3. start backend and verify `/api/v1/status`;
-4. start frontend;
-5. retest Registry synchronization;
-6. inspect a new trace only if another error occurs;
-7. validate remaining Registry, password, browser, Auth0 and platform gates;
-8. commit OPUS after owner acceptance.
+3. validate OWASYS site and routes;
+4. start backend and frontend;
+5. validate visual Creation state;
+6. generate disposable frontend/backend/fullstack applications;
+7. validate Registry selection and Build transition;
+8. validate failure traces and remaining password/browser/Auth0/platform gates;
+9. commit OPUS after owner acceptance.
