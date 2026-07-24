@@ -7,8 +7,8 @@ Last updated: 2026-07-24.
 - Remote: `philstephibanez-wq/OPUS`
 - Branch: `master`
 - Current remote head reviewed: `79f261854ee06a9f828fec389adca77d57323d00`
-- Current committed milestone: P117U + HF1 + HF2 + HF3 + HF4 + HF6
-- HF7 status: exact differential recovered and verified, not committed on `OPUS/master`
+- Current remote milestone: P117U + HF1 + HF2 + HF3 + HF4 + HF6
+- Owner local state observed: HF7R1 applied and running, not yet committed on `OPUS/master`
 - Owner local repo: `H:/OPUS`
 
 ## Framework identity
@@ -21,35 +21,36 @@ OWASYS is an application built with OPUS. Its SCORE pages are its frontend. Secu
 
 - `CONTEXT/SPECIFICATIONS/MAESTRO_OPUS_OWASYS_GLOBAL_DEVELOPMENT_RULES_2026-07-24.md`
 - `CONTEXT/SPECIFICATIONS/OPUS_OWASYS_GOVERNANCE_EXECUTION_SPEC_2026-07-24.md`
+- `CONTEXT/SPECIFICATIONS/OPUS_OWASYS_P117U_HF7R1_CONTINUITY_REBUILD_SPEC_2026-07-24.md`
+- `CONTEXT/SPECIFICATIONS/OPUS_OWASYS_P117U_HF7R1_RUNTIME_CHECKPOINT_SPEC_2026-07-24.md`
 - `CONTEXT/SPECIFICATIONS/OPUS_ALL_CONCRETE_CLASSES_COMPONENT_CONTRACT_SPEC_P117M.md`
 - `CONTEXT/PROJECTS/OPUS/OPUS_SITE_STANDARD_CONTRACT.md`
 
 ## Active artifact stack
 
 ```text
-P117U -> HF1 -> HF2 -> HF3 -> HF4 -> HF6 -> HF7
+P117U -> HF1 -> HF2 -> HF3 -> HF4 -> HF6 -> HF7R1
 ```
 
 HF5 remains superseded.
 
-## Confirmed committed state
+## Remote versus local state
 
-HF6 is present at the current remote head. Public Composer aliases delegate to `Opus\Composer\ComposerScripts::run`.
+The remote `OPUS/master` remains at HF6. Public Composer aliases delegate to `Opus\Composer\ComposerScripts::run`.
 
-The committed `composer.json` still contains the obsolete alias `owasys:registry-creation-start` because HF7 is not yet applied.
+The owner local runtime shows HF7R1 behavior:
 
-The current framework includes:
+- Creation entry visible from Applications;
+- standard OPUS applications projected into Registry;
+- application profile projected as Registry kind;
+- obsolete direct Registry-to-Build behavior no longer visible in the Applications surface;
+- backend and frontend running on the expected local ports.
 
-- generic Composer console and callback infrastructure;
-- secured RCP/REST execution infrastructure;
-- `File`, `Json`, `Xml`, `Yaml` and `StructuredFileLoader`;
-- browser `Accept-Language` negotiation;
-- Logger and Profiler contracts;
-- homonymous four-marker interfaces for the reviewed concrete classes added after P117M.
+The remote is intentionally unchanged until owner runtime gates are complete.
 
 ## Concrete framework class contract
 
-Every named concrete class under `Opus/**/*.php` directly implements its homonymous interface. That interface directly extends:
+Every named concrete class under `Opus/**/*.php` must directly implement its homonymous interface. That interface directly extends:
 
 ```text
 OpusFrameworkComponentInterface
@@ -58,7 +59,7 @@ OpusProfilerAwareInterface
 OpusSelfDocumentingInterface
 ```
 
-The comparison from P117M to the current head shows class/interface pairs for the new or modified framework classes in the active perimeter. The exhaustive tokenizer gate must still be executed on the complete owner tree after HF7.
+The exhaustive tokenizer gate must still be executed on the complete owner tree after HF7R1. No final claim of exhaustive conformance is made before that gate.
 
 ## Application standard
 
@@ -108,11 +109,50 @@ SCORE frontend
 
 No OWASYS business logic belongs under `Opus/`.
 
-## HF7 cause and workflow
+## HF7R1 runtime checkpoint
 
-Both `owasys_old` and current OWASYS transitioned `create_new_app` directly from Registry to Build/Validate. The current implementation also invoked an obsolete creation-start Registry command.
+The visual evidence confirms:
 
-HF7 replaces that path with:
+```text
+create application entry visible
+candidates = 1
+canonical applications = 1
+duplicate identifiers = 0
+ignored roots = 0
+Singleton conforming = 1
+Singleton non-conforming = 0
+```
+
+The Registry projection confirms:
+
+```text
+application = OPUS OWASYS
+status = discovered
+profile = fullstack
+kind = standard-opus-application
+root = sites/owasys
+locale = fr-FR
+id = owasys
+conformity = OwasysApplication
+```
+
+The current application remains unset until `registry.select` is invoked by the owner action.
+
+## REST + Composer evidence
+
+The supplied backend log contains five successful `registry.sync` operations. Every execution follows:
+
+```text
+execution.received
+-> execution.validated
+-> command.started : owasys:registry-sync
+-> command.succeeded : exit_code=0, stderr_bytes=0
+-> execution.succeeded : fsm_state=succeeded
+```
+
+No backend error, stderr output or failed FSM transition appears in the supplied log.
+
+## Workflow under validation
 
 ```text
 Registry
@@ -137,40 +177,35 @@ Profiler     : sites/owasys/var/profiler/<trace_id>.json
 
 No secret or raw sensitive parameter is recorded.
 
-## HF7 artifact verified
+## Current differential
 
-- ZIP: `opus_owasys_p117u_hf7_application_creation_profiles.zip`
-- SHA-256: `16e06b55f3cf2ffcc5118fe0e5c4f17cbc7b51fa437fd06f17bf3dc16ab48141`
-- files: 45
-- ZIP bytes: 54,906
-- payload bytes: 176,634
-- roots: `composer.json`, `Opus/`, `sites/`
-- availability: recovered from the retained artifact library and materialized without reconstruction
+- ZIP: `opus_owasys_p117u_hf7r1_application_creation_profiles.zip`
+- SHA-256: `16b8006dae07b88555c7149fa14bb4f9a1230e47f5d32f973933e0597dcb7858`
+- changed paths: 45
+- delivery mode: installable differential ZIP
 
-Integrity ZIP, SHA-256, PHP lint for the differential PHP files and JSON parsing have been verified.
+No new corrective ZIP is justified by the current evidence because no defect is reproduced.
 
-## Validated launch surface
+## Launch surface
 
 ```text
-composer dump-autoload -o
-composer opus:validate-site -- owasys
-composer opus:list-routes -- owasys
-composer opus:serve-site -- owasys --host=127.0.0.1 --port=8792
-composer opus:serve-site -- owasys --host=127.0.0.1 --port=8000
+START_OWASYS_BACKEND.cmd
+START_OWASYS_FRONTEND.cmd
 ```
 
 The backend route is `/api/v1`; the OWASYS client targets `http://127.0.0.1:8792/api/v1/executions`.
 
 ## Pending
 
-1. confirm the owner local tree is clean and based on the expected HF6 head;
-2. apply HF7;
-3. regenerate optimized autoload;
-4. run the exhaustive P117M tokenizer gate and full lint;
-5. validate OWASYS site and routes;
-6. start backend then frontend;
-7. validate Creation and the three profiles;
-8. validate Registry selection, Build transition and correlated traces;
-9. validate password, no-JavaScript, Auth0, HTTPS, bastion and platform gates;
-10. commit OPUS after owner acceptance;
-11. decide separately whether `sites/owasys_old` can be removed.
+1. run the exhaustive P117M tokenizer gate and complete lint/parsing;
+2. validate `/fr-FR/applications/new`;
+3. validate Creation cancellation;
+4. validate controlled Creation failures and correlated frontend/backend traces;
+5. create `hf7r1-frontend-check`;
+6. create `hf7r1-backend-check`;
+7. create `hf7r1-fullstack-check`;
+8. validate Registry selection and Build transition;
+9. validate structural conformance of all three generated sites;
+10. validate no-JavaScript, password, Auth0, HTTPS, bastion and platform gates;
+11. commit OPUS after owner acceptance;
+12. decide separately whether `sites/owasys_old` can be removed.
