@@ -6,10 +6,9 @@ Last updated: 2026-07-24.
 
 - Remote: `philstephibanez-wq/OPUS`
 - Branch: `master`
-- Current remote head reviewed: `79f261854ee06a9f828fec389adca77d57323d00`
-- Current remote milestone: P117U + HF1 + HF2 + HF3 + HF4 + HF6
-- Owner local state observed: HF7R1 applied and running, not yet committed on `OPUS/master`
-- HF8 status: differential produced, not yet installed by owner
+- Current remote head reviewed: `f9d01dca6644f41c10b85fd6da47eb8c21bf15b6`
+- Current remote milestone: P117U + HF1 + HF2 + HF3 + HF4 + HF6 + HF7 + HF8
+- HF9 status: OWASYS presentation differential produced, not yet committed
 - Owner local repo: `H:/OPUS`
 
 ## Framework identity
@@ -22,33 +21,18 @@ OWASYS is an application built with OPUS. Its SCORE pages are its frontend. Secu
 
 - `CONTEXT/SPECIFICATIONS/MAESTRO_OPUS_OWASYS_GLOBAL_DEVELOPMENT_RULES_2026-07-24.md`
 - `CONTEXT/SPECIFICATIONS/OPUS_OWASYS_GOVERNANCE_EXECUTION_SPEC_2026-07-24.md`
-- `CONTEXT/SPECIFICATIONS/OPUS_OWASYS_P117U_HF7R1_CONTINUITY_REBUILD_SPEC_2026-07-24.md`
-- `CONTEXT/SPECIFICATIONS/OPUS_OWASYS_P117U_HF7R1_RUNTIME_CHECKPOINT_SPEC_2026-07-24.md`
 - `CONTEXT/SPECIFICATIONS/OPUS_P117U_HF8_GENERATED_SITE_I18N_EU_UK_DIAGNOSTICS_SPEC_2026-07-24.md`
+- `CONTEXT/SPECIFICATIONS/OPUS_OWASYS_P117U_HF9_CREATION_FORM_LAYOUT_SPEC_2026-07-24.md`
 - `CONTEXT/SPECIFICATIONS/OPUS_ALL_CONCRETE_CLASSES_COMPONENT_CONTRACT_SPEC_P117M.md`
 - `CONTEXT/PROJECTS/OPUS/OPUS_SITE_STANDARD_CONTRACT.md`
 
-## Active artifact stack
+## Active stack
 
 ```text
-P117U -> HF1 -> HF2 -> HF3 -> HF4 -> HF6 -> HF7R1 -> HF8
+P117U -> HF1 -> HF2 -> HF3 -> HF4 -> HF6 -> HF7 -> HF8 -> HF9 pending owner installation
 ```
 
 HF5 remains superseded.
-
-## Remote versus local state
-
-The remote `OPUS/master` remains at HF6. Public Composer aliases delegate to `Opus\Composer\ComposerScripts::run`.
-
-The owner local runtime shows HF7R1 behavior:
-
-- Creation entry visible from Applications;
-- standard OPUS applications projected into Registry;
-- application profile projected as Registry kind;
-- obsolete direct Registry-to-Build behavior no longer visible in the Applications surface;
-- backend and frontend running on the expected local ports.
-
-HF8 is based on the real profile-aware `SiteScaffoldPlan.php` from the HF7 differential. It is intentionally not pushed to OPUS.
 
 ## Concrete framework class contract
 
@@ -61,9 +45,7 @@ OpusProfilerAwareInterface
 OpusSelfDocumentingInterface
 ```
 
-HF8 modifies only the existing `SiteScaffoldPlan` class. It introduces no new concrete framework class and preserves `SiteScaffoldPlanInterface`.
-
-The exhaustive tokenizer gate must still be executed on the complete owner tree after HF8 installation. No final claim of exhaustive repository conformance is made before that gate.
+HF9 adds no class under `Opus/` and modifies no existing framework class. The exhaustive P117M tokenizer gate remains mandatory before the next OPUS commit.
 
 ## Application standard
 
@@ -113,38 +95,53 @@ SCORE frontend
 
 No OWASYS business logic belongs under `Opus/`.
 
-## HF7R1 runtime checkpoint
+## HF8 committed state
 
-The visual evidence confirms:
+The generic profile-aware scaffold now generates 25 base locales:
 
 ```text
-create application entry visible
-candidates = 1
-canonical applications = 1
-duplicate identifiers = 0
-ignored roots = 0
+bg hr cs da nl en et fi fr de el hu ga it lv lt mt pl pt ro sk sl es sv uk
+```
+
+Locale resolution remains:
+
+```text
+explicit route locale
+-> Accept-Language negotiation
+-> explicit fr fallback with diagnostics
+```
+
+Generated applications create and use:
+
+```text
+var/logs/application.log
+var/profiler/<trace_id>.json
+```
+
+through `Opus\Log\Logger` and `Opus\Profiler\Profiler`.
+
+## Runtime evidence
+
+The four owner screenshots confirm:
+
+```text
+Applications route active
+Creation entry visible
+Candidates = 1
+Canonical applications = 1
+Duplicate identifiers = 0
+Ignored roots = 0
 Singleton conforming = 1
 Singleton non-conforming = 0
+OWASYS discovered as fullstack standard-opus-application
+Creation route /fr-FR/applications/new accessible
 ```
 
-The Registry projection confirms:
-
-```text
-application = OPUS OWASYS
-status = discovered
-profile = fullstack
-kind = standard-opus-application
-root = sites/owasys
-locale = fr-FR
-id = owasys
-conformity = OwasysApplication
-```
-
-The current application remains unset until `registry.select` is invoked by the owner action.
+The Creation form contains the site identifier, the frontend/backend/fullstack profiles and the Create/Cancel actions.
 
 ## REST + Composer evidence
 
-The supplied backend log contains five successful `registry.sync` operations. Every execution follows:
+The supplied backend log contains seven complete `registry.sync` executions. Every trace follows:
 
 ```text
 execution.received
@@ -154,96 +151,59 @@ execution.received
 -> execution.succeeded : fsm_state=succeeded
 ```
 
-No backend error, stderr output or failed FSM transition appears in the supplied log.
+No error, stderr output or failed FSM transition appears. No `site.create` operation has yet been submitted.
 
-## HF8 generated application I18n
-
-The owner approved the generic framework evolution.
-
-The scaffold now generates exactly:
+Observed Composer duration:
 
 ```text
-bg hr cs da nl en et fi fr de el hu ga it lv lt mt pl pt ro sk sl es sv uk
+minimum : 3603.440 ms
+average : 4919.592 ms
+maximum : 10261.340 ms
 ```
 
-for the default scope and every module of the `frontend`, `backend` and `fullstack` profiles.
+## HF9 reproduced defect
 
-The locale strategy is:
+The Creation profile selector is structurally present but visually broken. The template uses:
 
 ```text
-explicit route locale
--> Accept-Language negotiation
--> explicit fr fallback with diagnostics
+ow-creation-form
+ow-form-field
+ow-profile-selector
+ow-profile-option
 ```
 
-Regional browser tags such as `fr-FR`, `de-DE` and `uk-UA` resolve to supported base locales through the existing OPUS `BrowserLocaleNegotiator`.
+without dedicated rules in the current OWASYS stylesheets. The labels therefore inherit `.ow-card` while remaining inline, producing the overlap visible in the owner capture.
 
-## HF8 generated application diagnostics
+## HF9 differential
 
-Generated applications declare and create:
+- ZIP: `opus_owasys_p117u_hf9_creation_form_layout.zip`
+- SHA-256: `1db0628b87961e098df9500924a496548ea2029702628eb8012c9313636505f0`
+- changed paths: 3
+- base commit: `f9d01dca6644f41c10b85fd6da47eb8c21bf15b6`
+
+Paths:
 
 ```text
-var/logs/application.log
-var/profiler/<trace_id>.json
+sites/owasys/application/creation/controllers/CreationController.php
+sites/owasys/application/default/layouts/layout.score
+sites/owasys/www/asset/css/creation.css
 ```
 
-The generated Singleton application class uses `Opus\Log\Logger` and `Opus\Profiler\Profiler` and correlates:
+HF9 is application presentation only. It does not alter REST, Composer, Registry, FSM transitions, I18n catalogs, ACL, SSO, Logger or Profiler.
+
+## HF9 validation
 
 ```text
-request.received
-request.completed
-request.failed
+PHP lint controller             : OK
+SCORE conditional balance      : OK
+Chromium 1716 px                : 0 overlap, 0 overflow
+Chromium 1100 px                : 0 overlap, 0 overflow
+Chromium 760 px                 : 0 overlap, 0 overflow
+Chromium 420 px                 : 0 overlap, 0 overflow
+New concrete OPUS class         : none
+UI echo added                   : none
+Business backend changed        : no
 ```
-
-No sensitive form value, secret, token, password, HMAC or command line is added to diagnostics.
-
-## Workflow under validation
-
-```text
-Registry
--> Creation
--> choose frontend/backend/fullstack
--> REST site.create
--> Composer opus:create-site
--> OPUS scaffold with 25 locales and diagnostics
--> Registry synchronize/select
--> Build
-```
-
-Failure stays in Creation. Cancellation returns to Registry.
-
-## Diagnostics
-
-OWASYS:
-
-```text
-Backend log  : sites/owasys/var/logs/rcp-backend.log
-Frontend log : sites/owasys/var/logs/owasys-frontend.log
-Profiler     : sites/owasys/var/profiler/<trace_id>.json
-```
-
-Generated application:
-
-```text
-Log          : sites/<application>/var/logs/application.log
-Profiler     : sites/<application>/var/profiler/<trace_id>.json
-```
-
-## Current differentials
-
-### HF7R1 applied locally
-
-- ZIP: `opus_owasys_p117u_hf7r1_application_creation_profiles.zip`
-- SHA-256: `16b8006dae07b88555c7149fa14bb4f9a1230e47f5d32f973933e0597dcb7858`
-- changed paths: 45
-
-### HF8 pending owner installation
-
-- ZIP: `opus_p117u_hf8_generated_site_i18n_eu_uk_diagnostics.zip`
-- SHA-256: `6f5d68f23d94d048a0fc43b696397dfe643dd8dc1510cfc33147152ceda7a9f6`
-- changed paths: 1
-- target: `Opus/Scaffold/SiteScaffoldPlan.php`
-- required base file SHA-256: `a68f57c7de7f934363cd76ba8c726f732bf83c9a8575fcf88cdb2d8f68877a74`
 
 ## Launch surface
 
@@ -256,16 +216,14 @@ The backend route is `/api/v1`; the OWASYS client targets `http://127.0.0.1:8792
 
 ## Pending
 
-1. verify the owner base file SHA-256;
-2. install HF8;
-3. run Composer optimized autoload;
-4. run complete PHP lint/parsing and the exhaustive P117M tokenizer gate;
-5. validate Creation and cancellation;
-6. create one application for each profile;
-7. verify 25 default catalogs and 25 catalogs per generated module;
-8. validate `fr-FR`, `de-DE`, `uk-UA` and explicit fallback;
-9. validate generated application Logger and Profiler;
-10. validate Registry selection and Build transition;
-11. validate no-JavaScript, password, Auth0, HTTPS, bastion and platform gates;
-12. commit OPUS after owner acceptance;
-13. decide separately whether `sites/owasys_old` can be removed.
+1. install HF9 on a clean `f9d01dca6644f41c10b85fd6da47eb8c21bf15b6` tree;
+2. lint the modified controller;
+3. reload `/fr-FR/applications/new` without browser cache;
+4. validate desktop and mobile layout;
+5. validate Cancel to Registry;
+6. submit one controlled creation;
+7. validate REST, Composer, Registry select and Build;
+8. validate correlated Logger and Profiler traces;
+9. run the exhaustive P117M tokenizer gate;
+10. commit OPUS after owner acceptance;
+11. decide separately whether `sites/owasys_old` can be removed.
