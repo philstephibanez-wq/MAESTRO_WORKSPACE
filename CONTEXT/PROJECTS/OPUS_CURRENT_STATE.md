@@ -18,41 +18,56 @@ OWASYS is an application built with OPUS. Its current SCORE pages are its fronte
 ## Active artifact stack
 
 ```text
-P117U -> HF1 -> HF2 -> HF3 -> HF4 -> HF5
+P117U -> HF1 -> HF2 -> HF3 -> HF4 -> HF6
 ```
 
-HF5:
+HF5 is superseded and is not required on a clean base.
 
-- ZIP: `opus_owasys_p117u_hf5_composer_working_directory.zip`
-- SHA-256: `862d870b4e77de6fd74c391c4d1ca41a240419b7ea8bc33daebeb1aee9a8279b`
-- files: 1
-- ZIP bytes: 3,741
+## HF6
+
+- ZIP: `opus_owasys_p117u_hf6_composer_autoload_callback.zip`
+- SHA-256: `d482f4b352c958557e63095f5eacb5fdd9fcbb783853dd2c6202c16ccf79505c`
+- files: 4
+- ZIP bytes: 3,332
 
 ```text
-Opus/Rcp/Composer/ComposerCommandExecutor.php
+composer.json
+Opus/Composer/ComposerScriptsInterface.php
+Opus/Composer/ComposerScripts.php
+sites/owasys/config/composer.commands.json
 ```
 
-## HF5 cause
+## HF6 cause
 
-HF4 diagnostics proved that Composer found `owasys:registry-sync` but its child command could not open the generic framework entrypoint:
+Post-HF5 Logger/Profiler evidence showed the same error twice:
 
 ```text
-scripts\opus.php
+Could not open input file: scripts\opus.php
 ```
 
-Both observed and closed process codes were `1`.
+Composer found `owasys:registry-sync`, but the Composer script definition still depended on a relative subprocess path.
 
-## HF5 correction
+## HF6 correction
 
-The generic Composer executor now passes:
+Every public Composer alias now invokes the generic autoloaded callback:
 
 ```text
---working-dir=<validated absolute OPUS root>
+Opus\Composer\ComposerScripts::run
 ```
 
-The `proc_open` working directory remains the same validated root. No REST or application input can override it.
+The callback derives the OPUS root from its own file location. It resolves framework aliases generically and application aliases from application-owned configuration through `File` and `StructuredFileLoader`.
 
-No OWASYS application file or business implementation is changed.
+The direct CLI entrypoint `scripts/opus.php` remains available but is no longer invoked as a relative Composer subprocess.
+
+## Separation
+
+The generic callback contains no OWASYS name or command.
+
+OWASYS owns its alias map in `sites/owasys/config/composer.commands.json`; business implementations remain under `sites/owasys/application/`.
+
+## Framework contract
+
+The new concrete `ComposerScripts` class implements `ComposerScriptsInterface`, which extends all four mandatory markers.
 
 ## Diagnostics state
 
@@ -63,13 +78,7 @@ sites/owasys/var/logs/rcp-backend.log
 sites/owasys/var/profiler/<trace_id>.json
 ```
 
-Logger/profiler traces remain sanitized and correlated with REST errors.
-
-## Framework contracts
-
-Every concrete class under `Opus/` implements its homonymous interface extending all four mandatory markers.
-
-HF5 introduces no class or interface and preserves `ComposerCommandExecutorInterface`.
+No execution failure is swallowed.
 
 ## Root contract
 
@@ -77,7 +86,7 @@ No root `bin/`, lowercase root `config/`, root `public/` or new top-level direct
 
 ## Pending
 
-1. apply HF5 after HF4;
+1. apply HF6 after HF4;
 2. regenerate optimized autoload;
 3. start backend and verify `/api/v1/status`;
 4. start frontend;
