@@ -8,13 +8,15 @@ Lire en premier :
 
 ```text
 CONTEXT/SPECIFICATIONS/MAESTRO_OPUS_OWASYS_GLOBAL_DEVELOPMENT_RULES_2026-07-24.md
+CONTEXT/SPECIFICATIONS/OPUS_OWASYS_GOVERNANCE_EXECUTION_SPEC_2026-07-24.md
+CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OPUS_OWASYS_GOVERNANCE_EXECUTION_2026-07-24.md
 ```
 
-Ce contrat est obligatoire pour toute correction, évolution, livraison et reprise MAESTRO / OPUS / OWASYS.
+Ces contrats sont obligatoires pour toute correction, évolution, livraison et reprise MAESTRO / OPUS / OWASYS.
 
 ## Périmètre GitHub relu
 
-Dépôts accessibles et inspectés sur leur branche courante :
+Dépôts accessibles inspectés sur leur branche courante :
 
 ```text
 philstephibanez-wq/MAESTRO_WORKSPACE
@@ -24,86 +26,76 @@ philstephibanez-wq/Maestro_KB_Engine
 philstephibanez-wq/Maestro_KB_Extranet
 ```
 
-La relecture a couvert les heads distants, les contrats et handoffs actifs, les derniers différentiels significatifs et les fichiers OPUS nécessaires à la validation des règles demandées. Elle ne remplace pas un clone local exhaustif ni les validations runtime owner.
+La relecture a couvert les heads distants, contrats, handoffs, historique récent et fichiers nécessaires au contrôle des règles. Elle ne remplace pas le gate exhaustif exécuté sur le clone local owner ni les validations runtime.
 
-## Active milestone
+## Jalon actif
 
-P117U with mandatory HF1, HF2, HF3, HF4, HF6 and pending HF7.
-
-```text
-OPUS = generic framework
-OWASYS = application built with OPUS
-OWASYS current pages = SCORE frontend
-secured REST + Composer = OWASYS backend
-created sites = independent OPUS applications
-```
-
-OPUS is not an application.
-
-## Source of truth
-
-- OPUS repository: `philstephibanez-wq/OPUS`
-- branch: `master`
-- current remote head reviewed: `79f261854ee06a9f828fec389adca77d57323d00`
-- current committed state: HF6
-- HF7 specification: `CONTEXT/SPECIFICATIONS/OPUS_OWASYS_P117U_HF7_APPLICATION_CREATION_PROFILES_SPEC.md`
-- HF7 handoff: `CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OPUS_OWASYS_P117U_HF7_APPLICATION_CREATION_PROFILES_2026-07-24.md`
-- site contract: `CONTEXT/PROJECTS/OPUS/OPUS_SITE_STANDARD_CONTRACT.md`
-- exhaustive class contract: `CONTEXT/SPECIFICATIONS/OPUS_ALL_CONCRETE_CLASSES_COMPONENT_CONTRACT_SPEC_P117M.md`
-
-The former current-state reference `96884961248fc82bf5e13187a6ffcfffacb82d9f` is historical. It is not the current `OPUS/master` head.
-
-## Delivery boundary
-
-Governance files are written directly to `MAESTRO_WORKSPACE`.
-
-OPUS and OWASYS source code are not pushed directly by the assistant. They are delivered as a differential ZIP only after the exact source base and real target files are available.
-
-The documented HF7 ZIP is not present in GitHub or in the supplied attachment. It must not be reconstructed from prose. The supplied attachment only contains instructions for opening a new chat and does not contain the expected technical differential or handoff source.
-
-## Only admitted OPUS root
-
-Directories:
+P117U avec HF1, HF2, HF3, HF4, HF6 et HF7 en attente d’application owner.
 
 ```text
-.git .github application Config DOC Opus packages runtime scripts sites tools vendor
+OPUS = framework générique
+OWASYS = application construite avec OPUS
+pages OWASYS = frontend SCORE
+REST sécurisé + Composer = backend OWASYS
+sites créés = applications OPUS indépendantes
 ```
 
-Root files:
+## Sources de vérité
+
+- workspace : `philstephibanez-wq/MAESTRO_WORKSPACE`, branche `master` ;
+- OPUS : `philstephibanez-wq/OPUS`, branche `master` ;
+- OPUS head relu : `79f261854ee06a9f828fec389adca77d57323d00` ;
+- état OPUS distant : HF6 committé, HF7 non appliqué.
+
+OWASYS appartient à `sites/owasys/` dans OPUS. Aucun dépôt OWASYS autonome n’est la source de vérité.
+
+## Écart distant confirmé
+
+Le `composer.json` distant contient encore :
 
 ```text
-.gitignore AGENTS.md composer.json composer.lock composer.phar LICENSE README.md
+owasys:registry-creation-start
 ```
 
-No root `bin/`, lowercase root `config/`, root `public/` or new root.
+Cet alias obsolète doit être retiré par HF7, sans hotfix partiel séparé.
 
-## Mandatory clean-base order
+## Ordre d’application
 
 ```text
 P117U -> HF1 -> HF2 -> HF3 -> HF4 -> HF6 -> HF7
 ```
 
-HF5 is superseded. If already applied, it may remain; no rollback is required.
+HF5 est remplacé par HF6.
 
-## Confirmed committed state
+## Différentiel HF7 retrouvé et vérifié
 
-The current OPUS head contains the generic Composer callback introduced by HF6. Public Composer aliases delegate to `Opus\Composer\ComposerScripts::run`.
+- ZIP : `opus_owasys_p117u_hf7_application_creation_profiles.zip` ;
+- SHA-256 : `16e06b55f3cf2ffcc5118fe0e5c4f17cbc7b51fa437fd06f17bf3dc16ab48141` ;
+- fichiers : 45 ;
+- ZIP : 54 906 octets ;
+- payload : 176 634 octets ;
+- racines : `composer.json`, `Opus/`, `sites/`.
 
-The current committed `composer.json` still contains the obsolete OWASYS creation-start alias because HF7 has not been applied to `OPUS/master`.
+L’artefact exact a été retrouvé. Son empreinte et son intégrité ZIP ont été recalculées. Aucun fichier n’a été reconstruit depuis la prose.
 
-The current implementation already contains:
+## Workflow canonique HF7
 
-- `File`, `Json`, `Xml`, `Yaml` and `StructuredFileLoader`;
-- browser `Accept-Language` negotiation;
-- homonymous four-marker interfaces for the reviewed concrete classes introduced after P117M;
-- generic secured RCP/REST/Composer infrastructure;
-- Logger and Profiler contracts.
+```text
+Registry
+-> Creation
+-> frontend | backend | fullstack
+-> REST site.create
+-> Composer opus:create-site
+-> scaffold générique OPUS
+-> Registry synchronize/select
+-> Build
+```
 
-## Exhaustive concrete-class rule
+Failure reste dans Creation. Cancellation retourne dans Registry.
 
-Every named concrete framework class under `Opus/**/*.php` must directly implement its homonymous interface.
+## Contrat des classes concrètes
 
-That interface directly extends:
+Chaque classe concrète nommée sous `Opus/**/*.php` implémente directement son interface homonyme. Cette interface étend directement :
 
 ```text
 OpusFrameworkComponentInterface
@@ -112,161 +104,81 @@ OpusProfilerAwareInterface
 OpusSelfDocumentingInterface
 ```
 
-Functional parent interfaces remain preserved. Constants, indirect inheritance or documentation metadata do not replace the four markers.
+La comparaison GitHub depuis P117M jusqu’au head relu confirme les couples classe/interface dans le périmètre nouveau ou modifié. Le gate tokenizer exhaustif doit encore être exécuté sur l’arbre local complet après HF7.
 
-The audit must use the real PHP tree and `token_get_all()`, not a historical catalog or broad regular expressions.
+## Architecture obligatoire
 
-## Application architecture rule
+- applications Singleton ;
+- FSM, I18n, ACL deny-by-default, SSO/Auth0 et bastion ;
+- backend-first et SCORE uniquement ;
+- aucun `echo` UI, aucun mélange HTML/PHP ;
+- locale par défaut depuis `Accept-Language` ;
+- configuration via `File`, puis `Json`, `Xml` ou `Yaml` ;
+- besoin générique proposé comme évolution OPUS avant une solution locale ;
+- toute mutation OWASYS traverse REST sécurisé puis Composer ;
+- Logger et Profiler obligatoires ;
+- aucun secret dans Git, argv, logs, profiler ou ZIP.
 
-Every OPUS application remains:
-
-- Singleton;
-- autonomous under `sites/<application>/`;
-- FSM-module-first;
-- I18n/browser-locale aware;
-- ACL deny-by-default;
-- SSO/Auth0-proxy and bastion ready through generic OPUS contracts;
-- backend-first;
-- SCORE-only rendered;
-- free of UI-producing `echo`;
-- free of mixed PHP/HTML views;
-- functional without mandatory JavaScript;
-- instrumented by Logger and Profiler.
-
-A generic need must be proposed as an OPUS framework evolution before any local application duplication. Owner decision is required before choosing a local implementation.
-
-## Configuration boundary
-
-All configuration crosses OPUS `File` and the explicit parser selected for the declared format:
-
-```text
-JSON -> Json
-XML -> Xml
-YAML/YML -> Yaml
-```
-
-`StructuredFileLoader` performs extension-based selection. Direct local configuration reads or silent parser fallback are forbidden.
-
-## OWASYS application boundary
-
-OWASYS is the web UI and application orchestration layer.
-
-Every business command and persistent mutation crosses:
-
-```text
-SCORE UI
--> FSM + I18n + ACL + SSO
--> secured typed REST
--> bearer + HMAC authentication
--> backend execution FSM
--> allow-listed Composer command
--> typed OPUS service or OWASYS provider
--> structured result
--> ViewModel
--> SCORE rendering
-```
-
-No frontend file write, direct Registry mutation, direct process launch, free shell command or OWASYS business implementation under `Opus/` is allowed.
-
-## Historical creation defect and pending HF7
-
-Both `sites/owasys_old` and current OWASYS contained:
-
-```text
-registry + create_new_app -> build
-```
-
-This behavior remains rejected.
-
-HF7 canonical workflow remains:
-
-```text
-Registry
--> create_new_app
--> Creation
--> choose frontend | backend | fullstack
--> secured REST site.create
--> Composer opus:create-site
--> generic OPUS profile-aware scaffold
--> Registry synchronize
--> Registry select
--> application_created
--> Build and validation
-```
-
-Failure remains in Creation. Cancellation returns to Registry.
-
-The actual HF7 source files or original ZIP are required before a new OPUS/OWASYS code differential can be supplied.
-
-## Logger and Profiler
-
-Mandatory backend diagnostics:
+## Diagnostics contractuels
 
 ```text
 sites/owasys/var/logs/rcp-backend.log
-sites/owasys/var/profiler/<trace_id>.json
-```
-
-Mandatory frontend workflow diagnostics:
-
-```text
 sites/owasys/var/logs/owasys-frontend.log
 sites/owasys/var/profiler/<trace_id>.json
 ```
 
-No parameters, credentials, passwords, tokens, HMAC values, sensitive request bodies or process command lines are logged or profiled.
+## Surface de lancement vérifiée
 
-## CMD rules
-
-Cleanup and launch instructions are supplied as executable CMD commands for the VS Code terminal.
-
-Command blocks contain commands only. They contain no prompt, comments, expected output, diagnostics or `exit /b`.
-
-No command may delete `sites/owasys_old` until the owner has explicitly validated its obsolescence.
-
-## Current validated launch surface
-
-The committed OPUS console documents these frontend commands:
+Le lanceur générique OPUS accepte un site, un host et un port. OWASYS utilise la même application sur deux processus :
 
 ```text
-composer dump-autoload -o
-composer opus:validate-site -- owasys
-composer opus:list-routes -- owasys
-composer opus:serve-site -- owasys --host=127.0.0.1 --port=8000
+backend  : composer opus:serve-site -- owasys --host=127.0.0.1 --port=8792
+frontend : composer opus:serve-site -- owasys --host=127.0.0.1 --port=8000
 ```
 
-No current public Composer alias for starting the REST backend is declared in the committed `composer.json`. A backend start command must be taken from the real HF6/HF7 owner runtime or added through an explicit generic OPUS evolution; it must not be guessed.
+Le client OWASYS cible `http://127.0.0.1:8792/api/v1/executions`. Les deux terminaux doivent recevoir `OPUS_OWASYS_BACKEND_TOKEN` et `OPUS_OWASYS_BACKEND_HMAC` depuis l’environnement sécurisé.
 
-## Pending owner gates
+## Nettoyage
 
-1. recover the original HF7 artifact or exact HF7 source working tree;
-2. verify local `H:/OPUS` is based on `79f261854ee06a9f828fec389adca77d57323d00` or record its exact divergence;
-3. apply or regenerate HF7 from that exact base only;
-4. regenerate optimized Composer autoload;
-5. validate OWASYS site and routes;
-6. start the secured REST backend using its real contractual launcher;
-7. start the SCORE frontend;
-8. verify Creation and frontend/backend/fullstack profiles;
-9. verify Registry selection and Build transition;
-10. validate password, no-JavaScript, Auth0, HTTPS, bastion and Windows/Linux parity;
-11. commit and push OPUS only after owner acceptance;
-12. decide separately whether `sites/owasys_old` can be removed.
+Ne supprimer que les caches et temporaires identifiés. Préserver :
 
-## Permanent rules
+```text
+sites/owasys/var/logs
+sites/owasys/var/profiler
+sites/owasys/var/registry
+sites/owasys_old
+```
+
+Le sort de `sites/owasys_old` reste une décision owner séparée.
+
+## Gates owner en attente
+
+1. vérifier le clone `H:\OPUS` propre et basé sur le head HF6 attendu ;
+2. appliquer HF7 ;
+3. régénérer l’autoload optimisé ;
+4. exécuter l’audit tokenizer P117M et le lint complet ;
+5. valider OWASYS et ses routes ;
+6. lancer backend puis frontend ;
+7. vérifier `/api/v1/status` puis `/fr-FR/applications` ;
+8. tester Creation et les profils frontend/backend/fullstack ;
+9. vérifier Registry, Build et corrélation Logger/Profiler ;
+10. tester mot de passe, sans JavaScript, Auth0, HTTPS, bastion et Windows/Linux ;
+11. décider séparément de `sites/owasys_old` ;
+12. committer et pousser OPUS après acceptation owner.
+
+## Politique GitHub
+
+La gouvernance est écrite directement dans `MAESTRO_WORKSPACE`. Aucun code OPUS ou OWASYS n’est poussé directement par l’assistant ; le code reste livré par ZIP différentiel.
+
+## Règles permanentes
 
 NO CONTRACT, NO PATCH.  
 NO SOURCE OF TRUTH, NO PATCH.  
 NO BRICOLAGE DELIVERY.  
 NO FALLBACK SILENCIEUX.  
-ONLY THE OWNER-CONFIRMED OPUS ROOT IS ADMITTED.  
-COMPOSER EXPOSES USER COMMANDS ONLY.  
 OPUS IS A FRAMEWORK, NOT AN APPLICATION.  
 OWASYS IS AN APPLICATION BUILT WITH OPUS.  
-NO OWASYS BUSINESS IMPLEMENTATION UNDER `Opus/`.  
 ALL OWASYS BUSINESS WRITES CROSS SECURED REST THEN COMPOSER.  
 EVERY CONCRETE OPUS CLASS IMPLEMENTS ITS HOMONYMOUS FOUR-MARKER INTERFACE.  
-OPUS APPLICATIONS ARE SINGLETON, FSM/I18N/ACL/SSO DRIVEN AND SCORE-ONLY.  
-CONFIGURATION CROSSES FILE AND EXPLICIT JSON/XML/YAML PARSERS.  
 LOGGER AND PROFILER ARE MANDATORY.  
-SECRETS NEVER ENTER GIT, ARGV, LOGS, PROFILER PAYLOADS OR DELIVERY ARTIFACTS.  
 SCORE AND BACKEND-FIRST ARE MANDATORY.
