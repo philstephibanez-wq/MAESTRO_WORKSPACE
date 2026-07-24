@@ -8,29 +8,21 @@ Last updated: 2026-07-24.
 - Branch: `master`
 - Current remote head reviewed: `79f261854ee06a9f828fec389adca77d57323d00`
 - Current committed milestone: P117U + HF1 + HF2 + HF3 + HF4 + HF6
-- HF7 status: documented differential, not committed on `OPUS/master`
+- HF7 status: exact differential recovered and verified, not committed on `OPUS/master`
 - Owner local repo: `H:/OPUS`
 
 ## Framework identity
 
 OPUS is a generic framework, not an application.
 
-OWASYS is an application built with OPUS. Its current SCORE pages are its frontend. Secured REST + Composer is its backend. Created sites are independent OPUS applications.
+OWASYS is an application built with OPUS. Its SCORE pages are its frontend. Secured REST + Composer is its backend. Created sites are independent OPUS applications.
 
-## Binding development contract
+## Binding contracts
 
-`CONTEXT/SPECIFICATIONS/MAESTRO_OPUS_OWASYS_GLOBAL_DEVELOPMENT_RULES_2026-07-24.md`
-
-This contract requires:
-
-- source-of-truth and contract review before every patch;
-- differential ZIP delivery for OPUS/OWASYS code;
-- homonymous four-marker interfaces for every concrete OPUS class;
-- Singleton/FSM/I18n/ACL/SSO/SCORE applications;
-- browser locale as default locale source;
-- configuration through File and explicit JSON/XML/YAML parsers;
-- secured REST then Composer for every OWASYS business mutation;
-- mandatory Logger and Profiler.
+- `CONTEXT/SPECIFICATIONS/MAESTRO_OPUS_OWASYS_GLOBAL_DEVELOPMENT_RULES_2026-07-24.md`
+- `CONTEXT/SPECIFICATIONS/OPUS_OWASYS_GOVERNANCE_EXECUTION_SPEC_2026-07-24.md`
+- `CONTEXT/SPECIFICATIONS/OPUS_ALL_CONCRETE_CLASSES_COMPONENT_CONTRACT_SPEC_P117M.md`
+- `CONTEXT/PROJECTS/OPUS/OPUS_SITE_STANDARD_CONTRACT.md`
 
 ## Active artifact stack
 
@@ -44,9 +36,9 @@ HF5 remains superseded.
 
 HF6 is present at the current remote head. Public Composer aliases delegate to `Opus\Composer\ComposerScripts::run`.
 
-The committed `composer.json` still contains the obsolete creation-start alias because HF7 is not yet applied.
+The committed `composer.json` still contains the obsolete alias `owasys:registry-creation-start` because HF7 is not yet applied.
 
-The current code includes:
+The current framework includes:
 
 - generic Composer console and callback infrastructure;
 - secured RCP/REST execution infrastructure;
@@ -57,9 +49,7 @@ The current code includes:
 
 ## Concrete framework class contract
 
-Every named concrete class under `Opus/**/*.php` implements directly its homonymous interface.
-
-Every homonymous interface extends directly:
+Every named concrete class under `Opus/**/*.php` directly implements its homonymous interface. That interface directly extends:
 
 ```text
 OpusFrameworkComponentInterface
@@ -68,7 +58,7 @@ OpusProfilerAwareInterface
 OpusSelfDocumentingInterface
 ```
 
-The real PHP tree is the source of truth. Historical RefBook catalogs do not attest current conformity.
+The comparison from P117M to the current head shows class/interface pairs for the new or modified framework classes in the active perimeter. The exhaustive tokenizer gate must still be executed on the complete owner tree after HF7.
 
 ## Application standard
 
@@ -90,7 +80,7 @@ A generic requirement is proposed as an OPUS evolution before any local applicat
 
 ## Configuration boundary
 
-Configuration is read through OPUS `File` and parsed through the explicit OPUS parser selected by `StructuredFileLoader`:
+Configuration is read through OPUS `File` and parsed through the explicit parser selected by `StructuredFileLoader`:
 
 ```text
 JSON -> Json
@@ -101,8 +91,6 @@ YAML/YML -> Yaml
 Direct local configuration reads and silent parser fallback are forbidden.
 
 ## OWASYS boundary
-
-OWASYS is the application UI and orchestration layer.
 
 Every business write crosses:
 
@@ -124,73 +112,65 @@ No OWASYS business logic belongs under `Opus/`.
 
 Both `owasys_old` and current OWASYS transitioned `create_new_app` directly from Registry to Build/Validate. The current implementation also invoked an obsolete creation-start Registry command.
 
-HF7 workflow remains:
+HF7 replaces that path with:
 
 ```text
-registry
--> creation
+Registry
+-> Creation
 -> choose frontend/backend/fullstack
 -> REST site.create
 -> Composer opus:create-site
 -> OPUS scaffold
 -> Registry synchronize/select
--> build
+-> Build
 ```
 
 Failure stays in Creation. Cancellation returns to Registry.
 
 ## Diagnostics
 
-Backend:
-
 ```text
-sites/owasys/var/logs/rcp-backend.log
-sites/owasys/var/profiler/<trace_id>.json
-```
-
-Frontend workflows:
-
-```text
-sites/owasys/var/logs/owasys-frontend.log
-sites/owasys/var/profiler/<trace_id>.json
+Backend log  : sites/owasys/var/logs/rcp-backend.log
+Frontend log : sites/owasys/var/logs/owasys-frontend.log
+Profiler     : sites/owasys/var/profiler/<trace_id>.json
 ```
 
 No secret or raw sensitive parameter is recorded.
 
-## HF7 artifact record
+## HF7 artifact verified
 
-- ZIP documented: `opus_owasys_p117u_hf7_application_creation_profiles.zip`
-- SHA-256 documented: `16e06b55f3cf2ffcc5118fe0e5c4f17cbc7b51fa437fd06f17bf3dc16ab48141`
+- ZIP: `opus_owasys_p117u_hf7_application_creation_profiles.zip`
+- SHA-256: `16e06b55f3cf2ffcc5118fe0e5c4f17cbc7b51fa437fd06f17bf3dc16ab48141`
 - files: 45
 - ZIP bytes: 54,906
 - payload bytes: 176,634
 - roots: `composer.json`, `Opus/`, `sites/`
-- availability: not present in GitHub or the supplied attachment
+- availability: recovered from the retained artifact library and materialized without reconstruction
 
-No replacement OPUS/OWASYS code ZIP may be fabricated from the specification alone.
+Integrity ZIP, SHA-256, PHP lint for the differential PHP files and JSON parsing have been verified.
 
-## Validated frontend command surface
+## Validated launch surface
 
 ```text
 composer dump-autoload -o
 composer opus:validate-site -- owasys
 composer opus:list-routes -- owasys
+composer opus:serve-site -- owasys --host=127.0.0.1 --port=8792
 composer opus:serve-site -- owasys --host=127.0.0.1 --port=8000
 ```
 
-The committed Composer scripts do not expose a public backend-start alias. The real owner launcher must be recovered or a generic OPUS launcher must be specified before use.
+The backend route is `/api/v1`; the OWASYS client targets `http://127.0.0.1:8792/api/v1/executions`.
 
 ## Pending
 
-1. recover the original HF7 ZIP or exact HF7 source tree;
-2. confirm the local owner base and divergence from `79f261854ee06a9f828fec389adca77d57323d00`;
-3. apply or regenerate HF7 only from that exact source base;
-4. regenerate optimized autoload;
+1. confirm the owner local tree is clean and based on the expected HF6 head;
+2. apply HF7;
+3. regenerate optimized autoload;
+4. run the exhaustive P117M tokenizer gate and full lint;
 5. validate OWASYS site and routes;
-6. start the secured backend with its real contractual launcher;
-7. start the SCORE frontend;
-8. validate Creation and the three profiles;
-9. validate Registry selection, Build transition and correlated traces;
-10. validate password, no-JavaScript, Auth0, HTTPS, bastion and platform gates;
-11. commit OPUS after owner acceptance;
-12. decide separately whether `sites/owasys_old` can be removed.
+6. start backend then frontend;
+7. validate Creation and the three profiles;
+8. validate Registry selection, Build transition and correlated traces;
+9. validate password, no-JavaScript, Auth0, HTTPS, bastion and platform gates;
+10. commit OPUS after owner acceptance;
+11. decide separately whether `sites/owasys_old` can be removed.
