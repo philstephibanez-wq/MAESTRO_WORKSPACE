@@ -9,8 +9,8 @@ OPUS fait partie du workspace ; OPUS n'est pas le workspace.
 Lire dans cet ordre :
 
 1. `CONTEXT/HANDOFFS/CURRENT_HANDOFF.md`
-2. `CONTEXT/SPECIFICATIONS/OWASYS_CANONICAL_REST_COMPOSER_BACKEND_SPEC_P117U.md`
-3. `CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OWASYS_CANONICAL_REST_COMPOSER_P117U_2026-07-23.md`
+2. `CONTEXT/SPECIFICATIONS/OPUS_P117U_HF6_COMPOSER_AUTOLOAD_CALLBACK_SPEC.md`
+3. `CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OPUS_P117U_HF6_COMPOSER_AUTOLOAD_CALLBACK_2026-07-24.md`
 4. `CONTEXT/PROJECTS/OPUS_CURRENT_STATE.md`
 5. `CONTEXT/PROJECTS/PROJECT_INDEX.md`
 
@@ -18,16 +18,18 @@ Lire dans cet ordre :
 
 ```text
 OPUS = framework générique
-OWASYS = application OPUS
-pages OWASYS = frontend
+OWASYS = application construite avec OPUS
+pages OWASYS = frontend SCORE
 REST + Composer = backend OWASYS
 sites créés = applications OPUS indépendantes
 ```
 
+OPUS n'est pas une application.
+
 ## Source de vérité
 
 - OPUS : `philstephibanez-wq/OPUS`, branche `master`
-- base P117U : `36a8570088fb6084abdc694fd3ab8bf0bffa5d17`
+- head relu : `96884961248fc82bf5e13187a6ffcfffacb82d9f`
 - workspace : `philstephibanez-wq/MAESTRO_WORKSPACE`
 
 ## Racine OPUS verrouillée
@@ -38,23 +40,32 @@ Fichiers racine admis : `.gitignore`, `AGENTS.md`, `composer.json`, `composer.lo
 
 Interdictions : root `bin/`, root `config/` minuscule, root `public/`, toute nouvelle racine.
 
-## Livrable actif
+## Livrables applicables
 
-- ZIP : `opus_owasys_p117u_canonical_rest_composer.zip`
-- SHA-256 : `43fbcc75384d96b7116d9ee5afe34d997c7b509049bff1b2159f42ee3b43a429`
-- fichiers : 57
-- octets : 73,261
-- entrées de premier niveau : `composer.json`, `Opus`, `scripts`, `sites`
+```text
+P117U -> HF1 -> HF2 -> HF3 -> HF4 -> HF6
+```
 
-P117S et P117T sont rejetés.
+HF5 est remplacé par HF6 et n'est pas nécessaire sur une base propre.
+
+HF6 :
+
+- ZIP : `opus_owasys_p117u_hf6_composer_autoload_callback.zip`
+- SHA-256 : `d482f4b352c958557e63095f5eacb5fdd9fcbb783853dd2c6202c16ccf79505c`
+- fichiers : 4
+
+HF6 supprime la dépendance des commandes Composer au chemin relatif `scripts/opus.php`. Composer appelle désormais une classe callback générique OPUS autoloadée. Les alias applicatifs restent déclarés dans la configuration de chaque application.
 
 ## OWASYS canonique
 
 - contrat : `OPUS_SITE_STANDARD_CONTRACT_CORE`
 - rôle : `standard-opus-application`
 - point d'entrée unique : `sites/owasys/www/index.php`
-- layout : `sites/owasys/application/default/layouts/layout.score`
-- Registry et mot de passe : REST puis Composer, côté commande applicative
+- frontend : pages SCORE actuelles
+- backend : API REST sécurisée puis Composer
+- Registry et mot de passe : commandes applicatives backend
+- log : `sites/owasys/var/logs/rcp-backend.log`
+- profiler : `sites/owasys/var/profiler/<trace_id>.json`
 
 ## Règles permanentes
 
@@ -64,20 +75,20 @@ P117S et P117T sont rejetés.
 - NO FALLBACK SILENCIEUX.
 - ONLY THE OWNER-CONFIRMED OPUS ROOT IS ADMITTED.
 - COMPOSER EXPOSES USER COMMANDS ONLY.
-- OPUS IS THE FRAMEWORK.
-- OWASYS IS AN OPUS APPLICATION.
-- OWASYS PAGES ARE THE FRONTEND.
+- OPUS IS A FRAMEWORK, NOT AN APPLICATION.
+- OWASYS IS AN APPLICATION BUILT WITH OPUS.
+- NO OWASYS BUSINESS IMPLEMENTATION UNDER `Opus/`.
 - REST + COMPOSER IS THE OWASYS BACKEND.
-- CREATED SITES ARE INDEPENDENT OPUS APPLICATIONS.
+- LOGGER AND PROFILER ARE MANDATORY.
 - SCORE AND BACKEND-FIRST ARE MANDATORY.
 - WORKSPACE HANDOFF UPDATED AT EVERY STATE CHANGE.
 
 ## Feuille de route
 
-1. appliquer P117U sur une base OPUS propre ;
-2. supprimer l'ancien layout OWASYS sous `templates` ;
-3. valider Composer/autoload et les recettes existantes hors aliases Composer ;
-4. démarrer backend REST et frontend OWASYS ;
+1. appliquer HF6 après HF4 ;
+2. régénérer l'autoload Composer ;
+3. démarrer le backend REST puis vérifier son status ;
+4. démarrer le frontend OWASYS ;
 5. valider Registry, mot de passe, navigateur sans JavaScript, Auth0, HTTPS et bastion ;
 6. committer OPUS après acceptation owner ;
 7. décider séparément de `sites/owasys_old`.
