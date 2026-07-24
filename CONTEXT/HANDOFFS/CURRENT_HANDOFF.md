@@ -4,7 +4,7 @@ Date: 2026-07-24
 
 ## Active milestone
 
-P117U with mandatory HF1, HF2, HF3, HF4 and HF5.
+P117U with mandatory HF1, HF2, HF3, HF4 and HF6.
 
 ```text
 OPUS = framework générique
@@ -21,8 +21,8 @@ OPUS n'est pas une application.
 - OPUS repository: `philstephibanez-wq/OPUS`
 - branch: `master`
 - current remote head reviewed: `96884961248fc82bf5e13187a6ffcfffacb82d9f`
-- HF5 specification: `CONTEXT/SPECIFICATIONS/OPUS_P117U_HF5_COMPOSER_WORKING_DIRECTORY_SPEC.md`
-- HF5 handoff: `CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OPUS_P117U_HF5_COMPOSER_WORKING_DIRECTORY_2026-07-24.md`
+- HF6 specification: `CONTEXT/SPECIFICATIONS/OPUS_P117U_HF6_COMPOSER_AUTOLOAD_CALLBACK_SPEC.md`
+- HF6 handoff: `CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OPUS_P117U_HF6_COMPOSER_AUTOLOAD_CALLBACK_2026-07-24.md`
 - site contract: `CONTEXT/PROJECTS/OPUS/OPUS_SITE_STANDARD_CONTRACT.md`
 
 ## Only admitted OPUS root
@@ -41,51 +41,72 @@ Root files:
 
 No root `bin/`, lowercase root `config/`, root `public/` or new root.
 
-## Mandatory artifact order
+## Mandatory clean-base order
 
 ```text
-P117U -> HF1 -> HF2 -> HF3 -> HF4 -> HF5
+P117U -> HF1 -> HF2 -> HF3 -> HF4 -> HF6
 ```
 
-### HF5
+HF5 is superseded. If already applied, it may remain; no rollback is required.
 
-- ZIP: `opus_owasys_p117u_hf5_composer_working_directory.zip`
-- SHA-256: `862d870b4e77de6fd74c391c4d1ca41a240419b7ea8bc33daebeb1aee9a8279b`
-- files: 1
-- ZIP bytes: 3,741
+### HF6
+
+- ZIP: `opus_owasys_p117u_hf6_composer_autoload_callback.zip`
+- SHA-256: `d482f4b352c958557e63095f5eacb5fdd9fcbb783853dd2c6202c16ccf79505c`
+- files: 4
+- ZIP bytes: 3,332
 
 ```text
-Opus/Rcp/Composer/ComposerCommandExecutor.php
+composer.json
+Opus/Composer/ComposerScriptsInterface.php
+Opus/Composer/ComposerScripts.php
+sites/owasys/config/composer.commands.json
 ```
 
 P117S and P117T remain rejected.
 
-## Runtime evidence leading to HF5
+## Runtime evidence leading to HF6
 
-The HF4 trace `ED5058905D1EF7D3` produced a structured log proving:
-
-```text
-Composer alias: owasys:registry-sync
-observed exit code: 1
-closed exit code: 1
-stderr: Could not open input file: scripts\opus.php
-```
-
-Composer and the OWASYS alias were found. The child script did not run from the OPUS framework root.
-
-## HF5 framework correction
-
-`Opus\Rcp\Composer\ComposerCommandExecutor` adds:
+Two post-HF5 traces still produced:
 
 ```text
---working-dir=<validated absolute OPUS root>
+Could not open input file: scripts\opus.php
 ```
 
-The existing `proc_open` working directory is retained. The explicit Composer option guarantees that the generic framework entrypoint `scripts/opus.php` resolves from the OPUS project root on Windows and Linux.
+Composer found the public alias `owasys:registry-sync`, but its script definition still launched a relative `@php scripts/opus.php ...` subprocess. HF5 therefore did not remove the CWD dependency in the owner Windows environment.
 
-The working directory cannot be selected by the browser, REST parameters, OWASYS configuration or environment injection.
+## HF6 framework correction
 
-No OWASYS application file is modified by HF5.
+All public Composer aliases now call the generic autoloaded callback:
+
+```text
+Opus\Composer\ComposerScripts::run
+```
+
+The callback resolves the OPUS root from its framework location. Generic `opus:*` aliases are resolved generically. Application aliases are read from each application's `sites/<site>/config/composer.commands.json` through `File` and `StructuredFileLoader`.
+
+`scripts/opus.php` remains the direct CLI launcher and is no longer a relative Composer subprocess target.
+
+## Application separation
+
+`Opus\Composer\ComposerScripts` contains no OWASYS reference or business command.
+
+OWASYS owns only its alias map in:
+
+```text
+sites/owasys/config/composer.commands.json
+```
+
+Registry and password implementations remain under `sites/owasys/application/`.
+
+## Framework contract
+
+The new concrete `ComposerScripts` class implements the homonymous interface extending:
+
+- `OpusFrameworkComponentInterface`;
+- `OpusExceptionAwareInterface`;
+- `OpusProfilerAwareInterface`;
+- `OpusSelfDocumentingInterface`.
 
 ## Logger and profiler
 
@@ -96,18 +117,7 @@ sites/owasys/var/logs/rcp-backend.log
 sites/owasys/var/profiler/<trace_id>.json
 ```
 
-Every RCP execution remains trace-correlated. Parameters and secrets are excluded from logs and profiler payloads.
-
-## Framework contract
-
-Every concrete class under `Opus/` implements a homonymous interface extending:
-
-- `OpusFrameworkComponentInterface`;
-- `OpusExceptionAwareInterface`;
-- `OpusProfilerAwareInterface`;
-- `OpusSelfDocumentingInterface`.
-
-HF5 modifies one existing concrete framework class and introduces no class or interface.
+Every RCP execution remains trace-correlated. Parameters and secrets are excluded.
 
 ## Mandatory process topology
 
@@ -116,11 +126,9 @@ HF5 modifies one existing concrete framework class and introduces no class or in
 127.0.0.1:8000 = SCORE frontend OWASYS
 ```
 
-Both use the same local environment values and the same canonical `sites/owasys/www/index.php`.
-
 ## Pending owner gates
 
-- apply HF5 after HF4;
+- apply HF6 after HF4;
 - regenerate optimized autoload;
 - restart backend and verify status;
 - restart frontend;
@@ -142,9 +150,9 @@ ONLY THE OWNER-CONFIRMED OPUS ROOT IS ADMITTED.
 COMPOSER EXPOSES USER COMMANDS ONLY.
 OPUS IS A FRAMEWORK, NOT AN APPLICATION.
 OWASYS IS AN APPLICATION BUILT WITH OPUS.
-NO OWASYS BUSINESS CODE UNDER `Opus/`.
+NO OWASYS BUSINESS IMPLEMENTATION UNDER `Opus/`.
 REST + COMPOSER IS THE OWASYS BACKEND.
-LOGGER AND PROFILER ARE EXISTING OPUS SERVICES.
+LOGGER AND PROFILER ARE MANDATORY.
 EVERY CONCRETE OPUS CLASS IS EXCEPTION-AWARE AND PROFILER-AWARE.
 SECRETS NEVER ENTER GIT, ARGV, LOGS, PROFILER PAYLOADS OR DELIVERY ARTIFACTS.
 SCORE AND BACKEND-FIRST ARE MANDATORY.
