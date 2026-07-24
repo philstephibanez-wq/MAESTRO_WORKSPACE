@@ -91,38 +91,77 @@ sites/owasys/var/profiler/<trace_id>.json
 
 Les événements request/success/failure sont corrélés par trace. Les identifiants d’application, valeurs de formulaire, tokens, mots de passe, clés HMAC et lignes de commande ne sont pas persistés dans les diagnostics.
 
-## Artefact HF7R1
+## Mode de livraison et d’installation
+
+Le propriétaire ne manipule pas directement le patch Git.
+
+Le ZIP est extrait dans un dossier temporaire, puis l’installation est exécutée par :
+
+```text
+INSTALL_HF7R1.cmd
+```
+
+Ce programme contrôle automatiquement :
+
+1. la présence de `H:\OPUS` ;
+2. le head exact HF6 ;
+3. la propreté Git du dépôt ;
+4. l’applicabilité du différentiel ;
+5. l’application du différentiel ;
+6. `composer dump-autoload -o` ;
+7. la validation OWASYS ;
+8. la liste des routes.
+
+Aucune commande `git apply` n’est à saisir manuellement.
+
+Deux lanceurs sont également fournis :
+
+```text
+START_OWASYS_BACKEND.cmd
+START_OWASYS_FRONTEND.cmd
+```
+
+## Artefact HF7R1 installable
 
 - ZIP : `opus_owasys_p117u_hf7r1_application_creation_profiles.zip` ;
-- SHA-256 : `2317f0f3a76de22f4c51e5c568b8176d2cebb4169d50fc62b75d22458d6a959d` ;
-- contenu : un patch unifié applicable avec `git apply` ;
-- patch SHA-256 : `4e90d025a26474d0c19eaecae92048d1bf6b7ab403f4bfea2db796b9b05e53c8` ;
+- SHA-256 : `16b8006dae07b88555c7149fa14bb4f9a1230e47f5d32f973933e0597dcb7858` ;
+- patch interne SHA-256 : `4e90d025a26474d0c19eaecae92048d1bf6b7ab403f4bfea2db796b9b05e53c8` ;
 - chemins modifiés ou créés : 45 ;
 - statistiques : 1 307 insertions, 110 suppressions.
 
+Contenu du ZIP :
+
+```text
+INSTALL_HF7R1.cmd
+START_OWASYS_BACKEND.cmd
+START_OWASYS_FRONTEND.cmd
+payload/opus_owasys_p117u_hf7r1_application_creation_profiles.patch
+```
+
+Le ZIP précédent contenant seulement le patch est remplacé et ne doit pas être utilisé.
+
 ## Validations exécutées dans le runtime de livraison
 
-- structure du patch analysée par `git apply --stat` ;
+- structure du patch analysée ;
 - 45 chemins présents ;
 - syntaxe PHP verte pour les deux nouvelles classes ;
 - parsing JSON vert pour les 25 nouveaux catalogues et les configurations complètes reconstruites ;
 - intégrité ZIP verte ;
+- présence et cohérence des trois programmes CMD ;
 - absence de cache, log, secret, rapport, smoke ou temporaire dans le ZIP.
 
 ## Gates owner obligatoires
 
-Après `git apply --check` puis application sur `H:\OPUS` :
+Après exécution de `INSTALL_HF7R1.cmd` :
 
-1. `composer dump-autoload -o` ;
-2. audit tokenizer P117M complet ;
-3. lint PHP complet de l’arbre modifié ;
-4. parsing JSON complet ;
-5. validation du site et des routes ;
-6. backend sur `127.0.0.1:8792`, puis frontend sur `127.0.0.1:8000` ;
-7. tests frontend/backend/fullstack ;
-8. Registry select puis Build ;
-9. corrélation Logger/Profiler ;
-10. no-JavaScript, Auth0, HTTPS, bastion et parité Windows/Linux.
+1. audit tokenizer P117M complet ;
+2. lint PHP complet de l’arbre modifié ;
+3. parsing JSON complet ;
+4. backend sur `127.0.0.1:8792`, puis frontend sur `127.0.0.1:8000` ;
+5. tests frontend/backend/fullstack ;
+6. Registry select puis Build ;
+7. corrélation Logger/Profiler ;
+8. no-JavaScript, Auth0, HTTPS, bastion et parité Windows/Linux.
 
 ## Interdictions
 
