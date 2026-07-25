@@ -7,8 +7,8 @@ Date : 2026-07-25
 ```text
 CONTEXT/SPECIFICATIONS/MAESTRO_OPUS_OWASYS_GLOBAL_DEVELOPMENT_RULES_2026-07-24.md
 CONTEXT/PROJECTS/OPUS/OPUS_SITE_STANDARD_CONTRACT.md
-CONTEXT/SPECIFICATIONS/OPUS_P117V_HF10A_DIRECT_DIFFERENTIAL_DELIVERY_SPEC_2026-07-25.md
-CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OPUS_P117V_HF10A_DIRECT_DIFFERENTIAL_2026-07-25.md
+CONTEXT/SPECIFICATIONS/OPUS_P117V_HF10A_REJECTION_AND_HF10B_CORRECTION_GATE_2026-07-25.md
+CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OPUS_P117V_HF10A_REJECTED_HF10B_REQUIRED_2026-07-25.md
 CONTEXT/PROJECTS/OPUS_CURRENT_STATE.md
 ```
 
@@ -17,9 +17,9 @@ CONTEXT/PROJECTS/OPUS_CURRENT_STATE.md
 ```text
 OPUS repository : philstephibanez-wq/OPUS
 branch          : master
-head            : 41f77ad7187c0facb125a5737b62d10928809e66
+remote head     : 41f77ad7187c0facb125a5737b62d10928809e66
+owner local     : H:\OPUS + HF10A overlay
 workspace       : philstephibanez-wq/MAESTRO_WORKSPACE master
-owner local     : H:\OPUS
 ```
 
 ## Décision architecture validée
@@ -32,101 +32,82 @@ fullstack = application/shared + application/front + application/back
 
 `application/full` est interdit.
 
-## Mode de livraison contractuel
+## Preuve runtime owner
 
-Le livrable est un ZIP différentiel superposable directement à `H:\OPUS`.
-
-Il contient uniquement les fichiers nouveaux ou remplacés, complets, à leurs chemins finaux. Sont interdits dans le ZIP actif : installateur externe, répertoire `payload`, répertoire `patch`, staging, rapport, log et copie complète du dépôt.
-
-## Différentiel actif
+Le journal frontend fourni établit :
 
 ```text
-ZIP     : opus_p117v_hf10a_shared_front_back_direct_differential.zip
-SHA-256 : a775f25bd71588d77079f3bc7c430f71ea0ad1a511abc50a720c3c0e7ee165ca
-BASE    : 41f77ad7187c0facb125a5737b62d10928809e66
-FILES   : 12
+GET /fr-FR/applications     -> HTTP 500
+runtime_mode                -> front
+error_code                  -> OPUS_RCP_CLIENT_TOKEN_NOT_CONFIGURED
+appel REST backend          -> non émis
+journal backend             -> aucun événement possible
+GET /fr-FR/applications/new -> completed
 ```
 
-Le ZIP `opus_p117u_hf10_application_surfaces_runtime_modes.zip` est retiré comme livrable actif : son packaging par installateur/payload n'est pas conforme au workflow owner.
+Le HTTP 500 courant n'est donc pas une erreur Composer/backend. Le frontend s'arrête avant l'envoi REST parce que le token RCP n'est pas présent dans son environnement.
 
-## Périmètre HF10A
-
-- scaffold versionné `shared/front/back` ;
-- profils par composition ;
-- runtime généré cloisonné ;
-- I18n structurée par couches ;
-- commandes de création/validation versionnées ;
-- `--mode=front|back` obligatoire au service local ;
-- ports configurables ;
-- refus croisé des routes ;
-- Logger et Profiler OWASYS avec `trace_id` ;
-- aucune migration physique destructive de l'arbre OWASYS historique dans ce différentiel.
-
-## Classes framework
-
-Les nouvelles classes concrètes suivantes implémentent directement leur interface homonyme :
+## Statut HF10A
 
 ```text
-LayeredGeneratedSiteRuntime
-LayeredSiteCommandService
-LayeredApplicationTranslationRuntime
-LayeredSiteScaffoldPlan
+opus_p117v_hf10a_shared_front_back_direct_differential.zip
+STATUS : REJECTED / WITHDRAWN
 ```
 
-Chaque interface homonyme étend :
+Motifs :
 
-```text
-OpusFrameworkComponentInterface
-OpusExceptionAwareInterface
-OpusProfilerAwareInterface
-OpusSelfDocumentingInterface
-```
+1. le mode `front|back` existe au niveau processus, mais la migration physique OWASYS vers `application/shared`, `application/front`, `application/back` n'a pas été livrée ;
+2. aucun lanceur contractuel ne transmet la même paire token/HMAC aux deux processus ;
+3. le frontend échoue donc avant REST et aucun log backend ne peut être produit.
 
-## Installation owner
+HF10A ne doit pas être considéré comme milestone accepté ni committé comme correction validée.
 
-```text
-tar -xf <ZIP> -C H:\OPUS
-```
+## Gate HF10B
 
-Après extraction, exécuter depuis `H:\OPUS` : Composer autoload, lint des 12 fichiers PHP et audit contractuel.
+HF10B doit être un ZIP différentiel direct, superposable à `H:\OPUS`, sans installateur, payload, patch, staging, rapport ou log.
 
-## Lancement local
+Périmètre obligatoire :
 
-```text
-composer opus:serve-site -- owasys --mode=back --host=127.0.0.1 --port=8792
-composer opus:serve-site -- owasys --mode=front --host=127.0.0.1 --port=8000
-```
-
-Le rôle dépend de `--mode`, pas du port.
-
-## HTTP 500
-
-État avant HF10A :
-
-```text
-/fr-FR/applications/new : OK
-/fr-FR/applications     : HTTP 500
-log runtime exploitable : absent
-```
-
-Après HF10A, reproduire la route et récupérer la ligne `request.failed` et son `trace_id` dans les diagnostics OWASYS.
+- migration physique réelle OWASYS vers `application/shared`, `application/front`, `application/back` ;
+- bootstraps front et back distincts ;
+- fullstack par composition uniquement ;
+- lanceur local corrélé générant ou chargeant une seule paire token/HMAC et la transmettant aux deux processus sans l'écrire dans Git, les logs, le profiler ou les argv ;
+- journal frontend distinct ;
+- journal backend REST/Composer distinct ;
+- traces Profiler corrélées ;
+- refus croisé des routes selon le mode ;
+- SCORE-only côté interface ;
+- toute mutation via REST sécurisé puis Composer ;
+- nettoyage uniquement après validation des nouveaux chemins.
 
 ## Contrats permanents
 
+- toute classe concrète sous `Opus/**/*.php` implémente directement son interface homonyme ;
+- chaque interface homonyme étend les quatre marqueurs standards ;
 - Singleton ;
 - FSM + I18n + ACL deny-by-default + SSO/Auth0-proxy + bastion ;
-- SCORE uniquement pour l'interface ;
-- aucun echo UI ni mélange HTML/PHP ;
 - locale initiale depuis le navigateur ;
 - configuration via `File` puis `Json`, `Xml` ou `Yaml` ;
-- toute mutation OWASYS via REST sécurisé puis Composer ;
+- SCORE uniquement pour l'interface ;
+- aucun echo UI ni mélange HTML/PHP ;
 - Logger et Profiler obligatoires ;
 - aucun fallback silencieux ;
 - aucun secret dans Git, argv, logs, profiler ou ZIP.
 
+## Mesure locale immédiate
+
+Les processus front et back doivent hériter de la même paire :
+
+```text
+OPUS_OWASYS_BACKEND_TOKEN
+OPUS_OWASYS_BACKEND_HMAC
+```
+
+Cette mesure permet de confirmer REST/backend, mais elle ne remplace pas la migration physique HF10B.
+
 ## Nettoyage
 
-Aucun nettoyage requis. Préserver :
+Aucun nettoyage autorisé avant validation HF10B. Préserver :
 
 ```text
 sites/owasys_old
