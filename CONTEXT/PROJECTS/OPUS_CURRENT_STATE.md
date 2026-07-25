@@ -1,14 +1,14 @@
 # OPUS CURRENT STATE
 
-Last updated: 2026-07-24.
+Last updated: 2026-07-25.
 
 ## Repository
 
 - Remote: `philstephibanez-wq/OPUS`
 - Branch: `master`
-- Current remote head reviewed: `f9d01dca6644f41c10b85fd6da47eb8c21bf15b6`
-- Current remote milestone: P117U + HF1 + HF2 + HF3 + HF4 + HF6 + HF7 + HF8
-- HF9 status: OWASYS presentation differential produced, not yet committed
+- Current remote head reviewed: `41f77ad7187c0facb125a5737b62d10928809e66`
+- Current committed milestone: P117U + HF1 + HF2 + HF3 + HF4 + HF6 + HF7 + HF8 + HF9 + HF9R1
+- HF10 status: differential produced, owner installation pending
 - Owner local repo: `H:/OPUS`
 
 ## Framework identity
@@ -20,16 +20,15 @@ OWASYS is an application built with OPUS. Its SCORE pages are its frontend. Secu
 ## Binding contracts
 
 - `CONTEXT/SPECIFICATIONS/MAESTRO_OPUS_OWASYS_GLOBAL_DEVELOPMENT_RULES_2026-07-24.md`
-- `CONTEXT/SPECIFICATIONS/OPUS_OWASYS_GOVERNANCE_EXECUTION_SPEC_2026-07-24.md`
-- `CONTEXT/SPECIFICATIONS/OPUS_P117U_HF8_GENERATED_SITE_I18N_EU_UK_DIAGNOSTICS_SPEC_2026-07-24.md`
-- `CONTEXT/SPECIFICATIONS/OPUS_OWASYS_P117U_HF9_CREATION_FORM_LAYOUT_SPEC_2026-07-24.md`
+- `CONTEXT/SPECIFICATIONS/OPUS_P117U_HF10_APPLICATION_SURFACES_RUNTIME_MODES_SPEC_2026-07-25.md`
+- `CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OPUS_P117U_HF10_APPLICATION_SURFACES_RUNTIME_MODES_2026-07-25.md`
 - `CONTEXT/SPECIFICATIONS/OPUS_ALL_CONCRETE_CLASSES_COMPONENT_CONTRACT_SPEC_P117M.md`
 - `CONTEXT/PROJECTS/OPUS/OPUS_SITE_STANDARD_CONTRACT.md`
 
 ## Active stack
 
 ```text
-P117U -> HF1 -> HF2 -> HF3 -> HF4 -> HF6 -> HF7 -> HF8 -> HF9 pending owner installation
+P117U -> HF1 -> HF2 -> HF3 -> HF4 -> HF6 -> HF7 -> HF8 -> HF9 -> HF9R1 -> HF10 pending owner installation
 ```
 
 HF5 remains superseded.
@@ -45,7 +44,36 @@ OpusProfilerAwareInterface
 OpusSelfDocumentingInterface
 ```
 
-HF9 adds no class under `Opus/` and modifies no existing framework class. The exhaustive P117M tokenizer gate remains mandatory before the next OPUS commit.
+HF10 adds:
+
+```text
+Opus/Application/Structure/ApplicationStructure.php
+Opus/Application/Structure/ApplicationStructureInterface.php
+```
+
+The class implements its homonymous interface and the interface extends all four markers. Modified framework classes retain their existing homonymous interfaces. The exhaustive P117M tokenizer gate remains an owner gate.
+
+## Canonical application structure
+
+```text
+frontend  = application/shared + application/front
+backend   = application/shared + application/back
+fullstack = application/shared + application/front + application/back
+```
+
+`application/full` is forbidden.
+
+### shared
+
+Contracts, domain, DTOs, common configuration, common I18n, Singleton composition and Logger/Profiler correlation.
+
+### front
+
+Presentation modules, frontend controllers, ViewModels, SCORE templates/views, navigation and presentation ACL.
+
+### back
+
+API modules, REST controllers, services, providers, allow-listed Composer commands, backend ACL and persistence.
 
 ## Application standard
 
@@ -56,18 +84,16 @@ All OPUS applications are:
 - FSM-module-first;
 - I18n/browser-locale aware;
 - deny-by-default ACL;
-- SSO/Auth0-proxy and bastion ready through generic OPUS contracts;
+- SSO/Auth0-proxy and bastion ready;
 - backend-first;
-- SCORE-only rendered;
+- SCORE-only for UI;
 - free of UI-producing `echo` and mixed PHP/HTML views;
 - usable without mandatory JavaScript;
 - instrumented by Logger and Profiler.
 
-A generic requirement is proposed as an OPUS evolution before any local application implementation.
-
 ## Configuration boundary
 
-Configuration is read through OPUS `File` and parsed through the explicit parser selected by `StructuredFileLoader`:
+Configuration is read through OPUS `File` and parsed through `StructuredFileLoader` with the explicit parser:
 
 ```text
 JSON -> Json
@@ -75,7 +101,48 @@ XML -> Xml
 YAML/YML -> Yaml
 ```
 
-Direct local configuration reads and silent parser fallback are forbidden.
+Direct local configuration reads and silent parser fallback remain forbidden.
+
+## Runtime surfaces
+
+HF10 makes runtime mode explicit:
+
+```text
+--mode=front
+--mode=back
+```
+
+The process role no longer depends on the port. The front process refuses backend routes and the back process refuses frontend routes.
+
+Local convention:
+
+```text
+front : 127.0.0.1:8000
+back  : 127.0.0.1:8792
+```
+
+Production uses reverse proxy HTTPS 443 with separate internal pools/processes. Internal ports remain configurable and are never the security boundary.
+
+## Generated applications after HF10
+
+```text
+application/shared/Application.php
+application/shared/bootstrap.php
+application/shared/layouts
+application/shared/local
+application/front/modules/<module>
+application/back/modules/<module>
+```
+
+Routes declare `surface=front|back`. Front routes render SCORE. Back routes return structured JSON. FSM state identifiers are qualified by surface.
+
+The 25 base locales remain:
+
+```text
+bg hr cs da nl en et fi fr de el hu ga it lv lt mt pl pt ro sk sl es sv uk
+```
+
+Locale resolution remains explicit route locale, then `Accept-Language`, then diagnosed French fallback.
 
 ## OWASYS boundary
 
@@ -95,135 +162,80 @@ SCORE frontend
 
 No OWASYS business logic belongs under `Opus/`.
 
-## HF8 committed state
+## Current runtime defect
 
-The generic profile-aware scaffold now generates 25 base locales:
-
-```text
-bg hr cs da nl en et fi fr de el hu ga it lv lt mt pl pt ro sk sl es sv uk
-```
-
-Locale resolution remains:
+Owner state before HF10:
 
 ```text
-explicit route locale
--> Accept-Language negotiation
--> explicit fr fallback with diagnostics
+/fr-FR/applications/new : OK
+/fr-FR/applications     : HTTP 500
+runtime log             : absent
 ```
 
-Generated applications create and use:
+HF10 adds the missing runtime observability:
 
 ```text
-var/logs/application.log
-var/profiler/<trace_id>.json
+sites/owasys/var/logs/owasys-runtime.log
+sites/owasys/var/logs/rcp-backend.log
+sites/owasys/var/profiler/<trace_id>.json
+X-Opus-Trace-Id
 ```
 
-through `Opus\Log\Logger` and `Opus\Profiler\Profiler`.
+HF10 does not claim the HTTP 500 cause is fixed before the trace is captured.
 
-## Runtime evidence
+## OWASYS physical migration
 
-The four owner screenshots confirm:
+The front/back process boundary is introduced in HF10.
+
+The physical move of the existing OWASYS tree is explicitly:
 
 ```text
-Applications route active
-Creation entry visible
-Candidates = 1
-Canonical applications = 1
-Duplicate identifiers = 0
-Ignored roots = 0
-Singleton conforming = 1
-Singleton non-conforming = 0
-OWASYS discovered as fullstack standard-opus-application
-Creation route /fr-FR/applications/new accessible
+owasys-physical-migration-pending
 ```
 
-The Creation form contains the site identifier, the frontend/backend/fullstack profiles and the Create/Cancel actions.
+HF10B will migrate the tree after the HTTP 500 trace becomes available. No unverified bulk move is performed.
 
-## REST + Composer evidence
-
-The supplied backend log contains seven complete `registry.sync` executions. Every trace follows:
+## HF10 differential
 
 ```text
-execution.received
--> execution.validated
--> command.started : owasys:registry-sync
--> command.succeeded : exit_code=0, stderr_bytes=0
--> execution.succeeded : fsm_state=succeeded
+ZIP     : opus_p117u_hf10_application_surfaces_runtime_modes.zip
+SHA-256 : 5ca8ddbb1e765ec9a63393cbdb2d70a95e17e0e62b39027e0f921854c0174721
+BASE    : 41f77ad7187c0facb125a5737b62d10928809e66
 ```
 
-No error, stderr output or failed FSM transition appears. No `site.create` operation has yet been submitted.
+The installable differential includes:
 
-Observed Composer duration:
+- guarded installer with exact HEAD/blob checks;
+- new framework structure contract and interface;
+- scaffold/runtime/I18n/console/service transformations;
+- OWASYS mode and diagnostic boundary;
+- real front/back CMD launchers;
+- smoke test `P117U_HF10_APPLICATION_SURFACES_SMOKE_OK`.
+
+## Launch surface after HF10
 
 ```text
-minimum : 3603.440 ms
-average : 4919.592 ms
-maximum : 10261.340 ms
+sites\owasys\tools\cmd\START_OWASYS_FRONT.cmd
+sites\owasys\tools\cmd\START_OWASYS_BACK.cmd
 ```
 
-## HF9 reproduced defect
-
-The Creation profile selector is structurally present but visually broken. The template uses:
+Equivalent Composer commands:
 
 ```text
-ow-creation-form
-ow-form-field
-ow-profile-selector
-ow-profile-option
+composer opus:serve-site -- owasys --mode=front --host=127.0.0.1 --port=8000
+composer opus:serve-site -- owasys --mode=back --host=127.0.0.1 --port=8792
 ```
-
-without dedicated rules in the current OWASYS stylesheets. The labels therefore inherit `.ow-card` while remaining inline, producing the overlap visible in the owner capture.
-
-## HF9 differential
-
-- ZIP: `opus_owasys_p117u_hf9_creation_form_layout.zip`
-- SHA-256: `1db0628b87961e098df9500924a496548ea2029702628eb8012c9313636505f0`
-- changed paths: 3
-- base commit: `f9d01dca6644f41c10b85fd6da47eb8c21bf15b6`
-
-Paths:
-
-```text
-sites/owasys/application/creation/controllers/CreationController.php
-sites/owasys/application/default/layouts/layout.score
-sites/owasys/www/asset/css/creation.css
-```
-
-HF9 is application presentation only. It does not alter REST, Composer, Registry, FSM transitions, I18n catalogs, ACL, SSO, Logger or Profiler.
-
-## HF9 validation
-
-```text
-PHP lint controller             : OK
-SCORE conditional balance      : OK
-Chromium 1716 px                : 0 overlap, 0 overflow
-Chromium 1100 px                : 0 overlap, 0 overflow
-Chromium 760 px                 : 0 overlap, 0 overflow
-Chromium 420 px                 : 0 overlap, 0 overflow
-New concrete OPUS class         : none
-UI echo added                   : none
-Business backend changed        : no
-```
-
-## Launch surface
-
-```text
-START_OWASYS_BACKEND.cmd
-START_OWASYS_FRONTEND.cmd
-```
-
-The backend route is `/api/v1`; the OWASYS client targets `http://127.0.0.1:8792/api/v1/executions`.
 
 ## Pending
 
-1. install HF9 on a clean `f9d01dca6644f41c10b85fd6da47eb8c21bf15b6` tree;
-2. lint the modified controller;
-3. reload `/fr-FR/applications/new` without browser cache;
-4. validate desktop and mobile layout;
-5. validate Cancel to Registry;
-6. submit one controlled creation;
-7. validate REST, Composer, Registry select and Build;
-8. validate correlated Logger and Profiler traces;
+1. apply HF10 to the exact clean base;
+2. obtain the HF10 smoke success marker;
+3. start back then front using explicit modes;
+4. reproduce `/fr-FR/applications`;
+5. collect `request.failed` and `trace_id` if the HTTP 500 remains;
+6. produce HF10B physical OWASYS migration from that source of truth;
+7. test frontend/backend/fullstack generation;
+8. validate route surface rejection in both processes;
 9. run the exhaustive P117M tokenizer gate;
-10. commit OPUS after owner acceptance;
+10. commit and push OPUS after owner acceptance;
 11. decide separately whether `sites/owasys_old` can be removed.
