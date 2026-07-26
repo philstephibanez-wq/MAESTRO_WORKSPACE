@@ -1,208 +1,138 @@
 # OPUS CURRENT STATE
 
-Last updated: 2026-07-26.
+Dernière mise à jour : 2026-07-26.
 
-## Repository
-
-- Remote: `philstephibanez-wq/OPUS`
-- Branch: `master`
-- Current remote head reviewed: `4fb3a92605f14d84b8060ff36fde78828da49273`
-- Owner local repo: `H:/OPUS`
-- HF10A: committed, functionally rejected
-- HF10B: committed/applied, runtime rejected, architecture superseded
-- P117W: dual autonomous OWASYS applications required
-
-## Framework identity
-
-OPUS is a generic framework. OWASYS is a distributed system composed of two autonomous OPUS applications connected through secured REST.
-
-## Canonical OWASYS architecture
+## Dépôt
 
 ```text
-sites/owasys/front
-sites/owasys/back
-sites/owasys/shared
+Dépôt : philstephibanez-wq/OPUS
+Branche : master
+HEAD relu : 4fb3a92605f14d84b8060ff36fde78828da49273
+Racine owner : H:/OPUS
 ```
 
-`front` and `back` are autonomous OPUS applications. `shared` is not an application.
+Considérer HF10A et HF10B comme rejetés. Considérer P117W comme le différentiel actif à installer et valider.
 
-## Front application
+## Architecture OWASYS canonique
 
 ```text
-sites/owasys/front/
-  application/default/
-  application/<module>/
-  config/
-  www/
-  var/
+sites/owasys-front
+sites/owasys-back
+sites/owasys-shared
 ```
 
-Singleton:
+### Frontend
 
 ```text
-OwasysFrontApplication
-OwasysFrontApplicationInterface
+Singleton : OwasysFrontApplication
+Interface : OwasysFrontApplicationInterface
+Racine : sites/owasys-front
 ```
 
-Mandatory contracts:
+Appliquer :
 
-- Singleton;
-- frontend FSM;
-- browser-locale I18n;
-- ACL deny-by-default;
-- SSO/Auth0 proxy;
-- bastion-aware identity propagation;
-- SCORE-only rendering;
-- secured REST client;
-- Logger and Profiler;
-- no local business mutation;
-- no local Composer execution.
+- Singleton autonome ;
+- FSM frontend ;
+- I18n avec locale initiale depuis le navigateur ;
+- ACL deny-by-default ;
+- SSO/Auth0-proxy/bastion ;
+- rendu SCORE uniquement ;
+- client REST sécurisé ;
+- Logger et Profiler ;
+- aucune mutation métier locale ;
+- aucune exécution Composer locale.
 
-## Back application
+### Backend
 
 ```text
-sites/owasys/back/
-  application/default/
-  application/<module>/
-  config/
-  www/
-  var/
+Singleton : OwasysBackApplication
+Interface : OwasysBackApplicationInterface
+Racine : sites/owasys-back
 ```
 
-Singleton:
+Appliquer :
+
+- Singleton autonome ;
+- FSM métier et FSM REST ;
+- I18n API ;
+- ACL deny-by-default ;
+- SSO/identité de service/bastion ;
+- API REST sécurisée ;
+- Composer allow-listé ;
+- Logger et Profiler ;
+- aucun rendu UI.
+
+### Shared
 
 ```text
-OwasysBackApplication
-OwasysBackApplicationInterface
+Racine : sites/owasys-shared
 ```
 
-Mandatory contracts:
+Conserver uniquement les contrats, schémas, valeurs non secrètes, manifestes de compatibilité, migration et smoke. Ne placer aucun Singleton, bootstrap, serveur, secret ou état runtime dans cette racine.
 
-- Singleton;
-- backend execution FSM;
-- API I18n/locale negotiation;
-- ACL deny-by-default;
-- service identity, Auth0 delegation and bastion policy;
-- secured REST server;
-- allow-listed Composer execution;
-- typed services/providers;
-- Logger and Profiler;
-- no UI rendering.
+## Bastions distincts
 
-## Shared source contract
+Permettre l'installation de `owasys-front` et `owasys-back` sur deux bastions distincts. Ne partager aucun fichier runtime entre les deux installations.
 
-```text
-sites/owasys/shared/
-  contracts/
-  schemas/
-  defaults/
-  i18n-source/
-  deployment/
-```
-
-`shared` contains no:
-
-- Singleton;
-- bootstrap;
-- server;
-- secret;
-- `var` state;
-- Logger runtime;
-- Profiler runtime;
-- dependency on a shared filesystem between deployments.
-
-It contains versioned DTO contracts, REST schemas, operation identifiers, non-secret defaults, common I18n sources and deployment compatibility manifests.
-
-## Separate bastions
-
-Front and back may be installed on two distinct bastions.
-
-Each deployment artifact embeds its own immutable snapshot of required common contracts and defaults. Runtime file sharing between bastions is forbidden.
-
-Required manifest fields:
-
-```text
-shared_contract_version
-shared_contract_sha256
-api_contract_version
-minimum_opus_version
-```
-
-The application fails explicitly when expected versions are incompatible.
-
-Secrets are injected separately on each bastion through deployment variables, local secret files outside Git, machine identity, mTLS certificates or a secret manager.
-
-## Network flow
-
-```text
-Browser
-  -> HTTPS/Auth0 proxy
-  -> OWASYS Front bastion
-  -> secured REST HTTPS/mTLS/HMAC
-  -> OWASYS Back bastion
-  -> backend FSM
-  -> allow-listed Composer
-  -> typed service/provider
-```
-
-The backend is not directly exposed to the browser. The frontend cannot perform business writes outside the declared REST operation catalogue.
-
-## Distributed observability
-
-Front:
-
-```text
-sites/owasys/front/var/logs/owasys-front.log
-sites/owasys/front/var/profiler/<trace_id>.json
-```
-
-Back:
-
-```text
-sites/owasys/back/var/logs/owasys-back.log
-sites/owasys/back/var/profiler/<trace_id>.json
-```
-
-Distributed requests propagate:
+Propager :
 
 ```text
 trace_id
 request_id
 actor_subject
-front_event_id
-back_execution_id
+execution_id
 ```
 
-No secret is logged or profiled.
+Ne journaliser aucun secret.
 
-## HF10B runtime evidence
+## Serveur de développement OPUS
 
-Frontend trace:
+Ajouter :
 
 ```text
-trace_id        = 5f52a28017dc564d
-runtime_mode     = front
-exception_class  = RuntimeException
-exception_file   = H:/OPUS/Opus/Fsm/FsmSiteLoader.php
-exception_line   = 193
+composer opus:dev-server -- <application-id> --host=<adresse> --port=<port>
 ```
 
-The current `FsmSiteLoader` requires `default_root = application/default`. HF10B attempted to model a single site with `application/front/default`, which conflicts with the canonical site contract. Two autonomous sites each restore a canonical `application/default` root.
+Exiger les trois arguments. Ne fournir aucune adresse ni aucun port fixe. Réserver la commande au développement local.
 
-Backend evidence:
+Lancer le backend :
+
+```cmd
+cd /d H:\OPUS
+composer opus:dev-server -- owasys-back --host=127.0.0.1 --port=8000
+```
+
+Lancer ensuite le frontend :
+
+```cmd
+cd /d H:\OPUS
+composer opus:dev-server -- owasys-front --host=127.0.0.1 --port=8080
+```
+
+Résoudre le backend au moyen de :
 
 ```text
-trace_id     = 911f9e7f8708bf84
-message      = process.starting
-runtime_mode = back
-port         = 8792
+runtime/development/servers.json
 ```
 
-This proves process startup only. REST, Composer and backend FSM execution remain unvalidated.
+Conserver les secrets locaux dans :
 
-## Framework class contract
+```text
+runtime/development/owasys-rcp-secrets.json
+```
 
-Every concrete class under `Opus/**/*.php` directly implements its homonymous interface. Every homonymous interface directly extends:
+Ignorer `runtime/development` dans Git. Ne pas utiliser ce mécanisme en production.
+
+## Classes framework
+
+Ajouter :
+
+```text
+Opus\Console\Development\DevelopmentServerRegistry
+Opus\Console\Development\DevelopmentServerRegistryInterface
+```
+
+Faire implémenter directement l'interface homonyme par la classe. Faire étendre directement l'interface par :
 
 ```text
 OpusFrameworkComponentInterface
@@ -211,37 +141,72 @@ OpusProfilerAwareInterface
 OpusSelfDocumentingInterface
 ```
 
-## Configuration boundary
+Conserver ce contrat pour toutes les classes framework modifiées.
 
-Every config file is read through OPUS `File` and parsed through `StructuredFileLoader` using `Json`, `Xml` or `Yaml`. Direct local parsing and silent fallback remain forbidden.
+## Configuration
 
-## Delivery contract
+Lire toute configuration via `File` et `StructuredFileLoader`, puis sélectionner `Json`, `Xml` ou `Yaml`.
 
-The next delivery is a direct differential ZIP superposed at `H:/OPUS`. It must contain complete files at final paths and no installer, payload, patch directory, staging area, report, log or complete repository copy.
-
-It must create two separately deployable application artifacts and validate a two-bastion simulation.
-
-## Pending P117W
-
-1. create `sites/owasys/front` as a complete OPUS site;
-2. create `sites/owasys/back` as a complete OPUS site;
-3. create two independent Singletons and interfaces;
-4. create independent config, FSM, ACL, SSO, Logger and Profiler stacks;
-5. convert `shared` into a non-runtime versioned contract source;
-6. add separate Composer launch identities/commands;
-7. package front and back independently;
-8. validate compatibility manifests and hashes;
-9. validate browser -> front -> REST -> back -> Composer;
-10. validate propagated `trace_id`;
-11. run real runtime tests on two separate roots;
-12. run exhaustive P117M tokenizer gate;
-13. owner commit/push after acceptance.
-
-## Cleanup
-
-No deletion is authorized before P117W runtime acceptance. Preserve:
+Faire utiliser au frontend :
 
 ```text
+OPUS_RCP_REST_CLIENT_CONFIG_V2
+endpoint_env = OPUS_OWASYS_BACKEND_ENDPOINT
+```
+
+Ne coder aucune adresse backend dans `rcp.json`.
+
+## Livrable actif
+
+```text
+ZIP : opus_p117w_owasys_dual_autonomous_applications_dev_server.zip
+SHA-256 : 513cda881f43522e1a852d0420e0afd38047c75c28d7b2b9d3c5a8c74f0c53f4
+Base : 4fb3a92605f14d84b8060ff36fde78828da49273
+Fichiers : 60
+Octets : 69297
+```
+
+Livrer le ZIP comme différentiel direct superposable à `H:/OPUS`, sans répertoire enveloppe, installateur, payload, patch, staging, rapport, journal ou copie complète du dépôt.
+
+## Validations exécutées
+
+```text
+Relire tous les fichiers PHP                         : OK
+Analyser les 36 fichiers JSON                        : OK
+Réouvrir et contrôler le ZIP                         : OK
+Valider les deux Singletons                          : OK
+Valider les interfaces et quatre marqueurs           : OK
+Valider le registre de développement                 : OK
+Valider le client RCP V2 par endpoint_env            : OK
+Exécuter le smoke P117W                              : OK
+Détecter les entrées interdites dans le ZIP           : 0
+```
+
+Marqueur :
+
+```text
+P117W_OWASYS_DUAL_APPLICATIONS_SMOKE_OK
+```
+
+## Installer et valider
+
+1. vérifier le HEAD et l'état Git ;
+2. vérifier le SHA-256 ;
+3. extraire le ZIP ;
+4. exécuter `MIGRATE_OWASYS_P117W.cmd` ;
+5. reconstruire l'autoload Composer ;
+6. exécuter le smoke et l'audit contractuel ;
+7. lancer le backend ;
+8. lancer le frontend ;
+9. tester REST vers Composer ;
+10. contrôler Logger, Profiler et `trace_id` ;
+11. exécuter le gate P117M avant commit owner ;
+12. ne nettoyer les anciens chemins qu'après acceptation complète.
+
+## Préserver
+
+```text
+sites/owasys
 sites/owasys_old
 sites/owasys/var
 sites/owasys/application/shared
