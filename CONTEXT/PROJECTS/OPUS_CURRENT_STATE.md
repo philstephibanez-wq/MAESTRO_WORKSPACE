@@ -20,9 +20,7 @@ sites/owasys-front
 sites/owasys-back
 ```
 
-Déployer indépendamment les deux applications sur deux bastions possibles.
-
-Ne partager aucun fichier, dossier, volume, configuration, secret, catalogue, manifeste, état runtime ou artefact.
+Ne partager aucun fichier, dossier, volume, configuration, secret, manifeste ou état runtime.
 
 Réaliser uniquement :
 
@@ -30,82 +28,44 @@ Réaliser uniquement :
 owasys-front -> REST sécurisé -> owasys-back -> Composer allow-listé
 ```
 
-## Front
+## Cause racine
 
-Maintenir `OwasysFrontApplication` et `OwasysFrontApplicationInterface`.
+`OpusConsoleApplication::fromRoot()` construit actuellement `ApplicationCommandDispatcher` pour toutes les commandes.
 
-Appliquer Singleton, FSM, I18n navigateur, ACL deny-by-default, SSO/Auth0-proxy/bastion, SCORE, client REST, Logger et Profiler.
+`ApplicationCommandDispatcher` exécute immédiatement tous les bootstraps de tous les sites.
 
-Interdire toute mutation métier et toute exécution Composer applicative locale.
+Une commande framework charge donc simultanément l’ancien `sites/owasys` et `sites/owasys-back`, puis provoque la redéclaration de `OwasysApplicationSingletonInspector`.
 
-Déclarer un registre Composer frontend vide :
+## Correction P117W R6
 
-```text
-sites/owasys-front/config/composer.commands.json
-site_id = owasys-front
-providers = []
-aliases = []
-```
+- Ne pas construire le dispatcher pour une commande framework.
+- Lire seulement les métadonnées des registres applicatifs.
+- Charger uniquement le bootstrap de l’unique provider qui déclare la commande applicative demandée.
+- Refuser une commande inconnue ou ambiguë avant charger un bootstrap.
 
-## Back
-
-Maintenir `OwasysBackApplication` et `OwasysBackApplicationInterface`.
-
-Appliquer Singleton, FSM métier et REST, I18n API, ACL deny-by-default, SSO/identité de service/bastion, API REST sécurisée, Composer allow-listé, Logger et Profiler.
-
-Interdire tout rendu UI.
-
-Conserver le registre de commandes métier dans :
+## Statut
 
 ```text
-sites/owasys-back/config/composer.commands.json
-```
-
-## Échec après P117W R4
-
-Les registres Composer passent désormais le contrôle `site_id`, puis le runtime échoue avec :
-
-```text
-Call to a member function exists() on string
-Opus/Console/Application/ApplicationCommandDispatcher.php:60
-```
-
-Le composant `ApplicationCommandDispatcher` utilise un handle local non typé pour le service `File`. P117W R5 remplace ce handle et celui du loader structuré par des propriétés typées :
-
-```text
-FileInterface $fileService
-StructuredFileLoaderInterface $structuredFileLoader
-```
-
-Utiliser ces propriétés pour rechercher, lire et valider les registres Composer applicatifs.
-
-## Statut des livrables
-
-```text
-HF10A : rejeté
-HF10B : rejeté
-P117W initial : installé, architecture rejetée
-P117W R1 : rejeté pour présence de tools
-P117W R2 : rejeté pour présence de scripts opérationnels
 P117W R3 : appliqué
-P117W R4 : appliqué, registre frontend corrigé
-P117W R5 : actif à appliquer
+P117W R4 : appliqué
+P117W R5 : appliqué, effet corrigé mais cause restante
+P117W R6 : actif à appliquer
 ```
 
-## P117W R5
+## Livrable actif
 
 ```text
-ZIP : opus_p117w_r5_fix_application_command_dispatcher_file_service.zip
-SHA-256 : d3c5783314f8b3f48eb54bbd02f2a6e5cb534e4d64fcac0525dc0e34996cbdf7
+ZIP : opus_p117w_r6_lazy_application_provider_bootstrap_root_cause.zip
+SHA-256 : b9e6fade25160bd5e6fe3fbb3810267b4544cac67b4deff7c6d0a8a1d75c3896
 Fichiers : 2
-Octets : 1907
+Octets : 5558
 ```
 
 Inclure uniquement :
 
 ```text
+Opus/Console/OpusConsoleApplication.php
 Opus/Console/Application/ApplicationCommandDispatcher.php
-sites/owasys-front/config/composer.commands.json
 ```
 
 Ne livrer aucun `tools`, aucun `scripts/owasys`, aucune migration, aucun smoke, aucun audit, aucun rapport et aucune racine partagée.
@@ -114,6 +74,7 @@ Ne livrer aucun `tools`, aucun `scripts/owasys`, aucune migration, aucun smoke, 
 
 ```text
 composer dump-autoload -o
+php -l Opus/Console/OpusConsoleApplication.php
 php -l Opus/Console/Application/ApplicationCommandDispatcher.php
 composer opus:validate-site -- owasys-front
 composer opus:validate-site -- owasys-back
@@ -126,7 +87,7 @@ composer opus:dev-server -- owasys-back --host=127.0.0.1 --port=8000
 composer opus:dev-server -- owasys-front --host=127.0.0.1 --port=8080
 ```
 
-Réserver `opus:dev-server` au développement. Conserver l'identifiant d'application, l'adresse et le port comme arguments variables.
+Réserver `opus:dev-server` au développement. Conserver l’identifiant d’application, l’adresse et le port comme arguments variables.
 
 ## Contrats framework
 
@@ -141,6 +102,4 @@ OpusProfilerAwareInterface
 OpusSelfDocumentingInterface
 ```
 
-Lire toute configuration via `File` et `StructuredFileLoader`, puis utiliser `Json`, `Xml` ou `Yaml` selon le format.
-
-Imposer Logger et Profiler. Interdire tout fallback silencieux.
+Lire toute configuration via `File` et `StructuredFileLoader`. Imposer Logger et Profiler. Interdire tout fallback silencieux.
