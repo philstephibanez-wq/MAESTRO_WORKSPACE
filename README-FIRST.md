@@ -4,6 +4,8 @@ ACTIONS OBLIGATOIRES
 
 2. Mettre à jour directement sur GitHub, en lecture/écriture, les spécifications et handoffs du MAESTRO_WORKSPACE.
 
+2': tjs traiter la cause, jamais l'effet
+
 3. Toute classe concrète du framework OPUS doit implémenter une interface homonyme étendant directement :
 - OpusFrameworkComponentInterface
 - OpusExceptionAwareInterface
