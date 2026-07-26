@@ -7,9 +7,12 @@ Dernière mise à jour : 2026-07-26.
 ```text
 Dépôt : philstephibanez-wq/OPUS
 Branche : master
-HEAD relu : 4fb3a92605f14d84b8060ff36fde78828da49273
+HEAD Git relu : 4fb3a92605f14d84b8060ff36fde78828da49273
 Racine owner : H:/OPUS
+État local : P117W initial extrait, migration et smoke réussis
 ```
+
+Lire `README-FIRST.md` avant toute intervention.
 
 ## Architecture OWASYS canonique
 
@@ -20,9 +23,21 @@ sites/owasys-front
 sites/owasys-back
 ```
 
-Supprimer toute racine `owasys-shared` de l'architecture finale.
+Supprimer toute racine `owasys-shared`.
 
 Considérer `owasys-front` et `owasys-back` comme deux applications OPUS autonomes, installables sur deux bastions distincts.
+
+## Échanges uniquement
+
+Ne partager aucun fichier, dossier, volume, configuration, secret, catalogue, manifeste, état runtime ou artefact entre les deux applications.
+
+Réaliser exclusivement :
+
+```text
+owasys-front -> REST sécurisé -> owasys-back -> Composer allow-listé
+```
+
+Définir les contrats de transport dans OPUS RCP. Conserver les configurations, validateurs, journaux, Profiler et secrets localement dans chaque application.
 
 ## Frontend
 
@@ -65,50 +80,7 @@ Appliquer :
 - Logger et Profiler locaux ;
 - aucun rendu UI.
 
-## Échanges uniquement
-
-Ne partager aucun :
-
-- fichier ;
-- dossier ;
-- volume ;
-- secret ;
-- configuration ;
-- état runtime ;
-- catalogue ;
-- manifeste ;
-- artefact applicatif.
-
-Réaliser exclusivement des échanges REST sécurisés entre les deux applications.
-
-Définir les contrats génériques de transport dans OPUS RCP. Conserver les configurations et validateurs localement dans chaque application.
-
-Propager par REST :
-
-```text
-api_contract_version
-trace_id
-request_id
-actor_subject
-execution_id
-```
-
-Refuser toute version incompatible.
-
-## Bastions distincts
-
-Déployer indépendamment :
-
-```text
-Bastion FRONT -> owasys-front
-Bastion BACK  -> owasys-back
-```
-
-Injecter séparément les endpoints, secrets, certificats et politiques réseau.
-
-Interdire tout système de fichiers commun entre les bastions.
-
-## Serveur de développement OPUS
+## Développement local
 
 Utiliser :
 
@@ -116,21 +88,16 @@ Utiliser :
 composer opus:dev-server -- <application-id> --host=<adresse> --port=<port>
 ```
 
-Lancer le backend :
+Conserver l'identifiant d'application, l'adresse et le port comme arguments variables.
 
-```cmd
-cd /d H:\OPUS
-composer opus:dev-server -- owasys-back --host=127.0.0.1 --port=8000
+Remplacer le registre commun par :
+
+```text
+sites/owasys-front/var/development/environment.json
+sites/owasys-back/var/development/environment.json
 ```
 
-Lancer le frontend :
-
-```cmd
-cd /d H:\OPUS
-composer opus:dev-server -- owasys-front --host=127.0.0.1 --port=8080
-```
-
-Réserver cette commande au développement local.
+Faire lire à chaque application uniquement son propre fichier local. Réserver ces fichiers et `opus:dev-server` au développement.
 
 ## Classes framework
 
@@ -145,6 +112,12 @@ OpusProfilerAwareInterface
 OpusSelfDocumentingInterface
 ```
 
+Utiliser :
+
+```text
+php scripts/audit_opus_component_interfaces.php
+```
+
 ## Configuration
 
 Lire toute configuration via `File` et `StructuredFileLoader`, puis utiliser `Json`, `Xml` ou `Yaml` selon le format.
@@ -154,40 +127,82 @@ Lire toute configuration via `File` et `StructuredFileLoader`, puis utiliser `Js
 ```text
 HF10A : rejeté
 HF10B : rejeté
-P117W initial : installé, migration OK, smoke OK, architecture rejetée
-P117W R1 : correctif requis
+P117W initial : installé, migration et smoke réussis, architecture rejetée
+P117W R1 : livrable actif à appliquer et valider
 ```
 
-Rejeter le ZIP initial :
+Rejeter :
 
 ```text
 opus_p117w_owasys_dual_autonomous_applications_dev_server.zip
 SHA-256 513cda881f43522e1a852d0420e0afd38047c75c28d7b2b9d3c5a8c74f0c53f4
 ```
 
-Motifs :
+## Livrable P117W R1
 
-- créer `sites/owasys-shared` ;
-- placer migration et smoke dans cette troisième racine ;
-- conserver une notion de partage interdite ;
-- référencer `tools/maintenance/opus_contractualize_all.php`, absent du dépôt.
+```text
+ZIP : opus_p117w_r1_owasys_two_autonomous_applications_rest_only.zip
+SHA-256 : 922009ecc3632cf70e0dca6d4f79d81916391aebdf8f7409f8a6103ed6cd9e5e
+Fichiers : 14
+Octets : 23211
+Base Git : 4fb3a92605f14d84b8060ff36fde78828da49273
+Base locale : P117W initial appliqué et migré
+```
 
-## P117W R1
+Ne contenir aucune entrée `sites/owasys-shared`.
 
-Produire un ZIP différentiel direct afin de :
+## Contenu P117W R1
 
-1. supprimer toute dépendance à `owasys-shared` ;
-2. conserver uniquement les deux applications ;
-3. déplacer les composants selon leur responsabilité ;
-4. fournir un smoke autonome dans chaque application ;
-5. fournir un CMD de migration sans troisième racine ;
-6. valider REST sécurisé vers Composer ;
-7. valider Logger, Profiler et propagation du `trace_id` ;
-8. fournir un CMD de suppression de `sites/owasys-shared` après validation ;
-9. exécuter le gate P117M avant commit owner.
+- remplacer `SiteCommandService` afin de lire un environnement de développement local à chaque application ;
+- retirer `shared_contract` et `shared_contract_version` ;
+- déclarer des échanges REST sans accès de système de fichiers croisé ;
+- fournir deux migrations autonomes ;
+- fournir deux smokes autonomes ;
+- fournir un provisionnement local séparé du canal REST ;
+- fournir un audit des interfaces OPUS ;
+- fournir un CMD de suppression de la troisième racine rejetée ;
+- supprimer le registre commun initial et ses classes devenues inutilisées.
 
-## Nettoyage
+## Validations exécutées
 
-Ne pas supprimer immédiatement `sites/owasys-shared` avant appliquer P117W R1, car le ZIP initial y a placé des outils encore nécessaires à la migration et au smoke.
+```text
+Lire et appliquer README-FIRST.md                         : OK
+Analyser la syntaxe PHP des fichiers livrés               : OK
+Analyser les configurations JSON livrées                  : OK
+Réouvrir et contrôler le ZIP                              : OK
+Compter les fichiers complets                             : 14
+Détecter une entrée sites/owasys-shared                   : 0
+Détecter payload/patch/staging/report/log                  : 0
+Exécuter le smoke front en environnement simulé           : OK
+Exécuter le smoke back en environnement simulé            : OK
+Provisionner deux environnements locaux distincts         : OK
+Vérifier la correspondance endpoint/token/HMAC            : OK
+Tester le script d'audit sur un composant synthétique      : OK
+```
 
-Supprimer cette racine après déplacer ces fonctions et valider les deux applications.
+## Continuer
+
+1. extraire P117W R1 ;
+2. exécuter les deux migrations ;
+3. reconstruire l'autoload ;
+4. exécuter les deux smokes ;
+5. supprimer `sites/owasys-shared` avec le CMD fourni ;
+6. reconstruire l'autoload ;
+7. exécuter l'audit des interfaces ;
+8. provisionner le canal REST local ;
+9. lancer le backend ;
+10. lancer le frontend ;
+11. tester REST vers Composer ;
+12. contrôler Logger, Profiler et propagation du `trace_id` ;
+13. exécuter le gate P117M ;
+14. committer et pousser après acceptation owner.
+
+## Préserver
+
+Ne pas supprimer avant acceptation runtime complète :
+
+```text
+sites/owasys
+sites/owasys_old
+sites/owasys/var
+```
