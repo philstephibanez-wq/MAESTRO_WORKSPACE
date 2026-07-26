@@ -30,15 +30,19 @@ Réaliser uniquement :
 owasys-front -> REST sécurisé -> owasys-back -> Composer allow-listé
 ```
 
-## Interdire tools
+## Interdire les répertoires opérationnels ajoutés
 
-Interdire tout répertoire `tools` dans OPUS, OWASYS et les différentiels livrés.
-
-Placer les scripts contractuels sous :
+Ne livrer aucun :
 
 ```text
-scripts/
+tools
+scripts/owasys/p117w-*
+sites/owasys-front/tools
+sites/owasys-back/tools
+sites/owasys-shared
 ```
+
+Maintenir les commandes CMD hors du produit livré.
 
 ## Front
 
@@ -73,40 +77,56 @@ HF10A : rejeté
 HF10B : rejeté
 P117W initial : installé, architecture rejetée
 P117W R1 : rejeté pour présence de répertoires tools
-P117W R2 : actif à appliquer
+P117W R2 : rejeté pour présence de scripts opérationnels
+P117W R3 : actif à appliquer
 ```
 
-## P117W R2
+## P117W R3
 
 ```text
-ZIP : opus_p117w_r2_owasys_no_tools_two_applications_rest_only.zip
-SHA-256 : 10c209e06fad85c83e7081276f36454ebddf8b53f098288974d53b93e35a8b9c
-Fichiers : 14
-Octets : 22213
+ZIP : opus_p117w_r3_clean_sites_no_tools_no_scripts_rest_only.zip
+SHA-256 : 0b96f61c57e5baf959eee19a971e1cd97c4a9350b9831690c309cd66821494fe
+Fichiers : 5
 Base Git : 4fb3a92605f14d84b8060ff36fde78828da49273
 Base locale : P117W initial appliqué et migré
 ```
 
-Valider :
+Inclure uniquement :
 
 ```text
-Chemins tools : 0
-Références tools : 0
-Entrées owasys-shared : 0
+Opus/Console/Service/SiteCommandService.php
+sites/owasys-front/config/site.json
+sites/owasys-front/config/deployment.manifest.json
+sites/owasys-back/config/site.json
+sites/owasys-back/config/deployment.manifest.json
+```
+
+## Valider
+
+```text
 PHP lint : OK
 JSON : OK
 ZIP : OK
+Fichiers complets : 5
+Chemins tools : 0
+Chemins scripts : 0
+Entrées owasys-shared : 0
 ```
 
-## Appliquer
+## Nettoyer
 
-Utiliser les scripts sous :
+Supprimer uniquement les éléments P117W rejetés éventuellement présents :
 
 ```text
+sites/owasys-shared
+sites/owasys-front/tools
+sites/owasys-back/tools
+scripts/owasys/p117w-r1
 scripts/owasys/p117w-r2
+scripts/audit_opus_component_interfaces.php
 ```
 
-Exécuter les migrations front et back, reconstruire l’autoload, exécuter les deux smokes, supprimer la racine rejetée et d’éventuels répertoires `tools` issus de P117W R1, exécuter l’audit des interfaces, provisionner le canal REST local, lancer les deux applications, tester REST vers Composer, puis contrôler Logger, Profiler et `trace_id`.
+Ne supprimer aucun autre contenu du dépôt.
 
 ## Préserver
 
