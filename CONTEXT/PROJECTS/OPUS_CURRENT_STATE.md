@@ -30,23 +30,22 @@ Réaliser uniquement :
 owasys-front -> REST sécurisé -> owasys-back -> Composer allow-listé
 ```
 
-## Interdire tools
-
-Interdire tout répertoire `tools` dans OPUS, OWASYS et les différentiels livrés.
-
-Placer les scripts contractuels sous :
-
-```text
-scripts/
-```
-
 ## Front
 
 Maintenir `OwasysFrontApplication` et `OwasysFrontApplicationInterface`.
 
 Appliquer Singleton, FSM, I18n navigateur, ACL deny-by-default, SSO/Auth0-proxy/bastion, SCORE, client REST, Logger et Profiler.
 
-Interdire toute mutation métier et toute exécution Composer locale.
+Interdire toute mutation métier et toute exécution Composer applicative locale.
+
+Déclarer un registre Composer frontend vide :
+
+```text
+sites/owasys-front/config/composer.commands.json
+site_id = owasys-front
+providers = []
+aliases = []
+```
 
 ## Back
 
@@ -56,15 +55,29 @@ Appliquer Singleton, FSM métier et REST, I18n API, ACL deny-by-default, SSO/ide
 
 Interdire tout rendu UI.
 
-## Serveur de développement
-
-Utiliser :
+Conserver le registre de commandes métier dans :
 
 ```text
-composer opus:dev-server -- <application-id> --host=<adresse> --port=<port>
+sites/owasys-back/config/composer.commands.json
 ```
 
-Réserver la commande au développement. Conserver les trois valeurs comme arguments variables.
+## Échec après P117W R4
+
+Les registres Composer passent désormais le contrôle `site_id`, puis le runtime échoue avec :
+
+```text
+Call to a member function exists() on string
+Opus/Console/Application/ApplicationCommandDispatcher.php:60
+```
+
+Le composant `ApplicationCommandDispatcher` utilise un handle local non typé pour le service `File`. P117W R5 remplace ce handle et celui du loader structuré par des propriétés typées :
+
+```text
+FileInterface $fileService
+StructuredFileLoaderInterface $structuredFileLoader
+```
+
+Utiliser ces propriétés pour rechercher, lire et valider les registres Composer applicatifs.
 
 ## Statut des livrables
 
@@ -72,48 +85,62 @@ Réserver la commande au développement. Conserver les trois valeurs comme argum
 HF10A : rejeté
 HF10B : rejeté
 P117W initial : installé, architecture rejetée
-P117W R1 : rejeté pour présence de répertoires tools
-P117W R2 : actif à appliquer
+P117W R1 : rejeté pour présence de tools
+P117W R2 : rejeté pour présence de scripts opérationnels
+P117W R3 : appliqué
+P117W R4 : appliqué, registre frontend corrigé
+P117W R5 : actif à appliquer
 ```
 
-## P117W R2
+## P117W R5
 
 ```text
-ZIP : opus_p117w_r2_owasys_no_tools_two_applications_rest_only.zip
-SHA-256 : 10c209e06fad85c83e7081276f36454ebddf8b53f098288974d53b93e35a8b9c
-Fichiers : 14
-Octets : 22213
-Base Git : 4fb3a92605f14d84b8060ff36fde78828da49273
-Base locale : P117W initial appliqué et migré
+ZIP : opus_p117w_r5_fix_application_command_dispatcher_file_service.zip
+SHA-256 : d3c5783314f8b3f48eb54bbd02f2a6e5cb534e4d64fcac0525dc0e34996cbdf7
+Fichiers : 2
+Octets : 1907
 ```
 
-Valider :
+Inclure uniquement :
 
 ```text
-Chemins tools : 0
-Références tools : 0
-Entrées owasys-shared : 0
-PHP lint : OK
-JSON : OK
-ZIP : OK
+Opus/Console/Application/ApplicationCommandDispatcher.php
+sites/owasys-front/config/composer.commands.json
 ```
 
-## Appliquer
+Ne livrer aucun `tools`, aucun `scripts/owasys`, aucune migration, aucun smoke, aucun audit, aucun rapport et aucune racine partagée.
 
-Utiliser les scripts sous :
+## Valider
 
 ```text
-scripts/owasys/p117w-r2
+composer dump-autoload -o
+php -l Opus/Console/Application/ApplicationCommandDispatcher.php
+composer opus:validate-site -- owasys-front
+composer opus:validate-site -- owasys-back
 ```
 
-Exécuter les migrations front et back, reconstruire l’autoload, exécuter les deux smokes, supprimer la racine rejetée et d’éventuels répertoires `tools` issus de P117W R1, exécuter l’audit des interfaces, provisionner le canal REST local, lancer les deux applications, tester REST vers Composer, puis contrôler Logger, Profiler et `trace_id`.
-
-## Préserver
-
-Ne pas supprimer avant acceptation runtime complète :
+## Lancer
 
 ```text
-sites/owasys
-sites/owasys_old
-sites/owasys/var
+composer opus:dev-server -- owasys-back --host=127.0.0.1 --port=8000
+composer opus:dev-server -- owasys-front --host=127.0.0.1 --port=8080
 ```
+
+Réserver `opus:dev-server` au développement. Conserver l'identifiant d'application, l'adresse et le port comme arguments variables.
+
+## Contrats framework
+
+Faire implémenter son interface homonyme par toute classe concrète sous `Opus/**/*.php`.
+
+Faire étendre directement chaque interface homonyme par :
+
+```text
+OpusFrameworkComponentInterface
+OpusExceptionAwareInterface
+OpusProfilerAwareInterface
+OpusSelfDocumentingInterface
+```
+
+Lire toute configuration via `File` et `StructuredFileLoader`, puis utiliser `Json`, `Xml` ou `Yaml` selon le format.
+
+Imposer Logger et Profiler. Interdire tout fallback silencieux.
