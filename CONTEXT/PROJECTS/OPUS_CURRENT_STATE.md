@@ -6,117 +6,199 @@ Last updated: 2026-07-26.
 
 - Remote: `philstephibanez-wq/OPUS`
 - Branch: `master`
-- Current remote head reviewed: `21650601d7025706d4f7008ec0d0028d8cbe9c9d`
+- Current remote head reviewed: `4fb3a92605f14d84b8060ff36fde78828da49273`
 - Owner local repo: `H:/OPUS`
 - HF10A: committed, functionally rejected
-- HF10B: installed, runtime rejected, not accepted
+- HF10B: committed/applied, runtime rejected, architecture superseded
+- P117W: dual autonomous OWASYS applications required
 
 ## Framework identity
 
-OPUS is a generic framework. OWASYS is an OPUS application whose UI is SCORE and whose business mutations cross secured REST then allow-listed Composer commands.
+OPUS is a generic framework. OWASYS is a distributed system composed of two autonomous OPUS applications connected through secured REST.
 
-## Canonical architecture
-
-```text
-frontend  = application/shared + application/front
-backend   = application/shared + application/back
-fullstack = application/shared + application/front + application/back
-```
-
-Target physical layout:
+## Canonical OWASYS architecture
 
 ```text
-application/shared
-application/shared/i18n/default
-application/shared/i18n/modules/<module>
-application/front/default
-application/front/modules/<module>
-application/back/modules/<module>
-application/back/api
+sites/owasys/front
+sites/owasys/back
+sites/owasys/shared
 ```
 
-`application/full` is forbidden.
+`front` and `back` are autonomous OPUS applications. `shared` is not an application.
 
-## HF10B delivery
+## Front application
 
 ```text
-ZIP     : opus_p117v_hf10b_owasys_physical_front_back_runtime_bootstrap.zip
-SHA-256 : 20803dd76b72bbed4704655e782fbf29cd79d7e2f01652a2ef0a6faa46f588ef
-BASE    : 21650601d7025706d4f7008ec0d0028d8cbe9c9d
-STATUS  : INSTALLED / RUNTIME REJECTED / NOT ACCEPTED
+sites/owasys/front/
+  application/default/
+  application/<module>/
+  config/
+  www/
+  var/
 ```
 
-## Shared layer evidence
-
-The ZIP directly contains:
+Singleton:
 
 ```text
-application/shared/Application.php
-application/shared/RuntimeInterface.php
+OwasysFrontApplication
+OwasysFrontApplicationInterface
 ```
 
-The migration command is responsible for creating/copying:
+Mandatory contracts:
+
+- Singleton;
+- frontend FSM;
+- browser-locale I18n;
+- ACL deny-by-default;
+- SSO/Auth0 proxy;
+- bastion-aware identity propagation;
+- SCORE-only rendering;
+- secured REST client;
+- Logger and Profiler;
+- no local business mutation;
+- no local Composer execution.
+
+## Back application
 
 ```text
-application/shared/i18n/default
-application/shared/i18n/modules/<module>
+sites/owasys/back/
+  application/default/
+  application/<module>/
+  config/
+  www/
+  var/
 ```
 
-The frontend SCORE error page and trace identifier prove that the front bootstrap loaded the shared runtime interface and shared Singleton composition root. They do not prove that every shared catalogue/module is complete or valid.
+Singleton:
 
-## Backend evidence
+```text
+OwasysBackApplication
+OwasysBackApplicationInterface
+```
 
-The supplied backend log contains:
+Mandatory contracts:
+
+- Singleton;
+- backend execution FSM;
+- API I18n/locale negotiation;
+- ACL deny-by-default;
+- service identity, Auth0 delegation and bastion policy;
+- secured REST server;
+- allow-listed Composer execution;
+- typed services/providers;
+- Logger and Profiler;
+- no UI rendering.
+
+## Shared source contract
+
+```text
+sites/owasys/shared/
+  contracts/
+  schemas/
+  defaults/
+  i18n-source/
+  deployment/
+```
+
+`shared` contains no:
+
+- Singleton;
+- bootstrap;
+- server;
+- secret;
+- `var` state;
+- Logger runtime;
+- Profiler runtime;
+- dependency on a shared filesystem between deployments.
+
+It contains versioned DTO contracts, REST schemas, operation identifiers, non-secret defaults, common I18n sources and deployment compatibility manifests.
+
+## Separate bastions
+
+Front and back may be installed on two distinct bastions.
+
+Each deployment artifact embeds its own immutable snapshot of required common contracts and defaults. Runtime file sharing between bastions is forbidden.
+
+Required manifest fields:
+
+```text
+shared_contract_version
+shared_contract_sha256
+api_contract_version
+minimum_opus_version
+```
+
+The application fails explicitly when expected versions are incompatible.
+
+Secrets are injected separately on each bastion through deployment variables, local secret files outside Git, machine identity, mTLS certificates or a secret manager.
+
+## Network flow
+
+```text
+Browser
+  -> HTTPS/Auth0 proxy
+  -> OWASYS Front bastion
+  -> secured REST HTTPS/mTLS/HMAC
+  -> OWASYS Back bastion
+  -> backend FSM
+  -> allow-listed Composer
+  -> typed service/provider
+```
+
+The backend is not directly exposed to the browser. The frontend cannot perform business writes outside the declared REST operation catalogue.
+
+## Distributed observability
+
+Front:
+
+```text
+sites/owasys/front/var/logs/owasys-front.log
+sites/owasys/front/var/profiler/<trace_id>.json
+```
+
+Back:
+
+```text
+sites/owasys/back/var/logs/owasys-back.log
+sites/owasys/back/var/profiler/<trace_id>.json
+```
+
+Distributed requests propagate:
+
+```text
+trace_id
+request_id
+actor_subject
+front_event_id
+back_execution_id
+```
+
+No secret is logged or profiled.
+
+## HF10B runtime evidence
+
+Frontend trace:
+
+```text
+trace_id        = 5f52a28017dc564d
+runtime_mode     = front
+exception_class  = RuntimeException
+exception_file   = H:/OPUS/Opus/Fsm/FsmSiteLoader.php
+exception_line   = 193
+```
+
+The current `FsmSiteLoader` requires `default_root = application/default`. HF10B attempted to model a single site with `application/front/default`, which conflicts with the canonical site contract. Two autonomous sites each restore a canonical `application/default` root.
+
+Backend evidence:
 
 ```text
 trace_id     = 911f9e7f8708bf84
 message      = process.starting
 runtime_mode = back
-host         = 127.0.0.1
 port         = 8792
 ```
 
-This proves process separation and immediate backend log creation. It does not prove any REST request, Composer execution or backend FSM transition.
-
-## Frontend failure
-
-```text
-URL      : http://localhost:8000/fr-FR/
-result   : OWASYS_FRONT_RUNTIME_FAILED
-trace_id : 5f52a28017dc564d
-```
-
-The public error code is generic because the original exception message does not match the safe public error-code grammar.
-
-Exact cause requires:
-
-```text
-sites/owasys/var/logs/owasys-frontend.log
-sites/owasys/var/profiler/front/5f52a28017dc564d.json
-```
-
-Required fields:
-
-- error_code;
-- exception_class;
-- exception_file;
-- exception_line;
-- profiler event sequence.
-
-## Current correction gate
-
-No new cause patch is authorized before the exact frontend trace is read. A blind correction would violate the source-of-truth contract.
-
-The next differential must:
-
-1. fix the exact traced cause;
-2. validate the complete shared I18n tree;
-3. validate every migrated front module;
-4. execute real front and back runtime smoke tests;
-5. validate route isolation;
-6. validate secured REST through Composer;
-7. preserve Singleton, FSM, I18n, ACL, SSO/Auth0 proxy, SCORE, Logger and Profiler;
-8. remain a direct differential ZIP superposable at `H:/OPUS`.
+This proves process startup only. REST, Composer and backend FSM execution remain unvalidated.
 
 ## Framework class contract
 
@@ -129,37 +211,40 @@ OpusProfilerAwareInterface
 OpusSelfDocumentingInterface
 ```
 
-## Application contracts
+## Configuration boundary
 
-- Singleton;
-- FSM-module-first;
-- browser-locale I18n with explicit diagnosed fallback;
-- ACL deny-by-default;
-- SSO/Auth0 proxy and bastion ready;
-- SCORE-only UI;
-- no UI-producing echo;
-- no mixed PHP/HTML;
-- configuration through `File` and `StructuredFileLoader` to `Json`, `Xml` or `Yaml`;
-- Logger and Profiler mandatory;
-- no silent fallback.
+Every config file is read through OPUS `File` and parsed through `StructuredFileLoader` using `Json`, `Xml` or `Yaml`. Direct local parsing and silent fallback remain forbidden.
 
-## Owner commands required now
+## Delivery contract
 
-```cmd
-cd /d H:\OPUS
-findstr /C:"5f52a28017dc564d" sites\owasys\var\logs\owasys-frontend.log
-type sites\owasys\var\profiler\front\5f52a28017dc564d.json
-dir /s /b sites\owasys\application\shared
-```
+The next delivery is a direct differential ZIP superposed at `H:/OPUS`. It must contain complete files at final paths and no installer, payload, patch directory, staging area, report, log or complete repository copy.
+
+It must create two separately deployable application artifacts and validate a two-bastion simulation.
+
+## Pending P117W
+
+1. create `sites/owasys/front` as a complete OPUS site;
+2. create `sites/owasys/back` as a complete OPUS site;
+3. create two independent Singletons and interfaces;
+4. create independent config, FSM, ACL, SSO, Logger and Profiler stacks;
+5. convert `shared` into a non-runtime versioned contract source;
+6. add separate Composer launch identities/commands;
+7. package front and back independently;
+8. validate compatibility manifests and hashes;
+9. validate browser -> front -> REST -> back -> Composer;
+10. validate propagated `trace_id`;
+11. run real runtime tests on two separate roots;
+12. run exhaustive P117M tokenizer gate;
+13. owner commit/push after acceptance.
 
 ## Cleanup
 
-No deletion is authorized before runtime acceptance. Preserve:
+No deletion is authorized before P117W runtime acceptance. Preserve:
 
 ```text
 sites/owasys_old
-sites/owasys/var/logs
-sites/owasys/var/profiler
-sites/owasys/var/registry
-sites/owasys/var/runtime
+sites/owasys/var
+sites/owasys/application/shared
+sites/owasys/application/front
+sites/owasys/application/back
 ```
