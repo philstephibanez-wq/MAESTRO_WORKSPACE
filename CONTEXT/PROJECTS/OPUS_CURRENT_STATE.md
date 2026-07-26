@@ -1,6 +1,6 @@
 # OPUS CURRENT STATE
 
-Dernière mise à jour : 2026-07-26.
+Dernière mise à jour : 2026-07-27.
 
 ## Dépôt
 
@@ -28,54 +28,74 @@ Réaliser uniquement :
 owasys-front -> REST sécurisé -> owasys-back -> Composer allow-listé
 ```
 
-## Cause racine
+## Résultat P117W R6
 
-`OpusConsoleApplication::fromRoot()` construit actuellement `ApplicationCommandDispatcher` pour toutes les commandes.
+Démarrer correctement les serveurs de développement `owasys-front` et `owasys-back` sans chargement croisé des applications.
 
-`ApplicationCommandDispatcher` exécute immédiatement tous les bootstraps de tous les sites.
+Conserver le backend sans interface utilisateur. Refuser la racine `/` et exposer le statut sur :
 
-Une commande framework charge donc simultanément l’ancien `sites/owasys` et `sites/owasys-back`, puis provoque la redéclaration de `OwasysApplicationSingletonInspector`.
+```text
+/api/v1/status
+```
 
-## Correction P117W R6
+## Cause restante
 
-- Ne pas construire le dispatcher pour une commande framework.
-- Lire seulement les métadonnées des registres applicatifs.
-- Charger uniquement le bootstrap de l’unique provider qui déclare la commande applicative demandée.
-- Refuser une commande inconnue ou ambiguë avant charger un bootstrap.
+Les validateurs OPUS exigent actuellement l'existence préalable de :
+
+```text
+var/logs
+var/profiler
+```
+
+Ces répertoires appartiennent au runtime. Logger et Profiler les créent au démarrage. Ne pas les exiger dans le site source ni dans l'artefact de déploiement.
+
+## Correction P117W R7
+
+Modifier :
+
+```text
+Opus/Console/Service/SiteCommandService.php
+Opus/Console/Service/LayeredSiteCommandService.php
+```
+
+Retirer `var/logs` et `var/profiler` des répertoires source obligatoires de `validate-site`.
+
+Conserver toutes les validations de configuration, FSM, ACL, SSO, Singleton, SCORE, API, modules et routes.
 
 ## Statut
 
 ```text
 P117W R3 : appliqué
 P117W R4 : appliqué
-P117W R5 : appliqué, effet corrigé mais cause restante
-P117W R6 : actif à appliquer
+P117W R5 : appliqué
+P117W R6 : appliqué ; serveurs de développement démarrés
+P117W R7 : actif à appliquer
 ```
 
 ## Livrable actif
 
 ```text
-ZIP : opus_p117w_r6_lazy_application_provider_bootstrap_root_cause.zip
-SHA-256 : b9e6fade25160bd5e6fe3fbb3810267b4544cac67b4deff7c6d0a8a1d75c3896
+ZIP : opus_p117w_r7_validate_clean_sites_without_runtime_directories.zip
+SHA-256 : e24708b8488769d5baef79372cde46d9006d200f1c166e87486501c08513b7ac
 Fichiers : 2
-Octets : 5558
+Octets : 14728
 ```
 
 Inclure uniquement :
 
 ```text
-Opus/Console/OpusConsoleApplication.php
-Opus/Console/Application/ApplicationCommandDispatcher.php
+Opus/Console/Service/SiteCommandService.php
+Opus/Console/Service/LayeredSiteCommandService.php
 ```
 
-Ne livrer aucun `tools`, aucun `scripts/owasys`, aucune migration, aucun smoke, aucun audit, aucun rapport et aucune racine partagée.
+Ne livrer aucun `tools`, aucun `scripts/owasys`, aucune migration, aucun smoke, aucun audit, aucun rapport, aucun journal et aucune racine partagée.
 
 ## Valider
 
 ```text
 composer dump-autoload -o
-php -l Opus/Console/OpusConsoleApplication.php
-php -l Opus/Console/Application/ApplicationCommandDispatcher.php
+php -l Opus/Console/Service/SiteCommandService.php
+php -l Opus/Console/Service/LayeredSiteCommandService.php
 composer opus:validate-site -- owasys-front
 composer opus:validate-site -- owasys-back
 ```
@@ -87,7 +107,7 @@ composer opus:dev-server -- owasys-back --host=127.0.0.1 --port=8000
 composer opus:dev-server -- owasys-front --host=127.0.0.1 --port=8080
 ```
 
-Réserver `opus:dev-server` au développement. Conserver l’identifiant d’application, l’adresse et le port comme arguments variables.
+Réserver `opus:dev-server` au développement. Conserver l'identifiant d'application, l'adresse et le port comme arguments variables.
 
 ## Contrats framework
 
