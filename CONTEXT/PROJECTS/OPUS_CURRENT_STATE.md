@@ -61,13 +61,23 @@ Conserver le registre de commandes métier dans :
 sites/owasys-back/config/composer.commands.json
 ```
 
-## Cause du blocage P117W R3
+## Échec après P117W R4
 
-La migration P117W initiale a copié `sites/owasys/config/composer.commands.json` dans le frontend.
+Les registres Composer passent désormais le contrôle `site_id`, puis le runtime échoue avec :
 
-Le fichier copié déclare `site_id = owasys`, alors que `ApplicationCommandDispatcher` exige `site_id = owasys-front` pour la racine `sites/owasys-front`.
+```text
+Call to a member function exists() on string
+Opus/Console/Application/ApplicationCommandDispatcher.php:60
+```
 
-Cette incohérence bloque `opus:validate-site` et `opus:dev-server` avant leur exécution.
+Le composant `ApplicationCommandDispatcher` utilise un handle local non typé pour le service `File`. P117W R5 remplace ce handle et celui du loader structuré par des propriétés typées :
+
+```text
+FileInterface $fileService
+StructuredFileLoaderInterface $structuredFileLoader
+```
+
+Utiliser ces propriétés pour rechercher, lire et valider les registres Composer applicatifs.
 
 ## Statut des livrables
 
@@ -77,30 +87,34 @@ HF10B : rejeté
 P117W initial : installé, architecture rejetée
 P117W R1 : rejeté pour présence de tools
 P117W R2 : rejeté pour présence de scripts opérationnels
-P117W R3 : appliqué, registre Composer frontend invalide détecté
-P117W R4 : actif à appliquer
+P117W R3 : appliqué
+P117W R4 : appliqué, registre frontend corrigé
+P117W R5 : actif à appliquer
 ```
 
-## P117W R4
+## P117W R5
 
 ```text
-ZIP : opus_p117w_r4_fix_front_composer_registry_clean_site.zip
-SHA-256 : 421fbd6d39e01e166b798d5bdee313cb24c39ef8761d62b4fc2ae7edb1dcc7d0
-Fichiers : 1
-Octets : 309
+ZIP : opus_p117w_r5_fix_application_command_dispatcher_file_service.zip
+SHA-256 : d3c5783314f8b3f48eb54bbd02f2a6e5cb534e4d64fcac0525dc0e34996cbdf7
+Fichiers : 2
+Octets : 1907
 ```
 
 Inclure uniquement :
 
 ```text
+Opus/Console/Application/ApplicationCommandDispatcher.php
 sites/owasys-front/config/composer.commands.json
 ```
 
-Ne livrer aucun répertoire opérationnel, aucun outil, aucune migration, aucun smoke, aucun audit et aucune troisième racine.
+Ne livrer aucun `tools`, aucun `scripts/owasys`, aucune migration, aucun smoke, aucun audit, aucun rapport et aucune racine partagée.
 
 ## Valider
 
 ```text
+composer dump-autoload -o
+php -l Opus/Console/Application/ApplicationCommandDispatcher.php
 composer opus:validate-site -- owasys-front
 composer opus:validate-site -- owasys-back
 ```
