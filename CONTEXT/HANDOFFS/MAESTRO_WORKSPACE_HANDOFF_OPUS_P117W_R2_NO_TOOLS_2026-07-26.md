@@ -26,9 +26,9 @@ Réaliser exclusivement des échanges REST sécurisés entre les deux applicatio
 
 ```text
 ZIP : opus_p117w_r2_owasys_no_tools_two_applications_rest_only.zip
-SHA-256 : e956043cbb799497fa51fa4ca40217f7fa9944063de297e0baa32d47a3d69ad4
+SHA-256 : 10c209e06fad85c83e7081276f36454ebddf8b53f098288974d53b93e35a8b9c
 Fichiers : 14
-Octets : 22184
+Octets : 22213
 ```
 
 Rejeter P117W R1 parce qu’il place des scripts dans `sites/owasys-front/tools` et `sites/owasys-back/tools`.
@@ -79,4 +79,4 @@ composer opus:dev-server -- owasys-front --host=127.0.0.1 --port=8080
 
 ## Contrôler
 
-Valider les deux smokes, supprimer `sites/owasys-shared`, reconstruire l’autoload, exécuter l’audit des interfaces, lancer le back, lancer le front, tester REST vers Composer, puis contrôler Logger, Profiler et `trace_id`.
+Valider les deux smokes, supprimer `sites/owasys-shared`, supprimer d’éventuels répertoires `tools` issus de P117W R1, reconstruire l’autoload, exécuter l’audit des interfaces, lancer le back, lancer le front, tester REST vers Composer, puis contrôler Logger, Profiler et `trace_id`.
