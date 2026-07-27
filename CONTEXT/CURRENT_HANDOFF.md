@@ -8,8 +8,8 @@ Date : 2026-07-27
 README-FIRST.md
 CONTEXT/SPECIFICATIONS/MAESTRO_OPUS_OWASYS_GLOBAL_DEVELOPMENT_RULES_2026-07-24.md
 CONTEXT/PROJECTS/OPUS/OPUS_SITE_STANDARD_CONTRACT.md
-CONTEXT/SPECIFICATIONS/OPUS_P117W_R15_RESTORE_CANONICAL_FRONT_FSM_2026-07-27.md
-CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OPUS_P117W_R15_RESTORE_CANONICAL_FRONT_FSM_2026-07-27.md
+CONTEXT/SPECIFICATIONS/OPUS_P117W_R16_RESTORE_APPLICATION_COMMAND_ALIASES_2026-07-27.md
+CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OPUS_P117W_R16_RESTORE_APPLICATION_COMMAND_ALIASES_2026-07-27.md
 CONTEXT/PROJECTS/OPUS_CURRENT_STATE.md
 ```
 
@@ -20,12 +20,12 @@ Dépôt OPUS : philstephibanez-wq/OPUS
 Branche : master
 HEAD Git de base : 4fb3a92605f14d84b8060ff36fde78828da49273
 Racine owner : H:\OPUS
-État local : P117W initial et R3 à R14 appliqués
+État local : P117W initial et R3 à R15 appliqués
 ```
 
 ## Architecture
 
-Conserver uniquement les deux applications actives :
+Conserver uniquement :
 
 ```text
 sites/owasys-front
@@ -40,75 +40,73 @@ owasys-front -> REST sécurisé -> owasys-back -> Composer allow-listé
 
 Ne partager aucun fichier. Ne livrer aucun `tools`, aucun `scripts/owasys`, aucun fichier runtime, aucun secret et aucune racine partagée.
 
-## Configuration développement
+## Développement
 
 ```text
 owasys-front : 127.0.0.1:8000
 owasys-back  : 127.0.0.1:8080
 ```
 
-Lancer depuis la configuration :
-
 ```text
 composer opus:dev-server -- owasys-front
 composer opus:dev-server -- owasys-back
 ```
 
-## Cause traitée par R15
+## Cause traitée par R16
 
-Le frontend contient une FSM réduite qui a perdu les métadonnées nécessaires au rendu SCORE et à I18n.
-
-Pour l’état `registry`, l’absence de `title_key` conduit le renderer à demander :
+Le trace `296ba2a1e87ba3e0` prouve que le frontend atteint le backend REST, puis que Composer lance :
 
 ```text
-menu.registry
+owasys:registry-sync
 ```
 
-Cette clé n’existe pas. La FSM canonique déclare :
+Le registre backend déclare :
 
 ```text
-title_key = menu.applications
-summary_key = registry.description
+owasys:registry-sync -> owasys:registry:sync
 ```
+
+R14 a supprimé la lecture de `aliases` dans `ApplicationCommandDispatcher`. La commande invoquée par Composer n’est donc pas reconnue et le provider backend n’est jamais chargé.
 
 ## Correction
 
-Restaurer uniquement :
+Restaurer dans :
 
 ```text
-sites/owasys-front/config/fsm.json
+Opus/Console/Application/ApplicationCommandDispatcher.php
 ```
 
-avec le contrat complet :
+la lecture et la validation des alias, puis :
 
 ```text
-OWASYS_NAVIGATION_FSM_V1
+cibler application_id
+résoudre alias -> commande canonique
+charger uniquement le provider ciblé
+exécuter la commande canonique
 ```
-
-Restaurer les états, événements, transitions, gardes, actions, métadonnées de navigation et clés I18n canoniques.
-
-Ne pas ajouter de fallback I18n et ne pas modifier le renderer pour masquer la FSM dégradée.
 
 ## Livrable actif
 
 ```text
-ZIP : opus_p117w_r15_restore_canonical_front_fsm.zip
-SHA-256 : 1a39348365bfe5dbb3a286519b93bb50ccd60a5a09d642f111cf0836224ae575
+ZIP : opus_p117w_r16_restore_application_command_aliases.zip
+SHA-256 : 31448c0030d19ab7e0d0dd921ce5df20e9bb94ffa3d8c199048fc99b106cb3dd
 Fichiers : 1
-Octets non compressés : 7206
+Octets ZIP : 2827
+Octets non compressés : 11588
 ```
 
 Inclure uniquement :
 
 ```text
-sites/owasys-front/config/fsm.json
+Opus/Console/Application/ApplicationCommandDispatcher.php
 ```
 
 ## Appliquer et valider
 
 ```text
-certutil -hashfile "%USERPROFILE%\Downloads\opus_p117w_r15_restore_canonical_front_fsm.zip" SHA256
-tar -xf "%USERPROFILE%\Downloads\opus_p117w_r15_restore_canonical_front_fsm.zip" -C H:\OPUS
+certutil -hashfile "%USERPROFILE%\Downloads\opus_p117w_r16_restore_application_command_aliases.zip" SHA256
+tar -xf "%USERPROFILE%\Downloads\opus_p117w_r16_restore_application_command_aliases.zip" -C H:\OPUS
+php -l Opus\Console\Application\ApplicationCommandDispatcher.php
 composer dump-autoload -o
 composer opus:validate-site -- owasys-front
 composer opus:validate-site -- owasys-back
@@ -142,12 +140,8 @@ curl -i http://127.0.0.1:8000/fr-FR/applications
 ## Statut
 
 ```text
-P117W R6 à R10 : appliqués
-P117W R11 : appliqué
-P117W R12 : appliqué
-P117W R13 : appliqué
-P117W R14 : appliqué
-P117W R15 : livrable actif
+P117W R6 à R15 : appliqués
+P117W R16 : livrable actif
 ```
 
 NO CONTRACT, NO PATCH.  
