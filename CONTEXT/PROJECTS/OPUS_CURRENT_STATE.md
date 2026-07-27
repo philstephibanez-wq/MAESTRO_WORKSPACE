@@ -38,41 +38,48 @@ owasys-front -> REST sécurisé -> owasys-back -> Composer allow-listé
 - conserver l’adresse et le port d’écoute comme arguments variables ;
 - interdire les secrets littéraux dans la configuration.
 
-## Erreur owner après P117W R10
+## Affectation canonique en développement
 
 ```text
-OPUS_APPLICATION_ENVIRONMENT_SOURCE_MISSING:OPUS_OWASYS_BACKEND_TOKEN
+owasys-front : 127.0.0.1:8000
+owasys-back  : 127.0.0.1:8080
 ```
 
-## Cause
+La page backend affichée sur `http://127.0.0.1:8000/fr-FR/applications` provient d’une inversion des applications lancées sur les ports.
 
-Les deux serveurs ont été lancés sans définir les variables secrètes requises :
+Utiliser le script Composer contractuel `opus:dev-server` pour les deux applications.
+
+## Lancer
+
+Frontend :
+
+```text
+cd /d H:\OPUS
+composer opus:dev-server -- owasys-front --host=127.0.0.1 --port=8000
+```
+
+Backend :
+
+```text
+cd /d H:\OPUS
+composer opus:dev-server -- owasys-back --host=127.0.0.1 --port=8080
+```
+
+Définir auparavant les mêmes valeurs secrètes dans les deux environnements de processus :
 
 ```text
 OPUS_OWASYS_BACKEND_TOKEN
 OPUS_OWASYS_BACKEND_HMAC
 ```
 
-Le refus avant démarrer le serveur applique le contrat P117W R10. Aucun défaut source distinct n’est démontré par cette erreur.
+Réserver `opus:dev-server` au développement. Conserver l’identifiant d’application, l’adresse et le port comme arguments variables.
 
-## Activer le développement
-
-Générer une seule paire bearer/HMAC dans un terminal parent.
-
-Lancer `owasys-back` et `owasys-front` depuis ce même terminal pour faire hériter exactement les mêmes valeurs aux deux processus enfants.
-
-Effacer ensuite les variables du terminal parent sans modifier l’environnement déjà hérité par les processus enfants.
-
-Ne créer aucun :
+## Tester
 
 ```text
-.env
-.env.local
-config/secrets.json
-var/development/environment.json
-script de lancement dans le produit
-secret dans argv
-secret littéral dans site.json
+http://127.0.0.1:8000/fr-FR/
+http://127.0.0.1:8000/fr-FR/applications
+http://127.0.0.1:8080/api/v1/status
 ```
 
 ## Statut
@@ -83,25 +90,8 @@ P117W R7 : appliqué
 P117W R8 : appliqué
 P117W R9 : appliqué puis remplacé
 P117W R10 : appliqué
-Activation runtime : requise
-Nouveau ZIP : non requis pour l’erreur de variable secrète absente
-```
-
-## Lancer
-
-```text
-composer opus:dev-server -- owasys-back --host=127.0.0.1 --port=8000
-composer opus:dev-server -- owasys-front --host=127.0.0.1 --port=8080
-```
-
-Réserver `opus:dev-server` au développement. Conserver l’identifiant d’application, l’adresse et le port comme arguments variables.
-
-## Tester
-
-```text
-http://127.0.0.1:8000/api/v1/status
-http://127.0.0.1:8080/fr-FR/
-http://127.0.0.1:8080/fr-FR/applications
+Correction active : frontend sur 8000, backend sur 8080
+Nouveau ZIP : non requis pour corriger l’ordre des commandes de lancement
 ```
 
 ## Contrats framework
