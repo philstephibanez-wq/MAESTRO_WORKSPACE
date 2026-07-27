@@ -8,8 +8,8 @@ Date : 2026-07-27
 README-FIRST.md
 CONTEXT/SPECIFICATIONS/MAESTRO_OPUS_OWASYS_GLOBAL_DEVELOPMENT_RULES_2026-07-24.md
 CONTEXT/PROJECTS/OPUS/OPUS_SITE_STANDARD_CONTRACT.md
-CONTEXT/SPECIFICATIONS/OPUS_P117W_R14_SCOPE_RCP_APPLICATION_COMMAND_PROVIDER_2026-07-27.md
-CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OPUS_P117W_R14_SCOPE_RCP_APPLICATION_COMMAND_PROVIDER_2026-07-27.md
+CONTEXT/SPECIFICATIONS/OPUS_P117W_R15_RESTORE_CANONICAL_FRONT_FSM_2026-07-27.md
+CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OPUS_P117W_R15_RESTORE_CANONICAL_FRONT_FSM_2026-07-27.md
 CONTEXT/PROJECTS/OPUS_CURRENT_STATE.md
 ```
 
@@ -20,7 +20,7 @@ Dépôt OPUS : philstephibanez-wq/OPUS
 Branche : master
 HEAD Git de base : 4fb3a92605f14d84b8060ff36fde78828da49273
 Racine owner : H:\OPUS
-État local : P117W initial et R3 à R13 appliqués
+État local : P117W initial et R3 à R14 appliqués
 ```
 
 ## Architecture
@@ -38,7 +38,7 @@ Réaliser exclusivement :
 owasys-front -> REST sécurisé -> owasys-back -> Composer allow-listé
 ```
 
-Ne partager aucun fichier. Ne livrer aucun `tools`, aucun `scripts/owasys`, aucun fichier runtime et aucune racine partagée.
+Ne partager aucun fichier. Ne livrer aucun `tools`, aucun `scripts/owasys`, aucun fichier runtime, aucun secret et aucune racine partagée.
 
 ## Configuration développement
 
@@ -54,66 +54,65 @@ composer opus:dev-server -- owasys-front
 composer opus:dev-server -- owasys-back
 ```
 
-## Cause traitée par R14
+## Cause traitée par R15
 
-Les registres suivants déclarent les mêmes commandes métier :
+Le frontend contient une FSM réduite qui a perdu les métadonnées nécessaires au rendu SCORE et à I18n.
 
-```text
-sites/owasys/config/composer.commands.json
-sites/owasys-back/config/composer.commands.json
-```
-
-La requête frontend atteint correctement le backend REST. Le processus Composer échoue ensuite parce que `ApplicationCommandDispatcher` découvre deux providers pour `owasys:registry:sync` sans connaître l’application propriétaire.
-
-## Correction générique OPUS
-
-Déclarer :
+Pour l’état `registry`, l’absence de `title_key` conduit le renderer à demander :
 
 ```text
-sites/owasys-back/config/backend.rest.json.application_id = owasys-back
+menu.registry
 ```
 
-Propager cette valeur dans :
+Cette clé n’existe pas. La FSM canonique déclare :
 
 ```text
-OPUS_RCP_COMPOSER_COMMAND_REQUEST_V1.application_id
+title_key = menu.applications
+summary_key = registry.description
 ```
 
-Filtrer le provider par :
+## Correction
+
+Restaurer uniquement :
 
 ```text
-command + application_id
+sites/owasys-front/config/fsm.json
 ```
 
-Ne charger aucun provider du site historique lorsque la requête cible `owasys-back`.
+avec le contrat complet :
+
+```text
+OWASYS_NAVIGATION_FSM_V1
+```
+
+Restaurer les états, événements, transitions, gardes, actions, métadonnées de navigation et clés I18n canoniques.
+
+Ne pas ajouter de fallback I18n et ne pas modifier le renderer pour masquer la FSM dégradée.
 
 ## Livrable actif
 
 ```text
-ZIP : opus_p117w_r14_scope_rcp_application_command_provider.zip
-SHA-256 : 8e94705f4a8992a3188ff0c469436e3c458b888713709da877ec79c1e7d8f494
-Fichiers : 3
-Octets ZIP : 7614
+ZIP : opus_p117w_r15_restore_canonical_front_fsm.zip
+SHA-256 : 1a39348365bfe5dbb3a286519b93bb50ccd60a5a09d642f111cf0836224ae575
+Fichiers : 1
+Octets non compressés : 7206
 ```
 
 Inclure uniquement :
 
 ```text
-Opus/Console/Application/ApplicationCommandDispatcher.php
-Opus/Rcp/Rest/RcpRestServer.php
-sites/owasys-back/config/backend.rest.json
+sites/owasys-front/config/fsm.json
 ```
 
 ## Appliquer et valider
 
 ```text
-certutil -hashfile "%USERPROFILE%\Downloads\opus_p117w_r14_scope_rcp_application_command_provider.zip" SHA256
-tar -xf "%USERPROFILE%\Downloads\opus_p117w_r14_scope_rcp_application_command_provider.zip" -C H:\OPUS
-php -l Opus\Console\Application\ApplicationCommandDispatcher.php
-php -l Opus\Rcp\Rest\RcpRestServer.php
+certutil -hashfile "%USERPROFILE%\Downloads\opus_p117w_r15_restore_canonical_front_fsm.zip" SHA256
+tar -xf "%USERPROFILE%\Downloads\opus_p117w_r15_restore_canonical_front_fsm.zip" -C H:\OPUS
 composer dump-autoload -o
 composer opus:validate-site -- owasys-front
 composer opus:validate-site -- owasys-back
+git status --short
 ```
 
 ## Lancer
@@ -147,7 +146,8 @@ P117W R6 à R10 : appliqués
 P117W R11 : appliqué
 P117W R12 : appliqué
 P117W R13 : appliqué
-P117W R14 : livrable actif
+P117W R14 : appliqué
+P117W R15 : livrable actif
 ```
 
 NO CONTRACT, NO PATCH.  
