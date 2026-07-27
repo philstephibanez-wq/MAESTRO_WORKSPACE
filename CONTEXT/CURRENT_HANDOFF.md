@@ -8,8 +8,8 @@ Date : 2026-07-27
 README-FIRST.md
 CONTEXT/SPECIFICATIONS/MAESTRO_OPUS_OWASYS_GLOBAL_DEVELOPMENT_RULES_2026-07-24.md
 CONTEXT/PROJECTS/OPUS/OPUS_SITE_STANDARD_CONTRACT.md
-CONTEXT/SPECIFICATIONS/OPUS_P117W_R18_PRESERVE_CONSOLE_ROOT_CAUSE_DIAGNOSTICS_2026-07-27.md
-CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OPUS_P117W_R18_PRESERVE_CONSOLE_ROOT_CAUSE_DIAGNOSTICS_2026-07-27.md
+CONTEXT/SPECIFICATIONS/OPUS_P117W_R19_REMOVE_OBSOLETE_OWASYS_OLD2_LOCAL_SITE_2026-07-27.md
+CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OPUS_P117W_R19_REMOVE_OBSOLETE_OWASYS_OLD2_LOCAL_SITE_2026-07-27.md
 CONTEXT/PROJECTS/OPUS_CURRENT_STATE.md
 ```
 
@@ -20,8 +20,7 @@ Dépôt OPUS : philstephibanez-wq/OPUS
 Branche : master
 HEAD relu : 7f672643c345a2a7b9f665773fffe36f60dc5132
 Racine owner : H:\OPUS
-État observé : P117W R17 appliqué
-Trace actif : 96902adf1f9fd87c
+Trace actif : 89447530efcc567d
 ```
 
 ## Architecture
@@ -39,98 +38,60 @@ Réaliser exclusivement :
 owasys-front -> REST sécurisé -> owasys-back -> Composer allow-listé
 ```
 
-Ne partager aucun fichier entre les applications.
+## Cause active
 
-## Développement
-
-```text
-owasys-front : 127.0.0.1:8000
-owasys-back  : 127.0.0.1:8080
-```
+R18 a exposé la cause exacte :
 
 ```text
-composer opus:dev-server -- owasys-front
-composer opus:dev-server -- owasys-back
+OPUS_APPLICATION_COMMAND_REGISTRY_SITE_INVALID
+Opus/Console/Application/ApplicationCommandDispatcher.php:118
+sites/owasys_old2/config/composer.commands.json
 ```
 
-## Stockage Logger et Profiler
+`sites/owasys_old2` est un vestige local absent du dépôt source de vérité. Son registre déclare un `site_id` différent du nom de son répertoire.
 
-Conserver exactement :
+## Correction P117W R19
+
+Conserver la validation stricte du dispatcher.
+
+Supprimer uniquement :
 
 ```text
-sites/owasys-front/var/logs/owasys-front.log
-sites/owasys-front/var/profiler/owasys-front.jsonl
-sites/owasys-back/var/logs/owasys-back.log
-sites/owasys-back/var/profiler/owasys-back.jsonl
+sites/owasys_old2
 ```
 
-Ne créer aucun fichier Logger ou Profiler supplémentaire.
+Ne modifier aucun fichier OPUS. Ne produire aucun ZIP vide, script ou `tools`.
 
-## Cause traitée par R18
-
-Le trace actif prouve que le frontend atteint REST, que le backend lance `owasys:registry-sync`, puis que le callback Composer retourne le code `20`.
-
-`OpusConsoleApplication::safeErrorCode()` remplace actuellement l’exception interne par `OPUS_CONSOLE_COMMAND_FAILED` dès que son message contient une valeur dynamique ou un message PHP. La cause réelle est donc détruite avant journalisation.
-
-## Correction générique OPUS
-
-Modifier uniquement :
-
-```text
-Opus/Console/OpusConsoleApplication.php
-```
-
-Conserver le code stable OPUS/OWASYS.
-
-Ajouter au JSON interne un diagnostic caviardé contenant la classe, le fichier relatif, la ligne, le message nettoyé et une empreinte.
-
-Conserver la sortie texte limitée au code d’erreur.
-
-## Livrable actif
-
-```text
-ZIP : opus_p117w_r18_preserve_console_root_cause_diagnostics.zip
-SHA-256 : 597137c99d95cb89bfcd262e0f6a465062432f43ce60826027cf72e31f731962
-Fichiers : 1
-Octets ZIP : 4014
-Octets non compressés : 19261
-```
-
-Contenu exclusif :
-
-```text
-Opus/Console/OpusConsoleApplication.php
-```
-
-Ne livrer aucun `tools`, aucun script, aucun fichier runtime, aucun journal, aucun secret et aucune racine partagée.
-
-## Appliquer et valider
+## Appliquer
 
 ```text
 cd /d H:\OPUS
-certutil -hashfile "%USERPROFILE%\Downloads\opus_p117w_r18_preserve_console_root_cause_diagnostics.zip" SHA256
-tar -xf "%USERPROFILE%\Downloads\opus_p117w_r18_preserve_console_root_cause_diagnostics.zip" -C H:\OPUS
-php -l Opus\Console\OpusConsoleApplication.php
+if exist sites\owasys_old2 rmdir /s /q sites\owasys_old2
+```
+
+## Auditer
+
+```text
+php -r "foreach (glob('sites/*/config/composer.commands.json') ?: [] as $f) { $j=json_decode(file_get_contents($f), true, 512, JSON_THROW_ON_ERROR); $d=basename(dirname(dirname(str_replace('\\','/',$f)))); $s=trim((string)($j['site_id']??'')); echo ($d===$s?'OK ':'INVALID ').$d.' site_id='.$s.' '.$f.PHP_EOL; }"
+```
+
+Aucune ligne `INVALID` ne doit subsister.
+
+## Valider et relancer
+
+```text
 composer dump-autoload -o
 composer opus:validate-site -- owasys-front
 composer opus:validate-site -- owasys-back
+composer opus:dev-server -- owasys-back
+composer opus:dev-server -- owasys-front
 ```
-
-## Reproduire et lire
-
-Relancer les deux serveurs, ouvrir `/fr-FR/applications`, puis lire le nouveau `stdout_excerpt` dans :
-
-```text
-sites/owasys-back/var/logs/owasys-back.log
-```
-
-Ne pas utiliser la copie d’arborescence transmise par erreur.
 
 ## Statut
 
 ```text
-P117W R6 à R17 : présents/appliqués
-P117W R18 : livrable actif
+P117W R6 à R18 : présents/appliqués
+P117W R19 : nettoyage local actif
 ```
 
 NO CONTRACT, NO PATCH.  
