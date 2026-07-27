@@ -33,48 +33,47 @@ owasys-front -> REST sécurisé -> owasys-back -> Composer allow-listé
 - supprimer le chargement croisé des applications avec P117W R6 ;
 - corriger la validation des sites propres avec P117W R7 ;
 - aligner le contrat d’environnement avec P117W R8 ;
-- restaurer la politique I18n complète et les bindings réseau avec P117W R9 ;
-- démarrer les deux serveurs de développement ;
-- conserver le backend sans interface utilisateur ;
-- exposer son statut sur `/api/v1/status`.
+- restaurer I18n et les bindings réseau avec P117W R9 ;
+- remplacer la configuration fragmentée par `environments.dev`, `test` et `prod` dans chaque `config/site.json` avec P117W R10 ;
+- conserver l’adresse et le port d’écoute comme arguments variables ;
+- interdire les secrets littéraux dans la configuration.
 
-## Décision P117W R10
-
-Remplacer le modèle fragmenté :
+## Erreur owner après P117W R10
 
 ```text
-sites/owasys-front/var/development/environment.json
-sites/owasys-back/var/development/environment.json
+OPUS_APPLICATION_ENVIRONMENT_SOURCE_MISSING:OPUS_OWASYS_BACKEND_TOKEN
 ```
 
-par une section `environments` dans le fichier existant :
+## Cause
+
+Les deux serveurs ont été lancés sans définir les variables secrètes requises :
 
 ```text
-sites/owasys-front/config/site.json
-sites/owasys-back/config/site.json
+OPUS_OWASYS_BACKEND_TOKEN
+OPUS_OWASYS_BACKEND_HMAC
 ```
 
-Déclarer dans chaque application :
+Le refus avant démarrer le serveur applique le contrat P117W R10. Aucun défaut source distinct n’est démontré par cette erreur.
+
+## Activer le développement
+
+Générer une seule paire bearer/HMAC dans un terminal parent.
+
+Lancer `owasys-back` et `owasys-front` depuis ce même terminal pour faire hériter exactement les mêmes valeurs aux deux processus enfants.
+
+Effacer ensuite les variables du terminal parent sans modifier l’environnement déjà hérité par les processus enfants.
+
+Ne créer aucun :
 
 ```text
-dev
-test
-prod
+.env
+.env.local
+config/secrets.json
+var/development/environment.json
+script de lancement dans le produit
+secret dans argv
+secret littéral dans site.json
 ```
-
-Utiliser :
-
-```text
-OPUS_APPLICATION_ENVIRONMENTS_V1
-```
-
-Sélectionner par `OPUS_ENV`. Faire sélectionner `dev` par `opus:dev-server`.
-
-Conserver l’adresse et le port d’écoute locaux comme arguments variables. Déclarer dans chaque section les coordonnées de l’application distante.
-
-Référencer les secrets par variables d’environnement. Interdire tout secret littéral.
-
-Faire échouer le lancement avant ouvrir le serveur lorsqu’une variable secrète requise manque.
 
 ## Statut
 
@@ -82,59 +81,13 @@ Faire échouer le lancement avant ouvrir le serveur lorsqu’une variable secrè
 P117W R6 : appliqué
 P117W R7 : appliqué
 P117W R8 : appliqué
-P117W R9 : appliqué puis remplacé pour configuration fragmentée
-P117W R10 : actif à appliquer
-```
-
-## P117W R10
-
-```text
-ZIP : opus_p117w_r10_single_environment_config_sections.zip
-SHA-256 : 590f204c6ea2cb36816499443e735174b51d557813731b54efbe8e93878e3c59
-Fichiers : 3
-Octets : 12938
-Base Git : 4fb3a92605f14d84b8060ff36fde78828da49273
-Base locale : P117W initial et R3 à R9 appliqués
-```
-
-Inclure uniquement :
-
-```text
-Opus/Console/Service/SiteCommandService.php
-sites/owasys-front/config/site.json
-sites/owasys-back/config/site.json
-```
-
-Ne livrer aucun `tools`, aucun `scripts/owasys`, aucun fichier sous `var`, aucune migration, aucun smoke, aucun audit, aucun rapport, aucun secret et aucune racine partagée.
-
-## Valider
-
-```text
-composer dump-autoload -o
-php -l Opus/Console/Service/SiteCommandService.php
-composer opus:validate-site -- owasys-front
-composer opus:validate-site -- owasys-back
-```
-
-## Nettoyer
-
-Après appliquer R10, supprimer uniquement :
-
-```text
-sites/owasys-front/var/development
-sites/owasys-back/var/development
+P117W R9 : appliqué puis remplacé
+P117W R10 : appliqué
+Activation runtime : requise
+Nouveau ZIP : non requis pour l’erreur de variable secrète absente
 ```
 
 ## Lancer
-
-Définir les mêmes variables secrètes dans les deux terminaux :
-
-```text
-OPUS_OWASYS_BACKEND_TOKEN
-OPUS_OWASYS_BACKEND_HMAC
-```
-
-Puis lancer :
 
 ```text
 composer opus:dev-server -- owasys-back --host=127.0.0.1 --port=8000
@@ -142,6 +95,14 @@ composer opus:dev-server -- owasys-front --host=127.0.0.1 --port=8080
 ```
 
 Réserver `opus:dev-server` au développement. Conserver l’identifiant d’application, l’adresse et le port comme arguments variables.
+
+## Tester
+
+```text
+http://127.0.0.1:8000/api/v1/status
+http://127.0.0.1:8080/fr-FR/
+http://127.0.0.1:8080/fr-FR/applications
+```
 
 ## Contrats framework
 
