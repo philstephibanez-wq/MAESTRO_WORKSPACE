@@ -8,8 +8,8 @@ Date : 2026-07-27
 README-FIRST.md
 CONTEXT/SPECIFICATIONS/MAESTRO_OPUS_OWASYS_GLOBAL_DEVELOPMENT_RULES_2026-07-24.md
 CONTEXT/PROJECTS/OPUS/OPUS_SITE_STANDARD_CONTRACT.md
-CONTEXT/SPECIFICATIONS/OPUS_P117W_R16_RESTORE_APPLICATION_COMMAND_ALIASES_2026-07-27.md
-CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OPUS_P117W_R16_RESTORE_APPLICATION_COMMAND_ALIASES_2026-07-27.md
+CONTEXT/SPECIFICATIONS/OPUS_P117W_R17_SINGLE_LOG_AND_PROFILER_FILE_PER_APPLICATION_2026-07-27.md
+CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OPUS_P117W_R17_SINGLE_LOG_AND_PROFILER_FILE_PER_APPLICATION_2026-07-27.md
 CONTEXT/PROJECTS/OPUS_CURRENT_STATE.md
 ```
 
@@ -18,9 +18,9 @@ CONTEXT/PROJECTS/OPUS_CURRENT_STATE.md
 ```text
 Dépôt OPUS : philstephibanez-wq/OPUS
 Branche : master
-HEAD Git de base : 4fb3a92605f14d84b8060ff36fde78828da49273
+HEAD relu : 7f672643c345a2a7b9f665773fffe36f60dc5132
 Racine owner : H:\OPUS
-État local : P117W initial et R3 à R15 appliqués
+État observé : P117W R16 présent
 ```
 
 ## Architecture
@@ -38,7 +38,7 @@ Réaliser exclusivement :
 owasys-front -> REST sécurisé -> owasys-back -> Composer allow-listé
 ```
 
-Ne partager aucun fichier. Ne livrer aucun `tools`, aucun `scripts/owasys`, aucun fichier runtime, aucun secret et aucune racine partagée.
+Ne partager aucun fichier entre les applications.
 
 ## Développement
 
@@ -52,96 +52,94 @@ composer opus:dev-server -- owasys-front
 composer opus:dev-server -- owasys-back
 ```
 
-## Cause traitée par R16
+## Décision P117W R17
 
-Le trace `296ba2a1e87ba3e0` prouve que le frontend atteint le backend REST, puis que Composer lance :
-
-```text
-owasys:registry-sync
-```
-
-Le registre backend déclare :
+Conserver exactement un fichier Logger et un fichier Profiler par application :
 
 ```text
-owasys:registry-sync -> owasys:registry:sync
+sites/owasys-front/var/logs/owasys-front.log
+sites/owasys-front/var/profiler/owasys-front.jsonl
+
+sites/owasys-back/var/logs/owasys-back.log
+sites/owasys-back/var/profiler/owasys-back.jsonl
 ```
 
-R14 a supprimé la lecture de `aliases` dans `ApplicationCommandDispatcher`. La commande invoquée par Composer n’est donc pas reconnue et le provider backend n’est jamais chargé.
+Ne créer aucun fichier Profiler par trace, lancement ou composant.
 
-## Correction
+Ne fusionner ni Logger et Profiler, ni frontend et backend.
 
-Restaurer dans :
+Logger respecte déjà cette décision. Modifier uniquement le stockage générique Profiler.
+
+## Correction générique OPUS
+
+Modifier :
 
 ```text
-Opus/Console/Application/ApplicationCommandDispatcher.php
+Opus/Profiler/Profiler.php
+Opus/Profiler/ProfilerInterface.php
 ```
 
-la lecture et la validation des alias, puis :
+Faire rechercher la racine de l’application via `config/site.json`, lu avec `File` et `StructuredFileLoader`.
+
+Faire converger tous les producteurs Profiler internes de l’application vers :
 
 ```text
-cibler application_id
-résoudre alias -> commande canonique
-charger uniquement le provider ciblé
-exécuter la commande canonique
+<site-root>/var/profiler/<site_id>.jsonl
 ```
+
+Ajouter chaque trace comme une ligne JSON compacte contenant `trace_id`, `record_id` et `recorded_at`.
+
+Conserver l’accès par URL en ajoutant :
+
+```text
+readTrace(string $traceId): array
+```
+
+Cette méthode retourne tous les enregistrements portant le trace demandé.
 
 ## Livrable actif
 
 ```text
-ZIP : opus_p117w_r16_restore_application_command_aliases.zip
-SHA-256 : 31448c0030d19ab7e0d0dd921ce5df20e9bb94ffa3d8c199048fc99b106cb3dd
-Fichiers : 1
-Octets ZIP : 2827
-Octets non compressés : 11588
+ZIP : opus_p117w_r17_single_log_and_profiler_file_per_application.zip
+SHA-256 : adbd3d3a67d0d1af5bb6604f3892bb041251005a77b175fa293f8e18fc443385
+Fichiers : 2
+Octets ZIP : 3218
+Octets non compressés : 9344
 ```
 
-Inclure uniquement :
+Contenu exclusif :
 
 ```text
-Opus/Console/Application/ApplicationCommandDispatcher.php
+Opus/Profiler/Profiler.php
+Opus/Profiler/ProfilerInterface.php
 ```
+
+Ne livrer aucun `tools`, aucun script, aucun fichier runtime, aucun journal, aucun secret et aucune racine partagée.
 
 ## Appliquer et valider
 
 ```text
-certutil -hashfile "%USERPROFILE%\Downloads\opus_p117w_r16_restore_application_command_aliases.zip" SHA256
-tar -xf "%USERPROFILE%\Downloads\opus_p117w_r16_restore_application_command_aliases.zip" -C H:\OPUS
-php -l Opus\Console\Application\ApplicationCommandDispatcher.php
+cd /d H:\OPUS
+certutil -hashfile "%USERPROFILE%\Downloads\opus_p117w_r17_single_log_and_profiler_file_per_application.zip" SHA256
+tar -xf "%USERPROFILE%\Downloads\opus_p117w_r17_single_log_and_profiler_file_per_application.zip" -C H:\OPUS
+php -l Opus\Profiler\Profiler.php
+php -l Opus\Profiler\ProfilerInterface.php
 composer dump-autoload -o
 composer opus:validate-site -- owasys-front
 composer opus:validate-site -- owasys-back
-git status --short
 ```
 
-## Lancer
+## Nettoyer
 
-Frontend :
+Arrêter les serveurs puis supprimer uniquement les anciens sous-répertoires `dev-server`, `runtime`, `rcp` et les anciens fichiers `*.json` sous les deux racines `var/profiler`.
 
-```text
-cd /d H:\OPUS
-composer opus:dev-server -- owasys-front
-```
-
-Backend :
-
-```text
-cd /d H:\OPUS
-composer opus:dev-server -- owasys-back
-```
-
-## Tester
-
-```text
-curl -i http://127.0.0.1:8080/api/v1/status
-curl -i http://127.0.0.1:8000/fr-FR/
-curl -i http://127.0.0.1:8000/fr-FR/applications
-```
+Ne supprimer aucun Logger et aucun autre chemin sous `var`.
 
 ## Statut
 
 ```text
-P117W R6 à R15 : appliqués
-P117W R16 : livrable actif
+P117W R6 à R16 : présents/appliqués
+P117W R17 : livrable actif
 ```
 
 NO CONTRACT, NO PATCH.  
