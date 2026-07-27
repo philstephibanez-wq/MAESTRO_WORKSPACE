@@ -36,7 +36,8 @@ owasys-front -> REST sécurisé -> owasys-back -> Composer allow-listé
 - restaurer I18n et les bindings réseau avec P117W R9 ;
 - conserver `dev`, `test` et `prod` dans chaque `config/site.json` avec P117W R10 ;
 - supprimer l’accès local au Registry frontend avec P117W R11 ;
-- valider les deux sites OPUS côté owner.
+- permettre le lancement autonome sans préparation manuelle de secrets avec P117W R12 ;
+- lire l’adresse et le port locaux depuis la configuration avec P117W R13.
 
 ## Développement
 
@@ -47,99 +48,88 @@ owasys-back  : 127.0.0.1:8080
 
 Utiliser `composer opus:dev-server` pour les deux applications.
 
-## Cause P117W R12
+## Décision P117W R13
 
-Le profil `dev` référence encore :
-
-```text
-OPUS_OWASYS_BACKEND_TOKEN
-OPUS_OWASYS_BACKEND_HMAC
-```
-
-comme sources externes obligatoires.
-
-Cette conception impose une préparation manuelle dans chaque terminal et empêche les deux commandes Composer autonomes demandées.
-
-## Correction P117W R12
-
-Modifier génériquement :
+Lire l’adresse et le port locaux depuis les variables désignées par :
 
 ```text
-Opus/Console/Service/SiteCommandService.php
+development_server.network.local.host_env
+development_server.network.local.port_env
 ```
 
-Ajouter :
+Résoudre leurs valeurs dans :
 
 ```text
-OPUS_DEVELOPMENT_DERIVED_SECRET_V1
+environments.sections.dev.variables
 ```
 
-Dériver en mémoire les identifiants de développement depuis :
+Frontend :
 
 ```text
-machine
-racine OPUS
-canal de développement
-nom de variable cible
+OPUS_DEV_SERVER_HOST = 127.0.0.1
+OPUS_DEV_SERVER_PORT = 8000
 ```
 
-Exiger :
+Backend :
 
 ```text
-section dev
-variable secrète
-écoute loopback
+OPUS_DEV_SERVER_HOST = 127.0.0.1
+OPUS_DEV_SERVER_PORT = 8080
 ```
 
-Conserver `test` et `prod` sur variables d’environnement externes. Conserver l’interdiction de tout secret littéral.
-
-Corriger les peers :
-
-```text
-front -> back : 127.0.0.1:8080
-back -> front : 127.0.0.1:8000
-```
+Rendre `--host` et `--port` facultatifs. Conserver leur usage comme surcharge explicite validée.
 
 ## Livrable actif
 
 ```text
-ZIP : opus_p117w_r12_dev_credentials_in_environment_sections.zip
-SHA-256 : 11f06689cabbddd71dace4445e31b31996c7703d709fa092f2a1bdbbc2d7a936
-Fichiers : 3
-Octets : 14370
+ZIP : opus_p117w_r13_dev_server_binding_from_site_config.zip
+SHA-256 : a0ae3b511f68b80504fd5f7a31aa57da973bddbe7a58cfe9c5a51d6158c21983
+Fichiers : 4
 ```
 
 Inclure uniquement :
 
 ```text
+Opus/Console/OpusConsoleApplication.php
 Opus/Console/Service/SiteCommandService.php
 sites/owasys-front/config/site.json
 sites/owasys-back/config/site.json
 ```
 
-Ne livrer aucun `tools`, aucun `scripts/owasys`, aucun secret, aucun fichier sous `var`, aucune migration, aucun smoke, aucun audit et aucun rapport.
+Ne livrer aucun `tools`, aucun `scripts/owasys`, aucun fichier runtime et aucune racine partagée.
 
 ## Valider
 
 ```text
+php -l Opus/Console/OpusConsoleApplication.php
 php -l Opus/Console/Service/SiteCommandService.php
 composer dump-autoload -o
 composer opus:validate-site -- owasys-front
 composer opus:validate-site -- owasys-back
 ```
 
-## Lancer sans variables manuelles
+## Lancer depuis la configuration
 
 Frontend :
 
 ```text
-composer opus:dev-server -- owasys-front --host=127.0.0.1 --port=8000
+cd /d H:\OPUS
+composer opus:dev-server -- owasys-front
 ```
 
 Backend :
 
 ```text
-composer opus:dev-server -- owasys-back --host=127.0.0.1 --port=8080
+cd /d H:\OPUS
+composer opus:dev-server -- owasys-back
+```
+
+## Tester
+
+```text
+http://127.0.0.1:8000/fr-FR/
+http://127.0.0.1:8000/fr-FR/applications
+http://127.0.0.1:8080/api/v1/status
 ```
 
 ## Statut
@@ -147,7 +137,8 @@ composer opus:dev-server -- owasys-back --host=127.0.0.1 --port=8080
 ```text
 P117W R6 à R10 : appliqués
 P117W R11 : appliqué
-P117W R12 : actif à appliquer
+P117W R12 : appliqué
+P117W R13 : actif à appliquer
 ```
 
 ## Contrats framework
