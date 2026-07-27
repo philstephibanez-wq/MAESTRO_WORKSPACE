@@ -57,21 +57,51 @@ Conserver l’adresse et le port d’écoute comme arguments variables.
 
 Référencer les secrets par variables d’environnement. Refuser tout secret littéral et toute variable secrète absente.
 
-## Erreur owner après R10
+## Affectation canonique des serveurs de développement
 
 ```text
-OPUS_APPLICATION_ENVIRONMENT_SOURCE_MISSING:OPUS_OWASYS_BACKEND_TOKEN
+owasys-front : 127.0.0.1:8000
+owasys-back  : 127.0.0.1:8080
 ```
 
-## Traiter
+Utiliser `composer opus:dev-server` pour les deux applications.
 
-Ne pas produire un nouveau ZIP pour cette erreur.
+Ne pas utiliser `composer dev-server` tant qu’aucun alias Composer homonyme n’est contractuellement déclaré.
 
-Générer une seule paire de secrets bearer/HMAC dans un terminal parent.
+La réponse backend observée sur `http://127.0.0.1:8000/fr-FR/applications` démontre une inversion des applications lancées sur les ports, pas une route frontend invalide.
 
-Lancer les deux processus depuis ce même terminal pour faire hériter exactement les mêmes valeurs à `owasys-back` et `owasys-front`.
+## Lancer en développement
 
-Ne pas écrire de secret dans `config`, `var`, Git, le ZIP ou argv.
+Frontend, dans un terminal VS Code :
+
+```text
+cd /d H:\OPUS
+composer opus:dev-server -- owasys-front --host=127.0.0.1 --port=8000
+```
+
+Backend, dans un second terminal VS Code :
+
+```text
+cd /d H:\OPUS
+composer opus:dev-server -- owasys-back --host=127.0.0.1 --port=8080
+```
+
+Définir préalablement dans les deux processus les mêmes valeurs pour :
+
+```text
+OPUS_OWASYS_BACKEND_TOKEN
+OPUS_OWASYS_BACKEND_HMAC
+```
+
+Conserver l’identifiant d’application, l’adresse et le port comme arguments variables.
+
+## Tester
+
+```text
+http://127.0.0.1:8000/fr-FR/
+http://127.0.0.1:8000/fr-FR/applications
+http://127.0.0.1:8080/api/v1/status
+```
 
 ## Statut
 
@@ -81,25 +111,8 @@ P117W R7 : appliqué
 P117W R8 : appliqué
 P117W R9 : appliqué puis remplacé
 P117W R10 : appliqué
-Activation runtime : définir les secrets puis lancer les deux processus
-Nouveau ZIP : non requis tant qu’aucun défaut source distinct n’est démontré
-```
-
-## Lancer en développement
-
-```text
-owasys-back : 127.0.0.1:8000
-owasys-front : 127.0.0.1:8080
-```
-
-Conserver l’identifiant d’application, l’adresse et le port comme arguments variables.
-
-## Tester
-
-```text
-http://127.0.0.1:8000/api/v1/status
-http://127.0.0.1:8080/fr-FR/
-http://127.0.0.1:8080/fr-FR/applications
+Correction active : affecter le frontend au port 8000 et le backend au port 8080
+Nouveau ZIP : non requis pour une inversion de commandes de lancement
 ```
 
 NO CONTRACT, NO PATCH.  
