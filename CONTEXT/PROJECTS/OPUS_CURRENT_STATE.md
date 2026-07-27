@@ -13,7 +13,7 @@ Racine owner : H:/OPUS
 
 ## Architecture
 
-Conserver uniquement deux applications OPUS autonomes :
+Conserver uniquement deux applications OPUS autonomes actives :
 
 ```text
 sites/owasys-front
@@ -48,67 +48,87 @@ owasys-back  : 127.0.0.1:8080
 
 Utiliser `composer opus:dev-server` pour les deux applications.
 
-## Décision P117W R13
+## Cause P117W R14
 
-Lire l’adresse et le port locaux depuis les variables désignées par :
-
-```text
-development_server.network.local.host_env
-development_server.network.local.port_env
-```
-
-Résoudre leurs valeurs dans :
+La requête frontend atteint correctement :
 
 ```text
-environments.sections.dev.variables
+owasys-back -> POST /api/v1/executions
 ```
 
-Frontend :
+Le backend lance ensuite :
 
 ```text
-OPUS_DEV_SERVER_HOST = 127.0.0.1
-OPUS_DEV_SERVER_PORT = 8000
+owasys:registry-sync
 ```
 
-Backend :
+Deux registres déclarent cette commande canonique :
 
 ```text
-OPUS_DEV_SERVER_HOST = 127.0.0.1
-OPUS_DEV_SERVER_PORT = 8080
+sites/owasys/config/composer.commands.json
+sites/owasys-back/config/composer.commands.json
 ```
 
-Rendre `--host` et `--port` facultatifs. Conserver leur usage comme surcharge explicite validée.
+`ApplicationCommandDispatcher` découvre deux providers et rejette la commande comme ambiguë avant exécuter le provider backend. Le code d’erreur dynamique contient le nom de commande en minuscules et est réduit à `OPUS_CONSOLE_COMMAND_FAILED` par le filtre de sortie.
+
+## Correction P117W R14
+
+Déclarer dans :
+
+```text
+sites/owasys-back/config/backend.rest.json
+```
+
+la valeur :
+
+```text
+application_id = owasys-back
+```
+
+Propager cette valeur dans :
+
+```text
+OPUS_RCP_COMPOSER_COMMAND_REQUEST_V1.application_id
+```
+
+Filtrer les providers par :
+
+```text
+command + application_id
+```
+
+Exiger la cible pour toute requête RCP Composer V1. Ne charger aucun provider du site historique lorsque la requête cible `owasys-back`.
 
 ## Livrable actif
 
 ```text
-ZIP : opus_p117w_r13_dev_server_binding_from_site_config.zip
-SHA-256 : a0ae3b511f68b80504fd5f7a31aa57da973bddbe7a58cfe9c5a51d6158c21983
-Fichiers : 4
+ZIP : opus_p117w_r14_scope_rcp_application_command_provider.zip
+SHA-256 : 8e94705f4a8992a3188ff0c469436e3c458b888713709da877ec79c1e7d8f494
+Fichiers : 3
+Octets ZIP : 7614
 ```
 
 Inclure uniquement :
 
 ```text
-Opus/Console/OpusConsoleApplication.php
-Opus/Console/Service/SiteCommandService.php
-sites/owasys-front/config/site.json
-sites/owasys-back/config/site.json
+Opus/Console/Application/ApplicationCommandDispatcher.php
+Opus/Rcp/Rest/RcpRestServer.php
+sites/owasys-back/config/backend.rest.json
 ```
 
-Ne livrer aucun `tools`, aucun `scripts/owasys`, aucun fichier runtime et aucune racine partagée.
+Ne livrer aucun `tools`, aucun `scripts/owasys`, aucun fichier runtime, aucun secret et aucune racine partagée.
 
 ## Valider
 
 ```text
-php -l Opus/Console/OpusConsoleApplication.php
-php -l Opus/Console/Service/SiteCommandService.php
+php -l Opus/Console/Application/ApplicationCommandDispatcher.php
+php -l Opus/Rcp/Rest/RcpRestServer.php
 composer dump-autoload -o
 composer opus:validate-site -- owasys-front
 composer opus:validate-site -- owasys-back
 ```
 
-## Lancer depuis la configuration
+## Lancer
 
 Frontend :
 
@@ -127,9 +147,9 @@ composer opus:dev-server -- owasys-back
 ## Tester
 
 ```text
-http://127.0.0.1:8000/fr-FR/
-http://127.0.0.1:8000/fr-FR/applications
-http://127.0.0.1:8080/api/v1/status
+curl -i http://127.0.0.1:8080/api/v1/status
+curl -i http://127.0.0.1:8000/fr-FR/
+curl -i http://127.0.0.1:8000/fr-FR/applications
 ```
 
 ## Statut
@@ -138,7 +158,8 @@ http://127.0.0.1:8080/api/v1/status
 P117W R6 à R10 : appliqués
 P117W R11 : appliqué
 P117W R12 : appliqué
-P117W R13 : actif à appliquer
+P117W R13 : appliqué
+P117W R14 : actif à appliquer
 ```
 
 ## Contrats framework
