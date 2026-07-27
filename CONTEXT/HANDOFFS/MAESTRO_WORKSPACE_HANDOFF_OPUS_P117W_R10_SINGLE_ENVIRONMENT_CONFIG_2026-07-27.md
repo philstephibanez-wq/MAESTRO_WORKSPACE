@@ -1,7 +1,7 @@
 # MAESTRO_WORKSPACE HANDOFF — OPUS P117W R10
 
 Date : 2026-07-27  
-État : livrable actif à appliquer et valider côté owner
+État : livrable appliqué ; procédure de lancement corrigée
 
 ## Source
 
@@ -10,7 +10,7 @@ Dépôt OPUS : philstephibanez-wq/OPUS
 Branche : master
 HEAD Git : 4fb3a92605f14d84b8060ff36fde78828da49273
 Racine owner : H:\OPUS
-Base locale : P117W initial et R3 à R9 appliqués
+Base locale : P117W initial et R3 à R10 appliqués
 ```
 
 ## Architecture
@@ -32,16 +32,7 @@ Ne partager aucun fichier et ne créer aucune racine commune.
 
 ## Décision R10
 
-Remplacer les fichiers :
-
-```text
-sites/owasys-front/var/development/environment.json
-sites/owasys-back/var/development/environment.json
-```
-
-par une section `environments` dans le `config/site.json` de chaque application.
-
-Déclarer les sections :
+Conserver une section `environments` dans le `config/site.json` de chaque application :
 
 ```text
 dev
@@ -57,7 +48,7 @@ Conserver l’adresse et le port locaux comme arguments variables de la commande
 
 Conserver les secrets hors du fichier de configuration. Référencer les variables d’environnement bearer et HMAC et refuser leur absence avant démarrer le serveur.
 
-## Livrable actif
+## Livrable appliqué
 
 ```text
 ZIP : opus_p117w_r10_single_environment_config_sections.zip
@@ -66,80 +57,66 @@ Fichiers : 3
 Octets : 12938
 ```
 
-Inclure uniquement :
+## Affectation canonique en développement
 
 ```text
-Opus/Console/Service/SiteCommandService.php
-sites/owasys-front/config/site.json
-sites/owasys-back/config/site.json
+owasys-front : 127.0.0.1:8000
+owasys-back  : 127.0.0.1:8080
 ```
 
-Ne livrer aucun `tools`, aucun `scripts/owasys`, aucun fichier sous `var`, aucune migration, aucun smoke, aucun audit, aucun rapport, aucun secret et aucune racine partagée.
+## Préparer les secrets
 
-## Appliquer
-
-```text
-certutil -hashfile "%USERPROFILE%\Downloads\opus_p117w_r10_single_environment_config_sections.zip" SHA256
-tar -xf "%USERPROFILE%\Downloads\opus_p117w_r10_single_environment_config_sections.zip" -C H:\OPUS
-composer dump-autoload -o
-php -l Opus\Console\Service\SiteCommandService.php
-composer opus:validate-site -- owasys-front
-composer opus:validate-site -- owasys-back
-```
-
-## Nettoyer
-
-Après appliquer R10, supprimer uniquement :
-
-```text
-sites/owasys-front/var/development
-sites/owasys-back/var/development
-```
-
-Conserver tous les autres répertoires runtime.
-
-## Préparer les secrets de développement
-
-Définir les mêmes valeurs dans les deux terminaux de développement :
+Définir les mêmes valeurs dans les deux environnements de processus :
 
 ```text
 OPUS_OWASYS_BACKEND_TOKEN
 OPUS_OWASYS_BACKEND_HMAC
 ```
 
-Ne placer aucune valeur secrète dans Git, le ZIP, les logs ou le profiler.
+Ne placer aucune valeur secrète dans Git, le ZIP, les journaux, le profiler, `config`, `var` ou argv.
 
-## Lancer
+## Lancer le frontend
 
 ```text
-composer opus:dev-server -- owasys-back --host=127.0.0.1 --port=8000
-composer opus:dev-server -- owasys-front --host=127.0.0.1 --port=8080
+cd /d H:\OPUS
+composer opus:dev-server -- owasys-front --host=127.0.0.1 --port=8000
 ```
+
+## Lancer le backend
+
+```text
+cd /d H:\OPUS
+composer opus:dev-server -- owasys-back --host=127.0.0.1 --port=8080
+```
+
+Utiliser le préfixe `opus:` pour les deux scripts Composer. Ne pas supposer l’existence d’un alias `composer dev-server`.
 
 ## Tester
 
 ```text
-http://127.0.0.1:8000/api/v1/status
-http://127.0.0.1:8080/fr-FR/
-http://127.0.0.1:8080/fr-FR/applications
+http://127.0.0.1:8000/fr-FR/
+http://127.0.0.1:8000/fr-FR/applications
+http://127.0.0.1:8080/api/v1/status
 ```
 
-## Validation effectuée
+## Diagnostiquer
+
+Une réponse `OWASYS_BACK_ROUTE_FORBIDDEN` sur `http://127.0.0.1:8000/fr-FR/applications` indique que le backend a été lancé sur le port réservé au frontend.
+
+Arrêter les deux serveurs puis les relancer avec l’affectation canonique.
+
+## Validation
 
 ```text
-PHP lint                                       : OK
-JSON                                           : OK
-Résolution section dev                         : OK
-Injection host/port locaux                     : OK
-Validation du peer                             : OK
-Refus des secrets absents                      : OK
-Chemins interdits                              : 0
-ZIP                                            : OK
+P117W R10 appliqué
+Configuration centralisée dans config/site.json
+Frontend réservé au port 8000 en développement local
+Backend réservé au port 8080 en développement local
+Nouveau ZIP non requis pour corriger l’ordre de lancement
 ```
-
-Validation runtime Windows owner : requise.
 
 NO CONTRACT, NO PATCH.  
 NO SOURCE OF TRUTH, NO PATCH.  
 NO FALLBACK SILENCIEUX.  
+NO SECRET IN CONFIG.  
 NO DELIVERY ROOT POLLUTION.
