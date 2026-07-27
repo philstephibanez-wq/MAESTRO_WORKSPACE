@@ -42,6 +42,7 @@ P117W R13 : lire host et port depuis la configuration
 P117W R14 : cibler le provider Composer backend
 P117W R15 : restaurer la FSM frontend canonique
 P117W R16 : restaurer les alias de commandes applicatives
+P117W R17 : conserver un Logger et un Profiler par application
 ```
 
 ## Développement
@@ -58,86 +59,83 @@ composer opus:dev-server -- owasys-front
 composer opus:dev-server -- owasys-back
 ```
 
-## Cause P117W R17
+## Logger et Profiler
 
-Le Profiler écrit actuellement un fichier JSON par trace :
-
-```text
-<storage>/<trace_id>.json
-```
-
-Les producteurs utilisent plusieurs répertoires :
-
-```text
-var/profiler/runtime
-var/profiler/rcp
-var/profiler/dev-server
-```
-
-Une même application produit donc de nombreux fichiers Profiler.
-
-Logger écrit déjà dans un fichier unique par application :
+Conserver exactement :
 
 ```text
 sites/owasys-front/var/logs/owasys-front.log
+sites/owasys-front/var/profiler/owasys-front.jsonl
 sites/owasys-back/var/logs/owasys-back.log
+sites/owasys-back/var/profiler/owasys-back.jsonl
 ```
 
-Ne pas modifier Logger.
+## Trace active
 
-## Correction P117W R17
+```text
+trace_id : 96902adf1f9fd87c
+frontend : GET /fr-FR/applications
+backend  : POST /api/v1/executions
+operation: registry.sync
+composer : owasys:registry-sync
+résultat : callback Composer code 20
+```
+
+Le frontend et REST fonctionnent jusqu’au lancement Composer. Le blocage reste interne à la commande applicative backend.
+
+## Cause P117W R18
+
+`OpusConsoleApplication::safeErrorCode()` accepte uniquement un message entièrement constitué de majuscules, chiffres, `_`, `:`, `-`.
+
+Une exception contenant un identifiant dynamique, un chemin, une valeur de configuration ou un message PHP est remplacée par :
+
+```text
+OPUS_CONSOLE_COMMAND_FAILED
+```
+
+Le processus Composer renvoie donc un JSON générique, et `ComposerCommandExecutor` ne peut enregistrer la cause réelle dans `owasys-back.log`.
+
+## Correction P117W R18
 
 Modifier uniquement :
 
 ```text
-Opus/Profiler/Profiler.php
-Opus/Profiler/ProfilerInterface.php
+Opus/Console/OpusConsoleApplication.php
 ```
 
-Résoudre la racine de l’application via `config/site.json`, lu avec `File` et `StructuredFileLoader`.
+Conserver un code complet déjà conforme.
 
-Faire converger tous les producteurs vers :
+Extraire le préfixe stable OPUS/OWASYS lorsqu’un contexte dynamique suit le code.
+
+Ajouter aux réponses JSON internes :
 
 ```text
-sites/owasys-front/var/profiler/owasys-front.jsonl
-sites/owasys-back/var/profiler/owasys-back.jsonl
+diagnostic.error_code
+diagnostic.exception_class
+diagnostic.exception_file
+diagnostic.exception_line
+diagnostic.exception_message
+diagnostic.fingerprint
 ```
 
-Ajouter une ligne JSON compacte par enregistrement Profiler.
+Rendre les chemins OPUS relatifs, masquer les chemins extérieurs et caviarder les tokens, HMAC, secrets, mots de passe et bearer.
 
-Conserver au premier niveau :
-
-```text
-trace_id
-record_id
-recorded_at
-```
-
-Autoriser plusieurs enregistrements portant le même `trace_id` pour conserver les contributions application, REST, Composer et dev-server.
-
-Ajouter au contrat :
-
-```text
-readTrace(string $traceId): array
-```
-
-Cette méthode permet au lecteur Profiler appelé par URL de retrouver tous les enregistrements du trace sans dépendre d’un fichier `<trace_id>.json`.
+Ne pas modifier la sortie texte publique.
 
 ## Livrable actif
 
 ```text
-ZIP : opus_p117w_r17_single_log_and_profiler_file_per_application.zip
-SHA-256 : adbd3d3a67d0d1af5bb6604f3892bb041251005a77b175fa293f8e18fc443385
-Fichiers : 2
-Octets ZIP : 3218
-Octets non compressés : 9344
+ZIP : opus_p117w_r18_preserve_console_root_cause_diagnostics.zip
+SHA-256 : 597137c99d95cb89bfcd262e0f6a465062432f43ce60826027cf72e31f731962
+Fichiers : 1
+Octets ZIP : 4014
+Octets non compressés : 19261
 ```
 
 Inclure uniquement :
 
 ```text
-Opus/Profiler/Profiler.php
-Opus/Profiler/ProfilerInterface.php
+Opus/Console/OpusConsoleApplication.php
 ```
 
 Ne livrer aucun `tools`, aucun script, aucun fichier runtime, aucun journal, aucun secret et aucune racine partagée.
@@ -146,30 +144,33 @@ Ne livrer aucun `tools`, aucun script, aucun fichier runtime, aucun journal, auc
 
 ```text
 PHP lint                               : OK
-Trois producteurs simulés             : runtime, RCP, dev-server
-Nombre de fichiers Profiler obtenu    : 1
-Format                                 : JSONL
-Plusieurs records pour un trace_id    : OK
-Lecture readTrace()                    : OK
-Chemins interdits                      : 0
+Code stable avec suffixe dynamique    : OK
+Diagnostic JSON interne               : OK
+Caviardage                             : OK
+Chemins OPUS relatifs                 : OK
+Chemins extérieurs masqués            : OK
+Chemins interdits dans le ZIP         : 0
 ZIP                                    : OK
 ```
 
 ## Appliquer et valider côté owner
 
 ```text
-php -l Opus/Profiler/Profiler.php
-php -l Opus/Profiler/ProfilerInterface.php
+php -l Opus/Console/OpusConsoleApplication.php
 composer dump-autoload -o
 composer opus:validate-site -- owasys-front
 composer opus:validate-site -- owasys-back
 ```
 
+Reproduire `/fr-FR/applications`, puis lire le nouveau `stdout_excerpt` dans `sites/owasys-back/var/logs/owasys-back.log`.
+
+Ne pas utiliser la copie d’arborescence transmise par erreur.
+
 ## Statut
 
 ```text
-P117W R6 à R16 : présents/appliqués
-P117W R17 : actif à appliquer
+P117W R6 à R17 : présents/appliqués
+P117W R18 : actif à appliquer
 ```
 
 ## Contrats framework
