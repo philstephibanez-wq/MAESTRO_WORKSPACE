@@ -33,69 +33,48 @@ owasys-front -> REST sécurisé -> owasys-back -> Composer allow-listé
 - supprimer le chargement croisé des applications avec P117W R6 ;
 - corriger la validation des sites propres avec P117W R7 ;
 - aligner le contrat d’environnement avec P117W R8 ;
+- restaurer la politique I18n complète et les bindings réseau avec P117W R9 ;
 - démarrer les deux serveurs de développement ;
 - conserver le backend sans interface utilisateur ;
 - exposer son statut sur `/api/v1/status`.
 
-## Cause actuelle
+## Décision P117W R10
 
-Le frontend échoue dans :
-
-```text
-sites/owasys-front/application/default/services/LocaleRegistry.php:152
-```
-
-Le `site.json` frontend déclare les locales mais ne déclare plus `i18n.language_defaults`.
-
-La configuration de développement ne relie pas complètement :
-
-```text
-les arguments locaux --host et --port
-les variables réseau du processus local
-les coordonnées de l’application distante
-```
-
-## Correction P117W R9
-
-Modifier génériquement :
-
-```text
-Opus/Console/Service/SiteCommandService.php
-```
-
-Lire :
-
-```text
-OPUS_DEVELOPMENT_NETWORK_BINDING_V1
-```
-
-Injecter depuis les arguments de lancement :
-
-```text
-OPUS_DEV_SERVER_HOST
-OPUS_DEV_SERVER_PORT
-OPUS_DEV_SERVER_URL
-```
-
-Valider le host, le port, l’URL et l’identifiant du peer avant démarrer le serveur.
-
-Modifier :
-
-```text
-sites/owasys-front/config/site.json
-sites/owasys-back/config/site.json
-```
-
-Restaurer la politique I18n complète et déclarer le binding réseau local/peer propre à chaque application.
-
-Conserver deux environnements runtime indépendants :
+Remplacer le modèle fragmenté :
 
 ```text
 sites/owasys-front/var/development/environment.json
 sites/owasys-back/var/development/environment.json
 ```
 
-Ne stocker aucun secret dans Git ou dans le ZIP.
+par une section `environments` dans le fichier existant :
+
+```text
+sites/owasys-front/config/site.json
+sites/owasys-back/config/site.json
+```
+
+Déclarer dans chaque application :
+
+```text
+dev
+test
+prod
+```
+
+Utiliser :
+
+```text
+OPUS_APPLICATION_ENVIRONMENTS_V1
+```
+
+Sélectionner par `OPUS_ENV`. Faire sélectionner `dev` par `opus:dev-server`.
+
+Conserver l’adresse et le port d’écoute locaux comme arguments variables. Déclarer dans chaque section les coordonnées de l’application distante.
+
+Référencer les secrets par variables d’environnement. Interdire tout secret littéral.
+
+Faire échouer le lancement avant ouvrir le serveur lorsqu’une variable secrète requise manque.
 
 ## Statut
 
@@ -103,18 +82,19 @@ Ne stocker aucun secret dans Git ou dans le ZIP.
 P117W R6 : appliqué
 P117W R7 : appliqué
 P117W R8 : appliqué
-P117W R9 : livrable actif
+P117W R9 : appliqué puis remplacé pour configuration fragmentée
+P117W R10 : actif à appliquer
 ```
 
-## P117W R9
+## P117W R10
 
 ```text
-ZIP : opus_p117w_r9_dev_network_bindings_and_front_i18n.zip
-SHA-256 : 3698a7e7f94ab50b95af24c5f93daec3e24ead081113196162ba59923ccb7455
+ZIP : opus_p117w_r10_single_environment_config_sections.zip
+SHA-256 : 590f204c6ea2cb36816499443e735174b51d557813731b54efbe8e93878e3c59
 Fichiers : 3
-Octets : 12262
+Octets : 12938
 Base Git : 4fb3a92605f14d84b8060ff36fde78828da49273
-Base locale : P117W initial et R3 à R8 appliqués
+Base locale : P117W initial et R3 à R9 appliqués
 ```
 
 Inclure uniquement :
@@ -125,29 +105,7 @@ sites/owasys-front/config/site.json
 sites/owasys-back/config/site.json
 ```
 
-Ne livrer aucun `tools`, aucun `scripts/owasys`, aucune migration, aucun smoke, aucun audit, aucun rapport, aucun secret et aucune racine partagée.
-
-## Configurer les environnements locaux
-
-Frontend :
-
-```text
-OPUS_OWASYS_BACKEND_HOST
-OPUS_OWASYS_BACKEND_PORT
-OPUS_OWASYS_BACKEND_ENDPOINT
-OPUS_OWASYS_BACKEND_TOKEN
-OPUS_OWASYS_BACKEND_HMAC
-```
-
-Backend :
-
-```text
-OPUS_OWASYS_FRONTEND_HOST
-OPUS_OWASYS_FRONTEND_PORT
-OPUS_OWASYS_FRONTEND_ENDPOINT
-OPUS_OWASYS_BACKEND_TOKEN
-OPUS_OWASYS_BACKEND_HMAC
-```
+Ne livrer aucun `tools`, aucun `scripts/owasys`, aucun fichier sous `var`, aucune migration, aucun smoke, aucun audit, aucun rapport, aucun secret et aucune racine partagée.
 
 ## Valider
 
@@ -158,11 +116,29 @@ composer opus:validate-site -- owasys-front
 composer opus:validate-site -- owasys-back
 ```
 
-## Lancer
+## Nettoyer
+
+Après appliquer R10, supprimer uniquement :
 
 ```text
-composer opus:dev-server -- owasys-back --host=<adresse-back> --port=<port-back>
-composer opus:dev-server -- owasys-front --host=<adresse-front> --port=<port-front>
+sites/owasys-front/var/development
+sites/owasys-back/var/development
+```
+
+## Lancer
+
+Définir les mêmes variables secrètes dans les deux terminaux :
+
+```text
+OPUS_OWASYS_BACKEND_TOKEN
+OPUS_OWASYS_BACKEND_HMAC
+```
+
+Puis lancer :
+
+```text
+composer opus:dev-server -- owasys-back --host=127.0.0.1 --port=8000
+composer opus:dev-server -- owasys-front --host=127.0.0.1 --port=8080
 ```
 
 Réserver `opus:dev-server` au développement. Conserver l’identifiant d’application, l’adresse et le port comme arguments variables.
