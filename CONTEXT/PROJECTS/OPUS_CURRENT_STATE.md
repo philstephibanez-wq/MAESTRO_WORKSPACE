@@ -43,6 +43,7 @@ P117W R14 : cibler le provider Composer backend
 P117W R15 : restaurer la FSM frontend canonique
 P117W R16 : restaurer les alias de commandes applicatives
 P117W R17 : conserver un Logger et un Profiler par application
+P117W R18 : conserver la cause interne des erreurs Console
 ```
 
 ## Développement
@@ -50,13 +51,6 @@ P117W R17 : conserver un Logger et un Profiler par application
 ```text
 owasys-front : 127.0.0.1:8000
 owasys-back  : 127.0.0.1:8080
-```
-
-Utiliser :
-
-```text
-composer opus:dev-server -- owasys-front
-composer opus:dev-server -- owasys-back
 ```
 
 ## Logger et Profiler
@@ -70,107 +64,73 @@ sites/owasys-back/var/logs/owasys-back.log
 sites/owasys-back/var/profiler/owasys-back.jsonl
 ```
 
-## Trace active
+## Cause P117W R19
+
+Le trace `89447530efcc567d` fournit désormais la cause exacte :
 
 ```text
-trace_id : 96902adf1f9fd87c
-frontend : GET /fr-FR/applications
-backend  : POST /api/v1/executions
-operation: registry.sync
-composer : owasys:registry-sync
-résultat : callback Composer code 20
+error_code       : OPUS_APPLICATION_COMMAND_REGISTRY_SITE_INVALID
+exception_file   : Opus/Console/Application/ApplicationCommandDispatcher.php
+exception_line   : 118
+exception_message: OPUS_APPLICATION_COMMAND_REGISTRY_SITE_INVALID:sites/owasys_old2/config/composer.commands.json
 ```
 
-Le frontend et REST fonctionnent jusqu’au lancement Composer. Le blocage reste interne à la commande applicative backend.
-
-## Cause P117W R18
-
-`OpusConsoleApplication::safeErrorCode()` accepte uniquement un message entièrement constitué de majuscules, chiffres, `_`, `:`, `-`.
-
-Une exception contenant un identifiant dynamique, un chemin, une valeur de configuration ou un message PHP est remplacée par :
+`ApplicationCommandDispatcher` valide chaque registre trouvé sous :
 
 ```text
-OPUS_CONSOLE_COMMAND_FAILED
+sites/*/config/composer.commands.json
 ```
 
-Le processus Composer renvoie donc un JSON générique, et `ComposerCommandExecutor` ne peut enregistrer la cause réelle dans `owasys-back.log`.
+Le vestige local `sites/owasys_old2` contient un registre dont `site_id` ne correspond pas au nom du répertoire. Ce chemin est absent du dépôt GitHub OPUS actif.
 
-## Correction P117W R18
+## Correction P117W R19
 
-Modifier uniquement :
+Ne pas affaiblir le dispatcher et ne pas ignorer un registre invalide.
+
+Supprimer uniquement :
 
 ```text
-Opus/Console/OpusConsoleApplication.php
+sites/owasys_old2
 ```
 
-Conserver un code complet déjà conforme.
+Aucun fichier source OPUS n’est modifié. Aucun ZIP n’est produit pour ce nettoyage local absent de la source de vérité.
 
-Extraire le préfixe stable OPUS/OWASYS lorsqu’un contexte dynamique suit le code.
-
-Ajouter aux réponses JSON internes :
+## Appliquer
 
 ```text
-diagnostic.error_code
-diagnostic.exception_class
-diagnostic.exception_file
-diagnostic.exception_line
-diagnostic.exception_message
-diagnostic.fingerprint
+cd /d H:\OPUS
+if exist sites\owasys_old2 rmdir /s /q sites\owasys_old2
 ```
 
-Rendre les chemins OPUS relatifs, masquer les chemins extérieurs et caviarder les tokens, HMAC, secrets, mots de passe et bearer.
-
-Ne pas modifier la sortie texte publique.
-
-## Livrable actif
+## Auditer les registres
 
 ```text
-ZIP : opus_p117w_r18_preserve_console_root_cause_diagnostics.zip
-SHA-256 : 597137c99d95cb89bfcd262e0f6a465062432f43ce60826027cf72e31f731962
-Fichiers : 1
-Octets ZIP : 4014
-Octets non compressés : 19261
+php -r "foreach (glob('sites/*/config/composer.commands.json') ?: [] as $f) { $j=json_decode(file_get_contents($f), true, 512, JSON_THROW_ON_ERROR); $d=basename(dirname(dirname(str_replace('\\','/',$f)))); $s=trim((string)($j['site_id']??'')); echo ($d===$s?'OK ':'INVALID ').$d.' site_id='.$s.' '.$f.PHP_EOL; }"
 ```
 
-Inclure uniquement :
+Aucune ligne `INVALID` ne doit subsister.
+
+## Valider
 
 ```text
-Opus/Console/OpusConsoleApplication.php
-```
-
-Ne livrer aucun `tools`, aucun script, aucun fichier runtime, aucun journal, aucun secret et aucune racine partagée.
-
-## Validation effectuée
-
-```text
-PHP lint                               : OK
-Code stable avec suffixe dynamique    : OK
-Diagnostic JSON interne               : OK
-Caviardage                             : OK
-Chemins OPUS relatifs                 : OK
-Chemins extérieurs masqués            : OK
-Chemins interdits dans le ZIP         : 0
-ZIP                                    : OK
-```
-
-## Appliquer et valider côté owner
-
-```text
-php -l Opus/Console/OpusConsoleApplication.php
 composer dump-autoload -o
 composer opus:validate-site -- owasys-front
 composer opus:validate-site -- owasys-back
+git status --short
 ```
 
-Reproduire `/fr-FR/applications`, puis lire le nouveau `stdout_excerpt` dans `sites/owasys-back/var/logs/owasys-back.log`.
+## Relancer
 
-Ne pas utiliser la copie d’arborescence transmise par erreur.
+```text
+composer opus:dev-server -- owasys-back
+composer opus:dev-server -- owasys-front
+```
 
 ## Statut
 
 ```text
-P117W R6 à R17 : présents/appliqués
-P117W R18 : actif à appliquer
+P117W R6 à R18 : présents/appliqués
+P117W R19 : nettoyage local à appliquer
 ```
 
 ## Contrats framework
