@@ -38,7 +38,8 @@ owasys-front -> REST sécurisé -> owasys-back -> Composer allow-listé
 - supprimer l’accès local au Registry frontend avec P117W R11 ;
 - permettre le lancement autonome sans préparation manuelle de secrets avec P117W R12 ;
 - lire l’adresse et le port locaux depuis la configuration avec P117W R13 ;
-- cibler le provider Composer backend dans la requête RCP avec P117W R14.
+- cibler le provider Composer backend dans la requête RCP avec P117W R14 ;
+- restaurer la FSM canonique frontend avec P117W R15.
 
 ## Développement
 
@@ -49,75 +50,63 @@ owasys-back  : 127.0.0.1:8080
 
 Utiliser `composer opus:dev-server` pour les deux applications.
 
-## Cause P117W R15
+## Cause P117W R16
 
-Après le passage REST et Composer, le rendu frontend échoue avec :
-
-```text
-OWASYS_FRONT_RUNTIME_FAILED
-```
-
-La FSM réduite dans :
+Le trace backend `296ba2a1e87ba3e0` montre :
 
 ```text
-sites/owasys-front/config/fsm.json
+script = owasys:registry-sync
+exit_code = 1
+stdout = OPUS_CONSOLE_COMMAND_FAILED
 ```
 
-ne déclare plus les métadonnées SCORE/I18n de l’état `registry`.
-
-Le renderer utilise alors sa convention :
+Le registre backend déclare l’alias :
 
 ```text
-menu.<module>
+owasys:registry-sync -> owasys:registry:sync
 ```
 
-et demande :
+R14 a ajouté correctement `application_id = owasys-back`, mais sa version de `ApplicationCommandDispatcher` ne conserve que `providers[].commands` et ignore `aliases`.
+
+La commande réellement invoquée par Composer est donc refusée avant charger le provider backend.
+
+## Correction P117W R16
+
+Modifier uniquement :
 
 ```text
-menu.registry
+Opus/Console/Application/ApplicationCommandDispatcher.php
 ```
 
-Cette clé n’existe pas. La source canonique déclare :
+Pour chaque registre :
 
 ```text
-title_key = menu.applications
-summary_key = registry.description
-navigation.visible = true
-navigation.order = 10
-navigation.label = menu.applications
+lire aliases via StructuredFileLoader
+valider chaque alias et sa cible
+associer l’alias au provider propriétaire
+reconnaître l’alias dans supports()
+cibler application_id
+résoudre l’alias vers la commande canonique
+charger uniquement le provider ciblé
+exécuter uniquement la commande canonique
 ```
 
-## Correction P117W R15
-
-Restaurer dans :
-
-```text
-sites/owasys-front/config/fsm.json
-```
-
-la FSM complète :
-
-```text
-OWASYS_NAVIGATION_FSM_V1
-```
-
-Restaurer `diagram`, `states`, `events`, `transitions`, `guards`, `actions`, les clés I18n et les métadonnées de navigation.
-
-Ne pas ajouter un fallback et ne pas modifier SCORE ou I18n pour masquer la configuration dégradée.
+Conserver le rejet d’ambiguïté pour une commande non ciblée déclarée par plusieurs applications.
 
 ## Livrable actif
 
 ```text
-ZIP : opus_p117w_r15_restore_canonical_front_fsm.zip
-SHA-256 : 1a39348365bfe5dbb3a286519b93bb50ccd60a5a09d642f111cf0836224ae575
+ZIP : opus_p117w_r16_restore_application_command_aliases.zip
+SHA-256 : 31448c0030d19ab7e0d0dd921ce5df20e9bb94ffa3d8c199048fc99b106cb3dd
 Fichiers : 1
-Octets non compressés : 7206
+Octets ZIP : 2827
+Octets non compressés : 11588
 ```
 
 Inclure uniquement :
 
 ```text
-sites/owasys-front/config/fsm.json
+Opus/Console/Application/ApplicationCommandDispatcher.php
 ```
 
 Ne livrer aucun `tools`, aucun `scripts/owasys`, aucun fichier runtime, aucun secret et aucune racine partagée.
@@ -125,6 +114,7 @@ Ne livrer aucun `tools`, aucun `scripts/owasys`, aucun fichier runtime, aucun se
 ## Valider
 
 ```text
+php -l Opus/Console/Application/ApplicationCommandDispatcher.php
 composer dump-autoload -o
 composer opus:validate-site -- owasys-front
 composer opus:validate-site -- owasys-back
@@ -158,12 +148,8 @@ curl -i http://127.0.0.1:8000/fr-FR/applications
 ## Statut
 
 ```text
-P117W R6 à R10 : appliqués
-P117W R11 : appliqué
-P117W R12 : appliqué
-P117W R13 : appliqué
-P117W R14 : appliqué
-P117W R15 : actif à appliquer
+P117W R6 à R15 : appliqués
+P117W R16 : actif à appliquer
 ```
 
 ## Contrats framework
