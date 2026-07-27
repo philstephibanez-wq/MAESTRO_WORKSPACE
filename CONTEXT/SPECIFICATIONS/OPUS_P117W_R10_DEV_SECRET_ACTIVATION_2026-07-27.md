@@ -1,4 +1,4 @@
-# OPUS P117W R10 — ACTIVER LES SECRETS DE DÉVELOPPEMENT SANS FICHIER SUPPLÉMENTAIRE
+# OPUS P117W R10 — ACTIVER LES SECRETS ET LANCER LES SERVEURS DE DÉVELOPPEMENT
 
 Date : 2026-07-27  
 État : procédure active ; aucun correctif source supplémentaire requis
@@ -7,42 +7,7 @@ Date : 2026-07-27
 
 Lire `README-FIRST.md` et appliquer tous les contrats MAESTRO/OPUS actifs.
 
-## Constater
-
-Après appliquer P117W R10, `opus:dev-server` refuse de démarrer avec :
-
-```text
-OPUS_APPLICATION_ENVIRONMENT_SOURCE_MISSING:OPUS_OWASYS_BACKEND_TOKEN
-```
-
-Ce refus est contractuel. Les sections `dev`, `test` et `prod` restent dans `config/site.json`, mais les secrets ne doivent jamais être stockés dans Git, dans le ZIP ou sous `var`.
-
-## Traiter la cause
-
-Définir une seule paire de secrets bearer/HMAC dans le processus parent de développement.
-
-Faire hériter exactement les mêmes valeurs aux deux processus enfants :
-
-```text
-owasys-back
-owasys-front
-```
-
-Ne pas lancer séparément les deux applications depuis des terminaux ne partageant pas les mêmes valeurs secrètes.
-
-Ne pas introduire :
-
-```text
-.env
-.env.local
-config/secrets.json
-var/development/environment.json
-script de lancement dans le produit
-secret littéral dans site.json
-secret dans argv
-```
-
-## Conserver la configuration
+## Conserver
 
 Conserver dans chaque `config/site.json` :
 
@@ -52,26 +17,77 @@ environments.test
 environments.prod
 ```
 
-Conserver les adresses et ports d’écoute locaux comme arguments variables de `opus:dev-server`.
+Conserver les secrets hors de Git, du ZIP, de `config`, de `var`, des journaux, du profiler et des arguments.
 
-Conserver dans la section `dev` les coordonnées du peer et les références suivantes :
+## Affecter les ports
+
+Utiliser l’affectation canonique suivante en développement :
+
+```text
+owasys-front : 127.0.0.1:8000
+owasys-back  : 127.0.0.1:8080
+```
+
+Conserver l’identifiant d’application, l’adresse et le port comme arguments variables.
+
+Utiliser le script Composer contractuel suivant pour les deux applications :
+
+```text
+opus:dev-server
+```
+
+Ne pas utiliser `composer dev-server` tant qu’aucun alias Composer `dev-server` n’est déclaré dans le contrat du dépôt.
+
+## Préparer les secrets
+
+Définir dans chacun des deux environnements de processus les mêmes valeurs pour :
 
 ```text
 OPUS_OWASYS_BACKEND_TOKEN
 OPUS_OWASYS_BACKEND_HMAC
 ```
 
-## Lancer
+Refuser tout démarrage lorsqu’une de ces variables manque.
 
-Générer les deux secrets une seule fois dans le terminal parent, puis ouvrir les deux serveurs depuis ce terminal.
+## Lancer le frontend
 
-Les deux fenêtres enfants héritent des mêmes secrets. Effacer ensuite les variables du terminal parent sans interrompre les processus enfants.
+```text
+cd /d H:\OPUS
+composer opus:dev-server -- owasys-front --host=127.0.0.1 --port=8000
+```
+
+## Lancer le backend
+
+```text
+cd /d H:\OPUS
+composer opus:dev-server -- owasys-back --host=127.0.0.1 --port=8080
+```
+
+## Tester
+
+```text
+http://127.0.0.1:8000/fr-FR/
+http://127.0.0.1:8000/fr-FR/applications
+http://127.0.0.1:8080/api/v1/status
+```
+
+## Diagnostiquer l’inversion
+
+Recevoir `OWASYS_BACK_ROUTE_FORBIDDEN` sur :
+
+```text
+http://127.0.0.1:8000/fr-FR/applications
+```
+
+signifie que le backend a été lancé sur le port réservé au frontend.
+
+Arrêter les deux processus et relancer les commandes avec l’affectation canonique.
 
 ## Statut du code
 
-Ne produire aucun P117W R11 pour cette erreur. P117W R10 exécute correctement le contrat de sécurité en refusant un démarrage sans secrets.
+Ne produire aucun P117W R11 pour une simple inversion des commandes ou pour une variable secrète absente.
 
-Produire un nouveau ZIP uniquement si un défaut source distinct apparaît après démarrer les deux applications avec les mêmes secrets.
+Produire un nouveau ZIP uniquement si un défaut source distinct apparaît après lancer les deux applications avec les bons ports et les mêmes secrets.
 
 NO CONTRACT, NO PATCH.  
 NO SOURCE OF TRUTH, NO PATCH.  
