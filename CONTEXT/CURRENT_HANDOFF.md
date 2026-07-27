@@ -9,7 +9,8 @@ README-FIRST.md
 CONTEXT/SPECIFICATIONS/MAESTRO_OPUS_OWASYS_GLOBAL_DEVELOPMENT_RULES_2026-07-24.md
 CONTEXT/PROJECTS/OPUS/OPUS_SITE_STANDARD_CONTRACT.md
 CONTEXT/SPECIFICATIONS/OPUS_P117W_R10_SINGLE_ENVIRONMENT_CONFIG_SECTIONS_2026-07-27.md
-CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OPUS_P117W_R10_SINGLE_ENVIRONMENT_CONFIG_2026-07-27.md
+CONTEXT/SPECIFICATIONS/OPUS_P117W_R10_DEV_SECRET_ACTIVATION_2026-07-27.md
+CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OPUS_P117W_R10_DEV_SECRET_ACTIVATION_2026-07-27.md
 CONTEXT/PROJECTS/OPUS_CURRENT_STATE.md
 ```
 
@@ -20,7 +21,7 @@ Dépôt OPUS : philstephibanez-wq/OPUS
 Branche : master
 HEAD Git : 4fb3a92605f14d84b8060ff36fde78828da49273
 Racine owner : H:\OPUS
-État local : P117W initial et R3 à R9 appliqués
+État local : P117W initial et R3 à R10 appliqués
 ```
 
 ## Architecture
@@ -40,29 +41,37 @@ owasys-front -> REST sécurisé -> owasys-back -> Composer allow-listé
 
 Ne partager aucun fichier entre les deux applications. Ne livrer aucun `tools`, aucun `scripts/owasys`, aucun secret et aucune racine partagée.
 
-## Décision active
+## Configuration active
 
-Remplacer les fichiers runtime de configuration de développement par une section unique `environments` dans le `config/site.json` de chaque application.
-
-Déclarer :
+Conserver toute la configuration d’environnement dans le `config/site.json` de chaque application :
 
 ```text
-dev
-test
-prod
+environments.dev
+environments.test
+environments.prod
 ```
 
-Utiliser le contrat :
+Sélectionner `dev` automatiquement avec `opus:dev-server`.
+
+Conserver l’adresse et le port d’écoute comme arguments variables.
+
+Référencer les secrets par variables d’environnement. Refuser tout secret littéral et toute variable secrète absente.
+
+## Erreur owner après R10
 
 ```text
-OPUS_APPLICATION_ENVIRONMENTS_V1
+OPUS_APPLICATION_ENVIRONMENT_SOURCE_MISSING:OPUS_OWASYS_BACKEND_TOKEN
 ```
 
-Sélectionner l’environnement par `OPUS_ENV`. Faire sélectionner automatiquement `dev` par `opus:dev-server`.
+## Traiter
 
-Conserver l’adresse et le port d’écoute locaux comme arguments variables. Déclarer les coordonnées du peer dans la section d’environnement correspondante.
+Ne pas produire un nouveau ZIP pour cette erreur.
 
-Référencer les secrets par variables d’environnement. Refuser tout secret littéral et toute variable secrète absente avant démarrer le serveur.
+Générer une seule paire de secrets bearer/HMAC dans un terminal parent.
+
+Lancer les deux processus depuis ce même terminal pour faire hériter exactement les mêmes valeurs à `owasys-back` et `owasys-front`.
+
+Ne pas écrire de secret dans `config`, `var`, Git, le ZIP ou argv.
 
 ## Statut
 
@@ -70,64 +79,20 @@ Référencer les secrets par variables d’environnement. Refuser tout secret li
 P117W R6 : appliqué
 P117W R7 : appliqué
 P117W R8 : appliqué
-P117W R9 : appliqué puis remplacé pour configuration fragmentée
-P117W R10 : livrable actif
-```
-
-## Livrable actif
-
-```text
-ZIP : opus_p117w_r10_single_environment_config_sections.zip
-SHA-256 : 590f204c6ea2cb36816499443e735174b51d557813731b54efbe8e93878e3c59
-Fichiers : 3
-Octets : 12938
-Base Git : 4fb3a92605f14d84b8060ff36fde78828da49273
-Base locale : P117W initial et R3 à R9 appliqués
-```
-
-Inclure uniquement :
-
-```text
-Opus/Console/Service/SiteCommandService.php
-sites/owasys-front/config/site.json
-sites/owasys-back/config/site.json
-```
-
-## Appliquer et valider
-
-```text
-certutil -hashfile "%USERPROFILE%\Downloads\opus_p117w_r10_single_environment_config_sections.zip" SHA256
-tar -xf "%USERPROFILE%\Downloads\opus_p117w_r10_single_environment_config_sections.zip" -C H:\OPUS
-composer dump-autoload -o
-php -l Opus\Console\Service\SiteCommandService.php
-composer opus:validate-site -- owasys-front
-composer opus:validate-site -- owasys-back
-```
-
-## Nettoyer
-
-Supprimer uniquement après appliquer R10 :
-
-```text
-sites/owasys-front/var/development
-sites/owasys-back/var/development
+P117W R9 : appliqué puis remplacé
+P117W R10 : appliqué
+Activation runtime : définir les secrets puis lancer les deux processus
+Nouveau ZIP : non requis tant qu’aucun défaut source distinct n’est démontré
 ```
 
 ## Lancer en développement
 
-Définir les mêmes valeurs secrètes dans les deux terminaux :
-
 ```text
-OPUS_OWASYS_BACKEND_TOKEN
-OPUS_OWASYS_BACKEND_HMAC
+owasys-back : 127.0.0.1:8000
+owasys-front : 127.0.0.1:8080
 ```
 
-Puis lancer :
-
-```text
-composer opus:dev-server -- owasys-back --host=127.0.0.1 --port=8000
-composer opus:dev-server -- owasys-front --host=127.0.0.1 --port=8080
-```
+Conserver l’identifiant d’application, l’adresse et le port comme arguments variables.
 
 ## Tester
 
@@ -140,4 +105,5 @@ http://127.0.0.1:8080/fr-FR/applications
 NO CONTRACT, NO PATCH.  
 NO SOURCE OF TRUTH, NO PATCH.  
 NO FALLBACK SILENCIEUX.  
+NO SECRET IN CONFIG.  
 NO DELIVERY ROOT POLLUTION.
