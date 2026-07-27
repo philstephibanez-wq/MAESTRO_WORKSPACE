@@ -1,4 +1,4 @@
-# MAESTRO_WORKSPACE HANDOFF — OPUS P117W R10 DEV SECRET ACTIVATION
+# MAESTRO_WORKSPACE HANDOFF — OPUS P117W R10 DEV SERVER ACTIVATION
 
 Date : 2026-07-27  
 État : procédure active ; aucun ZIP supplémentaire requis
@@ -30,54 +30,62 @@ owasys-front -> REST sécurisé -> owasys-back -> Composer allow-listé
 
 Ne partager aucun fichier entre les deux applications.
 
-## Erreur owner
+## Affectation canonique en développement
 
 ```text
-OPUS_APPLICATION_ENVIRONMENT_SOURCE_MISSING:OPUS_OWASYS_BACKEND_TOKEN
+owasys-front : 127.0.0.1:8000
+owasys-back  : 127.0.0.1:8080
 ```
 
-## Cause
+Utiliser `composer opus:dev-server` pour lancer les deux applications.
 
-P117W R10 référence les secrets de développement par variables d’environnement et refuse tout secret littéral dans `config/site.json`.
+Ne pas utiliser `composer dev-server` tant qu’un alias Composer homonyme n’est pas présent dans le dépôt.
 
-Les deux commandes ont été lancées sans définir les secrets requis dans leur environnement de processus.
+## Préparer les secrets
 
-## Activer
-
-Générer une seule paire bearer/HMAC dans un terminal parent.
-
-Lancer `owasys-back` et `owasys-front` depuis ce même terminal afin de faire hériter les mêmes valeurs aux deux processus enfants.
-
-Conserver :
+Définir les mêmes valeurs dans les deux environnements de processus :
 
 ```text
-owasys-back : 127.0.0.1:8000
-owasys-front : 127.0.0.1:8080
+OPUS_OWASYS_BACKEND_TOKEN
+OPUS_OWASYS_BACKEND_HMAC
 ```
 
-Conserver l’identifiant d’application, l’adresse et le port comme arguments variables.
+Ne placer aucune valeur secrète dans Git, le ZIP, `config`, `var`, les journaux, le profiler ou argv.
 
-## Interdire
-
-Ne pas ajouter :
+## Lancer le frontend
 
 ```text
-.env
-.env.local
-config/secrets.json
-var/development/environment.json
-tools
-scripts/owasys
-secret littéral dans site.json
-secret dans argv
+cd /d H:\OPUS
+composer opus:dev-server -- owasys-front --host=127.0.0.1 --port=8000
 ```
+
+## Lancer le backend
+
+```text
+cd /d H:\OPUS
+composer opus:dev-server -- owasys-back --host=127.0.0.1 --port=8080
+```
+
+## Tester
+
+```text
+http://127.0.0.1:8000/fr-FR/
+http://127.0.0.1:8000/fr-FR/applications
+http://127.0.0.1:8080/api/v1/status
+```
+
+## Diagnostiquer
+
+Recevoir une réponse `OWASYS_BACK_ROUTE_FORBIDDEN` sur le port `8000` signifie que le backend occupe le port réservé au frontend.
+
+Arrêter les deux processus avec `Ctrl+C`, puis relancer les commandes avec la bonne affectation.
 
 ## Statut
 
 ```text
 P117W R10 : appliqué
-Erreur source : aucune démontrée
-Activation runtime : définir les deux secrets puis démarrer les deux processus
+Erreur source distincte : aucune démontrée par l’inversion des ports
+Activation runtime : définir les secrets puis lancer frontend:8000 et backend:8080
 Nouveau ZIP : non requis
 ```
 
