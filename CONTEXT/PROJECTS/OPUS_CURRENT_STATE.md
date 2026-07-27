@@ -34,64 +34,105 @@ owasys-front -> REST sécurisé -> owasys-back -> Composer allow-listé
 - corriger la validation des sites propres avec P117W R7 ;
 - aligner le contrat d’environnement avec P117W R8 ;
 - restaurer I18n et les bindings réseau avec P117W R9 ;
-- remplacer la configuration fragmentée par `environments.dev`, `test` et `prod` dans chaque `config/site.json` avec P117W R10 ;
-- conserver l’adresse et le port d’écoute comme arguments variables ;
+- conserver `dev`, `test` et `prod` dans chaque `config/site.json` avec P117W R10 ;
+- conserver les adresses et ports d’écoute comme arguments variables ;
 - interdire les secrets littéraux dans la configuration.
 
-## Affectation canonique en développement
+## Développement
 
 ```text
 owasys-front : 127.0.0.1:8000
 owasys-back  : 127.0.0.1:8080
 ```
 
-La page backend affichée sur `http://127.0.0.1:8000/fr-FR/applications` provient d’une inversion des applications lancées sur les ports.
+Utiliser `composer opus:dev-server` pour les deux applications.
 
-Utiliser le script Composer contractuel `opus:dev-server` pour les deux applications.
+## Erreur après P117W R10
+
+```text
+OWASYS_FRONT_RUNTIME_FAILED
+sites/owasys-front/application/default/controllers/RuntimeController.php:738
+```
+
+Route :
+
+```text
+http://127.0.0.1:8000/fr-FR/applications
+```
+
+## Cause P117W R11
+
+`OwasysRegistryModel` frontend est REST-only et son constructeur accepte seulement `$siteRoot`.
+
+`RuntimeController::registryModel()` conserve l’ancien accès local :
+
+```text
+$opusRoot
+OwasysApplicationSingletonInspector
+```
+
+Ce branchement viole la frontière REST du frontend.
+
+## Correction P117W R11
+
+```php
+$this->registryModel = new OwasysRegistryModel($this->siteRoot);
+```
+
+Supprimer toute inspection locale du Registry dans le frontend.
+
+## Livrable actif
+
+```text
+ZIP : opus_p117w_r11_front_registry_rest_boundary_fix.zip
+SHA-256 : 1ee0e1738b684f6b674a1c64555cbb22ab85745bc8470fa0352fd1baab272aa9
+Fichiers : 1
+Octets non compressés : 30866
+```
+
+Inclure uniquement :
+
+```text
+sites/owasys-front/application/default/controllers/RuntimeController.php
+```
+
+Ne livrer aucun `tools`, aucun `scripts/owasys`, aucun secret, aucun fichier runtime et aucune racine partagée.
+
+## Valider
+
+```text
+php -l sites/owasys-front/application/default/controllers/RuntimeController.php
+composer dump-autoload -o
+composer opus:validate-site -- owasys-front
+composer opus:validate-site -- owasys-back
+```
 
 ## Lancer
 
 Frontend :
 
 ```text
-cd /d H:\OPUS
 composer opus:dev-server -- owasys-front --host=127.0.0.1 --port=8000
 ```
 
 Backend :
 
 ```text
-cd /d H:\OPUS
 composer opus:dev-server -- owasys-back --host=127.0.0.1 --port=8080
 ```
 
-Définir auparavant les mêmes valeurs secrètes dans les deux environnements de processus :
+Définir auparavant les mêmes valeurs secrètes dans les deux processus :
 
 ```text
 OPUS_OWASYS_BACKEND_TOKEN
 OPUS_OWASYS_BACKEND_HMAC
 ```
 
-Réserver `opus:dev-server` au développement. Conserver l’identifiant d’application, l’adresse et le port comme arguments variables.
-
-## Tester
-
-```text
-http://127.0.0.1:8000/fr-FR/
-http://127.0.0.1:8000/fr-FR/applications
-http://127.0.0.1:8080/api/v1/status
-```
-
 ## Statut
 
 ```text
-P117W R6 : appliqué
-P117W R7 : appliqué
-P117W R8 : appliqué
-P117W R9 : appliqué puis remplacé
-P117W R10 : appliqué
-Correction active : frontend sur 8000, backend sur 8080
-Nouveau ZIP : non requis pour corriger l’ordre des commandes de lancement
+P117W R6 à R10 : appliqués
+P117W R11 : actif à appliquer
 ```
 
 ## Contrats framework
