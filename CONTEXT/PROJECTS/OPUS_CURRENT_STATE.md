@@ -37,7 +37,8 @@ owasys-front -> REST sécurisé -> owasys-back -> Composer allow-listé
 - conserver `dev`, `test` et `prod` dans chaque `config/site.json` avec P117W R10 ;
 - supprimer l’accès local au Registry frontend avec P117W R11 ;
 - permettre le lancement autonome sans préparation manuelle de secrets avec P117W R12 ;
-- lire l’adresse et le port locaux depuis la configuration avec P117W R13.
+- lire l’adresse et le port locaux depuis la configuration avec P117W R13 ;
+- cibler le provider Composer backend dans la requête RCP avec P117W R14.
 
 ## Développement
 
@@ -48,72 +49,75 @@ owasys-back  : 127.0.0.1:8080
 
 Utiliser `composer opus:dev-server` pour les deux applications.
 
-## Cause P117W R14
+## Cause P117W R15
 
-La requête frontend atteint correctement :
-
-```text
-owasys-back -> POST /api/v1/executions
-```
-
-Le backend lance ensuite :
+Après le passage REST et Composer, le rendu frontend échoue avec :
 
 ```text
-owasys:registry-sync
+OWASYS_FRONT_RUNTIME_FAILED
 ```
 
-Deux registres déclarent cette commande canonique :
+La FSM réduite dans :
 
 ```text
-sites/owasys/config/composer.commands.json
-sites/owasys-back/config/composer.commands.json
+sites/owasys-front/config/fsm.json
 ```
 
-`ApplicationCommandDispatcher` découvre deux providers et rejette la commande comme ambiguë avant exécuter le provider backend. Le code d’erreur dynamique contient le nom de commande en minuscules et est réduit à `OPUS_CONSOLE_COMMAND_FAILED` par le filtre de sortie.
+ne déclare plus les métadonnées SCORE/I18n de l’état `registry`.
 
-## Correction P117W R14
-
-Déclarer dans :
+Le renderer utilise alors sa convention :
 
 ```text
-sites/owasys-back/config/backend.rest.json
+menu.<module>
 ```
 
-la valeur :
+et demande :
 
 ```text
-application_id = owasys-back
+menu.registry
 ```
 
-Propager cette valeur dans :
+Cette clé n’existe pas. La source canonique déclare :
 
 ```text
-OPUS_RCP_COMPOSER_COMMAND_REQUEST_V1.application_id
+title_key = menu.applications
+summary_key = registry.description
+navigation.visible = true
+navigation.order = 10
+navigation.label = menu.applications
 ```
 
-Filtrer les providers par :
+## Correction P117W R15
+
+Restaurer dans :
 
 ```text
-command + application_id
+sites/owasys-front/config/fsm.json
 ```
 
-Exiger la cible pour toute requête RCP Composer V1. Ne charger aucun provider du site historique lorsque la requête cible `owasys-back`.
+la FSM complète :
+
+```text
+OWASYS_NAVIGATION_FSM_V1
+```
+
+Restaurer `diagram`, `states`, `events`, `transitions`, `guards`, `actions`, les clés I18n et les métadonnées de navigation.
+
+Ne pas ajouter un fallback et ne pas modifier SCORE ou I18n pour masquer la configuration dégradée.
 
 ## Livrable actif
 
 ```text
-ZIP : opus_p117w_r14_scope_rcp_application_command_provider.zip
-SHA-256 : 8e94705f4a8992a3188ff0c469436e3c458b888713709da877ec79c1e7d8f494
-Fichiers : 3
-Octets ZIP : 7614
+ZIP : opus_p117w_r15_restore_canonical_front_fsm.zip
+SHA-256 : 1a39348365bfe5dbb3a286519b93bb50ccd60a5a09d642f111cf0836224ae575
+Fichiers : 1
+Octets non compressés : 7206
 ```
 
 Inclure uniquement :
 
 ```text
-Opus/Console/Application/ApplicationCommandDispatcher.php
-Opus/Rcp/Rest/RcpRestServer.php
-sites/owasys-back/config/backend.rest.json
+sites/owasys-front/config/fsm.json
 ```
 
 Ne livrer aucun `tools`, aucun `scripts/owasys`, aucun fichier runtime, aucun secret et aucune racine partagée.
@@ -121,11 +125,10 @@ Ne livrer aucun `tools`, aucun `scripts/owasys`, aucun fichier runtime, aucun se
 ## Valider
 
 ```text
-php -l Opus/Console/Application/ApplicationCommandDispatcher.php
-php -l Opus/Rcp/Rest/RcpRestServer.php
 composer dump-autoload -o
 composer opus:validate-site -- owasys-front
 composer opus:validate-site -- owasys-back
+git status --short
 ```
 
 ## Lancer
@@ -159,7 +162,8 @@ P117W R6 à R10 : appliqués
 P117W R11 : appliqué
 P117W R12 : appliqué
 P117W R13 : appliqué
-P117W R14 : actif à appliquer
+P117W R14 : appliqué
+P117W R15 : actif à appliquer
 ```
 
 ## Contrats framework
