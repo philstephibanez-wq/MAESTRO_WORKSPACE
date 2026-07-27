@@ -28,86 +28,72 @@ Réaliser uniquement :
 owasys-front -> REST sécurisé -> owasys-back -> Composer allow-listé
 ```
 
-## Résultat P117W R6
+## Résultats acquis
 
-Démarrer correctement les serveurs de développement `owasys-front` et `owasys-back` sans chargement croisé des applications.
+- supprimer le chargement croisé des applications avec P117W R6 ;
+- démarrer les serveurs de développement avant P117W R7 ;
+- ne plus exiger `var/logs` et `var/profiler` pendant la validation avec P117W R7 ;
+- conserver le backend sans interface utilisateur et exposer son statut sur `/api/v1/status`.
 
-Conserver le backend sans interface utilisateur. Refuser la racine `/` et exposer le statut sur :
+## Cause actuelle
 
-```text
-/api/v1/status
-```
-
-## Cause restante
-
-Les validateurs OPUS exigent actuellement l'existence préalable de :
+Après P117W R7, les deux commandes `opus:dev-server` échouent avec :
 
 ```text
-var/logs
-var/profiler
+OPUS_DEV_SERVER_ENVIRONMENT_BINDING_INVALID
 ```
 
-Ces répertoires appartiennent au runtime. Logger et Profiler les créent au démarrage. Ne pas les exiger dans le site source ni dans l'artefact de déploiement.
-
-## Correction P117W R7
-
-Modifier :
+Aligner les deux `config/site.json` sur :
 
 ```text
-Opus/Console/Service/SiteCommandService.php
-Opus/Console/Service/LayeredSiteCommandService.php
+OPUS_DEVELOPMENT_ENVIRONMENT_BINDING_V1
 ```
 
-Retirer `var/logs` et `var/profiler` des répertoires source obligatoires de `validate-site`.
+Utiliser deux fichiers runtime indépendants :
 
-Conserver toutes les validations de configuration, FSM, ACL, SSO, Singleton, SCORE, API, modules et routes.
+```text
+sites/owasys-front/var/development/environment.json
+sites/owasys-back/var/development/environment.json
+```
+
+Ne stocker aucun secret dans Git ou dans le ZIP.
 
 ## Statut
 
 ```text
-P117W R3 : appliqué
-P117W R4 : appliqué
-P117W R5 : appliqué
-P117W R6 : appliqué ; serveurs de développement démarrés
-P117W R7 : actif à appliquer
+P117W R6 : appliqué
+P117W R7 : appliqué
+P117W R8 : actif à appliquer
 ```
 
-## Livrable actif
+## P117W R8
 
 ```text
-ZIP : opus_p117w_r7_validate_clean_sites_without_runtime_directories.zip
-SHA-256 : e24708b8488769d5baef79372cde46d9006d200f1c166e87486501c08513b7ac
+ZIP : opus_p117w_r8_align_dev_environment_contracts.zip
+SHA-256 : 6f2d4f33db9b8e23a134b8e2d1170d26b8009b60c625c02e8d2fee4b94ff82fb
 Fichiers : 2
-Octets : 14728
+Octets : 1959
 ```
 
 Inclure uniquement :
 
 ```text
-Opus/Console/Service/SiteCommandService.php
-Opus/Console/Service/LayeredSiteCommandService.php
+sites/owasys-front/config/site.json
+sites/owasys-back/config/site.json
 ```
 
-Ne livrer aucun `tools`, aucun `scripts/owasys`, aucune migration, aucun smoke, aucun audit, aucun rapport, aucun journal et aucune racine partagée.
+Ne livrer aucun `tools`, aucun `scripts/owasys`, aucune migration, aucun smoke, aucun audit, aucun rapport et aucune racine partagée.
 
 ## Valider
 
 ```text
-composer dump-autoload -o
-php -l Opus/Console/Service/SiteCommandService.php
-php -l Opus/Console/Service/LayeredSiteCommandService.php
 composer opus:validate-site -- owasys-front
 composer opus:validate-site -- owasys-back
-```
-
-## Lancer
-
-```text
 composer opus:dev-server -- owasys-back --host=127.0.0.1 --port=8000
 composer opus:dev-server -- owasys-front --host=127.0.0.1 --port=8080
 ```
 
-Réserver `opus:dev-server` au développement. Conserver l'identifiant d'application, l'adresse et le port comme arguments variables.
+Réserver `opus:dev-server` au développement. Conserver l’identifiant d’application, l’adresse et le port comme arguments variables.
 
 ## Contrats framework
 
