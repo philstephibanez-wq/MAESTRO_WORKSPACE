@@ -8,8 +8,8 @@ Date : 2026-07-28
 README-FIRST.md
 CONTEXT/SPECIFICATIONS/MAESTRO_OPUS_OWASYS_GLOBAL_DEVELOPMENT_RULES_2026-07-24.md
 CONTEXT/PROJECTS/OPUS/OPUS_SITE_STANDARD_CONTRACT.md
-CONTEXT/SPECIFICATIONS/OPUS_P117W_R28_DISCREET_SOURCE_LINKS_AND_INCREMENTAL_READING_2026-07-28.md
-CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OPUS_P117W_R28_DISCREET_SOURCE_LINKS_AND_INCREMENTAL_READING_2026-07-28.md
+CONTEXT/SPECIFICATIONS/OPUS_P117W_R29_SOURCE_RESOURCE_GET_URL_2026-07-28.md
+CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OPUS_P117W_R29_SOURCE_RESOURCE_GET_URL_2026-07-28.md
 CONTEXT/PROJECTS/OPUS_CURRENT_STATE.md
 ```
 
@@ -18,29 +18,30 @@ CONTEXT/PROJECTS/OPUS_CURRENT_STATE.md
 ```text
 Dépôt OPUS : philstephibanez-wq/OPUS
 Branche : master
-HEAD relu : 544d512b79bac4ca7dab8ac103dd9ff2266593fd
+HEAD relu : 9416cab744c12191e4d5153b50521befb573d41f
 Racine owner : H:\OPUS
-P117W R22, R23 et R24 : appliqués sur master
+P117W R28 : présent sur master
 ```
 
-## R28
+## R29
 
-Le navigateur de sources conserve SCORE et son fallback POST. Les feuilles
-sont des liens compacts et le fichier courant possède un état vert explicite.
-Une sélection JavaScript conserve l'arborescence rendue et utilise uniquement
-la chaîne REST/Composer `source.read`; CodeMirror est mis à jour en place.
+Chaque fichier source est une ressource GET adressable sous :
 
-Les lanceurs `.cmd` physiques sont exclus. Seules les deux commandes Composer
-ci-dessous sont contractuelles.
+```text
+/<locale>/source/<chemin-relatif-encodé-par-segment>
+```
+
+Le chemin n'est plus envoyé dans un formulaire POST. Le lien fonctionne sans
+JavaScript. Avec JavaScript, CodeMirror et l'URL sont mis à jour sans
+reconstruction de l'arborescence.
 
 ## Livrable actif
 
 ```text
-ZIP : opus_p117w_r28_discreet_source_links_and_incremental_reading.zip
-Base : OPUS master 544d512b79bac4ca7dab8ac103dd9ff2266593fd
-SHA-256 : 7ffa75e6f3ea049bf18a7d87491f80d5c563ee45e1b947b4c165719845f7ae83
-Fichiers : 24
-Contenu cumulatif : R25 + R27 + R28, sans R26
+ZIP : opus_p117w_r29_source_resource_get_url.zip
+Base : OPUS master 9416cab744c12191e4d5153b50521befb573d41f
+SHA-256 : 52d1b3cc95038702c43924b204eb21df942635d392b61d47f01943d8c52d5fe3
+Fichiers : 4
 ```
 
 ## Lancement
