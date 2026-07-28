@@ -7,7 +7,7 @@ Dernière mise à jour : 2026-07-28.
 ```text
 Dépôt : philstephibanez-wq/OPUS
 Branche : master
-HEAD relu : 2c48c86f04ab96fb031c2c22b8505f270a8eafad
+HEAD relu : 464b702888314edfab2573e7ebe71d87fc988a33
 Racine owner : H:/OPUS
 ```
 
@@ -46,9 +46,11 @@ P117W R17 : conserver un Logger et un Profiler par application
 P117W R18 : conserver la cause interne des erreurs Console
 P117W R19 : supprimer les vestiges locaux owasys_old*
 P117W R20 : restaurer les quatre opérations backend perdues
+P117W R21 : restaurer le navigateur Source via REST, Composer et SCORE
+P117W R22 : réconcilier SQLite avec les sites physiques canoniques
 ```
 
-## Runtime confirmé
+## Runtime confirmé avant R22
 
 ```text
 owasys-front : 127.0.0.1:8000
@@ -68,156 +70,115 @@ sites/owasys-back/var/logs/owasys-back.log
 sites/owasys-back/var/profiler/owasys-back.jsonl
 ```
 
-## Audit fonctionnel corrigé
+## P117W R21 — Source Browser
 
-Parité confirmée pour :
+La fonction historique de navigation du code source est restaurée sans reprendre l’ancienne architecture interdite.
+
+Flux :
 
 ```text
-connexion et SSO
-changement de mot de passe
-session et contexte applicatif
-registre SQLite
-synchronisation, sélection et effacement du registre
-création d’application
-routes et FSM
-ACL deny-by-default
-I18n UE + ukrainien
-rendu SCORE
-Logger et Profiler
-API REST backend
-Composer allow-listé
-ajout de langue
-création de page
-création de rubrique
-export de site
+SCORE frontend
+-> FSM + I18n + ACL + SSO
+-> REST sécurisé
+-> backend Source provider
+-> Composer allow-listé
+-> SiteSourceInspector OPUS
+-> résultat structuré
+-> SCORE
 ```
 
-Le module `source` de l’ancien OWASYS contenait une fonction réelle de navigation en lecture seule. Il ne doit plus être classé comme simple `OWASYS_MODULE_PENDING`.
+Le frontend ne lit jamais le filesystem et reste exploitable sans JavaScript obligatoire.
 
-Fonctions historiques constatées :
+## P117W R22 — Registry physique
+
+Cause corrigée : SQLite conservait les applications supprimées parce que la synchronisation réalisait uniquement des UPSERT et ignorait le contrat courant `OPUS_SITE_STANDARD_CONTRACT_CORE`.
+
+La synchronisation réalise désormais dans une transaction atomique :
 
 ```text
-lister les fichiers textuels autorisés de l’application courante
-lire un fichier autorisé
-limiter chaque fichier à 1 Mio
-retourner path, bytes, sha256 et content
-bloquer .git, vendor, node_modules, var, cache, logs, tmp et .env
+migration sûre du schéma
+import du seed
+découverte déterministe des sites physiques
+sélection des racines canoniques
+UPSERT des sites canoniques
+comparaison SQLite id + root_path avec les couples physiques
+suppression des lignes obsolètes
+effacement du contexte courant seulement s’il est obsolète
+commit ou rollback explicite
 ```
 
-L’ancienne implémentation est interdite dans l’architecture actuelle car elle :
+Résultat exposé :
 
 ```text
-accède directement au filesystem depuis le frontend
-produit le JSON avec echo
-repose sur une interface construite en JavaScript
-contourne REST sécurisé puis Composer
+stale_removed
+stale_ids
+stale_context_cleared
 ```
 
-## Évolution générique P117W R21
+## Racine des applications créées avec OWASYS
 
-Créer sous le framework :
+Racine owner en développement :
 
 ```text
-Opus/Application/Inspection/SiteSourceInspector.php
-Opus/Application/Inspection/SiteSourceInspectorInterface.php
+H:\OPUS\sites\<application-id>\
 ```
 
-Faire implémenter l’interface homonyme par la classe concrète et faire étendre l’interface directement par les quatre marqueurs OPUS.
-
-`SiteSourceInspector` doit valider le contrat standard du site avec `StructuredFileLoader`, lire les fichiers avec `File`, imposer les limites, refuser les liens symboliques et empêcher toute sortie de la racine `sites`.
-
-## Backend P117W R21
-
-Ajouter un provider Source autonome :
+Chemin relatif canonique :
 
 ```text
-sites/owasys-back/application/source/console.php
-sites/owasys-back/application/source/services/OwasysSourceCommandProvider.php
-sites/owasys-back/application/source/services/OwasysSourceCommandProviderInterface.php
+sites/<application-id>/
 ```
 
-Commandes et opérations :
+Règles :
 
 ```text
-source.list -> owasys:source-list -> owasys:source:list
-source.read -> owasys:source-read -> owasys:source:read
+un niveau directement sous sites/
+identifiant identique au nom du répertoire
+aucun chemin fourni par le navigateur
+aucune racine sous owasys-front, owasys-back, var ou un temporaire
+création uniquement via REST sécurisé puis Composer opus:create-site
+échec explicite si la racine existe déjà
 ```
 
-ACL :
+Le déplacement futur vers des dépôts autonomes nécessitera un nouveau contrat OPUS de stockage et de résolution.
+
+## Validation owner R22
 
 ```text
-admin     : *:*
-developer : source:*
-viewer    : source:read
-```
-
-## Frontend P117W R21
-
-Créer :
-
-```text
-sites/owasys-front/application/source/models/SourceModel.php
-sites/owasys-front/application/source/controllers/SourceController.php
-sites/owasys-front/application/source/templates/index.score
-```
-
-Le frontend :
-
-```text
-utilise uniquement RcpRestClient
-passe par FSM open_source
-exige SSO, ACL source:open et une application courante
-rend le ViewModel via SCORE
-reste fonctionnel sans JavaScript
-ne lit jamais le filesystem applicatif
-```
-
-## Livrable actif
-
-```text
-ZIP : opus_p117w_r21_restore_source_browser_via_rest_composer_score.zip
-SHA-256 : 66fc714986b3d8da7fc74b9a1a573a072cad9404a160484bb5cc866aa499e9ff
-Fichiers : 14
-```
-
-Ne livrer aucun `tools`, aucun script, aucun fichier runtime, aucun journal, aucun secret et aucune racine partagée.
-
-## Validation effectuée
-
-```text
-PHP lint des fichiers concernés             : OK
-JSON                                         : OK
-Interface homonyme et quatre marqueurs       : OK
-Test runtime isolé list/read                 : OK
-Blocage .env, vendor, var et traversée ../   : OK
-Rendu SCORE sans echo UI                     : OK
-Navigation sans JavaScript obligatoire       : OK
-REST puis Composer                           : OK
-Chemins interdits dans le ZIP                : 0
-ZIP                                          : OK
-```
-
-## Validation owner
-
-```text
+cd /d H:\OPUS
+php -l sites\owasys-back\application\registry\repositories\RegistryRepository.php
 composer dump-autoload -o
 composer opus:validate-site -- owasys-front
 composer opus:validate-site -- owasys-back
-composer opus:dev-server -- owasys-back
-composer opus:dev-server -- owasys-front
+git status --short
 ```
 
-Tester après sélection d’une application :
+Lancer les deux applications, puis ouvrir :
 
 ```text
-http://127.0.0.1:8000/fr-FR/source
+http://127.0.0.1:8000/fr-FR/applications
+```
+
+Premier chargement attendu :
+
+```text
+applications visibles : owasys-back, owasys-front
+owasys / sites/owasys_old : absent
+stale_removed : 1
+stale_ids : [owasys]
+```
+
+Chargements suivants :
+
+```text
+stale_removed : 0
 ```
 
 ## Statut
 
 ```text
-P117W R6 à R20 : présents/appliqués
-P117W R21 : actif à appliquer
+P117W R6 à R22 : présents sur OPUS/master
+Prochaine étape : validation runtime owner de R22 puis poursuite fonctionnelle
 ```
 
 ## Contrats framework
