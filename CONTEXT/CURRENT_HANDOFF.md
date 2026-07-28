@@ -14,6 +14,8 @@ CONTEXT/SPECIFICATIONS/OPUS_P117W_R23_GENERATED_SITE_SECURE_DELETION_2026-07-28.
 CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OPUS_P117W_R23_GENERATED_SITE_SECURE_DELETION_2026-07-28.md
 CONTEXT/SPECIFICATIONS/OPUS_P117W_R24_SOURCE_TREE_AND_SYNTAX_HIGHLIGHTING_2026-07-28.md
 CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OPUS_P117W_R24_SOURCE_TREE_AND_SYNTAX_HIGHLIGHTING_2026-07-28.md
+CONTEXT/SPECIFICATIONS/OPUS_P117W_R25_SCORE_LAYOUT_NAVIGATION_CONTRACT_2026-07-28.md
+CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OPUS_P117W_R25_SCORE_LAYOUT_NAVIGATION_2026-07-28.md
 CONTEXT/PROJECTS/OPUS_CURRENT_STATE.md
 ```
 
@@ -22,9 +24,9 @@ CONTEXT/PROJECTS/OPUS_CURRENT_STATE.md
 ```text
 Dépôt OPUS : philstephibanez-wq/OPUS
 Branche : master
-Base exacte : 4868780af4dd65bb7e28d95c981d1a1c5800a243
+HEAD relu : 544d512b79bac4ca7dab8ac103dd9ff2266593fd
 Racine owner : H:\OPUS
-P117W R21 : présent dans la base relue
+P117W R22, R23 et R24 : appliqués sur master
 ```
 
 ## Architecture
@@ -32,69 +34,38 @@ P117W R21 : présent dans la base relue
 ```text
 sites/owasys-front
 sites/owasys-back
-
 owasys-front -> REST sécurisé -> owasys-back -> Composer allow-listé
 ```
 
 Ne restaurer aucun site OWASYS monolithique, shared ou `owasys_old*`.
 
-## R22
+## R25
 
-Le Registry SQLite est réconcilié atomiquement avec les applications physiques
-canoniques sous :
-
-```text
-H:\OPUS\sites\<application-id>\
-```
-
-Il reconnaît `OPUS_SITE_STANDARD_CONTRACT_CORE`, supprime les lignes SQLite
-obsolètes et efface le contexte courant uniquement si l’application sélectionnée
-a disparu.
-
-## R23
-
-Commande de suppression générique :
+Le layout SCORE commun exige un contrat de ViewModel total.
+`OwasysScorePageRenderer` fournit par défaut :
 
 ```text
-composer opus:delete-site -- <id> --confirm=<id> [--write]
+source.browser_enabled = false
 ```
 
-La suppression OWASYS est absolument interdite :
-
-```text
-owasys-front
-owasys-back
-```
-
-Seules les applications au contrat standard, créées par Composer et placées
-directement sous `sites/<id>`, sont supprimables. La suppression UI traverse
-SCORE, FSM, ACL, SSO, REST sécurisé, FSM backend et Composer.
-
-## R24
-
-Le navigateur de sources de `owasys-front` projette de nouveau une
-arborescence repliable à partir des chemins relatifs canoniques renvoyés par
-`owasys-back`. Le contenu sélectionné utilise le bundle local CodeMirror 6 en
-lecture seule avec grammaire déterminée par l’extension. Le rendu initial reste
-SCORE et aucun ancien site OWASYS monolithique n’est restauré.
+La page Sources remplace explicitement cette valeur par `true`. Cela corrige
+la `ContractException` au retour de Sources vers Applications sans charger
+CodeMirror sur les autres pages.
 
 ## Livrable actif
 
 ```text
-ZIP : opus_p117w_r24_source_tree_and_syntax_highlighting.zip
-Base : OPUS master 4868780af4dd65bb7e28d95c981d1a1c5800a243
-Contenu : R22 + R23 + R24 cumulatif
-SHA-256 : 980b1cce3fde606fc907b8b524c8ee61785159b30bbe4fd8ec8653dfd6da7edd
-Fichiers : 20
+ZIP : opus_p117w_r25_score_layout_navigation_contract.zip
+Base : OPUS master 544d512b79bac4ca7dab8ac103dd9ff2266593fd
+SHA-256 : 2762bd9b2a6ae04396168bc7a33793512b084c22cb952504b23cf80246384f3a
+Fichiers : 1
 ```
 
 ## Statut
 
 ```text
-P117W R6 à R21 : présents dans la base relue
-P117W R22 : inclus
-P117W R23 : inclus
-P117W R24 : livrable actif
+P117W R6 à R24 : appliqués sur OPUS master
+P117W R25 : livrable actif à appliquer et valider
 ```
 
 NO CONTRACT, NO PATCH.  
