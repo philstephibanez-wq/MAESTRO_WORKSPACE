@@ -18,9 +18,10 @@ CONTEXT/PROJECTS/OPUS_CURRENT_STATE.md
 ```text
 Dépôt OPUS : philstephibanez-wq/OPUS
 Branche : master
-Base exacte : 4868780af4dd65bb7e28d95c981d1a1c5800a243
+HEAD courant : 464b702888314edfab2573e7ebe71d87fc988a33
 Racine owner : H:\OPUS
-P117W R21 : présent dans la base relue
+P117W R21 : appliqué et committé
+P117W R22 : appliqué et committé
 ```
 
 ## Architecture
@@ -40,66 +41,87 @@ owasys-front -> REST sécurisé -> owasys-back -> Composer allow-listé
 
 Ne restaurer aucun site monolithique, aucun partage filesystem et aucun vestige `owasys_old*`.
 
-## État runtime confirmé
+## R22 appliqué
+
+La synchronisation Registry est désormais atomique et :
 
 ```text
-owasys-front : 127.0.0.1:8000
-owasys-back  : 127.0.0.1:8080
-registry.sync : succès
-frontend /fr-FR/applications : succès
+reconnaît OPUS_SITE_STANDARD_CONTRACT_CORE
+importe les sites physiques canoniques
+compare id + root_path avec SQLite
+supprime les entrées absentes ou divergentes
+efface le contexte courant uniquement s’il est devenu obsolète
+retourne stale_removed, stale_ids et stale_context_cleared
 ```
 
-## Cause active
-
-Le Registry SQLite conserve les applications physiquement supprimées car
-la synchronisation réalise uniquement des UPSERT.
-
-```text
-SQLite : owasys -> sites/owasys_old
-Disque : racine absente
-```
-
-Le repository Registry ne reconnaît pas directement le contrat courant :
-
-```text
-OPUS_SITE_STANDARD_CONTRACT_CORE
-```
-
-## Correction R22
-
-```text
-transaction SQLite atomique
-découverte des contrats standard actuels
-comparaison id + root_path avec les sites physiques canoniques
-suppression des lignes obsolètes
-effacement du contexte courant seulement s’il est obsolète
-```
-
-## Racine des applications créées
+## Racine contractuelle des applications créées
 
 ```text
 H:\OPUS\sites\<application-id>\
 ```
 
-## Livrable actif
+Chemin relatif canonique :
 
 ```text
-ZIP : opus_p117w_r22_registry_physical_reconciliation.zip
-SHA-256 : 72dbe3d7700dfea0364b807f9e1714ca96218acc692d27c85517d03684538ba1
-Fichiers : 1
+sites/<application-id>/
 ```
 
-Contenu :
+Le navigateur ne fournit jamais de chemin. La création reste :
 
 ```text
-sites/owasys-back/application/registry/repositories/RegistryRepository.php
+owasys-front -> REST sécurisé -> owasys-back -> Composer allow-listé -> opus:create-site
+```
+
+## Validation runtime à effectuer
+
+```text
+cd /d H:\OPUS
+php -l sites\owasys-back\application\registry\repositories\RegistryRepository.php
+composer dump-autoload -o
+composer opus:validate-site -- owasys-front
+composer opus:validate-site -- owasys-back
+git status --short
+```
+
+Lancer le backend :
+
+```text
+cd /d H:\OPUS
+composer opus:dev-server -- owasys-back
+```
+
+Lancer le frontend :
+
+```text
+cd /d H:\OPUS
+composer opus:dev-server -- owasys-front
+```
+
+Ouvrir :
+
+```text
+http://127.0.0.1:8000/fr-FR/applications
+```
+
+Attendu au premier chargement :
+
+```text
+stale_removed = 1
+stale_ids contient owasys
+applications visibles : owasys-back, owasys-front
+```
+
+Attendu aux chargements suivants :
+
+```text
+stale_removed = 0
 ```
 
 ## Statut
 
 ```text
-P117W R6 à R21 : présents dans la base relue
-P117W R22 : livrable actif
+P117W R6 à R22 : présents sur OPUS/master
+Prochaine étape : validation runtime owner de R22, puis reprise fonctionnelle après résultat
 ```
 
 NO CONTRACT, NO PATCH.  
