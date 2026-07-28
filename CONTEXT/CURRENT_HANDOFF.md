@@ -12,6 +12,8 @@ CONTEXT/SPECIFICATIONS/OPUS_P117W_R22_REGISTRY_PHYSICAL_RECONCILIATION_AND_APPLI
 CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OPUS_P117W_R22_REGISTRY_PHYSICAL_RECONCILIATION_2026-07-28.md
 CONTEXT/SPECIFICATIONS/OPUS_P117W_R23_GENERATED_SITE_SECURE_DELETION_2026-07-28.md
 CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OPUS_P117W_R23_GENERATED_SITE_SECURE_DELETION_2026-07-28.md
+CONTEXT/SPECIFICATIONS/OPUS_P117W_R24_SOURCE_TREE_AND_SYNTAX_HIGHLIGHTING_2026-07-28.md
+CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OPUS_P117W_R24_SOURCE_TREE_AND_SYNTAX_HIGHLIGHTING_2026-07-28.md
 CONTEXT/PROJECTS/OPUS_CURRENT_STATE.md
 ```
 
@@ -68,14 +70,22 @@ Seules les applications au contrat standard, créées par Composer et placées
 directement sous `sites/<id>`, sont supprimables. La suppression UI traverse
 SCORE, FSM, ACL, SSO, REST sécurisé, FSM backend et Composer.
 
+## R24
+
+Le navigateur de sources de `owasys-front` projette de nouveau une
+arborescence repliable à partir des chemins relatifs canoniques renvoyés par
+`owasys-back`. Le contenu sélectionné utilise le bundle local CodeMirror 6 en
+lecture seule avec grammaire déterminée par l’extension. Le rendu initial reste
+SCORE et aucun ancien site OWASYS monolithique n’est restauré.
+
 ## Livrable actif
 
 ```text
-ZIP : opus_p117w_r23_generated_site_secure_deletion.zip
+ZIP : opus_p117w_r24_source_tree_and_syntax_highlighting.zip
 Base : OPUS master 4868780af4dd65bb7e28d95c981d1a1c5800a243
-Contenu : R22 + R23 cumulatif
-SHA-256 : b4f29bd657aaec2faf52a883f4bedd03cc09d5356ef67bb2de03970baa17763b
-Fichiers : 15
+Contenu : R22 + R23 + R24 cumulatif
+SHA-256 : 980b1cce3fde606fc907b8b524c8ee61785159b30bbe4fd8ec8653dfd6da7edd
+Fichiers : 20
 ```
 
 ## Statut
@@ -83,7 +93,8 @@ Fichiers : 15
 ```text
 P117W R6 à R21 : présents dans la base relue
 P117W R22 : inclus
-P117W R23 : livrable actif
+P117W R23 : inclus
+P117W R24 : livrable actif
 ```
 
 NO CONTRACT, NO PATCH.  
