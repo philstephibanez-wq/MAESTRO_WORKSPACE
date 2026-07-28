@@ -8,8 +8,8 @@ Date : 2026-07-28
 README-FIRST.md
 CONTEXT/SPECIFICATIONS/MAESTRO_OPUS_OWASYS_GLOBAL_DEVELOPMENT_RULES_2026-07-24.md
 CONTEXT/PROJECTS/OPUS/OPUS_SITE_STANDARD_CONTRACT.md
-CONTEXT/SPECIFICATIONS/OPUS_P117W_R21_RESTORE_SOURCE_BROWSER_VIA_REST_COMPOSER_SCORE_2026-07-28.md
-CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OPUS_P117W_R21_RESTORE_SOURCE_BROWSER_VIA_REST_COMPOSER_SCORE_2026-07-28.md
+CONTEXT/SPECIFICATIONS/OPUS_P117W_R22_REGISTRY_PHYSICAL_RECONCILIATION_AND_APPLICATION_ROOT_2026-07-28.md
+CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OPUS_P117W_R22_REGISTRY_PHYSICAL_RECONCILIATION_2026-07-28.md
 CONTEXT/PROJECTS/OPUS_CURRENT_STATE.md
 ```
 
@@ -18,9 +18,9 @@ CONTEXT/PROJECTS/OPUS_CURRENT_STATE.md
 ```text
 Dépôt OPUS : philstephibanez-wq/OPUS
 Branche : master
-Base exacte : 2c48c86f04ab96fb031c2c22b8505f270a8eafad
+Base exacte : 4868780af4dd65bb7e28d95c981d1a1c5800a243
 Racine owner : H:\OPUS
-P117W R20 : appliqué et committé
+P117W R21 : présent dans la base relue
 ```
 
 ## Architecture
@@ -49,106 +49,57 @@ registry.sync : succès
 frontend /fr-FR/applications : succès
 ```
 
-## Audit fonctionnel corrigé
+## Cause active
 
-P117W R20 a restauré les quatre opérations backend manquantes :
+Le Registry SQLite conserve les applications physiquement supprimées car
+la synchronisation réalise uniquement des UPSERT.
 
 ```text
-site.language.add
-site.page.create
-site.rubric.create
-site.export
+SQLite : owasys -> sites/owasys_old
+Disque : racine absente
 ```
 
-Le module `source` de l’ancien OWASYS n’était pas une surface vide. Il permettait la liste et la lecture en lecture seule des fichiers autorisés de l’application courante.
-
-L’ancienne implémentation est interdite car elle accédait au filesystem depuis le frontend, produisait du JSON avec `echo` et dépendait de JavaScript.
-
-## Évolution générique OPUS P117W R21
-
-Créer :
+Le repository Registry ne reconnaît pas directement le contrat courant :
 
 ```text
-Opus\Application\Inspection\SiteSourceInspector
+OPUS_SITE_STANDARD_CONTRACT_CORE
 ```
 
-Contrats :
+## Correction R22
 
 ```text
-OPUS_SITE_SOURCE_LIST_V1
-OPUS_SITE_SOURCE_FILE_V1
+transaction SQLite atomique
+découverte des contrats standard actuels
+comparaison id + root_path avec les sites physiques canoniques
+suppression des lignes obsolètes
+effacement du contexte courant seulement s’il est obsolète
 ```
 
-Faire passer le navigateur Source par :
+## Racine des applications créées
 
 ```text
-SCORE
--> FSM open_source
--> ACL + SSO
--> REST sécurisé
--> FSM backend
--> Composer allow-listé
--> OwasysSourceCommandProvider
--> SiteSourceInspector
--> ViewModel
--> SCORE
-```
-
-Opérations :
-
-```text
-source.list -> owasys:source-list -> owasys:source:list
-source.read -> owasys:source-read -> owasys:source:read
+H:\OPUS\sites\<application-id>\
 ```
 
 ## Livrable actif
 
 ```text
-ZIP : opus_p117w_r21_restore_source_browser_via_rest_composer_score.zip
-SHA-256 : 66fc714986b3d8da7fc74b9a1a573a072cad9404a160484bb5cc866aa499e9ff
-Fichiers : 14
+ZIP : opus_p117w_r22_registry_physical_reconciliation.zip
+SHA-256 : 72dbe3d7700dfea0364b807f9e1714ca96218acc692d27c85517d03684538ba1
+Fichiers : 1
 ```
 
-Ne livrer aucun `tools`, aucun script, aucun fichier runtime, aucun journal, aucun secret et aucune racine partagée.
-
-## Appliquer et valider
+Contenu :
 
 ```text
-cd /d H:\OPUS
-certutil -hashfile "%USERPROFILE%\Downloads\opus_p117w_r21_restore_source_browser_via_rest_composer_score.zip" SHA256
-tar -xf "%USERPROFILE%\Downloads\opus_p117w_r21_restore_source_browser_via_rest_composer_score.zip" -C H:\OPUS
-php -l Opus\Application\Inspection\SiteSourceInspector.php
-php -l Opus\Application\Inspection\SiteSourceInspectorInterface.php
-php -l sites\owasys-back\application\source\console.php
-php -l sites\owasys-back\application\source\services\OwasysSourceCommandProvider.php
-php -l sites\owasys-back\application\source\services\OwasysSourceCommandProviderInterface.php
-php -l sites\owasys-front\application\default\Application.php
-php -l sites\owasys-front\application\default\bootstrap.php
-php -l sites\owasys-front\application\source\controllers\SourceController.php
-php -l sites\owasys-front\application\source\models\SourceModel.php
-composer dump-autoload -o
-composer opus:validate-site -- owasys-front
-composer opus:validate-site -- owasys-back
-git status --short
-```
-
-## Lancer et tester
-
-```text
-composer opus:dev-server -- owasys-back
-composer opus:dev-server -- owasys-front
-```
-
-```text
-http://127.0.0.1:8000/fr-FR/applications
-http://127.0.0.1:8000/fr-FR/source
+sites/owasys-back/application/registry/repositories/RegistryRepository.php
 ```
 
 ## Statut
 
 ```text
-P117W R6 à R20 : présents/appliqués
-P117W R21 : livrable actif
+P117W R6 à R21 : présents dans la base relue
+P117W R22 : livrable actif
 ```
 
 NO CONTRACT, NO PATCH.  
