@@ -7,9 +7,8 @@ Dernière mise à jour : 2026-07-28.
 ```text
 Dépôt : philstephibanez-wq/OPUS
 Branche : master
-Ancien OWASYS audité : e1055468213ae62806c039ca0231a49a98d844fe
-État actuel audité   : dc47342006f7f6a5fc0b6d18fe06d12ac2b82bb5
-Racine owner         : H:/OPUS
+HEAD relu : 2c48c86f04ab96fb031c2c22b8505f270a8eafad
+Racine owner : H:/OPUS
 ```
 
 ## Architecture
@@ -46,6 +45,7 @@ P117W R16 : restaurer les alias de commandes applicatives
 P117W R17 : conserver un Logger et un Profiler par application
 P117W R18 : conserver la cause interne des erreurs Console
 P117W R19 : supprimer les vestiges locaux owasys_old*
+P117W R20 : restaurer les quatre opérations backend perdues
 ```
 
 ## Runtime confirmé
@@ -68,9 +68,9 @@ sites/owasys-back/var/logs/owasys-back.log
 sites/owasys-back/var/profiler/owasys-back.jsonl
 ```
 
-## Audit de parité fonctionnelle
+## Audit fonctionnel corrigé
 
-Parité confirmée entre l’ancien site et les deux applications actuelles pour :
+Parité confirmée pour :
 
 ```text
 connexion et SSO
@@ -79,98 +79,105 @@ session et contexte applicatif
 registre SQLite
 synchronisation, sélection et effacement du registre
 création d’application
-routes frontend
-FSM frontend
+routes et FSM
 ACL deny-by-default
 I18n UE + ukrainien
 rendu SCORE
 Logger et Profiler
 API REST backend
-exécution Composer allow-listée
+Composer allow-listé
+ajout de langue
+création de page
+création de rubrique
+export de site
 ```
 
-Preuves structurelles principales :
+Le module `source` de l’ancien OWASYS contenait une fonction réelle de navigation en lecture seule. Il ne doit plus être classé comme simple `OWASYS_MODULE_PENDING`.
+
+Fonctions historiques constatées :
 
 ```text
-routes anciennes et actuelles : mêmes signaux
-FSM ancienne et actuelle     : même SHA f237f5789396e6dc7640cdf1be393b89a34153e4
-contrôleurs connexion/compte : mêmes SHA
-modèle création              : même SHA df5f36b1e7ecb30655fd4082df83b109c949eb81
-contrôleur registre          : même SHA d81ad3441baa5fef5d60a8e87acf2ca21388c100
-pending.score ancien/actuel  : même SHA 92554142f9463df23db63e7992a55a62e4c1060f
+lister les fichiers textuels autorisés de l’application courante
+lire un fichier autorisé
+limiter chaque fichier à 1 Mio
+retourner path, bytes, sha256 et content
+bloquer .git, vendor, node_modules, var, cache, logs, tmp et .env
 ```
 
-Les modules ci-dessous étaient déjà des surfaces en attente dans l’ancien OWASYS :
+L’ancienne implémentation est interdite dans l’architecture actuelle car elle :
 
 ```text
-structure
-data
-workflows
-security
-source
-build
+accède directement au filesystem depuis le frontend
+produit le JSON avec echo
+repose sur une interface construite en JavaScript
+contourne REST sécurisé puis Composer
 ```
 
-Ils ne constituent pas une régression de migration.
+## Évolution générique P117W R21
 
-## Cause P117W R20
-
-Le catalogue historique :
+Créer sous le framework :
 
 ```text
-sites/owasys_old2/config/backend.operations.json
+Opus/Application/Inspection/SiteSourceInspector.php
+Opus/Application/Inspection/SiteSourceInspectorInterface.php
 ```
 
-contenait 11 opérations.
+Faire implémenter l’interface homonyme par la classe concrète et faire étendre l’interface directement par les quatre marqueurs OPUS.
 
-Le catalogue actuel :
+`SiteSourceInspector` doit valider le contrat standard du site avec `StructuredFileLoader`, lire les fichiers avec `File`, imposer les limites, refuser les liens symboliques et empêcher toute sortie de la racine `sites`.
+
+## Backend P117W R21
+
+Ajouter un provider Source autonome :
 
 ```text
-sites/owasys-back/config/backend.operations.json
+sites/owasys-back/application/source/console.php
+sites/owasys-back/application/source/services/OwasysSourceCommandProvider.php
+sites/owasys-back/application/source/services/OwasysSourceCommandProviderInterface.php
 ```
 
-n’en contient plus que 7.
-
-Opérations perdues :
+Commandes et opérations :
 
 ```text
-site.language.add -> opus:add-language
-site.page.create -> opus:create-page
-site.rubric.create -> opus:create-rubric
-site.export -> opus:export-site
+source.list -> owasys:source-list -> owasys:source:list
+source.read -> owasys:source-read -> owasys:source:read
 ```
 
-Les scripts Composer existent toujours dans `composer.json`. Cette différence constitue la seule perte fonctionnelle confirmée par l’audit.
-
-## Correction P117W R20
-
-Remplacer uniquement :
+ACL :
 
 ```text
-sites/owasys-back/config/backend.operations.json
+admin     : *:*
+developer : source:*
+viewer    : source:read
 ```
 
-Restaurer les quatre opérations avec leurs rôles, arguments, expressions de validation, options et drapeaux d’écriture historiques.
+## Frontend P117W R21
 
-Conserver les opérations actuelles et obtenir :
+Créer :
 
 ```text
-11 opérations au total
-4 opérations restaurées
+sites/owasys-front/application/source/models/SourceModel.php
+sites/owasys-front/application/source/controllers/SourceController.php
+sites/owasys-front/application/source/templates/index.score
+```
+
+Le frontend :
+
+```text
+utilise uniquement RcpRestClient
+passe par FSM open_source
+exige SSO, ACL source:open et une application courante
+rend le ViewModel via SCORE
+reste fonctionnel sans JavaScript
+ne lit jamais le filesystem applicatif
 ```
 
 ## Livrable actif
 
 ```text
-ZIP : opus_p117w_r20_restore_owasys_functional_operation_parity.zip
-SHA-256 : 14c9f5cd4fa0e6228926aec8fe78821ec68d7de600c872657dfebfb70e2e48c5
-Fichiers : 1
-```
-
-Inclure uniquement :
-
-```text
-sites/owasys-back/config/backend.operations.json
+ZIP : opus_p117w_r21_restore_source_browser_via_rest_composer_score.zip
+SHA-256 : 66fc714986b3d8da7fc74b9a1a573a072cad9404a160484bb5cc866aa499e9ff
+Fichiers : 14
 ```
 
 Ne livrer aucun `tools`, aucun script, aucun fichier runtime, aucun journal, aucun secret et aucune racine partagée.
@@ -178,13 +185,16 @@ Ne livrer aucun `tools`, aucun script, aucun fichier runtime, aucun journal, auc
 ## Validation effectuée
 
 ```text
-JSON valide                              : OK
-Contrat opération catalog                : OK
-Nombre d’opérations                      : 11
-Quatre opérations historiques restaurées: OK
-Scripts Composer correspondants présents: OK
-Chemins interdits dans le ZIP            : 0
-ZIP directement superposable             : OK
+PHP lint des fichiers concernés             : OK
+JSON                                         : OK
+Interface homonyme et quatre marqueurs       : OK
+Test runtime isolé list/read                 : OK
+Blocage .env, vendor, var et traversée ../   : OK
+Rendu SCORE sans echo UI                     : OK
+Navigation sans JavaScript obligatoire       : OK
+REST puis Composer                           : OK
+Chemins interdits dans le ZIP                : 0
+ZIP                                          : OK
 ```
 
 ## Validation owner
@@ -193,15 +203,21 @@ ZIP directement superposable             : OK
 composer dump-autoload -o
 composer opus:validate-site -- owasys-front
 composer opus:validate-site -- owasys-back
-php -r "$j=json_decode(file_get_contents('sites/owasys-back/config/backend.operations.json'),true,512,JSON_THROW_ON_ERROR); foreach(['site.language.add','site.page.create','site.rubric.create','site.export'] as $id){echo (isset($j['operations'][$id])?'OK ':'MISSING ').$id.PHP_EOL;} echo 'TOTAL='.count($j['operations']).PHP_EOL;"
-git status --short
+composer opus:dev-server -- owasys-back
+composer opus:dev-server -- owasys-front
+```
+
+Tester après sélection d’une application :
+
+```text
+http://127.0.0.1:8000/fr-FR/source
 ```
 
 ## Statut
 
 ```text
-P117W R6 à R19 : présents/appliqués
-P117W R20 : actif à appliquer
+P117W R6 à R20 : présents/appliqués
+P117W R21 : actif à appliquer
 ```
 
 ## Contrats framework
