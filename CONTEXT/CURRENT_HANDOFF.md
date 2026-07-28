@@ -8,8 +8,8 @@ Date : 2026-07-28
 README-FIRST.md
 CONTEXT/SPECIFICATIONS/MAESTRO_OPUS_OWASYS_GLOBAL_DEVELOPMENT_RULES_2026-07-24.md
 CONTEXT/PROJECTS/OPUS/OPUS_SITE_STANDARD_CONTRACT.md
-CONTEXT/SPECIFICATIONS/OPUS_P117W_R27_SOURCE_BROWSER_USABILITY_AND_SINGLE_EXCHANGE_2026-07-28.md
-CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OPUS_P117W_R27_SOURCE_BROWSER_USABILITY_AND_SINGLE_EXCHANGE_2026-07-28.md
+CONTEXT/SPECIFICATIONS/OPUS_P117W_R28_DISCREET_SOURCE_LINKS_AND_INCREMENTAL_READING_2026-07-28.md
+CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OPUS_P117W_R28_DISCREET_SOURCE_LINKS_AND_INCREMENTAL_READING_2026-07-28.md
 CONTEXT/PROJECTS/OPUS_CURRENT_STATE.md
 ```
 
@@ -23,21 +23,24 @@ Racine owner : H:\OPUS
 P117W R22, R23 et R24 : appliqués sur master
 ```
 
-## R27
+## R28
 
 Le navigateur de sources conserve SCORE et son fallback POST. Les feuilles
-sont de grands boutons et le fichier courant possède un état vert explicite.
-Une sélection utilise une seule chaîne REST/Composer `source.browse`, qui
-exécute liste et lecture dans le même processus sans cache silencieux.
+sont des liens compacts et le fichier courant possède un état vert explicite.
+Une sélection JavaScript conserve l'arborescence rendue et utilise uniquement
+la chaîne REST/Composer `source.read`; CodeMirror est mis à jour en place.
+
+Les lanceurs `.cmd` physiques sont exclus. Seules les deux commandes Composer
+ci-dessous sont contractuelles.
 
 ## Livrable actif
 
 ```text
-ZIP : opus_p117w_r27_source_browser_usability_and_single_exchange.zip
+ZIP : opus_p117w_r28_discreet_source_links_and_incremental_reading.zip
 Base : OPUS master 544d512b79bac4ca7dab8ac103dd9ff2266593fd
-SHA-256 : b5d1624f5170b96a09f2866d3cbafd2fa4a6a86eba2f466d8cc8481069e234ce
-Fichiers : 12
-Contenu cumulatif : R25 + R26 + R27
+SHA-256 : 7ffa75e6f3ea049bf18a7d87491f80d5c563ee45e1b947b4c165719845f7ae83
+Fichiers : 24
+Contenu cumulatif : R25 + R27 + R28, sans R26
 ```
 
 ## Lancement
