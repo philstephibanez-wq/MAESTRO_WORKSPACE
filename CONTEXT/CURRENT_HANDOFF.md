@@ -8,14 +8,8 @@ Date : 2026-07-28
 README-FIRST.md
 CONTEXT/SPECIFICATIONS/MAESTRO_OPUS_OWASYS_GLOBAL_DEVELOPMENT_RULES_2026-07-24.md
 CONTEXT/PROJECTS/OPUS/OPUS_SITE_STANDARD_CONTRACT.md
-CONTEXT/SPECIFICATIONS/OPUS_P117W_R22_REGISTRY_PHYSICAL_RECONCILIATION_AND_APPLICATION_ROOT_2026-07-28.md
-CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OPUS_P117W_R22_REGISTRY_PHYSICAL_RECONCILIATION_2026-07-28.md
-CONTEXT/SPECIFICATIONS/OPUS_P117W_R23_GENERATED_SITE_SECURE_DELETION_2026-07-28.md
-CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OPUS_P117W_R23_GENERATED_SITE_SECURE_DELETION_2026-07-28.md
-CONTEXT/SPECIFICATIONS/OPUS_P117W_R24_SOURCE_TREE_AND_SYNTAX_HIGHLIGHTING_2026-07-28.md
-CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OPUS_P117W_R24_SOURCE_TREE_AND_SYNTAX_HIGHLIGHTING_2026-07-28.md
-CONTEXT/SPECIFICATIONS/OPUS_P117W_R25_SCORE_LAYOUT_NAVIGATION_CONTRACT_2026-07-28.md
-CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OPUS_P117W_R25_SCORE_LAYOUT_NAVIGATION_2026-07-28.md
+CONTEXT/SPECIFICATIONS/OPUS_P117W_R27_SOURCE_BROWSER_USABILITY_AND_SINGLE_EXCHANGE_2026-07-28.md
+CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OPUS_P117W_R27_SOURCE_BROWSER_USABILITY_AND_SINGLE_EXCHANGE_2026-07-28.md
 CONTEXT/PROJECTS/OPUS_CURRENT_STATE.md
 ```
 
@@ -29,43 +23,28 @@ Racine owner : H:\OPUS
 P117W R22, R23 et R24 : appliqués sur master
 ```
 
-## Architecture
+## R27
 
-```text
-sites/owasys-front
-sites/owasys-back
-owasys-front -> REST sécurisé -> owasys-back -> Composer allow-listé
-```
-
-Ne restaurer aucun site OWASYS monolithique, shared ou `owasys_old*`.
-
-## R25
-
-Le layout SCORE commun exige un contrat de ViewModel total.
-`OwasysScorePageRenderer` fournit par défaut :
-
-```text
-source.browser_enabled = false
-```
-
-La page Sources remplace explicitement cette valeur par `true`. Cela corrige
-la `ContractException` au retour de Sources vers Applications sans charger
-CodeMirror sur les autres pages.
+Le navigateur de sources conserve SCORE et son fallback POST. Les feuilles
+sont de grands boutons et le fichier courant possède un état vert explicite.
+Une sélection utilise une seule chaîne REST/Composer `source.browse`, qui
+exécute liste et lecture dans le même processus sans cache silencieux.
 
 ## Livrable actif
 
 ```text
-ZIP : opus_p117w_r25_score_layout_navigation_contract.zip
+ZIP : opus_p117w_r27_source_browser_usability_and_single_exchange.zip
 Base : OPUS master 544d512b79bac4ca7dab8ac103dd9ff2266593fd
-SHA-256 : 2762bd9b2a6ae04396168bc7a33793512b084c22cb952504b23cf80246384f3a
-Fichiers : 1
+SHA-256 : b5d1624f5170b96a09f2866d3cbafd2fa4a6a86eba2f466d8cc8481069e234ce
+Fichiers : 12
+Contenu cumulatif : R25 + R26 + R27
 ```
 
-## Statut
+## Lancement
 
 ```text
-P117W R6 à R24 : appliqués sur OPUS master
-P117W R25 : livrable actif à appliquer et valider
+composer opus:dev-server -- owasys-front
+composer opus:dev-server -- owasys-back
 ```
 
 NO CONTRACT, NO PATCH.  
