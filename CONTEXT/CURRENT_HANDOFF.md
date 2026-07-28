@@ -10,6 +10,8 @@ CONTEXT/SPECIFICATIONS/MAESTRO_OPUS_OWASYS_GLOBAL_DEVELOPMENT_RULES_2026-07-24.m
 CONTEXT/PROJECTS/OPUS/OPUS_SITE_STANDARD_CONTRACT.md
 CONTEXT/SPECIFICATIONS/OPUS_P117W_R22_REGISTRY_PHYSICAL_RECONCILIATION_AND_APPLICATION_ROOT_2026-07-28.md
 CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OPUS_P117W_R22_REGISTRY_PHYSICAL_RECONCILIATION_2026-07-28.md
+CONTEXT/SPECIFICATIONS/OPUS_P117W_R23_GENERATED_SITE_SECURE_DELETION_2026-07-28.md
+CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OPUS_P117W_R23_GENERATED_SITE_SECURE_DELETION_2026-07-28.md
 CONTEXT/PROJECTS/OPUS_CURRENT_STATE.md
 ```
 
@@ -18,110 +20,70 @@ CONTEXT/PROJECTS/OPUS_CURRENT_STATE.md
 ```text
 Dépôt OPUS : philstephibanez-wq/OPUS
 Branche : master
-HEAD courant : 464b702888314edfab2573e7ebe71d87fc988a33
+Base exacte : 4868780af4dd65bb7e28d95c981d1a1c5800a243
 Racine owner : H:\OPUS
-P117W R21 : appliqué et committé
-P117W R22 : appliqué et committé
+P117W R21 : présent dans la base relue
 ```
 
 ## Architecture
 
-Conserver uniquement :
-
 ```text
 sites/owasys-front
 sites/owasys-back
-```
 
-Réaliser exclusivement :
-
-```text
 owasys-front -> REST sécurisé -> owasys-back -> Composer allow-listé
 ```
 
-Ne restaurer aucun site monolithique, aucun partage filesystem et aucun vestige `owasys_old*`.
+Ne restaurer aucun site OWASYS monolithique, shared ou `owasys_old*`.
 
-## R22 appliqué
+## R22
 
-La synchronisation Registry est désormais atomique et :
-
-```text
-reconnaît OPUS_SITE_STANDARD_CONTRACT_CORE
-importe les sites physiques canoniques
-compare id + root_path avec SQLite
-supprime les entrées absentes ou divergentes
-efface le contexte courant uniquement s’il est devenu obsolète
-retourne stale_removed, stale_ids et stale_context_cleared
-```
-
-## Racine contractuelle des applications créées
+Le Registry SQLite est réconcilié atomiquement avec les applications physiques
+canoniques sous :
 
 ```text
 H:\OPUS\sites\<application-id>\
 ```
 
-Chemin relatif canonique :
+Il reconnaît `OPUS_SITE_STANDARD_CONTRACT_CORE`, supprime les lignes SQLite
+obsolètes et efface le contexte courant uniquement si l’application sélectionnée
+a disparu.
+
+## R23
+
+Commande de suppression générique :
 
 ```text
-sites/<application-id>/
+composer opus:delete-site -- <id> --confirm=<id> [--write]
 ```
 
-Le navigateur ne fournit jamais de chemin. La création reste :
+La suppression OWASYS est absolument interdite :
 
 ```text
-owasys-front -> REST sécurisé -> owasys-back -> Composer allow-listé -> opus:create-site
+owasys-front
+owasys-back
 ```
 
-## Validation runtime à effectuer
+Seules les applications au contrat standard, créées par Composer et placées
+directement sous `sites/<id>`, sont supprimables. La suppression UI traverse
+SCORE, FSM, ACL, SSO, REST sécurisé, FSM backend et Composer.
+
+## Livrable actif
 
 ```text
-cd /d H:\OPUS
-php -l sites\owasys-back\application\registry\repositories\RegistryRepository.php
-composer dump-autoload -o
-composer opus:validate-site -- owasys-front
-composer opus:validate-site -- owasys-back
-git status --short
-```
-
-Lancer le backend :
-
-```text
-cd /d H:\OPUS
-composer opus:dev-server -- owasys-back
-```
-
-Lancer le frontend :
-
-```text
-cd /d H:\OPUS
-composer opus:dev-server -- owasys-front
-```
-
-Ouvrir :
-
-```text
-http://127.0.0.1:8000/fr-FR/applications
-```
-
-Attendu au premier chargement :
-
-```text
-stale_removed = 1
-stale_ids contient owasys
-applications visibles : owasys-back, owasys-front
-```
-
-Attendu aux chargements suivants :
-
-```text
-stale_removed = 0
+ZIP : opus_p117w_r23_generated_site_secure_deletion.zip
+Base : OPUS master 4868780af4dd65bb7e28d95c981d1a1c5800a243
+Contenu : R22 + R23 cumulatif
+SHA-256 : b4f29bd657aaec2faf52a883f4bedd03cc09d5356ef67bb2de03970baa17763b
+Fichiers : 15
 ```
 
 ## Statut
 
 ```text
-P117W R6 à R22 : présents sur OPUS/master
-Prochaine étape : validation runtime owner de R22, puis reprise fonctionnelle après résultat
+P117W R6 à R21 : présents dans la base relue
+P117W R22 : inclus
+P117W R23 : livrable actif
 ```
 
 NO CONTRACT, NO PATCH.  
