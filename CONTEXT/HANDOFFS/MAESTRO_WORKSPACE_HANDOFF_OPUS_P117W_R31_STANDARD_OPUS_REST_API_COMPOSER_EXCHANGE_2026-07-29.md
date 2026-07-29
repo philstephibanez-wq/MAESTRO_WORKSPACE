@@ -2,7 +2,7 @@
 
 Date : 2026-07-29
 
-R30 est invalidé et ne doit pas être appliquer. R31 fournir une API REST OPUS standard, puis faire traduire les ressources en commandes Composer métier dans OWASYS back.
+Ne pas appliquer R30 : il est invalidé. R31 fournit une API REST OPUS standard, puis OWASYS back traduit les ressources en commandes Composer métier.
 
 ## Source
 
