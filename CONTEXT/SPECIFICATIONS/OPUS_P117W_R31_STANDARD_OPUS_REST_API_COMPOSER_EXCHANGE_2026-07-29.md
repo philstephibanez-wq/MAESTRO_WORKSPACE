@@ -49,7 +49,7 @@ Ne pas exposer les noms de commandes Composer dans l’API. Résoudre chaque res
 
 ## Suppressions requises
 
-Après extraire R31, supprimer l’ancien namespace `Opus/Rcp`, `sites/owasys-front/config/rcp.json` et les surfaces backend/shared historiques du frontend. Ne pas conserver deux transports concurrents.
+Après extraction de R31, supprimer l’ancien namespace `Opus/Rcp`, `sites/owasys-front/config/rcp.json` et les surfaces backend/shared historiques du frontend. Ne pas conserver deux transports concurrents.
 
 ## Livrable
 
