@@ -40,4 +40,7 @@ owasys-front → REST sécurisé → owasys-back → Composer.
 
 10. Logger et Profiler sont obligatoires et contractuels dans les deux applications.
 
+11 - Flux: owasys-front -> REST (sécurisé) -> owasys-back -> composer -> owasys-back -> response -> owasys-front
+Eventuellement genre de full duplex si back a besoin de notifier front (comme par exemple un scheduler)
+
 GO
