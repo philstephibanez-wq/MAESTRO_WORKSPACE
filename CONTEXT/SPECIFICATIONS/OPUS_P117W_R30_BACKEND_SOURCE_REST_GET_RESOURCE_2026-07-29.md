@@ -1,3 +1,7 @@
+# INVALIDÉ — NE PAS APPLIQUER
+
+R30 ne fournit pas une API REST CRUD complète. Le remplacer par R31.
+
 # OPUS P117W R30 — SOURCE BACKEND EN RESSOURCE REST GET
 
 Date : 2026-07-29  
