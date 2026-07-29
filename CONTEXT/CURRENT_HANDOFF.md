@@ -8,48 +8,51 @@ Date : 2026-07-29
 README-FIRST.md
 CONTEXT/SPECIFICATIONS/MAESTRO_OPUS_OWASYS_GLOBAL_DEVELOPMENT_RULES_2026-07-24.md
 CONTEXT/PROJECTS/OPUS/OPUS_SITE_STANDARD_CONTRACT.md
-CONTEXT/SPECIFICATIONS/OPUS_P117W_R34_FSM_RUNTIME_ASAP_COMPLIANCE_2026-07-29.md
-CONTEXT/SPECIFICATIONS/OPUS_P117W_R35R2_IN_PROCESS_DISPATCH_AND_FRESH_DIAGNOSTICS_2026-07-29.md
-CONTEXT/SPECIFICATIONS/OPUS_P117W_R36_FSM_SCORE_CORRELATED_PROFILER_URL_CONTRACT_2026-07-29.md
-CONTEXT/SPECIFICATIONS/OPUS_P117W_R37_TWO_BASTIONS_DIAGNOSTICS_CORRELATION_AUDIT_2026-07-29.md
 CONTEXT/SPECIFICATIONS/OPUS_P117W_R38_REMOVE_LAYERED_CREATION_AND_REGISTRY_SPLIT_BRAIN_2026-07-29.md
 CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OPUS_P117W_R38_REMOVE_LAYERED_CREATION_2026-07-29.md
-CONTEXT/PROJECTS/OPUS_CURRENT_STATE.md
+CONTEXT/SPECIFICATIONS/OPUS_P117W_R39_OWNER_REMOVE_REST_REPLAY_STORE_2026-07-29.md
+CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OPUS_P117W_R39_OWNER_2026-07-29.md
 ```
 
-## Source
+## Base restaurée
 
 ```text
-Dépôt OPUS : philstephibanez-wq/OPUS
-Branche : master
-Prérequis : R34, R35-R2, R36, R37
+MAESTRO_WORKSPACE P117W R38 : 7cf50b997d8c9f572bc40adb984b679018804c1b
+OPUS owner R38 observé         : 913e9a821a28542c1de65f98d03bb2d63e82637f
 ```
 
-## Contrat actif
+Les onze commits workspace postérieurs qui mélangeaient rectifications, écritures OPUS indues et faux statut canonique R39 ont été retirés de `master`.
 
-OWASYS contient exactement deux applications autonomes sur deux bastions possibles :
+## R39 owner à appliquer
+
+Supprimer la croissance infinie de `sites/owasys-back/var/rest/replay` :
+
+- remplacer `RestServer.php` ;
+- remplacer `backend.rest.json` ;
+- supprimer `RestReplayStore.php` ;
+- supprimer `RestReplayStoreInterface.php` ;
+- supprimer `sites/owasys-back/var/rest` ;
+- ne créer aucun SQLite, cache ou stockage de remplacement ;
+- conserver HMAC, nonce signé, fenêtre de 60 secondes, Logger et Profiler ;
+- conserver `owasys-back` exclusivement en PHP, sans JavaScript.
+
+## Livrable
 
 ```text
-sites/owasys-front
-sites/owasys-back
+opus_p117w_r39_remove_rest_replay_store.zip
+SHA-256 : 58600d6287b9f732ebd8e2afb577bd1edba69eccc05caec3dc50d24c4c2aaaac
+Fichiers complets : 2
+Statut OPUS : à appliquer et pousser par l’owner
 ```
 
-Aucune couche `shared`, aucun runtime imbriqué et aucun partage de fichiers, configuration, secrets, état ou diagnostics.
+## Autorité
 
-## R38
+```text
+Assistant : écrire MAESTRO_WORKSPACE et livrer le ZIP différentiel
+Owner     : appliquer, valider, committer et pousser OPUS/OWASYS
+```
 
-La session R37 prouve un split-brain de création :
-
-- `OpusConsoleApplication` sélectionne encore `LayeredSiteCommandService` ;
-- `opus:create-site` génère `OPUS_SITE_LAYERED_CONTRACT_V2` avec `shared/front/back` ;
-- le Registry ignore ce contrat ;
-- le frontend termine par `OWASYS_CREATION_REGISTRY_ENTRY_MISSING`.
-
-R38 impose `SiteCommandService`, interdit `application_layers` et refuse explicitement tout site layered dans le Registry. Les classes exclusivement layered doivent être supprimées.
-
-## Validation suivante
-
-Appliquer R38, supprimer les classes layered obsolètes, identifier puis supprimer explicitement le site layered créé pendant la session, relancer les deux applications et valider une création autonome présente immédiatement dans le Registry.
+Ne jamais demander à l’owner de tirer un commit OPUS produit par l’assistant.
 
 NO CONTRACT, NO PATCH.
 NO SOURCE OF TRUTH, NO PATCH.
