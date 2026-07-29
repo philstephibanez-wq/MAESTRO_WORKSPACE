@@ -12,7 +12,8 @@ CONTEXT/SPECIFICATIONS/OPUS_P117W_R34_FSM_RUNTIME_ASAP_COMPLIANCE_2026-07-29.md
 CONTEXT/SPECIFICATIONS/OPUS_P117W_R35R2_IN_PROCESS_DISPATCH_AND_FRESH_DIAGNOSTICS_2026-07-29.md
 CONTEXT/SPECIFICATIONS/OPUS_P117W_R36_FSM_SCORE_CORRELATED_PROFILER_URL_CONTRACT_2026-07-29.md
 CONTEXT/SPECIFICATIONS/OPUS_P117W_R37_TWO_BASTIONS_DIAGNOSTICS_CORRELATION_AUDIT_2026-07-29.md
-CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OPUS_P117W_R37_TWO_BASTIONS_DIAGNOSTICS_2026-07-29.md
+CONTEXT/SPECIFICATIONS/OPUS_P117W_R38_REMOVE_LAYERED_CREATION_AND_REGISTRY_SPLIT_BRAIN_2026-07-29.md
+CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OPUS_P117W_R38_REMOVE_LAYERED_CREATION_2026-07-29.md
 CONTEXT/PROJECTS/OPUS_CURRENT_STATE.md
 ```
 
@@ -21,8 +22,7 @@ CONTEXT/PROJECTS/OPUS_CURRENT_STATE.md
 ```text
 Dépôt OPUS : philstephibanez-wq/OPUS
 Branche : master
-Base R34 : 47c5bb1d667a43a61ae35ec3465accc29d42f54c
-Prérequis : R34, R35-R2, R36
+Prérequis : R34, R35-R2, R36, R37
 ```
 
 ## Contrat actif
@@ -36,20 +36,20 @@ sites/owasys-back
 
 Aucune couche `shared`, aucun runtime imbriqué et aucun partage de fichiers, configuration, secrets, état ou diagnostics.
 
-## R37
+## R38
 
-L’audit complet de la session R36 impose :
+La session R37 prouve un split-brain de création :
 
-- log frontend unique `owasys-front.log` ;
-- contexte FSM Profiler complet ;
-- `trace_id` corrélé de bout en bout ;
-- suppression des 385 fichiers inactifs sous `application/front`, `application/shared` et `application/back` ;
-- suppression des configurations backend obsolètes du frontend ;
-- gate `opus:validate-site` empêchant le retour de ces couches.
+- `OpusConsoleApplication` sélectionne encore `LayeredSiteCommandService` ;
+- `opus:create-site` génère `OPUS_SITE_LAYERED_CONTRACT_V2` avec `shared/front/back` ;
+- le Registry ignore ce contrat ;
+- le frontend termine par `OWASYS_CREATION_REGISTRY_ENTRY_MISSING`.
+
+R38 impose `SiteCommandService`, interdit `application_layers` et refuse explicitement tout site layered dans le Registry. Les classes exclusivement layered doivent être supprimées.
 
 ## Validation suivante
 
-Appliquer R37, exécuter le nettoyage owner explicite, relancer les deux applications, tester création invalide et Source avec `?profiler=1`, puis vérifier un même `trace_id` et `execution_mode: in_process`.
+Appliquer R38, supprimer les classes layered obsolètes, identifier puis supprimer explicitement le site layered créé pendant la session, relancer les deux applications et valider une création autonome présente immédiatement dans le Registry.
 
 NO CONTRACT, NO PATCH.
 NO SOURCE OF TRUTH, NO PATCH.
