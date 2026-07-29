@@ -8,10 +8,8 @@ Date : 2026-07-29
 README-FIRST.md
 CONTEXT/SPECIFICATIONS/MAESTRO_OPUS_OWASYS_GLOBAL_DEVELOPMENT_RULES_2026-07-24.md
 CONTEXT/PROJECTS/OPUS/OPUS_SITE_STANDARD_CONTRACT.md
-CONTEXT/SPECIFICATIONS/OPUS_P117W_R31_STANDARD_OPUS_REST_API_COMPOSER_EXCHANGE_2026-07-29.md
-CONTEXT/SPECIFICATIONS/OPUS_P117W_R32_LOCALE_PRESERVATION_AND_FAST_COMPOSER_DISPATCH_2026-07-29.md
-CONTEXT/SPECIFICATIONS/OPUS_P117W_R33_SOURCE_LOCALE_ROUTE_SCOPE_FIX_2026-07-29.md
-CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OPUS_P117W_R33_SOURCE_LOCALE_ROUTE_SCOPE_FIX_2026-07-29.md
+CONTEXT/SPECIFICATIONS/OPUS_P117W_R34_FSM_RUNTIME_ASAP_COMPLIANCE_2026-07-29.md
+CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OPUS_P117W_R34_FSM_RUNTIME_ASAP_COMPLIANCE_2026-07-29.md
 CONTEXT/PROJECTS/OPUS_CURRENT_STATE.md
 ```
 
@@ -20,53 +18,23 @@ CONTEXT/PROJECTS/OPUS_CURRENT_STATE.md
 ```text
 Dépôt OPUS : philstephibanez-wq/OPUS
 Branche : master
-Base relue : 8b186cbaa0938cd4c89666eac46bf9f4221ba71a
-R29 : présent sur master
-R30 : invalidé, ne pas appliquer
-R31 : API REST OPUS standard, à appliquer
-R32 : conservation de locale et dispatch Composer in-process, à appliquer après R31
-R33 : correctif obligatoire du TypeError Source après R32
+Base relue : 47c5bb1d667a43a61ae35ec3465accc29d42f54c
+Racine owner : H:\OPUS
+Prérequis : R31 + R32 + R33
 ```
 
-## Contrat actif
+## R34
+
+R34 restaure la FSM OPUS conforme au microprocesseur ASAP :
 
 ```text
-owasys-front
--> API REST OPUS sécurisée fondée sur des ressources
--> owasys-back
--> script Composer métier allow-listé
--> provider métier
--> résultat structuré
--> réponse HTTP
--> owasys-front
+state + memory + stack
+peek + poke + push + pop
+FIFO par défaut / LIFO explicite
+exact -> __any__ état -> global déclaré -> __default__ déclaré
 ```
 
-Interdire `/api/v1/executions` et les abstractions `Rcp*` dans la chaîne active. Appliquer GET, POST, PUT, PATCH et DELETE selon le CRUD.
-
-R32 conserve la ressource Source pendant un changement de locale et supprime le redémarrage coûteux de `composer.phar` à chaque échange.
-
-R33 corrige la régression de portée introduite dans R32 : `OwasysSourceController::render()` doit construire la route localisée depuis `$selectedPath`, disponible dans cette méthode, et non depuis `$sourcePath`, variable locale de `run()`.
-
-## Incident owner et preuve
-
-```text
-Trace frontend : 66742282ed38c98e
-Erreur : TypeError
-Fichier : sites/owasys-front/application/source/controllers/SourceController.php
-Ligne : 181
-Backend source.list : succeeded
-Mode Composer : in_process
-Durée Composer observée : 238.401 ms
-```
-
-## Livrable actif
-
-```text
-ZIP : opus_p117w_r33_source_locale_route_scope_fix.zip
-Base : R31 puis R32
-SHA-256 : ea4dca1a3c71144122840741204e62c12b8843c7d50dd5fa870e80f9143a954e
-Fichiers : 1
-```
+OWASYS Source transmet `open_source_file` et `change_locale` à la FSM. Le script courant et la locale sont mémorisés dans la FSM. L’URL et SCORE dérivent de cet état. Le navigateur n’utilise plus `history.pushState()` et ne possède plus un état parallèle.
 
 ## Lancement
 
@@ -75,8 +43,8 @@ composer opus:dev-server -- owasys-back
 composer opus:dev-server -- owasys-front
 ```
 
-NO CONTRACT, NO PATCH.  
-NO SOURCE OF TRUTH, NO PATCH.  
-TOUJOURS TRAITER LA CAUSE.  
-NO FALLBACK SILENCIEUX.  
+NO CONTRACT, NO PATCH.
+NO SOURCE OF TRUTH, NO PATCH.
+TOUJOURS TRAITER LA CAUSE.
+NO FALLBACK SILENCIEUX.
 NO DELIVERY ROOT POLLUTION.
