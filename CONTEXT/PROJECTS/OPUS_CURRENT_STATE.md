@@ -19,15 +19,18 @@ Racine owner : H:/OPUS
 - R42 : serveur de développement générique appliqué.
 - `sites/opus-demo` supprimé par l’owner.
 - R43 : assistant transactionnel appliqué et poussé avec exactement 39 fichiers.
+- R44 : recette réelle exécutée jusqu’à l’étape Sécurité ; aucune mutation, aucun POST backend et aucun site partiel.
 - `owasys-front` et `owasys-back` restent les deux seules applications OWASYS.
 
-## Action active — R44
+## Défaut actif — R44A
 
-Valider en runtime le workflow `basics -> security -> review -> mutation`, puis créer depuis OWASYS un site fullstack neuf et minimal.
+R43 perd les valeurs soumises lors d’une validation Sécurité, classe l’erreur comme refus backend et ne trace pas ce refus local.
 
-Le site attendu contient uniquement l’accueil et, si demandé, le login. Il initialise les langues UE + ukrainien et respecte Singleton, FSM, I18n, ACL deny-by-default, SSO, SCORE, Logger et Profiler.
+Le ZIP R44A corrige à la source `owasys-front` : conservation des saisies, erreurs I18n par champ et diagnostics Logger/Profiler sans donnée brute ni appel REST/Composer.
 
-Tout défaut ouvre un correctif générique OPUS/OWASYS. Le site généré n’est jamais corrigé manuellement.
+## Action active
+
+L’owner applique et valide R44A, répète le cas en échec, puis reprend R44 jusqu’à la création d’un site fullstack neuf et minimal.
 
 ## Invariants
 
