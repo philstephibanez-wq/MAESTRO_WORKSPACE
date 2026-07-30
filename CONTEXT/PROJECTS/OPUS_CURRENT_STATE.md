@@ -1,42 +1,40 @@
 # OPUS CURRENT STATE
 
-Dernière mise à jour : 2026-07-30.
+Dernière mise à jour : 2026-07-31.
 
 ## Dépôt
 
 ```text
 Dépôt : philstephibanez-wq/OPUS
 Branche : master
-HEAD relu : 63470fb43c4b692eea2d7db2c0be5f6086008d1a
+HEAD owner de base relu : 63470fb43c4b692eea2d7db2c0be5f6086008d1a
 Racine owner : H:/OPUS
 ```
 
 ## État acquis
 
-- R38 : création layered supprimée.
-- R39 : stockage REST replay fichier supprimé.
-- R40 : ancien `sites/demo-opus` supprimé.
 - R42 : serveur de développement générique appliqué.
-- `sites/opus-demo` supprimé par l’owner.
-- R43 : assistant transactionnel appliqué et poussé avec exactement 39 fichiers.
-- R44 : recette réelle exécutée jusqu’à l’étape Sécurité ; aucune mutation, aucun POST backend et aucun site partiel.
-- `owasys-front` et `owasys-back` restent les deux seules applications OWASYS.
+- R43 : assistant transactionnel appliqué et poussé.
+- R44A : diagnostics de validation livrés.
+- R44B : choix obligatoire frontend/backend/fullstack restauré.
+- La création fullstack anonyme de `owasys-test` réussit : REST `201`, Composer et Registry validés.
+- La lecture REST de `layout.score` et `footer.score` réussit en `200`.
 
-## Défaut actif — R44A
+## Défaut actif — R44C
 
-R43 perd les valeurs soumises lors d’une validation Sécurité, classe l’erreur comme refus backend et ne trace pas ce refus local.
+Le navigateur de sources rend d'abord la page puis réinjecte son HTML dans le layout SCORE. Les délimiteurs du source affiché sont alors interprétés une seconde fois.
 
-Le ZIP R44A corrige à la source `owasys-front` : conservation des saisies, erreurs I18n par champ et diagnostics Logger/Profiler sans donnée brute ni appel REST/Composer.
+Le ZIP cumulatif R44C rend le fragment opaque pendant le rendu du layout et enrichit Logger/Profiler avec le code OPUS/OWASYS/SCORE sûr extrait de la chaîne d'exceptions.
 
 ## Action active
 
-L’owner applique et valide R44A, répète le cas en échec, puis reprend R44 jusqu’à la création d’un site fullstack neuf et minimal.
+L'owner applique et valide R44C, rouvre les deux scripts SCORE, puis reprend la recette R44. Aucune correction manuelle de `owasys-test`.
 
 ## Invariants
 
 - toute mutation OWASYS traverse REST sécurisé puis Composer ;
-- aucune mutation avant confirmation ;
 - SCORE uniquement, sans mélange HTML/PHP ;
-- backend OWASYS exclusivement PHP ;
-- aucune scorie après rollback ;
-- l’assistant ne committe ni ne pousse OPUS/OWASYS.
+- contenu source opaque et échappé ;
+- JavaScript uniquement progressif ;
+- Logger/Profiler corrélés sans secret ;
+- l'assistant ne committe ni ne pousse OPUS/OWASYS.
