@@ -1,6 +1,6 @@
 # CURRENT HANDOFF — MAESTRO WORKSPACE
 
-Date : 2026-07-26
+Date : 2026-07-30
 
 ## Lire
 
@@ -8,122 +8,52 @@ Date : 2026-07-26
 README-FIRST.md
 CONTEXT/SPECIFICATIONS/MAESTRO_OPUS_OWASYS_GLOBAL_DEVELOPMENT_RULES_2026-07-24.md
 CONTEXT/PROJECTS/OPUS/OPUS_SITE_STANDARD_CONTRACT.md
-CONTEXT/SPECIFICATIONS/OPUS_P117W_R4_FRONT_COMPOSER_REGISTRY_CLEAN_SITE_SPEC_2026-07-26.md
-CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OPUS_P117W_R4_FRONT_COMPOSER_REGISTRY_2026-07-26.md
+CONTEXT/SPECIFICATIONS/OPUS_P117W_R38_REMOVE_LAYERED_CREATION_AND_REGISTRY_SPLIT_BRAIN_2026-07-29.md
+CONTEXT/SPECIFICATIONS/OPUS_P117W_R39_OWNER_REMOVE_REST_REPLAY_STORE_2026-07-29.md
+CONTEXT/SPECIFICATIONS/OPUS_P117W_R40_OWNER_REMOVE_DEMO_OPUS_LAYERED_RESIDUE_2026-07-30.md
+CONTEXT/SPECIFICATIONS/OPUS_P117W_R41_OWASYS_FULLSTACK_CREATION_ACCEPTANCE_2026-07-30.md
+CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OPUS_P117W_R41_FULLSTACK_CREATION_2026-07-30.md
 CONTEXT/PROJECTS/OPUS_CURRENT_STATE.md
 ```
 
-## Source
+## Source canonique
 
 ```text
 Dépôt OPUS : philstephibanez-wq/OPUS
-Branche : master
-HEAD Git : 4fb3a92605f14d84b8060ff36fde78828da49273
-Racine owner : H:\OPUS
-État local : P117W initial et P117W R3 appliqués
+Branche    : master
+HEAD owner : a93d9dd11d76fd17e4444ddb32c086d71cd74521
+Racine     : H:\OPUS
 ```
 
-## Conserver deux applications propres
+## État acquis
+
+- R38 : génération layered supprimée ;
+- R39 : stockage REST replay non borné supprimé par l’owner ;
+- R40 : `sites/demo-opus` supprimé, validations OWASYS et Registry réussies ;
+- exactement deux applications OWASYS autonomes : `owasys-front` et `owasys-back`.
+
+## Action active — R41
+
+Créer depuis OWASYS un nouveau site de profil `fullstack`, puis le conserver comme nouvelle base applicative.
 
 ```text
-sites/owasys-front
-sites/owasys-back
+owasys-front -> REST sécurisé -> owasys-back -> Composer opus:create-site
+-> scaffold OPUS autonome -> registry.sync -> sélection -> Construction
 ```
 
-Supprimer toute racine partagée et tout partage de fichiers entre les deux bastions.
+Le site doit être plat sous `sites/<application-id>/{application,config,www}`. Toute couche `application/shared`, `application/front`, `application/back` ou clé `application_layers` est interdite.
 
-Réaliser exclusivement :
+Aucun patch OPUS/OWASYS n’est actif avant l’essai owner. En cas d’échec, diagnostiquer le premier défaut corrélé par `trace_id` et livrer un ZIP différentiel fondé sur le HEAD exact. Ne pas demander de diagnostics locaux pour des fichiers accessibles sur GitHub.
+
+## Autorité
 
 ```text
-owasys-front -> REST sécurisé -> owasys-back -> Composer allow-listé
+Assistant : MAESTRO_WORKSPACE + ZIP différentiel seulement
+Owner     : application, validation, commit et push OPUS/OWASYS
 ```
-
-## Identifier le blocage actuel
-
-```text
-OPUS_APPLICATION_COMMAND_REGISTRY_SITE_INVALID:sites/owasys-front/config/composer.commands.json
-```
-
-La migration P117W initiale a copié dans le frontend le registre Composer de l'ancien site `owasys`.
-
-`ApplicationCommandDispatcher` impose l'égalité entre le `site_id` déclaré et le nom de la racine du site. Le registre copié déclare `owasys` dans `sites/owasys-front` et bloque donc toutes les commandes Composer OPUS.
-
-## Corriger
-
-Remplacer uniquement :
-
-```text
-sites/owasys-front/config/composer.commands.json
-```
-
-Déclarer :
-
-```text
-contract  = OPUS_APPLICATION_COMMAND_PROVIDER_REGISTRY_V1
-site_id   = owasys-front
-providers = []
-aliases   = []
-```
-
-Interdire ainsi toute commande Composer applicative locale dans le frontend.
-
-## Statut
-
-```text
-HF10A : rejeté
-HF10B : rejeté
-P117W initial : installé, architecture rejetée
-P117W R1 : rejeté pour présence de tools
-P117W R2 : rejeté pour présence de scripts opérationnels
-P117W R3 : appliqué, blocage registre Composer détecté
-P117W R4 : livrable actif
-```
-
-## Livrable actif
-
-```text
-ZIP : opus_p117w_r4_fix_front_composer_registry_clean_site.zip
-SHA-256 : 421fbd6d39e01e166b798d5bdee313cb24c39ef8761d62b4fc2ae7edb1dcc7d0
-Fichiers : 1
-Octets : 309
-```
-
-Inclure uniquement :
-
-```text
-sites/owasys-front/config/composer.commands.json
-```
-
-Ne livrer aucun `tools`, aucun répertoire opérationnel, aucune migration, aucun smoke, aucun audit et aucune racine `owasys-shared`.
-
-## Valider
-
-```text
-composer opus:validate-site -- owasys-front
-composer opus:validate-site -- owasys-back
-```
-
-## Lancer
-
-```text
-composer opus:dev-server -- owasys-back --host=127.0.0.1 --port=8000
-composer opus:dev-server -- owasys-front --host=127.0.0.1 --port=8080
-```
-
-Conserver l'identifiant d'application, l'adresse et le port comme arguments variables. Réserver la commande au développement.
-
-## Contrats
-
-- faire implémenter son interface homonyme par toute classe concrète sous `Opus/**/*.php` ;
-- faire étendre chaque interface homonyme par les quatre marqueurs standards ;
-- lire toute configuration via `File` et `StructuredFileLoader` ;
-- rendre uniquement via SCORE côté front ;
-- interdire toute mutation métier et toute exécution Composer locale côté front ;
-- faire passer toute mutation par REST sécurisé puis Composer côté back ;
-- imposer Logger et Profiler dans les deux applications ;
-- interdire tout fallback silencieux.
 
 NO CONTRACT, NO PATCH.  
 NO SOURCE OF TRUTH, NO PATCH.  
+TOUJOURS TRAITER LA CAUSE.  
 NO FALLBACK SILENCIEUX.  
-NO DELIVERY ROOT POLLUTION.
+NO SHARED LAYER.
