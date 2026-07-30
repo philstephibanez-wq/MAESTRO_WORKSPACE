@@ -1,6 +1,6 @@
 # CURRENT HANDOFF — MAESTRO WORKSPACE
 
-Date : 2026-07-29
+Date : 2026-07-30
 
 ## Lire
 
@@ -12,6 +12,8 @@ CONTEXT/SPECIFICATIONS/OPUS_P117W_R38_REMOVE_LAYERED_CREATION_AND_REGISTRY_SPLIT
 CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OPUS_P117W_R38_REMOVE_LAYERED_CREATION_2026-07-29.md
 CONTEXT/SPECIFICATIONS/OPUS_P117W_R39_OWNER_REMOVE_REST_REPLAY_STORE_2026-07-29.md
 CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OPUS_P117W_R39_OWNER_2026-07-29.md
+CONTEXT/SPECIFICATIONS/OPUS_P117W_R40_OWNER_REMOVE_DEMO_OPUS_LAYERED_RESIDUE_2026-07-30.md
+CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OPUS_P117W_R40_OWNER_REMOVE_DEMO_OPUS_2026-07-30.md
 ```
 
 ## Base restaurée
@@ -53,6 +55,27 @@ Owner     : appliquer, valider, committer et pousser OPUS/OWASYS
 ```
 
 Ne jamais demander à l’owner de tirer un commit OPUS produit par l’assistant.
+
+## R40 owner — nettoyage layered restant
+
+La cible prévue par le nettoyage R38 est maintenant identifiée sur GitHub :
+
+```text
+sites/demo-opus
+```
+
+Au HEAD OPUS owner R39
+`d8e72130dbb932df6babd38fd3b0048fcd38405d`, c’est le seul site sous
+`sites/*/config/site.json` portant `OPUS_SITE_LAYERED_CONTRACT_V2` ou
+`application_layers`. Il bloque correctement `registry-sync`.
+
+Décision :
+
+- supprimer intégralement `sites/demo-opus` ;
+- ne pas le migrer ;
+- ne pas modifier le Registry pour l’ignorer ;
+- valider puis committer et pousser exclusivement par l’owner ;
+- aucun ZIP, car cette étape ne contient que des suppressions explicites.
 
 NO CONTRACT, NO PATCH.
 NO SOURCE OF TRUTH, NO PATCH.
