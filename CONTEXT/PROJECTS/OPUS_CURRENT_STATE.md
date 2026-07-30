@@ -7,7 +7,7 @@ Dernière mise à jour : 2026-07-30.
 ```text
 Dépôt : philstephibanez-wq/OPUS
 Branche : master
-HEAD relu : a93d9dd11d76fd17e4444ddb32c086d71cd74521
+HEAD relu : cefabc43972adaa454e311a99959ae15b09d9809
 Racine owner : H:/OPUS
 ```
 
@@ -62,11 +62,24 @@ Les couches `application/shared`, `application/front`, `application/back`, le co
 
 Le scaffold inclut Singleton, FSM, ACL deny-by-default, SSO/Auth0-proxy, SCORE, Logger, Profiler, négociation `Accept-Language`, fallback français explicite et les 24 langues officielles de l’Union européenne plus l’ukrainien.
 
-## Priorité active — R41
+## R41 acquis
 
-Créer depuis l’interface OWASYS un nouveau site `fullstack`, vérifier sa synchronisation et sa sélection immédiates dans le Registry, puis conserver sa racine comme nouvelle base applicative.
+Le nouveau site fullstack plat `sites/opus-demo` a été créé depuis OWASYS et
+est conservé comme base applicative.
 
-Aucun patch n’est actif avant cette acceptation runtime owner.
+## Priorité active — R42
+
+Rendre générique la commande locale :
+
+```text
+composer opus:dev-server -- <site> [--host=127.0.0.1 --port=8000]
+```
+
+Le serveur PHP intégré reste réservé au développement. La production reste
+hébergée par Apache, Nginx ou un serveur équivalent.
+
+Le correctif R42 est différentiel et fondé sur le HEAD owner
+`cefabc43972adaa454e311a99959ae15b09d9809`.
 
 ## Contrats permanents
 
