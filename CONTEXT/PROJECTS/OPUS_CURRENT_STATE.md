@@ -1,197 +1,79 @@
 # OPUS CURRENT STATE
 
-Dernière mise à jour : 2026-07-28.
+Dernière mise à jour : 2026-07-30.
 
 ## Dépôt
 
 ```text
 Dépôt : philstephibanez-wq/OPUS
 Branche : master
-HEAD relu : 464b702888314edfab2573e7ebe71d87fc988a33
+HEAD relu : a93d9dd11d76fd17e4444ddb32c086d71cd74521
 Racine owner : H:/OPUS
 ```
 
-## Architecture
+## Architecture OWASYS
 
-Conserver uniquement deux applications OPUS autonomes :
+Conserver exactement deux applications OPUS autonomes :
 
 ```text
 sites/owasys-front
 sites/owasys-back
 ```
 
-Ne partager aucun fichier, dossier, volume, configuration, secret, manifeste ou état runtime.
-
-Réaliser uniquement :
+Flux unique :
 
 ```text
 owasys-front -> REST sécurisé -> owasys-back -> Composer allow-listé
 ```
 
-## Résultats acquis
+Aucun partage de fichiers ou d’état runtime entre les deux bastions. `owasys-back` reste exclusivement PHP et ne contient aucun JavaScript, TypeScript, runtime Node ou gestionnaire de paquets JavaScript.
+
+## État acquis
+
+- R38 : `OpusConsoleApplication` utilise `SiteCommandService`; la création layered et le split-brain Registry sont supprimés.
+- R39 : le stockage REST replay fichier non borné et `sites/owasys-back/var/rest` sont supprimés.
+- R40 : le site layered résiduel `sites/demo-opus` est supprimé.
+- `owasys-front` et `owasys-back` sont valides.
+- `registry.sync` réussit et découvre les deux applications OWASYS sans doublon.
+
+## Génération canonique
+
+`opus:create-site` accepte les profils :
 
 ```text
-P117W R6  : supprimer le chargement croisé
-P117W R7  : valider les sites propres
-P117W R8  : aligner le contrat d’environnement
-P117W R9  : restaurer I18n et les bindings réseau
-P117W R10 : centraliser dev, test et prod dans config/site.json
-P117W R11 : supprimer l’accès Registry local du frontend
-P117W R12 : lancer sans préparation manuelle de secrets en dev
-P117W R13 : lire host et port depuis la configuration
-P117W R14 : cibler le provider Composer backend
-P117W R15 : restaurer la FSM frontend canonique
-P117W R16 : restaurer les alias de commandes applicatives
-P117W R17 : conserver un Logger et un Profiler par application
-P117W R18 : conserver la cause interne des erreurs Console
-P117W R19 : supprimer les vestiges locaux owasys_old*
-P117W R20 : restaurer les quatre opérations backend perdues
-P117W R21 : restaurer le navigateur Source via REST, Composer et SCORE
-P117W R22 : réconcilier SQLite avec les sites physiques canoniques
+frontend
+backend
+fullstack
 ```
 
-## Runtime confirmé avant R22
-
-```text
-owasys-front : 127.0.0.1:8000
-owasys-back  : 127.0.0.1:8080
-registry.sync : exit_code 0
-frontend /fr-FR/applications : request.completed
-```
-
-## Logger et Profiler
-
-Conserver exactement :
-
-```text
-sites/owasys-front/var/logs/owasys-front.log
-sites/owasys-front/var/profiler/owasys-front.jsonl
-sites/owasys-back/var/logs/owasys-back.log
-sites/owasys-back/var/profiler/owasys-back.jsonl
-```
-
-## P117W R21 — Source Browser
-
-La fonction historique de navigation du code source est restaurée sans reprendre l’ancienne architecture interdite.
-
-Flux :
-
-```text
-SCORE frontend
--> FSM + I18n + ACL + SSO
--> REST sécurisé
--> backend Source provider
--> Composer allow-listé
--> SiteSourceInspector OPUS
--> résultat structuré
--> SCORE
-```
-
-Le frontend ne lit jamais le filesystem et reste exploitable sans JavaScript obligatoire.
-
-## P117W R22 — Registry physique
-
-Cause corrigée : SQLite conservait les applications supprimées parce que la synchronisation réalisait uniquement des UPSERT et ignorait le contrat courant `OPUS_SITE_STANDARD_CONTRACT_CORE`.
-
-La synchronisation réalise désormais dans une transaction atomique :
-
-```text
-migration sûre du schéma
-import du seed
-découverte déterministe des sites physiques
-sélection des racines canoniques
-UPSERT des sites canoniques
-comparaison SQLite id + root_path avec les couples physiques
-suppression des lignes obsolètes
-effacement du contexte courant seulement s’il est obsolète
-commit ou rollback explicite
-```
-
-Résultat exposé :
-
-```text
-stale_removed
-stale_ids
-stale_context_cleared
-```
-
-## Racine des applications créées avec OWASYS
-
-Racine owner en développement :
-
-```text
-H:\OPUS\sites\<application-id>\
-```
-
-Chemin relatif canonique :
+Toute application générée est autonome et plate :
 
 ```text
 sites/<application-id>/
+  application/
+  config/
+  www/
 ```
 
-Règles :
+Contrat : `OPUS_SITE_STANDARD_CONTRACT_CORE`.  
+Rôle : `generated-opus-application`.
 
-```text
-un niveau directement sous sites/
-identifiant identique au nom du répertoire
-aucun chemin fourni par le navigateur
-aucune racine sous owasys-front, owasys-back, var ou un temporaire
-création uniquement via REST sécurisé puis Composer opus:create-site
-échec explicite si la racine existe déjà
-```
+Les couches `application/shared`, `application/front`, `application/back`, le contrat `OPUS_SITE_LAYERED_CONTRACT_V2` et la clé `application_layers` sont interdits.
 
-Le déplacement futur vers des dépôts autonomes nécessitera un nouveau contrat OPUS de stockage et de résolution.
+Le scaffold inclut Singleton, FSM, ACL deny-by-default, SSO/Auth0-proxy, SCORE, Logger, Profiler, négociation `Accept-Language`, fallback français explicite et les 24 langues officielles de l’Union européenne plus l’ukrainien.
 
-## Validation owner R22
+## Priorité active — R41
 
-```text
-cd /d H:\OPUS
-php -l sites\owasys-back\application\registry\repositories\RegistryRepository.php
-composer dump-autoload -o
-composer opus:validate-site -- owasys-front
-composer opus:validate-site -- owasys-back
-git status --short
-```
+Créer depuis l’interface OWASYS un nouveau site `fullstack`, vérifier sa synchronisation et sa sélection immédiates dans le Registry, puis conserver sa racine comme nouvelle base applicative.
 
-Lancer les deux applications, puis ouvrir :
+Aucun patch n’est actif avant cette acceptation runtime owner.
 
-```text
-http://127.0.0.1:8000/fr-FR/applications
-```
+## Contrats permanents
 
-Premier chargement attendu :
-
-```text
-applications visibles : owasys-back, owasys-front
-owasys / sites/owasys_old : absent
-stale_removed : 1
-stale_ids : [owasys]
-```
-
-Chargements suivants :
-
-```text
-stale_removed : 0
-```
-
-## Statut
-
-```text
-P117W R6 à R22 : présents sur OPUS/master
-Prochaine étape : validation runtime owner de R22 puis poursuite fonctionnelle
-```
-
-## Contrats framework
-
-Faire implémenter son interface homonyme par toute classe concrète sous `Opus/**/*.php`.
-
-Faire étendre directement chaque interface homonyme par :
-
-```text
-OpusFrameworkComponentInterface
-OpusExceptionAwareInterface
-OpusProfilerAwareInterface
-OpusSelfDocumentingInterface
-```
-
-Lire toute configuration via `File` et `StructuredFileLoader`. Imposer Logger et Profiler. Interdire tout fallback silencieux.
+- toute classe concrète `Opus/**/*.php` implémente son interface homonyme à quatre marqueurs ;
+- toute configuration passe par `File` et `StructuredFileLoader` ;
+- SCORE uniquement pour l’UI ;
+- Logger et Profiler obligatoires ;
+- aucun fallback silencieux ;
+- toute mutation OWASYS traverse REST sécurisé puis Composer ;
+- l’assistant ne committe ni ne pousse OPUS/OWASYS.
