@@ -8,8 +8,8 @@ Date : 2026-07-30
 README-FIRST.md
 CONTEXT/SPECIFICATIONS/MAESTRO_OPUS_OWASYS_GLOBAL_DEVELOPMENT_RULES_2026-07-24.md
 CONTEXT/PROJECTS/OPUS/OPUS_SITE_STANDARD_CONTRACT.md
-CONTEXT/SPECIFICATIONS/OPUS_P117W_R43_TRANSACTIONAL_CREATION_WIZARD_2026-07-30.md
-CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OPUS_P117W_R43_TRANSACTIONAL_CREATION_WIZARD_2026-07-30.md
+CONTEXT/SPECIFICATIONS/OPUS_P117W_R44_TRANSACTIONAL_CREATION_ACCEPTANCE_2026-07-30.md
+CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OPUS_P117W_R44_TRANSACTIONAL_CREATION_ACCEPTANCE_2026-07-30.md
 CONTEXT/PROJECTS/OPUS_CURRENT_STATE.md
 ```
 
@@ -18,26 +18,25 @@ CONTEXT/PROJECTS/OPUS_CURRENT_STATE.md
 ```text
 Dépôt OPUS : philstephibanez-wq/OPUS
 Branche : master
-Base owner : 98842dba015402af7e8b3421e62032236c2d8f30
+HEAD owner : 63470fb43c4b692eea2d7db2c0be5f6086008d1a
 Racine owner : H:\OPUS
 ```
 
-## Action active — R43
+## État acquis
 
-Appliquer et valider le ZIP différentiel `opus_p117w_r43_transactional_creation_wizard.zip`.
+R43 est appliqué et poussé par l’owner. Le commit contient exactement les 39 fichiers du différentiel transactionnel.
 
-```text
-39 fichiers
-SHA-256 : 7571c469a16cc0d14245534d0da05505465764e6171dd955ae987a2ce66f0b51
-```
+## Action active — R44
 
-R43 remplace le formulaire immédiat par un assistant FSM transactionnel avec récapitulatif, blueprint non sensible, site minimal, langues UE + ukrainien et rollback explicite.
+Exécuter la recette réelle depuis OWASYS et créer un nouveau site fullstack minimal. Vérifier l’absence de mutation avant confirmation, l’accueil unique, le login optionnel, les langues UE + ukrainien, FSM/SCORE/ACL/SSO, Logger/Profiler, le Registry et le rollback.
+
+Aucune correction manuelle du site généré.
 
 ## Autorité
 
 ```text
-Assistant : MAESTRO_WORKSPACE + ZIP différentiel
-Owner : application, validation, commit et push OPUS/OWASYS
+Assistant : MAESTRO_WORKSPACE + ZIP différentiel si défaut
+Owner : recette runtime, application, validation, commit et push OPUS/OWASYS
 ```
 
 NO CONTRACT, NO PATCH.  
