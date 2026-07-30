@@ -35,7 +35,7 @@ Le différentiel :
 
 SHA-256 :
 
-`edd034f09379ee30f4c82a7b5c757a60927050da0bd805f2ad19dba778d97eb5`
+`880ec41d556058fb8b51fe16174b5ce3cf8c76d9d4558f3d1151d9550c46bcb2`
 
 Le ZIP contient 28 fichiers complets : le contrôleur, le template SCORE et 26 catalogues présents (`fr-FR` compris), sans cache, log, profiler, outil, script ou dépendance.
 
