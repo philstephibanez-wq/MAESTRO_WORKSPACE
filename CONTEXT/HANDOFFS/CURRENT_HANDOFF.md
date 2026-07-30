@@ -13,6 +13,8 @@ CONTEXT/SPECIFICATIONS/OPUS_P117W_R39_OWNER_REMOVE_REST_REPLAY_STORE_2026-07-29.
 CONTEXT/SPECIFICATIONS/OPUS_P117W_R40_OWNER_REMOVE_DEMO_OPUS_LAYERED_RESIDUE_2026-07-30.md
 CONTEXT/SPECIFICATIONS/OPUS_P117W_R41_OWASYS_FULLSTACK_CREATION_ACCEPTANCE_2026-07-30.md
 CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OPUS_P117W_R41_FULLSTACK_CREATION_2026-07-30.md
+CONTEXT/SPECIFICATIONS/OPUS_P117W_R42_GENERIC_DEVELOPMENT_SERVER_2026-07-30.md
+CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OPUS_P117W_R42_GENERIC_DEVELOPMENT_SERVER_2026-07-30.md
 CONTEXT/PROJECTS/OPUS_CURRENT_STATE.md
 ```
 
@@ -21,7 +23,7 @@ CONTEXT/PROJECTS/OPUS_CURRENT_STATE.md
 ```text
 Dépôt OPUS : philstephibanez-wq/OPUS
 Branche    : master
-HEAD owner : a93d9dd11d76fd17e4444ddb32c086d71cd74521
+HEAD owner : cefabc43972adaa454e311a99959ae15b09d9809
 Racine     : H:\OPUS
 ```
 
@@ -32,18 +34,22 @@ Racine     : H:\OPUS
 - R40 : `sites/demo-opus` supprimé, validations OWASYS et Registry réussies ;
 - exactement deux applications OWASYS autonomes : `owasys-front` et `owasys-back`.
 
-## Action active — R41
+## Action active — R42
 
-Créer depuis OWASYS un nouveau site de profil `fullstack`, puis le conserver comme nouvelle base applicative.
+Appliquer le correctif générique du serveur de développement, puis valider :
 
 ```text
-owasys-front -> REST sécurisé -> owasys-back -> Composer opus:create-site
--> scaffold OPUS autonome -> registry.sync -> sélection -> Construction
+composer opus:dev-server -- opus-demo
+composer opus:dev-server -- opus-demo --host=127.0.0.1 --port=8000
 ```
 
-Le site doit être plat sous `sites/<application-id>/{application,config,www}`. Toute couche `application/shared`, `application/front`, `application/back` ou clé `application_layers` est interdite.
+`php -S` reste exclusivement local et temporaire. La production reste sous
+Apache, Nginx ou un autre serveur web avec document root
+`sites/<application-id>/www`.
 
-Aucun patch OPUS/OWASYS n’est actif avant l’essai owner. En cas d’échec, diagnostiquer le premier défaut corrélé par `trace_id` et livrer un ZIP différentiel fondé sur le HEAD exact. Ne pas demander de diagnostics locaux pour des fichiers accessibles sur GitHub.
+Le ZIP R42 remplace uniquement
+`Opus/Console/Service/SiteCommandService.php`. Aucun fichier propre à
+`opus-demo`, `owasys-front` ou `owasys-back` n’est modifié.
 
 ## Autorité
 
