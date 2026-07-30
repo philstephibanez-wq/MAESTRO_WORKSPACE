@@ -11,61 +11,37 @@ HEAD relu : 98842dba015402af7e8b3421e62032236c2d8f30
 Racine owner : H:/OPUS
 ```
 
-## Architecture OWASYS
-
-Conserver exactement deux applications OPUS autonomes :
-
-```text
-sites/owasys-front
-sites/owasys-back
-```
-
-Flux unique :
-
-```text
-owasys-front -> REST sécurisé -> owasys-back -> Composer allow-listé
-```
-
-Aucun partage de fichiers ou d’état runtime entre les deux bastions. `owasys-back` reste exclusivement PHP, sans JavaScript, TypeScript, Node ou gestionnaire de paquets JavaScript.
-
 ## État acquis
 
-- R38 : création layered et split-brain Registry supprimés.
+- R38 : création layered supprimée.
 - R39 : stockage REST replay fichier supprimé.
-- R40 : ancien `sites/demo-opus` layered supprimé.
-- R42 : `opus:dev-server -- <site> [--host --port]` rendu générique pour le développement au commit `bbac194f`.
-- `sites/opus-demo` créé par R41 a été supprimé par l’owner au commit `98842dba`.
-- Aucun site généré n’est actuellement retenu comme base.
-- `owasys-front` et `owasys-back` restent les deux seules applications OWASYS.
+- R40 : ancien `sites/demo-opus` supprimé.
+- R42 : serveur de développement générique appliqué.
+- `sites/opus-demo` supprimé par l’owner.
+- `owasys-front` et `owasys-back` sont les deux seules applications OWASYS.
 
-## Cause active — R43
+## Action active — R43
 
-Le formulaire OWASYS `new` ne collecte que `site_id` et `profile`, puis appelle directement `site.create`. Le scaffold génère plusieurs modules/pages techniques. Il ne collecte ni login, ni fournisseur SSO, ni utilisateurs, ni rôles, ni permissions, ni ACL, et n’offre aucun récapitulatif.
+Livrable différentiel prêt :
 
-## Cible R43
+```text
+opus_p117w_r43_transactional_creation_wizard.zip
+39 fichiers
+SHA-256 : 7571c469a16cc0d14245534d0da05505465764e6171dd955ae987a2ce66f0b51
+```
 
-OWASYS devient un assistant FSM transactionnel :
+R43 introduit l’assistant FSM basics/security/review, le blueprint non sensible, la collecte auth/login/SSO/utilisateurs/rôles/permissions/ACL, la création minimale, les langues UE + ukrainien, le login local optionnel et le rollback explicite.
 
-- accueil unique ;
-- login uniquement si demandé ;
-- 24 langues officielles UE plus ukrainien ;
-- locale navigateur et fallback français explicite ;
-- choix SSO, utilisateurs initiaux, rôles, permissions et ACL ;
-- récapitulatif avant mutation ;
-- blueprint typé non sensible ;
-- création atomique avec rollback ;
-- validation OPUS et synchronisation Registry ;
-- aucune page technique préfabriquée.
+## Suite
 
-Les pages ultérieures suivent un workflow atomique : page, route, FSM, contrôleur/ViewModel, SCORE, navigation, ACL et I18n.
+L’owner applique le ZIP sur `H:\OPUS`, exécute les validations PHP/Composer/OWASYS, recrée un site depuis OWASYS et vérifie qu’il ne contient que l’accueil plus le login éventuellement demandé.
 
-## Contrats permanents
+Les pages ultérieures devront être ajoutées par un workflow atomique corrélant page, route, FSM, contrôleur/ViewModel, SCORE, navigation, ACL et I18n.
 
-- toute classe concrète `Opus/**/*.php` implémente son interface homonyme à quatre marqueurs ;
-- toute configuration passe par File et StructuredFileLoader ;
-- SCORE uniquement pour l’UI ;
-- Logger et Profiler obligatoires ;
-- aucun fallback silencieux ;
+## Invariants
+
 - toute mutation OWASYS traverse REST sécurisé puis Composer ;
-- l’assistant ne committe ni ne pousse OPUS/OWASYS ;
-- `php -S` reste réservé au développement ; production sous Apache, Nginx ou équivalent.
+- SCORE uniquement, sans mélange HTML/PHP ;
+- ACL deny-by-default, SSO, FSM, I18n, Logger et Profiler ;
+- backend OWASYS exclusivement PHP ;
+- l’assistant ne committe ni ne pousse OPUS/OWASYS.
