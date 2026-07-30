@@ -9,7 +9,8 @@ README-FIRST.md
 CONTEXT/SPECIFICATIONS/MAESTRO_OPUS_OWASYS_GLOBAL_DEVELOPMENT_RULES_2026-07-24.md
 CONTEXT/PROJECTS/OPUS/OPUS_SITE_STANDARD_CONTRACT.md
 CONTEXT/SPECIFICATIONS/OPUS_P117W_R44_TRANSACTIONAL_CREATION_ACCEPTANCE_2026-07-30.md
-CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OPUS_P117W_R44_TRANSACTIONAL_CREATION_ACCEPTANCE_2026-07-30.md
+CONTEXT/SPECIFICATIONS/OPUS_P117W_R44A_CREATION_VALIDATION_DIAGNOSTICS_FIX_2026-07-30.md
+CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OPUS_P117W_R44A_CREATION_VALIDATION_DIAGNOSTICS_FIX_2026-07-30.md
 CONTEXT/PROJECTS/OPUS_CURRENT_STATE.md
 ```
 
@@ -24,19 +25,19 @@ Racine owner : H:\OPUS
 
 ## État acquis
 
-R43 est appliqué et poussé par l’owner. Le commit contient exactement les 39 fichiers du différentiel transactionnel.
+R43 est appliqué. R44 a identifié une validation Sécurité masquée côté `owasys-front`, avant REST/Composer, sans création partielle.
 
-## Action active — R44
+## Action active — R44A
 
-Exécuter la recette réelle depuis OWASYS et créer un nouveau site fullstack minimal. Vérifier l’absence de mutation avant confirmation, l’accueil unique, le login optionnel, les langues UE + ukrainien, FSM/SCORE/ACL/SSO, Logger/Profiler, le Registry et le rollback.
+Appliquer et valider le ZIP différentiel de correction des validations. Vérifier la conservation des saisies, l’erreur I18n au champ, la trace Logger/Profiler et l’absence totale de REST/Composer avant le récapitulatif.
 
-Aucune correction manuelle du site généré.
+Reprendre ensuite la recette R44 complète. Aucune correction manuelle d’un site généré.
 
 ## Autorité
 
 ```text
-Assistant : MAESTRO_WORKSPACE + ZIP différentiel si défaut
-Owner : recette runtime, application, validation, commit et push OPUS/OWASYS
+Assistant : MAESTRO_WORKSPACE + ZIP différentiel
+Owner : application, validation, commit et push OPUS/OWASYS
 ```
 
 NO CONTRACT, NO PATCH.  
