@@ -12,7 +12,7 @@ Racine owner : H:/OPUS
 Workspace : philstephibanez-wq/MAESTRO_WORKSPACE
 ```
 
-Le commit OPUS `33f37843` n'est pas encore visible par l'API GitHub. Il doit être poussé avant tout nouveau ZIP fondé sur ce HEAD.
+Le commit OPUS `33f37843` est visible sur GitHub et constitue la base source exacte de R46A1.
 
 ## État acquis
 
@@ -65,9 +65,11 @@ Le panneau OWASYS actuel n'est pas suffisant :
 
 Le framework contient historiquement des briques de Web Profiler et des collecteurs. Il faut les consolider dans OPUS et supprimer toute présentation statique non démontrée.
 
-## Livraison active — R46A
+## Livraison active — R46A1
 
-Définir le modèle générique de trace :
+ZIP construit : `opus_p117w_r46a1_profiler_causal_trace_v2.zip`.
+
+Le modèle générique livré définit :
 
 - trace globale corrélée ;
 - spans parent/enfant ;
@@ -78,7 +80,11 @@ Définir le modèle générique de trace :
 - écriture atomique et rétention bornée ;
 - compatibilité de lecture versionnée ou erreur explicite ;
 - interfaces homonymes aux quatre marqueurs ;
-- smokes génériques.
+- smoke générique couvrant causalité, statuts, masquage récursif et lecture V1.
+
+Le ZIP est structurellement validé. PHP étant indisponible dans l'environnement de construction, le lint et le smoke owner sont obligatoires avant R46B.
+
+R46C utilisera une barre légère intégrée et un panneau détaillé rendu par les SCORE génériques OPUS dans une iframe same-origin, sous FSM et ACL `profiler:view`.
 
 Contrat : `CONTEXT/SPECIFICATIONS/OPUS_DEVELOPER_PROFILER_CONTRACT_2026-07-31.md`.
 
