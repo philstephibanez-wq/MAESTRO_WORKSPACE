@@ -19,7 +19,7 @@ CONTEXT/PROJECTS/OPUS_CURRENT_STATE.md
 
 - OPUS owner validé localement : `33f37843`.
 - R45A1 est appliqué, linté, autoloadé et poussé localement sur `master`.
-- Le commit `33f37843` n'est pas encore visible par l'API GitHub ; ne produire aucun ZIP supplémentaire avant disponibilité de ce HEAD source.
+- Le commit `33f37843` est visible sur GitHub et constitue la base source exacte de R46A1.
 - `test2` est supprimé et ne doit pas être restauré ou corrigé.
 - Le nouveau témoin prévu est `fullstack-test`.
 - Modes exacts : `frontend`, `backend`, `fullstack`.
@@ -50,24 +50,26 @@ Cette présentation n'est pas une preuve d'exécution. Les traces V1 observées 
 
 Le framework possède historiquement des briques de Web Profiler, collecteurs, routes et vues SCORE. Il faut les auditer et les consolider dans un unique Profiler générique plutôt que créer une solution OWASYS locale.
 
-## Livraison active — R46A
+## Livraison active — R46A1
 
 Appliquer le contrat :
 
 `CONTEXT/SPECIFICATIONS/OPUS_DEVELOPER_PROFILER_CONTRACT_2026-07-31.md`
 
-Construire uniquement après visibilité GitHub du HEAD owner exact :
+ZIP construit sur `33f37843` : `opus_p117w_r46a1_profiler_causal_trace_v2.zip`.
 
-1. Définir les objets typés trace, span, événement et statut.
-2. Définir `trace_id`, `span_id` et `parent_span_id`.
-3. Versionner le schéma de trace.
-4. Collecter uniquement des faits réels.
-5. Masquer les données sensibles.
-6. Signaler explicitement les données indisponibles.
-7. Tester succès, warning, error, causalité, durée et mémoire.
-8. Respecter les interfaces homonymes aux quatre marqueurs.
-9. Livrer un ZIP différentiel direct de fichiers complets.
-10. Faire valider par l'owner avant R46B.
+Contenu exact :
+
+1. `Trace` et `Profiler` avec schéma `OPUS_PROFILER_TRACE_V2`.
+2. `trace_id`, `span_id`, `parent_span_id`, événements typés et spans causaux.
+3. Statuts `success`, `warning`, `error`, `unavailable`.
+4. Masquage récursif des données sensibles.
+5. Lecture explicite des schémas V1 et V2.
+6. Interfaces homonymes conservant les quatre marqueurs.
+7. Smoke générique causalité, statuts, masquage et lecture V1.
+8. Validation archive acquise ; lint et smoke PHP owner obligatoires avant R46B.
+
+R46C rendra la barre dans la page et le panneau détaillé via des SCORE génériques OPUS dans une iframe same-origin. L'iframe reste une vue protégée du Profiler, jamais une application autonome.
 
 ## Invariants
 
