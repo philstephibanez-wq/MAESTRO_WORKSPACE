@@ -8,81 +8,42 @@ Date : 2026-07-31
 README-FIRST.md
 CONTEXT/SPECIFICATIONS/MAESTRO_OPUS_OWASYS_GLOBAL_DEVELOPMENT_RULES_2026-07-24.md
 CONTEXT/PROJECTS/OPUS/OPUS_SITE_STANDARD_CONTRACT.md
-CONTEXT/SPECIFICATIONS/OPUS_OWASYS_APPLICATION_CREATION_AND_RESOURCE_SECURITY_CONTRACT_2026-07-31.md
-CONTEXT/AUDITS/OPUS_P117W_R45_GENERATION_AND_RESOURCE_SECURITY_AUDIT_2026-07-31.md
-CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OPUS_P117W_R45A1_ACL_DENY_PRIORITY_2026-07-31.md
 CONTEXT/SPECIFICATIONS/OPUS_DEVELOPER_PROFILER_CONTRACT_2026-07-31.md
+CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OPUS_P117W_R46C1_PROFILER_SCORE_IFRAME_2026-07-31.md
 CONTEXT/PROJECTS/OPUS_CURRENT_STATE.md
 ```
 
-## Base et état acquis
+## Base exacte
 
-- OPUS owner validé localement : `33f37843`.
-- R45A1 est appliqué, linté, autoloadé et poussé localement sur `master`.
-- Le commit `33f37843` est visible sur GitHub et constitue la base source exacte de R46A1.
-- `test2` est supprimé et ne doit pas être restauré ou corrigé.
-- Le nouveau témoin prévu est `fullstack-test`.
-- Modes exacts : `frontend`, `backend`, `fullstack`.
-- `fullstack` signifie frontend SCORE + backend REST dans le même site, même déploiement et même serveur par défaut, tout en restant client-serveur via REST.
-- Aucun concept, profil, dossier ou runtime `shared`.
+- OPUS GitHub : `ecdd12c` — `opus_p117w_r46b1_profiler_rest_collector`.
+- R46A1 validé et poussé.
+- R46B1 présent sur `master`.
+- R46C1 livré, non encore appliqué ni validé owner.
+- Site témoin : `fullstack-test`; ne jamais le corriger directement.
 
-## R45 — Sécurité et génération
+## Livraison active
 
-R45A1 est accepté par l'owner :
+`opus_p117w_r46c1_profiler_score_iframe.zip`  
+SHA-256 : `339db6148b5a8202fcd5c1c0127fa3e2fe6f9b925ed9e047fe8f345034828098`
 
-- appliquer la priorité absolue du deny ;
-- charger la politique ACL via StructuredFileLoader ;
-- valider la syntaxe PHP ;
-- générer l'autoload optimisé ;
-- valider `git diff --check` et un arbre propre.
+R46C1 consolide l'ancien Web Profiler OPUS avec le stockage JSONL V2, sert la route same-origin protégée, rend le SCORE générique et l'affiche dans l'iframe de l'`aside` OWASYS.
 
-R45A2, R45B, R45C et R45D restent requis. Leur implémentation est temporairement suspendue pendant le premier incrément Profiler afin de pouvoir observer honnêtement la suite du wizard fullstack.
+## État à ne pas falsifier
 
-## Écart Profiler constaté
-
-L'écran de création OWASYS affiche actuellement :
-
-- une chaîne statique `front → REST → back → Composer` ;
-- un `trace_id` ;
-- un état FSM.
-
-Cette présentation n'est pas une preuve d'exécution. Les traces V1 observées contiennent seulement `trace.started` et `trace.stopped`, y compris en échec. L'intégration récente code la chaîne de corrélation en dur dans le renderer.
-
-Le framework possède historiquement des briques de Web Profiler, collecteurs, routes et vues SCORE. Il faut les auditer et les consolider dans un unique Profiler générique plutôt que créer une solution OWASYS locale.
-
-## Livraison active — R46A1
-
-Appliquer le contrat :
-
-`CONTEXT/SPECIFICATIONS/OPUS_DEVELOPER_PROFILER_CONTRACT_2026-07-31.md`
-
-ZIP construit sur `33f37843` : `opus_p117w_r46a1_profiler_causal_trace_v2.zip`.
-
-Contenu exact :
-
-1. `Trace` et `Profiler` avec schéma `OPUS_PROFILER_TRACE_V2`.
-2. `trace_id`, `span_id`, `parent_span_id`, événements typés et spans causaux.
-3. Statuts `success`, `warning`, `error`, `unavailable`.
-4. Masquage récursif des données sensibles.
-5. Lecture explicite des schémas V1 et V2.
-6. Interfaces homonymes conservant les quatre marqueurs.
-7. Smoke générique causalité, statuts, masquage et lecture V1.
-8. Validation archive acquise ; lint et smoke PHP owner obligatoires avant R46B.
-
-R46C rendra la barre dans la page et le panneau détaillé via des SCORE génériques OPUS dans une iframe same-origin. L'iframe reste une vue protégée du Profiler, jamais une application autonome.
+- Le ZIP est construit et vérifié structurellement.
+- PHP/Composer ne sont pas disponibles dans l'environnement de construction.
+- L'iframe n'est pas déclarée acquise tant que l'owner n'a pas appliqué le ZIP, exécuté les contrôles et fourni la preuve HTTP/DOM.
+- La barre compacte complète et les douze rubriques contractuelles restent des incréments ultérieurs de R46C.
 
 ## Invariants
 
-- Ne jamais corriger `fullstack-test` directement.
-- Corriger OPUS génériquement, puis OWASYS et le générateur.
-- Utiliser `?profiler=1` uniquement en développement/local.
-- Interdire le Profiler en production.
-- Rendre l'interface du Profiler exclusivement avec SCORE.
-- Piloter le Profiler par FSM et le protéger par ACL.
-- Ne jamais afficher une étape sans événement collecté.
-- Ne partager aucun fichier ou état runtime entre owasys-front et owasys-back.
-- Ne mettre aucun JavaScript dans owasys-back.
-- Ne créer aucun `shared`.
+- OPUS sert la représentation Profiler ; OWASYS n'héberge que l'`aside` et l'iframe.
+- SCORE uniquement ; aucun HTML produit par PHP.
+- `profiler:view` deny-by-default et environnement de développement obligatoire.
+- `frame-ancestors 'self'` et same-origin.
+- Aucun événement absent ne doit être affirmé.
+- Aucun partage de fichiers front/back.
+- Aucun JavaScript dans `owasys-back`.
 
 NO EVENT, NO CLAIM.  
 NO CONTRACT, NO PATCH.  
