@@ -8,57 +8,51 @@ Date : 2026-07-31
 README-FIRST.md
 CONTEXT/SPECIFICATIONS/MAESTRO_OPUS_OWASYS_GLOBAL_DEVELOPMENT_RULES_2026-07-24.md
 CONTEXT/PROJECTS/OPUS/OPUS_SITE_STANDARD_CONTRACT.md
-CONTEXT/SPECIFICATIONS/OPUS_P117W_R44_TRANSACTIONAL_CREATION_ACCEPTANCE_2026-07-30.md
-CONTEXT/SPECIFICATIONS/OPUS_P117W_R44C_OPAQUE_SCORE_SOURCE_RENDERING_2026-07-31.md
 CONTEXT/SPECIFICATIONS/OPUS_OWASYS_APPLICATION_CREATION_AND_RESOURCE_SECURITY_CONTRACT_2026-07-31.md
+CONTEXT/AUDITS/OPUS_P117W_R45_GENERATION_AND_RESOURCE_SECURITY_AUDIT_2026-07-31.md
 CONTEXT/PROJECTS/OPUS_CURRENT_STATE.md
 ```
 
-## État acquis
+## Base et état acquis
 
-- R44C a été poussé par l'owner avec `test2` et le résultat fonctionnel est déclaré satisfaisant.
-- La création fullstack anonyme fonctionne.
-- Le rendu opaque des sources SCORE fonctionne.
-- Les modes sont exactement `frontend`, `backend` et `fullstack`.
-- `fullstack = frontend SCORE + backend REST`, soit une application client-serveur corrélée.
-- Tout concept, profil, dossier ou runtime `shared` est interdit.
-- Le contrat de création et de sécurité des ressources est maintenant canonique.
+- OPUS owner audité : `7dbceea`.
+- R44C est poussé et son chemin transactionnel/rendu opaque est acquis.
+- `test2` est un témoin temporaire déclaré `frontend`, pas une preuve fullstack.
+- `test2` ne doit jamais être corrigé localement ; il sera régénéré après correction du générateur.
+- Modes exacts : `frontend`, `backend`, `fullstack`.
+- `fullstack` signifie frontend SCORE + backend REST dans le même site, même déploiement et même serveur par défaut, tout en restant client-serveur via REST.
+- Aucun concept, profil, dossier ou runtime `shared`.
 
-## Contrat de sécurité acquis
+## Résultat de l'audit R45
 
-Le modèle obligatoire est :
+Le générateur actuel n'est pas conforme :
 
-`identité SSO -> attribution de rôle avec scope -> permissions -> ressource + action -> décision ACL backend`
+- les trois profils reçoivent presque la même arborescence de présentation ;
+- `backend` déclare à tort `presentation: true` et reçoit SCORE/www/assets ;
+- `frontend` n'impose pas de backend cible ;
+- `fullstack` ne génère pas de corrélation REST client-serveur ;
+- rôles et permissions sont des listes globales non associées ;
+- aucune ressource canonique, attribution SSO scopée ou ACL par action n'est générée ;
+- le moteur ACL OPUS riche existe, mais le scaffold ne le câble pas ;
+- le moteur utilise actuellement la dernière règle applicable au lieu de faire prévaloir tout deny ;
+- `ConfigAclPolicy` contourne File + parser structuré.
 
-- identité unique : `provider + subject` ;
-- ressource canonique : `resource:<application_id>:<resource_type>:<resource_id>` ;
-- permissions : `<resource_type>:<action>` ;
-- scopes : application, type de ressource ou ressource précise ;
-- `deny-by-default` et `deny` explicite prioritaire ;
-- héritage uniquement lorsqu'il est déclaré par le type de ressource ;
-- aucune création ni conservation de mot de passe SSO ;
-- toute mutation de sécurité est prévisualisée, confirmée, atomique et auditée.
+## Action active — GO R45A
 
-## Action suivante
+Corriger exclusivement les contrats et le moteur générique OPUS :
 
-Confronter l'implémentation OWASYS/OPUS existante à ce contrat avant toute évolution.
+1. objets contractuels typés pour identité, rôle, permission, ressource, attribution scopée et règle ACL ;
+2. priorité absolue du deny, indépendamment de l'ordre ;
+3. refus explicite sur ressource/action inconnue ;
+4. lecture File + Json/StructuredFileLoader ;
+5. interfaces homonymes étendant les quatre marqueurs pour toute classe concrète ;
+6. smokes génériques prouvant RBAC scopé, CRUD/actions métier, héritage déclaré et deny.
 
-La future évolution doit fournir dans OWASYS :
+R45B scaffold profilé, R45C wizard et R45D espace Sécurité restent bloqués jusqu'à validation owner de R45A.
 
-1. un assistant de création cohérent pour `frontend`, `backend` et `fullstack` ;
-2. les étapes rôles, permissions, ressources/ACL et identités ;
-3. l'espace Sécurité en cinq vues : Identités, Rôles, Permissions, Attributions, Ressources et ACL ;
-4. le calcul de l'autorisation effective côté backend ;
-5. les protections du dernier administrateur, de concurrence, de réauthentification et d'audit.
+## Livraison
 
-Aucun code OPUS/OWASYS ne doit être écrit avant audit du HEAD owner et identification des écarts réels. Tout besoin générique de sécurité doit être traité dans OPUS avant une adaptation OWASYS.
-
-## Autorité
-
-```text
-Assistant : MAESTRO_WORKSPACE + ZIP différentiel
-Owner : application, validation, commit et push OPUS/OWASYS
-```
+L'assistant ne pousse pas OPUS/OWASYS. R45A sera livré en ZIP différentiel de fichiers complets, fondé sur `7dbceea`.
 
 NO CONTRACT, NO PATCH.  
 NO SOURCE OF TRUTH, NO PATCH.  
