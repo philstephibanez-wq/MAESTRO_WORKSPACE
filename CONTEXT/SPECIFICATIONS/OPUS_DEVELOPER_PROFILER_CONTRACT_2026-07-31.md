@@ -152,7 +152,18 @@ Afficher en permanence lorsque le Profiler est activé :
 
 Aucun indicateur ne doit prétendre qu'une opération a eu lieu si son compteur est nul.
 
-### Panneau détaillé
+### Panneau détaillé SCORE dans une iframe
+
+Le panneau détaillé est rendu côté serveur par des SCORE génériques appartenant à OPUS et affiché dans une iframe same-origin ouverte depuis la barre compacte. L'iframe est uniquement une vue du Profiler, jamais une application ou un runtime autonome.
+
+- route dédiée de type `/profiler/trace/<trace_id>` ;
+- contrôle backend `profiler:view` avant lecture ;
+- FSM de consultation ;
+- `frame-ancestors 'self'` et origine identique par défaut ;
+- secrets masqués avant construction du view-model ;
+- aucun SCORE Profiler copié dans OWASYS ou les applications générées ;
+- aucune donnée sensible transmise par JavaScript ou dans l'URL ;
+- la barre compacte reste hors iframe.
 
 Fournir les rubriques suivantes :
 
