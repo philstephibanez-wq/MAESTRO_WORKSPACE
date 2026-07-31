@@ -7,18 +7,22 @@ Dernière mise à jour : 2026-07-31.
 ```text
 OPUS : philstephibanez-wq/OPUS
 Branche : master
-HEAD owner audité : 7dbceea
+HEAD owner local validé : 33f37843
 Racine owner : H:/OPUS
 Workspace : philstephibanez-wq/MAESTRO_WORKSPACE
 ```
+
+Le commit OPUS `33f37843` n'est pas encore visible par l'API GitHub. Il doit être poussé avant tout nouveau ZIP fondé sur ce HEAD.
 
 ## État acquis
 
 - R42 : serveur de développement générique appliqué.
 - R43 : assistant transactionnel appliqué.
-- R44C : poussé avec `test2` ; transaction de création et rendu opaque SCORE acquis.
-- `test2` est déclaré `frontend` et reste un témoin non modifiable.
-- Audit canonique R45 publié.
+- R44C : transaction de création et rendu opaque SCORE acquis.
+- R45A1 : appliqué et validé par l'owner.
+- `test2` : supprimé.
+- Nouveau témoin guidé : `fullstack-test`.
+- Contrat Profiler développeur R46 : publié et actif.
 
 ## Architecture définitive
 
@@ -40,40 +44,54 @@ Workspace : philstephibanez-wq/MAESTRO_WORKSPACE
 - dernier administrateur protégé ;
 - aperçu, confirmation, atomicité, concurrence et audit.
 
-## Audit R45
+## R45
 
-Non-conformités confirmées au HEAD `7dbceea` :
-
-- profils insuffisamment différenciés par `SiteScaffoldPlan` ;
-- backend généré avec présentation SCORE ;
-- frontend sans backend cible contractuel ;
-- fullstack sans corrélation REST ;
-- ACL générée simplifiée, non compatible avec le moteur riche ;
-- permissions non reliées aux rôles/ressources/scopes ;
-- moteur ACL « dernière règle gagnante », contraire à la priorité du deny ;
-- lecture directe de configuration dans `ConfigAclPolicy`.
-
-Audit : `CONTEXT/AUDITS/OPUS_P117W_R45_GENERATION_AND_RESOURCE_SECURITY_AUDIT_2026-07-31.md`.
-
-## Livraison active
-
-R45A1 est livré sur la base `7dbceea` :
+R45A1 apporte :
 
 - deny explicite prioritaire indépendamment de l'ordre ;
 - trace séparant les allow/deny applicables ;
 - chargement ACL via StructuredFileLoader.
 
-Validation owner requise avant R45A2 (objets typés, scopes et tests génériques).
+R45A2, R45B, R45C et R45D restent requis. Ils sont temporairement suspendus pendant R46A afin d'obtenir un Profiler capable d'observer la suite du workflow de génération.
 
-R45B (scaffold), R45C (wizard) et R45D (administration Sécurité) restent bloqués.
+## État réel du Profiler
+
+Le panneau OWASYS actuel n'est pas suffisant :
+
+- corrélation `front → REST → back → Composer` codée en dur ;
+- aucune preuve que les étapes affichées ont eu lieu ;
+- traces V1 réduites à `trace.started` et `trace.stopped` dans plusieurs cas observés ;
+- absence d'explication développeur pour HTTP, routage, FSM, SSO/ACL, REST, Composer et SCORE.
+
+Le framework contient historiquement des briques de Web Profiler et des collecteurs. Il faut les consolider dans OPUS et supprimer toute présentation statique non démontrée.
+
+## Livraison active — R46A
+
+Définir le modèle générique de trace :
+
+- trace globale corrélée ;
+- spans parent/enfant ;
+- événements typés ;
+- statuts explicites ;
+- durées et mémoire ;
+- contexte filtré ;
+- écriture atomique et rétention bornée ;
+- compatibilité de lecture versionnée ou erreur explicite ;
+- interfaces homonymes aux quatre marqueurs ;
+- smokes génériques.
+
+Contrat : `CONTEXT/SPECIFICATIONS/OPUS_DEVELOPER_PROFILER_CONTRACT_2026-07-31.md`.
 
 ## Invariants
 
-- aucune correction de `sites/test2` ;
+- aucune correction locale de `fullstack-test` ;
 - toute mutation OWASYS traverse REST sécurisé puis Composer ;
 - SCORE uniquement pour toute interface ;
 - backend sans JavaScript ;
 - Singleton, FSM, I18n, SSO, ACL deny-by-default ;
 - Logger/Profiler corrélés sans secret ;
+- Profiler uniquement dev/local via `?profiler=1`, indisponible en production ;
+- aucune affirmation sans événement collecté ;
 - toute classe concrète OPUS implémente son interface homonyme aux quatre marqueurs ;
-- l'assistant livre OPUS/OWASYS en ZIP différentiel et ne les pousse pas.
+- l'assistant livre OPUS/OWASYS en ZIP différentiel et ne les pousse pas ;
+- aucun `shared`.
