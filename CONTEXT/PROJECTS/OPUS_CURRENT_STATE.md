@@ -55,11 +55,17 @@ Non-conformités confirmées au HEAD `7dbceea` :
 
 Audit : `CONTEXT/AUDITS/OPUS_P117W_R45_GENERATION_AND_RESOURCE_SECURITY_AUDIT_2026-07-31.md`.
 
-## Action active
+## Livraison active
 
-GO R45A : évolution générique du moteur et des contrats de sécurité OPUS uniquement.
+R45A1 est livré sur la base `7dbceea` :
 
-R45B (scaffold), R45C (wizard) et R45D (administration Sécurité) attendent l'acceptation owner de R45A.
+- deny explicite prioritaire indépendamment de l'ordre ;
+- trace séparant les allow/deny applicables ;
+- chargement ACL via StructuredFileLoader.
+
+Validation owner requise avant R45A2 (objets typés, scopes et tests génériques).
+
+R45B (scaffold), R45C (wizard) et R45D (administration Sécurité) restent bloqués.
 
 ## Invariants
 
