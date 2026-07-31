@@ -10,6 +10,7 @@ CONTEXT/SPECIFICATIONS/MAESTRO_OPUS_OWASYS_GLOBAL_DEVELOPMENT_RULES_2026-07-24.m
 CONTEXT/PROJECTS/OPUS/OPUS_SITE_STANDARD_CONTRACT.md
 CONTEXT/SPECIFICATIONS/OPUS_OWASYS_APPLICATION_CREATION_AND_RESOURCE_SECURITY_CONTRACT_2026-07-31.md
 CONTEXT/AUDITS/OPUS_P117W_R45_GENERATION_AND_RESOURCE_SECURITY_AUDIT_2026-07-31.md
+CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OPUS_P117W_R45A1_ACL_DENY_PRIORITY_2026-07-31.md
 CONTEXT/PROJECTS/OPUS_CURRENT_STATE.md
 ```
 
@@ -37,9 +38,13 @@ Le générateur actuel n'est pas conforme :
 - le moteur utilise actuellement la dernière règle applicable au lieu de faire prévaloir tout deny ;
 - `ConfigAclPolicy` contourne File + parser structuré.
 
-## Action active — GO R45A
+## Livraison active — R45A1
 
-Corriger exclusivement les contrats et le moteur générique OPUS :
+R45A1 est livré sur la base `7dbceea` : priorité absolue du deny et lecture ACL via StructuredFileLoader. Action owner : appliquer, linter et prouver que `allow -> deny` comme `deny -> allow` refusent tous deux.
+
+Après acceptation owner, GO R45A2 :
+
+Compléter exclusivement les contrats et le moteur générique OPUS :
 
 1. objets contractuels typés pour identité, rôle, permission, ressource, attribution scopée et règle ACL ;
 2. priorité absolue du deny, indépendamment de l'ordre ;
@@ -48,7 +53,7 @@ Corriger exclusivement les contrats et le moteur générique OPUS :
 5. interfaces homonymes étendant les quatre marqueurs pour toute classe concrète ;
 6. smokes génériques prouvant RBAC scopé, CRUD/actions métier, héritage déclaré et deny.
 
-R45B scaffold profilé, R45C wizard et R45D espace Sécurité restent bloqués jusqu'à validation owner de R45A.
+R45B scaffold profilé, R45C wizard et R45D espace Sécurité restent bloqués jusqu'à validation owner de R45A1 puis R45A2.
 
 ## Livraison
 
