@@ -14,6 +14,8 @@ OWASYS propose exactement trois modes, sans présélection :
 
 `fullstack = frontend + backend`.
 
+Par défaut, les deux parties sont créées dans le même site OPUS, livrées dans le même déploiement et exécutées sur le même serveur. Cette colocalisation ne supprime jamais la frontière client-serveur : le frontend communique obligatoirement avec le backend par REST sécurisé. Un déploiement ultérieur séparé peut être prévu par un contrat de déploiement explicite, sans modifier le profil applicatif.
+
 Le concept, profil, dossier ou runtime `shared` est interdit. Les fonctions communes proviennent directement du framework OPUS.
 
 Toute application OPUS reste autonome sous `sites/<application>/`, Singleton, pilotée par FSM, I18n, SSO et ACL `deny-by-default`, instrumentée par Logger et Profiler. Toute interface est rendue exclusivement avec SCORE.
@@ -36,7 +38,9 @@ Il ne contient aucune page SCORE, aucun login graphique et aucun JavaScript. Tou
 
 ### 2.3 Fullstack
 
-OWASYS crée un frontend SCORE et un backend REST explicitement corrélés.
+OWASYS crée un frontend SCORE et un backend REST explicitement corrélés dans le même site et sur le même serveur par défaut.
+
+Le fullstack reste une architecture client-serveur. Il ne comporte pas deux sites indépendants : la séparation est logique et contractuelle, et toutes les opérations du client traversent l'API REST du backend.
 
 Flux obligatoire :
 
