@@ -1,6 +1,6 @@
 # CURRENT HANDOFF — MAESTRO WORKSPACE
 
-Date : 2026-07-31
+Date : 2026-08-02
 
 ## Lire
 
@@ -9,53 +9,77 @@ README-FIRST.md
 CONTEXT/SPECIFICATIONS/MAESTRO_OPUS_OWASYS_GLOBAL_DEVELOPMENT_RULES_2026-07-24.md
 CONTEXT/PROJECTS/OPUS/OPUS_SITE_STANDARD_CONTRACT.md
 CONTEXT/SPECIFICATIONS/OPUS_DEVELOPER_PROFILER_CONTRACT_2026-07-31.md
-CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OPUS_P117W_R46C3_CENTRALIZED_SESSION_RUNTIME_2026-07-31.md
 CONTEXT/PROJECTS/OPUS_CURRENT_STATE.md
 ```
 
 ## Base exacte
 
-- OPUS GitHub : `9572f4fa264e21205cd3e4a81f2d19db5a4cc0c6` — `opus_p117w_r46c1_profiler_score_iframe`.
+- OPUS GitHub : `f01f891a24dffd00daba4bf230ca3a771165efea`.
+- Commit owner : `opus_p117w_r46b2_http_root_span`.
 - R46A1 validé et poussé.
-- R46B1 présent sur `master`.
-- R46C1 appliqué et poussé.
+- R46B1 REST présent sur `master`.
+- R46B2 span HTTP racine validé sur le parcours nominal et poussé.
+- R46C1 iframe/SCORE poussé.
+- R46C3 session centralisée, HTTP 200, ACL et SCORE validés puis poussés.
+- R46C2 rejeté et jamais intégré.
 - Site témoin : `fullstack-test`; ne jamais le corriger directement.
 
-## État réel
+## Preuve R46B2 acquise
 
-- l'iframe et sa route same-origin sont prouvées ;
-- la recette R46C1 échoue par `OPUS_ACL_DENIED` ;
-- R46C2 modifie localement `AuthSession.php`, mais sa recette a échoué et il ne doit pas être committé/poussé ;
-- la cause démontrée est l'ouverture non centralisée de la session : la route Profiler appelait `session_start()` sans le nom OWASYS configuré.
+Le Profiler affiche sur une requête GET nominale :
 
-## Livraison active
+- un span racine `http.http.request` ;
+- statut `success` ;
+- réponse HTTP 200 ;
+- dix événements rattachés ;
+- aucun faux span REST ou Composer.
 
-`opus_p117w_r46c3_centralized_session_runtime.zip`  
-SHA-256 : `18cf5d05f1f46347e7506ff809216a3f81af8d4fdb0a981a20ff360d46b89c67`
+La branche d'exception HTTP reste une recette séparée ; elle n'invalide pas la preuve nominale et ne doit pas être déclarée testée sans événement réel.
 
-R46C3 centralise l'ouverture de session dans `OwasysSessionRuntime`, injecté depuis le Singleton dans la route Profiler et les trois contrôleurs. Il ne modifie ni ACL ni identité.
+## Livraison active — R46B3
+
+ZIP : `opus_p117w_r46b3_acl_decision_collector.zip`  
+SHA-256 : `b21c39e009c09a0601d4a9d7b110475195713ec7f658120afcd8eb3927b2ccde`
+
+Base : OPUS `f01f891a24dffd00daba4bf230ca3a771165efea`.
+
+Fichiers complets :
+
+```text
+Opus/Security/Acl/AclPolicy.php
+sites/owasys-front/application/default/Application.php
+sites/owasys-front/application/default/services/RuntimeSecurity.php
+```
+
+R46B3 n'altère aucune permission. Il collecte au point de décision ACL :
+
+- `acl.decision.evaluated` pour toute décision ;
+- `acl.decision.denied` uniquement pour un refus ;
+- rôles effectifs, ressource, action, scope, décision, code et règle décisive ;
+- rattachement au span HTTP actif.
 
 ## Action owner immédiate
 
-1. Retirer uniquement la modification locale R46C2 de `AuthSession.php` pour revenir au HEAD R46C1.
-2. Extraire R46C3.
-3. Linter les sept fichiers et régénérer l'autoload.
-4. Recharger `?profiler=1` sans supprimer la session.
-5. Accepter seulement si l'iframe répond 200 et rend le SCORE Profiler ; puis commit/push OPUS.
+1. Appliquer le ZIP R46B3 sur un arbre propre au HEAD indiqué.
+2. Linter les trois fichiers, régénérer l'autoload et exécuter `git diff --check`.
+3. Tester une autorisation réelle : événement `acl.decision.evaluated` en succès, sans `acl.decision.denied`.
+4. Tester un refus réel : événements `acl.decision.evaluated` et `acl.decision.denied` en erreur, avec `default:deny`.
+5. Vérifier que l'ACL reste deny-by-default et que la permission refusée le reste.
+6. Commit/push OPUS uniquement après ces preuves.
 
 ## État à ne pas falsifier
 
 - archive et structure vérifiées ;
 - `git diff --check` propre ;
 - PHP/Composer indisponibles dans l'environnement de construction ;
-- R46C3 non accepté tant que la recette HTTP/DOM owner n'est pas réussie ;
+- R46B3 livré mais non accepté tant que la recette owner n'est pas réussie ;
 - aucune modification OPUS/OWASYS poussée par l'assistant.
 
 ## Autorité
 
 ```text
 Assistant : MAESTRO_WORKSPACE + ZIP différentiel
-Owner : retrait R46C2, application R46C3, validation, commit et push OPUS/OWASYS
+Owner : application, validation, commit et push OPUS/OWASYS
 ```
 
 NO ACL BYPASS.  
