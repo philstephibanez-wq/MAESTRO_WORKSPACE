@@ -40,7 +40,7 @@ L’assistant ne committe et ne pousse jamais OPUS ni OWASYS. L’owner applique
 Les deux applications doivent pouvoir être déployées sur des serveurs ou bastions distincts. Toute commande métier passe obligatoirement par :
 owasys-front → REST sécurisé → owasys-back → Composer.
 
-11. Logger et Profiler sont obligatoires et contractuels dans les deux applications.
+11. Logger et Profiler sont obligatoires et contractuels dans les deux applications. Le Profiler OPUS vise une couverture développeur comparable à Symfony, adaptée à OPUS : HTTP, routage/contrôleur, FSM, SCORE, SSO/ACL, session, BDD/transactions, REST distribué, Composer, configuration, I18n, cache, logs, exceptions, runtime PHP/OPUS, mémoire et performances. Chaque panneau est alimenté uniquement par des événements réellement mesurés, sans secret ni donnée inventée. Pour OWASYS, la corrélation contractuelle est : front → REST → back → BDD/Composer → réponse → front.
 
 12. sites/owasys-back ne doit contenir, charger, générer ni exécuter aucun JavaScript, TypeScript, runtime Node.js, gestionnaire de paquets JavaScript, bundle frontend ou dépendance JavaScript. Toute présence de .js, .mjs, .cjs, .ts, .tsx, package.json, lockfile npm/yarn/pnpm ou appel Node/npm/yarn/pnpm dans le backend est une non-conformité bloquante.
 
