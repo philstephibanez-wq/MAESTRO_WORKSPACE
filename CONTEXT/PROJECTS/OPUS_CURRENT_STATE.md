@@ -7,8 +7,8 @@ Dernière mise à jour : 2026-08-02.
 ```text
 OPUS : philstephibanez-wq/OPUS
 Branche : master
-HEAD owner publié : 039ec38fade806778a6c948289aa2886f048605f
-Commit : opus_p117w_r46b3_acl_decision_collector
+HEAD owner publié : b64eba112a4cdf4db1fe36f3c5ebeb3372959f96
+Commit : opus_p117w_r46b4_database_operation_collector
 Racine owner : H:/OPUS
 Workspace : philstephibanez-wq/MAESTRO_WORKSPACE
 ```
@@ -45,14 +45,14 @@ La branche `http.exception.caught` et la fermeture du span en `error` restent à
 
 ## Cible active
 
-Profiler OPUS complet, comparable à Symfony et adapté aux domaines OPUS. R46B4, collecteur d'opérations BDD générique raccordé au backend Composer, est livré mais non validé. La corrélation complète `front → REST → back → BDD/Composer → front` reste à poursuivre après validation, sans SQL brut, paramètres sensibles ni secret.
+Profiler OPUS complet, comparable à Symfony et adapté aux domaines OPUS. R46B4, collecteur d'opérations BDD générique raccordé au backend Composer, est poussé mais sa recette fonctionnelle runtime reste non prouvée. La corrélation complète `front → REST → back → BDD/Composer → front` reste à poursuivre après validation, sans SQL brut, paramètres sensibles ni secret.
 
 ## Suite R46
 
 1. valider R46B4 sur un parcours REST/Composer/SQLite réel ;
 2. compléter les métriques de lignes lues/affectées et les collecteurs R46B manquants ;
 3. réaliser la corrélation et l'agrégation distribuées R46D ;
-4. compléter la barre et les panneaux SCORE R46C à partir des collecteurs disponibles ;
+4. compléter la barre et les panneaux SCORE R46C à partir des collecteurs disponibles, avec un onglet fonctionnel par rubrique et sans déversement global en vrac ;
 5. intégrer les profils générés en R46E.
 
 ## Invariants
