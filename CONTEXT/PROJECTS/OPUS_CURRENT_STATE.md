@@ -21,7 +21,8 @@ Workspace : philstephibanez-wq/MAESTRO_WORKSPACE
 - R46B3 : collecteur ACL validé sur autorisation et refus, puis poussé.
 - R46B4 : collecteur BDD poussé ; recette runtime encore requise.
 - R46B5 : interface Profiler SCORE par 18 onglets invalidée par `FSM 0` ; ne pas pousser seule.
-- R46B5A : collecteur FSM générique livré ; validation owner requise.
+- R46B5A : collecteur FSM générique fonctionnel, mais double émission runtime de `fsm.transition.started` constatée.
+- R46B5B : suppression de l’émission explicite redondante livrée ; validation owner requise.
 - R46C1 : iframe/SCORE poussé.
 - R46C3 : session centralisée, iframe HTTP 200, ACL et SCORE validés puis poussés.
 - R46C2 : diagnostic rejeté, jamais intégré.
@@ -37,14 +38,14 @@ La branche `http.exception.caught` reste à tester sur une erreur réelle.
 
 ## Cible active
 
-R46B5A traite la cause de `FSM 0` en injectant le Profiler actif jusqu'au `FsmProcessor`. Les transitions et gardes réelles alimentent désormais le panneau FSM avec des spans enfants du span HTTP ; SCORE ne fabrique aucun compteur.
+R46B5A a traité la cause de `FSM 0` en injectant le Profiler actif jusqu’au `FsmProcessor`. La preuve runtime confirme les transitions réelles et le span FSM enfant du span HTTP, mais montre deux `fsm.transition.started` pour le même span. R46B5B supprime l’émission explicite de `FsmProcessor` et conserve l’événement automatiquement produit par `Trace::beginSpan()`.
 
 R46B4 doit encore être prouvé sur un parcours REST/Composer/SQLite réel. La corrélation complète `front → REST → back → BDD/Composer → front` reste à poursuivre, sans SQL brut, paramètres sensibles ni secret.
 
 ## Suite R46
 
-1. appliquer R46B5A par-dessus R46B5 non poussé et valider les événements FSM réels ;
-2. pousser R46B5 + R46B5A seulement après validation owner ;
+1. appliquer R46B5B par-dessus R46B5 + R46B5A non poussés et valider exactement un événement de début par span FSM ;
+2. pousser R46B5 + R46B5A + R46B5B seulement après validation owner ;
 3. valider R46B4 sur un parcours REST/Composer/SQLite réel ;
 4. compléter les métriques et collecteurs R46B manquants ;
 5. réaliser la corrélation et l'agrégation distribuées R46D.
