@@ -20,7 +20,8 @@ Workspace : philstephibanez-wq/MAESTRO_WORKSPACE
 - R46B2 : span HTTP racine validé sur le parcours nominal et poussé.
 - R46B3 : collecteur ACL validé sur autorisation et refus, puis poussé.
 - R46B4 : collecteur BDD poussé ; recette runtime encore requise.
-- R46B5 : interface Profiler SCORE par 18 onglets livrée ; validation owner requise.
+- R46B5 : interface Profiler SCORE par 18 onglets invalidée par `FSM 0` ; ne pas pousser seule.
+- R46B5A : collecteur FSM générique livré ; validation owner requise.
 - R46C1 : iframe/SCORE poussé.
 - R46C3 : session centralisée, iframe HTTP 200, ACL et SCORE validés puis poussés.
 - R46C2 : diagnostic rejeté, jamais intégré.
@@ -36,17 +37,17 @@ La branche `http.exception.caught` reste à tester sur une erreur réelle.
 
 ## Cible active
 
-R46B5 organise le Profiler générique en onglets SCORE fonctionnels, un par rubrique contractuelle, sans JavaScript et sans déversement global en vrac. Les événements et spans sont filtrés par famille ; l'absence de collecteur est indiquée explicitement sans fabriquer de données.
+R46B5A traite la cause de `FSM 0` en injectant le Profiler actif jusqu'au `FsmProcessor`. Les transitions et gardes réelles alimentent désormais le panneau FSM avec des spans enfants du span HTTP ; SCORE ne fabrique aucun compteur.
 
 R46B4 doit encore être prouvé sur un parcours REST/Composer/SQLite réel. La corrélation complète `front → REST → back → BDD/Composer → front` reste à poursuivre, sans SQL brut, paramètres sensibles ni secret.
 
 ## Suite R46
 
-1. valider R46B5 : 18 onglets, navigation, filtrage et états sans données ;
-2. valider R46B4 sur un parcours REST/Composer/SQLite réel ;
-3. compléter les métriques de lignes lues/affectées et les collecteurs R46B manquants ;
-4. réaliser la corrélation et l'agrégation distribuées R46D ;
-5. intégrer les profils générés en R46E.
+1. appliquer R46B5A par-dessus R46B5 non poussé et valider les événements FSM réels ;
+2. pousser R46B5 + R46B5A seulement après validation owner ;
+3. valider R46B4 sur un parcours REST/Composer/SQLite réel ;
+4. compléter les métriques et collecteurs R46B manquants ;
+5. réaliser la corrélation et l'agrégation distribuées R46D.
 
 ## Invariants
 
