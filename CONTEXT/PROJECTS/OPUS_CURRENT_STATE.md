@@ -7,8 +7,8 @@ Dernière mise à jour : 2026-08-02.
 ```text
 OPUS : philstephibanez-wq/OPUS
 Branche : master
-HEAD owner publié : f01f891a24dffd00daba4bf230ca3a771165efea
-Commit : opus_p117w_r46b2_http_root_span
+HEAD owner publié : 039ec38fade806778a6c948289aa2886f048605f
+Commit : opus_p117w_r46b3_acl_decision_collector
 Racine owner : H:/OPUS
 Workspace : philstephibanez-wq/MAESTRO_WORKSPACE
 ```
@@ -18,6 +18,7 @@ Workspace : philstephibanez-wq/MAESTRO_WORKSPACE
 - R46A1 : modèle de traces V2 validé et poussé.
 - R46B1 : collecteur REST présent sur `master`.
 - R46B2 : span HTTP racine validé sur le parcours nominal et poussé.
+- R46B3 : collecteur ACL validé sur autorisation et refus, puis poussé.
 - R46C1 : iframe/SCORE poussé.
 - R46C3 : session centralisée, iframe HTTP 200, ACL et SCORE validés puis poussés.
 - R46C2 : diagnostic rejeté, jamais intégré.
@@ -34,31 +35,24 @@ La preuve owner montre une requête GET HTTP 200 avec :
 
 La branche `http.exception.caught` et la fermeture du span en `error` restent à tester séparément sur une erreur réelle.
 
-## Livraison active — R46B3
+## Preuve R46B3
 
-ZIP : `opus_p117w_r46b3_acl_decision_collector.zip`  
-SHA-256 : `b21c39e009c09a0601d4a9d7b110475195713ec7f658120afcd8eb3927b2ccde`
+- parcours autorisé : `acl.decision.evaluated` en succès, sans `acl.decision.denied` ;
+- parcours refusé : `roles: []`, ressource `profiler`, action `view`, décision `denied`, règle `default:deny` ;
+- événements rattachés au span HTTP ;
+- ACL deny-by-default inchangée ;
+- validation owner acquise et commit poussé.
 
-Base : OPUS `f01f891a24dffd00daba4bf230ca3a771165efea`.
+## Cible active
 
-Fichiers complets :
-
-```text
-Opus/Security/Acl/AclPolicy.php
-sites/owasys-front/application/default/Application.php
-sites/owasys-front/application/default/services/RuntimeSecurity.php
-```
-
-R46B3 ajoute les événements contractuels `acl.decision.evaluated` et `acl.decision.denied` au point générique réel d'évaluation. Les rôles effectifs, la ressource, l'action, le scope, la décision, le code et la règle décisive sont collectés sans secret et rattachés au span HTTP. Aucune permission ni règle deny-by-default n'est modifiée.
-
-Statut : archive validée structurellement ; lint et recette owner requis ; non accepté et non poussé dans OPUS.
+Profiler OPUS complet, comparable à Symfony et adapté aux domaines OPUS. Prochaine priorité : collecteur BDD générique et corrélation `front → REST → back → BDD/Composer → front`, sans SQL brut, paramètres sensibles ni secret.
 
 ## Suite R46
 
-1. valider et pousser R46B3 ;
-2. compléter les collecteurs R46B manquants à partir des événements réellement observables ;
-3. compléter la barre compacte et les douze rubriques SCORE R46C ;
-4. réaliser la corrélation distribuée R46D ;
+1. instrumenter génériquement BDD et transactions au point central OPUS ;
+2. compléter les collecteurs R46B manquants à partir d'événements réellement observables ;
+3. réaliser la corrélation distribuée R46D ;
+4. compléter la barre et les panneaux SCORE R46C à partir des collecteurs disponibles ;
 5. intégrer les profils générés en R46E.
 
 ## Invariants
