@@ -10,6 +10,8 @@ Le Profiler OPUS est un outil de diagnostic destiné aux développeurs. Il doit 
 
 Un simple `trace_id`, un état FSM ou une chaîne d'architecture statique ne constitue pas un profiler.
 
+La couverture fonctionnelle vise celle d'un profiler développeur moderne comparable à Symfony, adaptée à OPUS et enrichie de ses domaines propres : FSM, SCORE, corrélation REST distribuée, ACL/SSO, I18n et Composer.
+
 ## Portée
 
 Le Profiler est un composant générique du framework OPUS.
@@ -125,6 +127,42 @@ Collecter renderer, layout, fragments, durées et erreur normalisée.
 
 Collecter provenance, format, durée, volume et résultat, avec valeurs sensibles masquées. Toute configuration reste lue via File puis Json, Xml ou Yaml avec StructuredFileLoader.
 
+### Base de données et transactions
+
+- `database.connection.opened`
+- `database.operation.started`
+- `database.operation.completed`
+- `database.operation.failed`
+- `database.transaction.started`
+- `database.transaction.committed`
+- `database.transaction.rolled_back`
+
+Collecter pilote, connexion logique pseudonymisée, type d'opération, tables autorisées, empreinte ou forme normalisée, durée, lignes lues ou affectées, origine applicative et statut. Ne jamais collecter mot de passe, DSN secret, SQL brut, paramètres bruts ni données métier. Chaque opération mesurée est un span enfant de la requête ou commande qui l'a déclenchée.
+
+### Session, cache et I18n
+
+- `session.opened`
+- `session.read`
+- `session.written`
+- `session.closed`
+- `cache.hit`
+- `cache.miss`
+- `cache.write`
+- `cache.delete`
+- `i18n.locale.resolved`
+- `i18n.translation.resolved`
+- `i18n.translation.missing`
+
+Collecter uniquement noms logiques, compteurs, durées, locale, domaine et clés non sensibles. Ne jamais collecter cookie, identifiant de session brut, contenu de session, valeur de cache ou traduction contenant des données personnelles.
+
+### Runtime et performances
+
+- `runtime.bootstrap.completed`
+- `runtime.shutdown.completed`
+- `performance.threshold.exceeded`
+
+Collecter versions PHP/OPUS, environnement, extensions pertinentes, durée, mémoire actuelle/de pointe, delta mémoire et seuil dépassé. Les valeurs de configuration sensibles restent masquées.
+
 ### Logger, erreurs et dépréciations
 
 - `log.recorded`
@@ -147,6 +185,7 @@ Afficher en permanence lorsque le Profiler est activé :
 - état ou transition FSM ;
 - nombre d'erreurs et d'avertissements ;
 - nombre d'appels REST ;
+- nombre d'opérations BDD et durée cumulée ;
 - nombre de commandes Composer ;
 - `trace_id`.
 
@@ -165,7 +204,7 @@ Le panneau détaillé est rendu côté serveur par des SCORE génériques appart
 - aucune donnée sensible transmise par JavaScript ou dans l'URL ;
 - la barre compacte reste hors iframe.
 
-Fournir les rubriques suivantes :
+Fournir les panneaux suivants :
 
 1. Résumé.
 2. Chronologie.
@@ -176,9 +215,15 @@ Fournir les rubriques suivantes :
 7. REST.
 8. Composer.
 9. SCORE.
-10. Configuration et données.
-11. Logs, exceptions et dépréciations.
-12. Mémoire et performances.
+10. Base de données et transactions.
+11. Session.
+12. Cache.
+13. I18n et traductions.
+14. Configuration et environnement.
+15. Logs, exceptions et dépréciations.
+16. Événements internes.
+17. Informations PHP et OPUS.
+18. Mémoire, performances et opérations lentes.
 
 Chaque rubrique doit :
 
@@ -186,6 +231,8 @@ Chaque rubrique doit :
 - fournir les preuves techniques ;
 - indiquer les événements absents ou non collectables ;
 - permettre de retrouver le fichier, la classe ou la règle concernée sans exposer un secret.
+
+Le panneau frontend peut agréger une synthèse backend autorisée uniquement par REST sécurisé et corrélation explicite. Les traces restent stockées séparément dans chaque application. Une donnée backend absente, inaccessible ou non corrélée est déclarée indisponible ; elle n'est jamais reconstituée par inférence.
 
 ## Stockage et rétention
 
@@ -219,7 +266,7 @@ Les collecteurs produisent des données typées et ne rendent aucune interface. 
 
 ### R46B — Collecteurs génériques
 
-- Instrumenter HTTP, routage, FSM, SSO/ACL, REST, Composer, SCORE, configuration, données, Logger et exceptions.
+- Instrumenter HTTP, routage, FSM, SSO/ACL, session, BDD/transactions, REST, Composer, SCORE, configuration, I18n, cache, Logger, exceptions, runtime et performances.
 - Ne collecter que les événements réels.
 - Tester succès, avertissement, refus et exception.
 
@@ -250,6 +297,8 @@ Les collecteurs produisent des données typées et ne rendent aucune interface. 
 - Afficher une requête front/back avec spans corrélés et chronologie prouvée.
 - Afficher une décision ACL avec ressource, action, scope et règle décisive.
 - Afficher une transition FSM complète.
+- Afficher les opérations BDD et transactions réelles avec durée, statut et lignes, sans SQL ni paramètres sensibles.
+- Afficher session, cache et I18n sans exposer leurs contenus sensibles.
 - Afficher le rendu SCORE et ses fragments.
 - Afficher une exception normalisée avec origine exploitable.
 - Distinguer durée totale et durées des spans.
