@@ -18,6 +18,7 @@ CONTEXT/PROJECTS/OPUS_CURRENT_STATE.md
 - Commit owner : `opus_p117w_r46b4_database_operation_collector`.
 - R46A1, R46B1, R46B2, R46B3, R46C1 et R46C3 validés et poussés.
 - R46B4 est poussé ; sa preuve fonctionnelle runtime reste à acquérir avant de le déclarer validé.
+- R46B5 est livré sous forme de ZIP différentiel ; validation owner requise.
 - R46C2 rejeté et jamais intégré.
 - Site témoin : `fullstack-test`; ne jamais le corriger directement.
 
@@ -30,27 +31,26 @@ CONTEXT/PROJECTS/OPUS_CURRENT_STATE.md
 
 La branche `http.exception.caught` reste non prouvée tant qu'une erreur réelle n'a pas été exécutée.
 
-## Cible active — Profiler OPUS complet
+## Cible active — R46B5 onglets fonctionnels
 
-Le Profiler doit fournir une couverture développeur comparable à Symfony, complétée par les domaines propres à OPUS : FSM, SCORE, REST distribué, ACL/SSO, I18n et Composer.
+R46B5 remplace la page Profiler monolithique par 18 onglets SCORE génériques : résumé, chronologie, requête/réponse, routage/contrôleur, FSM, SCORE, sécurité, BDD, REST, Composer, session, cache, I18n, logs, exceptions, configuration, runtime et performances.
 
-R46B4 est poussé au HEAD OPUS `b64eba112a4cdf4db1fe36f3c5ebeb3372959f96` ; la validation owner n'est pas acquise tant que la recette runtime REST/Composer/SQLite n'est pas fournie. Il ajoute un observateur BDD générique OPUS puis raccorde les opérations SQLite réelles du backend au cycle Composer corrélé.
+Chaque onglet affiche uniquement les événements et spans mesurés de sa famille. Une rubrique sans mesure reste visible avec un état explicite d'absence de données. Aucun JavaScript, aucune donnée inventée et aucun raccordement local OWASYS ne sont ajoutés.
+
+R46B4 reste parallèlement à valider sur le flux réel :
 
 ```text
 owasys-front → span REST → owasys-back → spans BDD/Composer → réponse → owasys-front
 ```
 
-R46B4 mesure connexion, préparation/exécution, schéma et transactions avec durée, succès/échec et origine applicative, sans SQL brut, paramètres sensibles ni secrets. Les lignes lues/affectées et l'agrégation frontend restent des incréments ultérieurs. Aucun panneau SCORE ne doit être enrichi avant que les événements réels correspondants existent.
-
 ## Ordre de travail
 
-1. Appliquer puis linter le ZIP R46B4 sur le HEAD exact.
-2. Exécuter un `owasys:registry:sync` réel via le flux REST/Composer.
-3. Vérifier les spans Composer → BDD, les événements contractuels, les transactions et l'absence de SQL/paramètres.
-4. Ne commit/push OPUS qu'après validation owner.
-5. Compléter lignes lues/affectées puis l'agrégation distribuée frontend.
-6. Poursuivre les collecteurs session, cache, I18n, logs, exceptions, runtime et performances.
-7. Réaliser ensuite le panneau SCORE avec une navigation par onglets fonctionnels ; aucun déversement global des événements en vrac.
+1. Appliquer et linter le ZIP R46B5 sur le HEAD OPUS exact.
+2. Ouvrir le Profiler et vérifier les 18 onglets, leur navigation et leur filtrage.
+3. Vérifier qu'un onglet sans collecteur affiche l'absence de mesure sans faux compteur.
+4. Ne commit/push R46B5 qu'après validation owner.
+5. Acquérir séparément la preuve runtime R46B4 sur un `owasys:registry:sync` réel.
+6. Poursuivre la corrélation distribuée et les collecteurs manquants.
 
 ## Autorité
 
