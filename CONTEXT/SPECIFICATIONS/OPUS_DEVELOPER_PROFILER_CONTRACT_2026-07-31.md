@@ -204,7 +204,9 @@ Le panneau détaillé est rendu côté serveur par des SCORE génériques appart
 - aucune donnée sensible transmise par JavaScript ou dans l'URL ;
 - la barre compacte reste hors iframe.
 
-Fournir les panneaux suivants :
+Le panneau détaillé organise obligatoirement les rubriques ci-dessous sous forme d'onglets fonctionnels navigables. Un onglet regroupe une famille de mesures ; il est interdit de déverser tous les événements en vrac dans une vue unique ou de créer un onglet par événement.
+
+Fournir les onglets suivants :
 
 1. Résumé.
 2. Chronologie.
@@ -225,12 +227,14 @@ Fournir les panneaux suivants :
 17. Informations PHP et OPUS.
 18. Mémoire, performances et opérations lentes.
 
-Chaque rubrique doit :
+Chaque onglet doit :
 
 - répondre en langage développeur à « que s'est-il passé ? » ;
 - fournir les preuves techniques ;
 - indiquer les événements absents ou non collectables ;
-- permettre de retrouver le fichier, la classe ou la règle concernée sans exposer un secret.
+- permettre de retrouver le fichier, la classe ou la règle concernée sans exposer un secret ;
+- n'afficher que ses propres compteurs, événements, spans et détails ;
+- conserver le contexte de la trace active et permettre de revenir au résumé sans recharger une autre trace.
 
 Le panneau frontend peut agréger une synthèse backend autorisée uniquement par REST sécurisé et corrélation explicite. Les traces restent stockées séparément dans chaque application. Une donnée backend absente, inaccessible ou non corrélée est déclarée indisponible ; elle n'est jamais reconstituée par inférence.
 
