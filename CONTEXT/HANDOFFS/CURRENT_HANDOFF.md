@@ -14,42 +14,51 @@ CONTEXT/PROJECTS/OPUS_CURRENT_STATE.md
 
 ## Base exacte
 
-- OPUS GitHub : `6bee0bde41fa1bfb7a933c5b667da40fdb2d47d7`.
-- Commit owner : `opus_p117w_r46b5b_fsm_started_deduplication`.
+- OPUS GitHub : `c9f46233f0cc567943b0d6f668ff4896d99b2600`.
+- Commit owner : `opus_p117w_r46b6_distributed_database_profiler_and_active_tabs`.
 - R46A1, R46B1, R46B2, R46B3, R46B4, R46B5, R46B5A, R46B5B, R46C1 et R46C3 sont poussés.
 - La preuve runtime confirme la collecte FSM et sa déduplication.
 - La capture suivante révèle `Database 0` et l'absence de marquage visuel de l'onglet actif.
-- R46B6 est livré sous forme de ZIP différentiel ; validation owner requise.
+- R46B6 est poussé et la preuve runtime confirme Database non nul.
+- La preuve runtime montre cependant que Database n'affiche ni requêtes ni
+  résultats ; la même insuffisance existe pour les requêtes/réponses REST.
+- R46B7 est le livrable actif : assainissement transversal du contexte Profiler,
+  détails de débogage BDD et REST, puis généralisation contractuelle à tous les
+  panneaux.
 - R46C2 rejeté et jamais intégré.
 - Site témoin : `fullstack-test`; ne jamais le corriger directement.
 
-## Cause R46B6
+## Cause R46B7
 
-`/applications` exécute réellement `GET /api/v1/applications`, puis le backend exécute Composer et SQLite. Cependant :
+R46B6 corrèle correctement le chemin distribué, mais les collecteurs ont été
+conçus comme de la télémétrie minimale plutôt que comme des outils de débogage :
 
-1. `OwasysRegistryModel` construisait `RestClient` sans le Profiler frontend, donc aucun span REST n'était collecté ;
-2. le backend persistait les mesures Composer/BDD sous le même `trace_id`, mais dans son stockage autonome ;
-3. le Profiler frontend ne fusionnait pas ces enregistrements distribués ;
-4. les onglets SCORE n'avaient aucun état actif visible.
+1. `DatabaseOperationProfiler` supprimait explicitement SQL et résultats ;
+2. `RestClient` ne conservait que route, statut et tailles ;
+3. aucun assainissement transversal ne permettait de collecter des valeurs
+   utiles avec une politique homogène ;
+4. les onglets étaient alimentés, mais ne répondaient pas suffisamment à la
+   question développeur « pourquoi et avec quelles entrées/sorties ? ».
 
-R46B6 traite la cause sans accès BDD direct depuis le frontend :
+R46B7 traite la cause avec un contrat commun :
 
 ```text
-owasys-front → span REST → owasys-back → Composer → SQLite
-             ← enregistrements Profiler V2 assainis, même trace_id
+collecteur → contexte détaillé → assainissement central → stockage borné → SCORE
 ```
 
-La télémétrie distante est demandée uniquement en environnement `dev/local/development`, ne contient ni SQL brut, ni paramètres, ni secret, et est rattachée causalement au span REST frontend. Le template SCORE marque l'onglet sélectionné sans JavaScript.
+Les secrets restent interdits. Les requêtes et résultats nécessaires au
+débogage ne sont plus supprimés : ils sont assainis, limités et leur troncature
+est explicite. Ce principe est transversal à tous les panneaux.
 
 ## Ordre de travail
 
-1. Appliquer R46B6 sur OPUS `6bee0bde41fa1bfb7a933c5b667da40fdb2d47d7`.
-2. Linter les huit fichiers PHP, exécuter les smokes OPUS/REST/Profiler/FSM et `git diff --check`.
+1. Appliquer R46B7 sur OPUS `c9f46233f0cc567943b0d6f668ff4896d99b2600`.
+2. Linter les sept fichiers PHP, exécuter les smokes OPUS/REST/Profiler/BDD et `git diff --check`.
 3. Parcourir `/applications?profiler=1`.
-4. Vérifier REST, Composer et Database non nuls sur la même trace.
-5. Vérifier les spans BDD enfants de Composer, lui-même corrélé au span REST frontend.
-6. Vérifier l'absence de SQL, paramètres et secrets.
-7. Vérifier que l'onglet courant est visuellement actif.
+4. Vérifier que Database montre le SQL et l'aperçu borné des lignes réellement lues.
+5. Vérifier que REST montre requête et réponse, y compris une réponse d'erreur.
+6. Vérifier le masquage des secrets et l'indication des troncatures.
+7. Vérifier la corrélation causale et l'onglet courant actif.
 8. Ne commit/push OPUS qu'après validation owner.
 
 ## Autorité
