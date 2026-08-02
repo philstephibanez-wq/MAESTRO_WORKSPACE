@@ -45,13 +45,13 @@ La branche `http.exception.caught` et la fermeture du span en `error` restent à
 
 ## Cible active
 
-Profiler OPUS complet, comparable à Symfony et adapté aux domaines OPUS. Prochaine priorité : collecteur BDD générique et corrélation `front → REST → back → BDD/Composer → front`, sans SQL brut, paramètres sensibles ni secret.
+Profiler OPUS complet, comparable à Symfony et adapté aux domaines OPUS. R46B4, collecteur d'opérations BDD générique raccordé au backend Composer, est livré mais non validé. La corrélation complète `front → REST → back → BDD/Composer → front` reste à poursuivre après validation, sans SQL brut, paramètres sensibles ni secret.
 
 ## Suite R46
 
-1. instrumenter génériquement BDD et transactions au point central OPUS ;
-2. compléter les collecteurs R46B manquants à partir d'événements réellement observables ;
-3. réaliser la corrélation distribuée R46D ;
+1. valider R46B4 sur un parcours REST/Composer/SQLite réel ;
+2. compléter les métriques de lignes lues/affectées et les collecteurs R46B manquants ;
+3. réaliser la corrélation et l'agrégation distribuées R46D ;
 4. compléter la barre et les panneaux SCORE R46C à partir des collecteurs disponibles ;
 5. intégrer les profils générés en R46E.
 
