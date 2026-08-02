@@ -19,7 +19,8 @@ CONTEXT/PROJECTS/OPUS_CURRENT_STATE.md
 - R46A1, R46B1, R46B2, R46B3, R46C1 et R46C3 validés et poussés.
 - R46B4 est poussé ; sa preuve fonctionnelle runtime reste à acquérir avant de le déclarer validé.
 - R46B5 onglets est invalidé : l’affichage `FSM 0` a prouvé l’absence d’instrumentation réelle du moteur FSM. Ne pas le pousser seul.
-- R46B5A collecteur FSM est livré sous forme de ZIP différentiel ; validation owner requise.
+- R46B5A collecteur FSM a corrigé `FSM 0`, mais la preuve runtime a révélé une double émission de `fsm.transition.started` pour le même span.
+- R46B5B déduplication FSM est livré sous forme de ZIP différentiel ; validation owner requise.
 - R46C2 rejeté et jamais intégré.
 - Site témoin : `fullstack-test`; ne jamais le corriger directement.
 
@@ -32,11 +33,11 @@ CONTEXT/PROJECTS/OPUS_CURRENT_STATE.md
 
 La branche `http.exception.caught` reste non prouvée tant qu'une erreur réelle n'a pas été exécutée.
 
-## Cible active — R46B5A instrumentation FSM réelle
+## Cible active — R46B5B déduplication de l’événement FSM
 
-R46B5A raccorde la chaîne générique `Application → RuntimeController → FsmSiteLoader → FsmProcessor` au Profiler actif. Chaque transition réelle produit un span `fsm.transition`, enfant du span HTTP, et les événements `fsm.transition.started`, `fsm.guard.evaluated`, `fsm.transition.completed` ou `fsm.transition.failed`.
+R46B5A raccorde correctement la chaîne générique `Application → RuntimeController → FsmSiteLoader → FsmProcessor` au Profiler actif et la preuve runtime confirme un span FSM enfant du span HTTP. Elle a toutefois publié deux fois `fsm.transition.started` pour ce même span : une fois automatiquement par `Trace::beginSpan()` et une fois explicitement dans `FsmProcessor`.
 
-Le contexte mesuré contient le contrat FSM, les états source/cible, l'événement, l'identifiant de transition, les gardes, les actions et la durée. Aucun compteur n'est fabriqué dans SCORE. R46B5 onglets ne pourra être validé qu'avec ces événements réels.
+R46B5B traite la cause en supprimant uniquement l’émission explicite redondante. `Trace::beginSpan()` reste l’unique propriétaire de l’événement de début ; gardes, succès, échec, fin de span, contexte et durée restent mesurés. Aucun compteur n’est fabriqué dans SCORE.
 
 R46B4 reste parallèlement à valider sur le flux réel :
 
@@ -46,11 +47,11 @@ owasys-front → span REST → owasys-back → spans BDD/Composer → réponse �
 
 ## Ordre de travail
 
-1. Conserver R46B5 onglets non poussé et appliquer R46B5A par-dessus sur le HEAD OPUS exact.
-2. Linter les quatre fichiers R46B5A et exécuter les smokes OPUS/FSM.
-3. Parcourir `/applications?profiler=1` et vérifier les événements FSM réels dans l'onglet FSM.
-4. Vérifier le même `trace_id`, un span FSM enfant du span HTTP, les états source/cible, gardes, actions et durée.
-5. Ne commit/push l'ensemble R46B5 + R46B5A qu'après validation owner.
+1. Appliquer R46B5B par-dessus R46B5 + R46B5A non poussés.
+2. Linter `Opus/Fsm/FsmProcessor.php` et exécuter les smokes OPUS/FSM.
+3. Parcourir `/applications?profiler=1` et vérifier exactement un `fsm.transition.started` par span FSM.
+4. Vérifier le même `trace_id`, le span FSM enfant du span HTTP, gardes, succès/échec, états, actions et durée.
+5. Ne commit/push l’ensemble R46B5 + R46B5A + R46B5B qu’après validation owner.
 6. Acquérir séparément la preuve runtime R46B4 sur un `owasys:registry:sync` réel.
 
 ## Autorité
