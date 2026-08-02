@@ -19,41 +19,36 @@ Workspace : philstephibanez-wq/MAESTRO_WORKSPACE
 - R46B1 : collecteur REST présent sur `master`.
 - R46B2 : span HTTP racine validé sur le parcours nominal et poussé.
 - R46B3 : collecteur ACL validé sur autorisation et refus, puis poussé.
+- R46B4 : collecteur BDD poussé ; recette runtime encore requise.
+- R46B5 : interface Profiler SCORE par 18 onglets invalidée par `FSM 0` ; ne pas pousser seule.
+- R46B5A : collecteur FSM générique fonctionnel, mais double émission runtime de `fsm.transition.started` constatée.
+- R46B5B : suppression de l’émission explicite redondante livrée ; validation owner requise.
 - R46C1 : iframe/SCORE poussé.
 - R46C3 : session centralisée, iframe HTTP 200, ACL et SCORE validés puis poussés.
 - R46C2 : diagnostic rejeté, jamais intégré.
 - Témoin guidé : `fullstack-test`, jamais corrigé directement.
 
-## Preuve R46B2
+## Preuves R46B2 et R46B3
 
-La preuve owner montre une requête GET HTTP 200 avec :
+- R46B2 : requête GET HTTP 200, span `http.http.request` en succès, dix événements rattachés et aucun faux span REST/Composer.
+- R46B3 autorisé : `acl.decision.evaluated` en succès sans `acl.decision.denied`.
+- R46B3 refusé : `roles: []`, `profiler:view`, décision `denied`, règle `default:deny`, ACL inchangée.
 
-- un span `http.http.request` terminé en `success` ;
-- dix événements rattachés ;
-- zéro erreur, alerte ou indisponibilité ;
-- aucun span REST ou Composer fabriqué.
-
-La branche `http.exception.caught` et la fermeture du span en `error` restent à tester séparément sur une erreur réelle.
-
-## Preuve R46B3
-
-- parcours autorisé : `acl.decision.evaluated` en succès, sans `acl.decision.denied` ;
-- parcours refusé : `roles: []`, ressource `profiler`, action `view`, décision `denied`, règle `default:deny` ;
-- événements rattachés au span HTTP ;
-- ACL deny-by-default inchangée ;
-- validation owner acquise et commit poussé.
+La branche `http.exception.caught` reste à tester sur une erreur réelle.
 
 ## Cible active
 
-Profiler OPUS complet, comparable à Symfony et adapté aux domaines OPUS. R46B4, collecteur d'opérations BDD générique raccordé au backend Composer, est poussé mais sa recette fonctionnelle runtime reste non prouvée. La corrélation complète `front → REST → back → BDD/Composer → front` reste à poursuivre après validation, sans SQL brut, paramètres sensibles ni secret.
+R46B5A a traité la cause de `FSM 0` en injectant le Profiler actif jusqu’au `FsmProcessor`. La preuve runtime confirme les transitions réelles et le span FSM enfant du span HTTP, mais montre deux `fsm.transition.started` pour le même span. R46B5B supprime l’émission explicite de `FsmProcessor` et conserve l’événement automatiquement produit par `Trace::beginSpan()`.
+
+R46B4 doit encore être prouvé sur un parcours REST/Composer/SQLite réel. La corrélation complète `front → REST → back → BDD/Composer → front` reste à poursuivre, sans SQL brut, paramètres sensibles ni secret.
 
 ## Suite R46
 
-1. valider R46B4 sur un parcours REST/Composer/SQLite réel ;
-2. compléter les métriques de lignes lues/affectées et les collecteurs R46B manquants ;
-3. réaliser la corrélation et l'agrégation distribuées R46D ;
-4. compléter la barre et les panneaux SCORE R46C à partir des collecteurs disponibles, avec un onglet fonctionnel par rubrique et sans déversement global en vrac ;
-5. intégrer les profils générés en R46E.
+1. appliquer R46B5B par-dessus R46B5 + R46B5A non poussés et valider exactement un événement de début par span FSM ;
+2. pousser R46B5 + R46B5A + R46B5B seulement après validation owner ;
+3. valider R46B4 sur un parcours REST/Composer/SQLite réel ;
+4. compléter les métriques et collecteurs R46B manquants ;
+5. réaliser la corrélation et l'agrégation distribuées R46D.
 
 ## Invariants
 
