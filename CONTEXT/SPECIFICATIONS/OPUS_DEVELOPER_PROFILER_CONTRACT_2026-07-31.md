@@ -26,6 +26,11 @@ Le Profiler est un composant générique du framework OPUS.
 - Appliquer une ACL `profiler:view` côté serveur.
 - Masquer systématiquement secrets, jetons, cookies, mots de passe et données personnelles non nécessaires.
 
+Le masquage protège les données sensibles ; il ne doit jamais supprimer les
+informations techniques nécessaires au débogage. En environnement développeur,
+les entrées et sorties utiles sont conservées sous forme assainie et bornée,
+avec toute troncature explicitement signalée.
+
 ## Principe de vérité
 
 Le Profiler ne doit afficher que des événements effectivement collectés.
@@ -96,7 +101,11 @@ Collecter fournisseur et subject pseudonymisé, rôles effectifs, ressource cano
 - `rest.response.received`
 - `rest.request.failed`
 
-Collecter service cible logique, méthode, route, statut, durée, `trace_id`, `span_id` et taille. Ne jamais collecter les credentials.
+Collecter service cible logique, méthode, URL/route, en-têtes autorisés, corps
+de requête assaini, statut, en-têtes de réponse autorisés, corps de réponse
+assaini, durée, `trace_id`, `span_id` et tailles. Collecter aussi la réponse
+d'erreur réellement reçue lorsqu'elle existe. Ne jamais conserver credentials,
+cookies, signatures, nonces, jetons ni identité encodée.
 
 ### Composer
 
@@ -137,7 +146,13 @@ Collecter provenance, format, durée, volume et résultat, avec valeurs sensible
 - `database.transaction.committed`
 - `database.transaction.rolled_back`
 
-Collecter pilote, connexion logique pseudonymisée, type d'opération, tables autorisées, empreinte ou forme normalisée, durée, lignes lues ou affectées, origine applicative et statut. Ne jamais collecter mot de passe, DSN secret, SQL brut, paramètres bruts ni données métier. Chaque opération mesurée est un span enfant de la requête ou commande qui l'a déclenchée.
+Collecter pilote, connexion logique pseudonymisée, type d'opération, requête
+SQL exécutée ou préparée, paramètres assainis lorsqu'ils sont disponibles,
+durée, lignes lues ou affectées, aperçu borné des résultats réellement lus,
+origine applicative et statut. Les mots de passe, secrets, DSN sensibles et
+valeurs personnelles non nécessaires sont masqués avant stockage. Une limite
+d'aperçu est obligatoire et toute troncature est signalée. Chaque opération
+mesurée est un span enfant de la requête ou commande qui l'a déclenchée.
 
 ### Session, cache et I18n
 
@@ -235,6 +250,13 @@ Chaque onglet doit :
 - permettre de retrouver le fichier, la classe ou la règle concernée sans exposer un secret ;
 - n'afficher que ses propres compteurs, événements, spans et détails ;
 - conserver le contexte de la trace active et permettre de revenir au résumé sans recharger une autre trace.
+
+La présence d'un événement ou d'un compteur ne suffit jamais à déclarer un
+onglet terminé. Chaque panneau doit, selon son domaine, exposer les entrées,
+décisions intermédiaires, transformations et sorties nécessaires pour expliquer
+et reproduire le comportement observé. Les valeurs réellement nécessaires au
+débogage sont assainies et bornées ; elles ne sont pas remplacées par de simples
+tailles, empreintes ou compteurs lorsqu'elles peuvent être montrées sans secret.
 
 Le panneau frontend peut agréger une synthèse backend autorisée uniquement par REST sécurisé et corrélation explicite. Les traces restent stockées séparément dans chaque application. Une donnée backend absente, inaccessible ou non corrélée est déclarée indisponible ; elle n'est jamais reconstituée par inférence.
 
