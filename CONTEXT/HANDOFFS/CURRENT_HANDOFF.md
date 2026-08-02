@@ -33,21 +33,21 @@ La branche `http.exception.caught` reste non prouvée tant qu'une erreur réelle
 
 Le Profiler doit fournir une couverture développeur comparable à Symfony, complétée par les domaines propres à OPUS : FSM, SCORE, REST distribué, ACL/SSO, I18n et Composer.
 
-Prochaine priorité : collecte BDD générique au point central d'exécution SQL, puis corrélation distribuée :
+R46B4 est livré sur le HEAD OPUS `039ec38fade806778a6c948289aa2886f048605f` et attend la validation owner. Il ajoute un observateur BDD générique OPUS puis raccorde les opérations SQLite réelles du backend au cycle Composer corrélé.
 
 ```text
 owasys-front → span REST → owasys-back → spans BDD/Composer → réponse → owasys-front
 ```
 
-La collecte BDD doit couvrir connexion, opération normalisée, transaction, durée, succès/échec, lignes affectées et origine applicative, sans SQL brut, paramètres sensibles ni secrets. Aucun panneau SCORE ne doit être enrichi avant que les événements réels correspondants existent.
+R46B4 mesure connexion, préparation/exécution, schéma et transactions avec durée, succès/échec et origine applicative, sans SQL brut, paramètres sensibles ni secrets. Les lignes lues/affectées et l'agrégation frontend restent des incréments ultérieurs. Aucun panneau SCORE ne doit être enrichi avant que les événements réels correspondants existent.
 
 ## Ordre de travail
 
-1. Auditer tous les points d'exécution BDD du framework et des applications publiées.
-2. Définir ou compléter les événements et spans BDD génériques.
-3. Instrumenter le point central OPUS, pas un dépôt OWASYS isolé.
-4. Tester succès, erreur et transaction avec événements réels.
-5. Livrer OPUS/OWASYS uniquement par ZIP différentiel owner-validé.
+1. Appliquer puis linter le ZIP R46B4 sur le HEAD exact.
+2. Exécuter un `owasys:registry:sync` réel via le flux REST/Composer.
+3. Vérifier les spans Composer → BDD, les événements contractuels, les transactions et l'absence de SQL/paramètres.
+4. Ne commit/push OPUS qu'après validation owner.
+5. Compléter lignes lues/affectées puis l'agrégation distribuée frontend.
 6. Poursuivre les collecteurs session, cache, I18n, logs, exceptions, runtime et performances, puis les panneaux SCORE.
 
 ## Autorité
