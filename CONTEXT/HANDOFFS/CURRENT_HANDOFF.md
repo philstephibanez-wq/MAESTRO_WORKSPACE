@@ -1,6 +1,6 @@
 # CURRENT HANDOFF — MAESTRO WORKSPACE
 
-Date : 2026-08-02
+Date : 2026-08-03
 
 ## Lire
 
@@ -14,45 +14,43 @@ CONTEXT/PROJECTS/OPUS_CURRENT_STATE.md
 
 ## Base exacte
 
-- OPUS GitHub : `b64eba112a4cdf4db1fe36f3c5ebeb3372959f96`.
-- Commit owner : `opus_p117w_r46b4_database_operation_collector`.
-- R46A1, R46B1, R46B2, R46B3, R46C1 et R46C3 validés et poussés.
-- R46B4 est poussé ; sa preuve fonctionnelle runtime reste à acquérir avant de le déclarer validé.
-- R46B5 onglets est invalidé : l’affichage `FSM 0` a prouvé l’absence d’instrumentation réelle du moteur FSM. Ne pas le pousser seul.
-- R46B5A collecteur FSM a corrigé `FSM 0`, mais la preuve runtime a révélé une double émission de `fsm.transition.started` pour le même span.
-- R46B5B déduplication FSM est livré sous forme de ZIP différentiel ; validation owner requise.
+- OPUS GitHub : `6bee0bde41fa1bfb7a933c5b667da40fdb2d47d7`.
+- Commit owner : `opus_p117w_r46b5b_fsm_started_deduplication`.
+- R46A1, R46B1, R46B2, R46B3, R46B4, R46B5, R46B5A, R46B5B, R46C1 et R46C3 sont poussés.
+- La preuve runtime confirme la collecte FSM et sa déduplication.
+- La capture suivante révèle `Database 0` et l'absence de marquage visuel de l'onglet actif.
+- R46B6 est livré sous forme de ZIP différentiel ; validation owner requise.
 - R46C2 rejeté et jamais intégré.
 - Site témoin : `fullstack-test`; ne jamais le corriger directement.
 
-## Preuves acquises
+## Cause R46B6
 
-- R46B2 : un span HTTP racine en succès, dix événements corrélés, HTTP 200, aucun faux span REST ou Composer.
-- R46B3 autorisé : utilisateur `admin`, Profiler accessible, span HTTP en succès, `acl.decision.evaluated`, aucun `acl.decision.denied`.
-- R46B3 refusé : `roles: []`, `profiler:view`, décision `denied`, règle `default:deny`, événements corrélés au span HTTP ; l'accès reste refusé.
-- R46C3 : iframe same-origin, session OWASYS centralisée, ACL et rendu SCORE validés.
+`/applications` exécute réellement `GET /api/v1/applications`, puis le backend exécute Composer et SQLite. Cependant :
 
-La branche `http.exception.caught` reste non prouvée tant qu'une erreur réelle n'a pas été exécutée.
+1. `OwasysRegistryModel` construisait `RestClient` sans le Profiler frontend, donc aucun span REST n'était collecté ;
+2. le backend persistait les mesures Composer/BDD sous le même `trace_id`, mais dans son stockage autonome ;
+3. le Profiler frontend ne fusionnait pas ces enregistrements distribués ;
+4. les onglets SCORE n'avaient aucun état actif visible.
 
-## Cible active — R46B5B déduplication de l’événement FSM
-
-R46B5A raccorde correctement la chaîne générique `Application → RuntimeController → FsmSiteLoader → FsmProcessor` au Profiler actif et la preuve runtime confirme un span FSM enfant du span HTTP. Elle a toutefois publié deux fois `fsm.transition.started` pour ce même span : une fois automatiquement par `Trace::beginSpan()` et une fois explicitement dans `FsmProcessor`.
-
-R46B5B traite la cause en supprimant uniquement l’émission explicite redondante. `Trace::beginSpan()` reste l’unique propriétaire de l’événement de début ; gardes, succès, échec, fin de span, contexte et durée restent mesurés. Aucun compteur n’est fabriqué dans SCORE.
-
-R46B4 reste parallèlement à valider sur le flux réel :
+R46B6 traite la cause sans accès BDD direct depuis le frontend :
 
 ```text
-owasys-front → span REST → owasys-back → spans BDD/Composer → réponse → owasys-front
+owasys-front → span REST → owasys-back → Composer → SQLite
+             ← enregistrements Profiler V2 assainis, même trace_id
 ```
+
+La télémétrie distante est demandée uniquement en environnement `dev/local/development`, ne contient ni SQL brut, ni paramètres, ni secret, et est rattachée causalement au span REST frontend. Le template SCORE marque l'onglet sélectionné sans JavaScript.
 
 ## Ordre de travail
 
-1. Appliquer R46B5B par-dessus R46B5 + R46B5A non poussés.
-2. Linter `Opus/Fsm/FsmProcessor.php` et exécuter les smokes OPUS/FSM.
-3. Parcourir `/applications?profiler=1` et vérifier exactement un `fsm.transition.started` par span FSM.
-4. Vérifier le même `trace_id`, le span FSM enfant du span HTTP, gardes, succès/échec, états, actions et durée.
-5. Ne commit/push l’ensemble R46B5 + R46B5A + R46B5B qu’après validation owner.
-6. Acquérir séparément la preuve runtime R46B4 sur un `owasys:registry:sync` réel.
+1. Appliquer R46B6 sur OPUS `6bee0bde41fa1bfb7a933c5b667da40fdb2d47d7`.
+2. Linter les huit fichiers PHP, exécuter les smokes OPUS/REST/Profiler/FSM et `git diff --check`.
+3. Parcourir `/applications?profiler=1`.
+4. Vérifier REST, Composer et Database non nuls sur la même trace.
+5. Vérifier les spans BDD enfants de Composer, lui-même corrélé au span REST frontend.
+6. Vérifier l'absence de SQL, paramètres et secrets.
+7. Vérifier que l'onglet courant est visuellement actif.
+8. Ne commit/push OPUS qu'après validation owner.
 
 ## Autorité
 
