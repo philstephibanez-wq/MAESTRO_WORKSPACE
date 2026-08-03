@@ -23,24 +23,24 @@ La continuité vient des dépôts GitHub et du workspace versionné, jamais du s
 ```text
 OPUS repository : philstephibanez-wq/OPUS
 branch          : master
-owner head      : e5878b367146a37c8f0c27a103491dc59a7a21db
-acquired        : R46B15
-owner delivery  : R45A2
+owner head      : ad33c64cb091711bcf98e7a1c9307cb4029e0ca6
+acquired        : R45A2 + R46B15
+owner delivery  : R45A3
 workspace       : philstephibanez-wq/MAESTRO_WORKSPACE
 ```
 
-R46B10 est annulé et interdit. R46B15 est acquis. Le workflow actif revient à la création d'un site avec R45A2, préalable contractuel à R45B.
+R46B10 est annulé et interdit. Le workflow actif est la création d'un site. R45A3 doit être acquis avant R45B.
 
-## R45A2
+## R45A3
 
 ```text
-ZIP     : opus_p117w_r45a2_typed_access_control_model.zip
-SHA-256 : 05bd036c90d53cbcd51cf49c3d0a582c3dcf92b79f00caf50ead671274270140
-FILES   : 16
-BASE    : e5878b367146a37c8f0c27a103491dc59a7a21db
+ZIP     : opus_p117w_r45a3_rest_profiler_transaction_boundary.zip
+SHA-256 : 6ceb5e5a55ca0b501dffc9748190fdc62b4a862ca8767df48fc278843e57b96d
+FILES   : 1
+BASE    : ad33c64cb091711bcf98e7a1c9307cb4029e0ca6
 ```
 
-R45A2 fournit le modèle typé générique pour rôles, permissions, ressources, scopes, attributions SSO, règles ACL et requêtes d'autorisation. Après validation owner, R45B rendra les profils `frontend`, `backend` et `fullstack` réellement distincts.
+R45A3 empêche une panne de télémétrie postérieure de transformer un succès métier en échec REST, finalise la trace avant lecture et restitue les codes canoniques du scaffold. Après validation owner, R45B rendra les profils `frontend`, `backend` et `fullstack` réellement distincts.
 
 ## Architecture OWASYS
 
