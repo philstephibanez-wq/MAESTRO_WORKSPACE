@@ -4,47 +4,33 @@ Date : 2026-08-03
 
 ## Lire
 
-```text
-README-FIRST.md
-CONTEXT/SPECIFICATIONS/MAESTRO_OPUS_OWASYS_GLOBAL_DEVELOPMENT_RULES_2026-07-24.md
-CONTEXT/PROJECTS/OPUS/OPUS_SITE_STANDARD_CONTRACT.md
-CONTEXT/SPECIFICATIONS/OPUS_DEVELOPER_PROFILER_CONTRACT_2026-07-31.md
-CONTEXT/PROJECTS/OPUS_CURRENT_STATE.md
-CONTEXT/SPECIFICATIONS/OPUS_P117W_R46B15_REMOTE_RECORD_REPLAY_IDEMPOTENCY_CONTRACT_2026-08-03.md
-CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OPUS_P117W_R46B15_REMOTE_RECORD_REPLAY_IDEMPOTENCY_2026-08-03.md
-```
+1. `README-FIRST.md`
+2. `CONTEXT/SPECIFICATIONS/MAESTRO_OPUS_OWASYS_GLOBAL_DEVELOPMENT_RULES_2026-07-24.md`
+3. `CONTEXT/PROJECTS/OPUS/OPUS_SITE_STANDARD_CONTRACT.md`
+4. `CONTEXT/AUDITS/OPUS_P117W_R45_GENERATION_AND_RESOURCE_SECURITY_AUDIT_2026-07-31.md`
+5. `CONTEXT/SPECIFICATIONS/OPUS_P117W_R45A2_TYPED_ACCESS_CONTROL_MODEL_2026-08-03.md`
+6. `CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OPUS_P117W_R45A2_TYPED_ACCESS_CONTROL_MODEL_2026-08-03.md`
+7. `CONTEXT/PROJECTS/OPUS_CURRENT_STATE.md`
 
 ## Base exacte
 
-- OPUS GitHub : `f5809c58c847a9137aa81f716d368d6f0da74832`.
-- R46B13 est poussé et acquis.
-- R46B14 est appliqué localement, non commité et non poussé ; ne pas le pousser.
-- R46B15 remplace R46B14 en un ZIP unique.
+- OPUS GitHub : `e5878b367146a37c8f0c27a103491dc59a7a21db`.
+- R46B15 est poussé et acquis.
 - R46B10 reste annulé et interdit.
+- Le workflow actif revient à la création d'un site.
 
 ## Livrable actif
 
 ```text
-ZIP     : opus_p117w_r46b15_remote_record_replay_idempotency.zip
-SHA-256 : 0bde7455e12082f5a0905294955418263b7db7eb129ef377900dcc5e77aacf85
-FILES   : 4
-BASE    : f5809c58c847a9137aa81f716d368d6f0da74832
+ZIP     : opus_p117w_r45a2_typed_access_control_model.zip
+SHA-256 : 05bd036c90d53cbcd51cf49c3d0a582c3dcf92b79f00caf50ead671274270140
+FILES   : 16
+BASE    : e5878b367146a37c8f0c27a103491dc59a7a21db
 ```
-
-## Correction
-
-R46B15 conserve l'idempotence de `registry.clear` et rend idempotent le rejeu d'un même enregistrement Profiler distant par `trace_id + record_id`. Une collision de `span_id` entre deux enregistrements distincts reste bloquante.
 
 ## Prochaine action
 
-L'owner extrait R46B15 sur le worktree R46B14 non commité, exécute lint, autoload et validation des deux sites, puis vérifie deux effacements successifs sans contexte courant avant commit et push.
-
-## Autorité
-
-```text
-Assistant : MAESTRO_WORKSPACE + ZIP différentiel
-Owner : application, validation, commit et push OPUS/OWASYS
-```
+L'owner applique, valide et pousse R45A2. Le prochain développement est R45B, qui rendra les trois profils de génération réellement distincts. Aucun site témoin ne doit être corrigé localement.
 
 NO ACL BYPASS.  
 NO CONTRACT, NO PATCH.  
