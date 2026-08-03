@@ -7,38 +7,42 @@ Dernière mise à jour : 2026-08-03.
 ```text
 OPUS : philstephibanez-wq/OPUS
 Branche : master
-HEAD owner publié : f5809c58c847a9137aa81f716d368d6f0da74832
-Dernier acquis : R46B13
+HEAD owner publié : e5878b367146a37c8f0c27a103491dc59a7a21db
+Dernier acquis : R46B15
 Racine owner : H:/OPUS
 Workspace : philstephibanez-wq/MAESTRO_WORKSPACE
 ```
 
 ## État acquis
 
-- R46B13 est poussé et acquis ; les preuves de routage et contrôleur sont présentes.
-- R46B10 est annulé et ne doit jamais être appliqué.
+- R46B15 est poussé et acquis ; `registry.clear` et le rejeu Profiler distant sont idempotents.
+- Le Profiler ne bloque plus le retour au workflow de création.
+- R45A1 est acquis : deny prioritaire et chargement ACL structuré.
+- R46B10 est annulé et interdit.
 - Le contrat FSM V2 reste `table_fsm + current_state + signal -> next_state`.
-- Les détails structurés REST/BDD, le terme visible Étape et l'instrumentation SCORE restent acquis.
-- `fullstack-test` est un témoin, jamais une cible de correction locale.
+- `test2` et tout site généré sont des témoins, jamais des cibles de correction locale.
 
-## Livrable owner actif — R46B15
+## Livrable owner actif — R45A2
 
-- Base : `f5809c58c847a9137aa81f716d368d6f0da74832`.
-- ZIP : `opus_p117w_r46b15_remote_record_replay_idempotency.zip`.
-- SHA-256 : `0bde7455e12082f5a0905294955418263b7db7eb129ef377900dcc5e77aacf85`.
-- Fichiers complets : 4.
-- Statut : livré, validation et push owner requis.
-- Handoff : `CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OPUS_P117W_R46B15_REMOTE_RECORD_REPLAY_IDEMPOTENCY_2026-08-03.md`.
+```text
+ZIP     : opus_p117w_r45a2_typed_access_control_model.zip
+SHA-256 : 05bd036c90d53cbcd51cf49c3d0a582c3dcf92b79f00caf50ead671274270140
+FILES   : 16
+BASE    : e5878b367146a37c8f0c27a103491dc59a7a21db
+STATUS  : livré, validation et push owner requis
+```
 
-R46B14 est appliqué localement mais non acquis. R46B15 le remplace intégralement, conserve l'idempotence de `registry.clear` et rend idempotent le rejeu du même enregistrement Profiler distant sans masquer une collision réelle de spans.
+R45A2 fournit les objets contractuels typés nécessaires à la suite de la création : rôles, permissions, ressources, scopes, attributions SSO, règles et requêtes d'autorisation.
 
-## Invariants
+## Suite gouvernée
 
-- ZIP différentiel seulement pour OPUS/OWASYS ;
-- validation et push par l'owner ;
-- aucune correction locale du site témoin ;
-- SCORE, Singleton, FSM, I18n, SSO et ACL deny-by-default ;
-- aucune donnée inventée dans le Profiler.
+Après acquisition de R45A2, R45B doit corriger la cause générique des profils aujourd'hui seulement déclaratifs :
+
+- frontend : SCORE et client REST avec backend cible ;
+- backend : REST, FSM, SSO, ACL et persistance, sans SCORE ni JavaScript ;
+- fullstack : un seul site, frontière REST obligatoire, sans `shared`.
+
+R45C (wizard structuré) et R45D (administration Sécurité) restent ultérieurs.
 
 NO ACL BYPASS.  
 NO CONTRACT, NO PATCH.  
