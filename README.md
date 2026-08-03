@@ -23,24 +23,26 @@ La continuité vient des dépôts GitHub et du workspace versionné, jamais du s
 ```text
 OPUS repository : philstephibanez-wq/OPUS
 branch          : master
-owner head      : ad33c64cb091711bcf98e7a1c9307cb4029e0ca6
-acquired        : R45A2 + R46B15
-owner delivery  : R45A3
+owner head      : 07756d41d171fec1758722874adaa889a931026e
+acquired        : R45A3 + R45A2 + R46B15
+owner delivery  : R45B1
 workspace       : philstephibanez-wq/MAESTRO_WORKSPACE
 ```
 
-R46B10 est annulé et interdit. Le workflow actif est la création d'un site. R45A3 doit être acquis avant R45B.
+R46B10 est annulé et interdit. Le workflow actif est la création d'un site. R45B est découpé en gates atomiques.
 
-## R45A3
+## R45B1
 
 ```text
-ZIP     : opus_p117w_r45a3_rest_profiler_transaction_boundary.zip
-SHA-256 : 6ceb5e5a55ca0b501dffc9748190fdc62b4a862ca8767df48fc278843e57b96d
-FILES   : 1
-BASE    : ad33c64cb091711bcf98e7a1c9307cb4029e0ca6
+ZIP     : opus_p117w_r45b1_profile_conformance_gate.zip
+SHA-256 : 38fb6a3832e14bfea4ecc3bb10f3b1450ef20833698805386c29d3f4fe30ba5d
+FILES   : 2
+BASE    : 07756d41d171fec1758722874adaa889a931026e
 ```
 
-R45A3 empêche une panne de télémétrie postérieure de transformer un succès métier en échec REST, finalise la trace avant lecture et restitue les codes canoniques du scaffold. Après validation owner, R45B rendra les profils `frontend`, `backend` et `fullstack` réellement distincts.
+R45B1 interdit qu'un backend non conforme soit écrit ou validé et corrige sa
+capacité de présentation. Après validation owner, R45B2 ajoutera le runtime REST
+générique et la corrélation fullstack, sans `shared`.
 
 ## Architecture OWASYS
 
