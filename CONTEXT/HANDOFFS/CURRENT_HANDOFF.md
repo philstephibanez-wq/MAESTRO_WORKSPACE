@@ -8,13 +8,14 @@ Date : 2026-08-03
 2. `CONTEXT/SPECIFICATIONS/MAESTRO_OPUS_OWASYS_GLOBAL_DEVELOPMENT_RULES_2026-07-24.md`
 3. `CONTEXT/PROJECTS/OPUS/OPUS_SITE_STANDARD_CONTRACT.md`
 4. `CONTEXT/SPECIFICATIONS/OPUS_DEVELOPER_PROFILER_CONTRACT_2026-07-31.md`
-5. `CONTEXT/SPECIFICATIONS/OPUS_P117W_R45A3_REST_PROFILER_TRANSACTION_BOUNDARY_2026-08-03.md`
-6. `CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OPUS_P117W_R45A3_REST_PROFILER_TRANSACTION_BOUNDARY_2026-08-03.md`
+5. `CONTEXT/SPECIFICATIONS/OPUS_P117W_R45B1_PROFILE_CONFORMANCE_GATE_2026-08-03.md`
+6. `CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OPUS_P117W_R45B1_PROFILE_CONFORMANCE_GATE_2026-08-03.md`
 7. `CONTEXT/PROJECTS/OPUS_CURRENT_STATE.md`
 
 ## Base exacte
 
-- OPUS GitHub : `ad33c64cb091711bcf98e7a1c9307cb4029e0ca6`.
+- OPUS GitHub : `07756d41d171fec1758722874adaa889a931026e`.
+- R45A3 est poussé et acquis.
 - R45A2 est poussé et acquis.
 - R46B15 est poussé et acquis.
 - R46B10 reste annulé et interdit.
@@ -23,17 +24,21 @@ Date : 2026-08-03
 ## Livrable actif
 
 ```text
-ZIP     : opus_p117w_r45a3_rest_profiler_transaction_boundary.zip
-SHA-256 : 6ceb5e5a55ca0b501dffc9748190fdc62b4a862ca8767df48fc278843e57b96d
-FILES   : 1
-BASE    : ad33c64cb091711bcf98e7a1c9307cb4029e0ca6
+ZIP     : opus_p117w_r45b1_profile_conformance_gate.zip
+SHA-256 : 38fb6a3832e14bfea4ecc3bb10f3b1450ef20833698805386c29d3f4fe30ba5d
+FILES   : 2
+BASE    : 07756d41d171fec1758722874adaa889a931026e
 ```
 
-R45A3 empêche une défaillance Profiler postérieure de convertir une création réussie en échec REST et conserve le code canonique des erreurs de scaffold.
+R45B1 empêche l'écriture et la validation d'un faux backend contenant SCORE,
+JavaScript/TypeScript, métadonnées de paquets JavaScript, templates/layouts ou
+une couche `shared`.
 
 ## Prochaine action
 
-L'owner applique, valide et pousse R45A3. R45B rend ensuite les profils `frontend`, `backend` et `fullstack` réellement distincts. Aucun site témoin ne doit être corrigé localement.
+L'owner applique, valide et pousse R45B1. R45B2 génère ensuite le runtime REST
+générique et le manifeste de corrélation fullstack. Aucun site témoin ne doit
+être corrigé localement.
 
 NO ACL BYPASS.  
 NO CONTRACT, NO PATCH.  
