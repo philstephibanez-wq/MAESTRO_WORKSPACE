@@ -10,56 +10,53 @@ CONTEXT/SPECIFICATIONS/MAESTRO_OPUS_OWASYS_GLOBAL_DEVELOPMENT_RULES_2026-07-24.m
 CONTEXT/PROJECTS/OPUS/OPUS_SITE_STANDARD_CONTRACT.md
 CONTEXT/SPECIFICATIONS/OPUS_DEVELOPER_PROFILER_CONTRACT_2026-07-31.md
 CONTEXT/PROJECTS/OPUS_CURRENT_STATE.md
+CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OPUS_P117W_R46B8_STRUCTURED_PROFILER_DETAILS_2026-08-03.md
 ```
 
 ## Base exacte
 
-- OPUS GitHub : `c9f46233f0cc567943b0d6f668ff4896d99b2600`.
-- Commit owner : `opus_p117w_r46b6_distributed_database_profiler_and_active_tabs`.
-- R46A1, R46B1, R46B2, R46B3, R46B4, R46B5, R46B5A, R46B5B, R46C1 et R46C3 sont poussés.
-- La preuve runtime confirme la collecte FSM et sa déduplication.
-- La capture suivante révèle `Database 0` et l'absence de marquage visuel de l'onglet actif.
-- R46B6 est poussé et la preuve runtime confirme Database non nul.
-- La preuve runtime montre cependant que Database n'affiche ni requêtes ni
-  résultats ; la même insuffisance existe pour les requêtes/réponses REST.
-- R46B7 est le livrable actif : assainissement transversal du contexte Profiler,
-  détails de débogage BDD et REST, puis généralisation contractuelle à tous les
-  panneaux.
-- R46C2 rejeté et jamais intégré.
+- OPUS GitHub : `97034ed93de2909afffcef2c7b48942da9a29e7a`.
+- Commit owner : `opus_p117w_r46b7_profiler_debug_payloads`.
+- R46A1, R46B1, R46B2, R46B3, R46B4, R46B5, R46B5A, R46B5B,
+  R46B6, R46B7, R46C1 et R46C3 sont poussés.
+- R46C2 est rejeté et n’a jamais été intégré.
+- La collecte détaillée Database et REST est acquise.
+- Les captures runtime montrent que les contextes sont encore affichés comme
+  JSON monolithique, avec colonnes très larges et hiérarchie illisible.
+- R46B8 est le livrable actif : présentation SCORE structurée et repliable.
 - Site témoin : `fullstack-test`; ne jamais le corriger directement.
 
-## Cause R46B7
+## Cause R46B8
 
-R46B6 corrèle correctement le chemin distribué, mais les collecteurs ont été
-conçus comme de la télémétrie minimale plutôt que comme des outils de débogage :
+Le collecteur R46B7 fournit les entrées et sorties utiles. Le défaut restant est
+dans le renderer générique :
 
-1. `DatabaseOperationProfiler` supprimait explicitement SQL et résultats ;
-2. `RestClient` ne conservait que route, statut et tailles ;
-3. aucun assainissement transversal ne permettait de collecter des valeurs
-   utiles avec une politique homogène ;
-4. les onglets étaient alimentés, mais ne répondaient pas suffisamment à la
-   question développeur « pourquoi et avec quelles entrées/sorties ? ».
+1. `WebProfilerView` convertit tout contexte en une seule chaîne JSON ;
+2. `layout.score` l’insère dans une colonne unique ;
+3. la page devient large et la structure des données disparaît visuellement.
 
-R46B7 traite la cause avec un contrat commun :
+R46B8 traite cette cause sans modifier les collecteurs :
 
 ```text
-collecteur → contexte détaillé → assainissement central → stockage borné → SCORE
+contexte assaini → view-model récursif → résumé compact
+                                  ↘ détail chemin/type/valeur
+                                  ↘ JSON brut secondaire
 ```
 
-Les secrets restent interdits. Les requêtes et résultats nécessaires au
-débogage ne sont plus supprimés : ils sont assainis, limités et leur troncature
-est explicite. Ce principe est transversal à tous les panneaux.
+Dans l’interface, le terme `span` devient **Étape**. Le protocole interne et
+ses clés `span_id` restent inchangés.
 
 ## Ordre de travail
 
-1. Appliquer R46B7 sur OPUS `c9f46233f0cc567943b0d6f668ff4896d99b2600`.
-2. Linter les sept fichiers PHP, exécuter les smokes OPUS/REST/Profiler/BDD et `git diff --check`.
-3. Parcourir `/applications?profiler=1`.
-4. Vérifier que Database montre le SQL et l'aperçu borné des lignes réellement lues.
-5. Vérifier que REST montre requête et réponse, y compris une réponse d'erreur.
-6. Vérifier le masquage des secrets et l'indication des troncatures.
-7. Vérifier la corrélation causale et l'onglet courant actif.
-8. Ne commit/push OPUS qu'après validation owner.
+1. Appliquer R46B8 sur OPUS `97034ed93de2909afffcef2c7b48942da9a29e7a`.
+2. Linter `Opus/Profiler/WebProfilerView.php`.
+3. Exécuter les smokes Profiler et OPUS, puis `git diff --check`.
+4. Parcourir `/applications?profiler=1`.
+5. Vérifier les détails structurés dans Database et REST.
+6. Vérifier le résumé compact, les volets repliables et le JSON brut.
+7. Vérifier l’absence de débordement horizontal dû aux contextes.
+8. Vérifier que toutes les données R46B7 et l’onglet actif sont conservés.
+9. Ne commit/push OPUS qu’après validation owner.
 
 ## Autorité
 
