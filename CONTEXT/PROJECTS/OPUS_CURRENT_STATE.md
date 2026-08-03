@@ -8,7 +8,7 @@ Dernière mise à jour : 2026-08-03.
 OPUS : philstephibanez-wq/OPUS
 Branche : master
 HEAD owner publié : bf190ab7afecc09493d2d5c98513420613f45fbc
-Commit : opus_p117w_r46b9_score_render_profiler_collector
+Dernier acquis : R46B9
 Racine owner : H:/OPUS
 Workspace : philstephibanez-wq/MAESTRO_WORKSPACE
 ```
@@ -16,38 +16,29 @@ Workspace : philstephibanez-wq/MAESTRO_WORKSPACE
 ## État acquis
 
 - R46B9 est poussé et acquis.
-- R46B10 est annulé et ne doit pas être appliqué.
-- Les détails structurés REST/BDD, l'onglet actif, le terme visible Étape et
-  l'instrumentation réelle SCORE restent acquis.
-- R46C2 reste rejeté.
+- R46B10 est annulé et ne doit jamais être appliqué.
+- Les détails structurés REST/BDD, le terme visible Étape et l'instrumentation réelle SCORE restent acquis.
 - `fullstack-test` est un témoin, jamais une cible de correction locale.
 
-## Défaut actif
+## Livrable owner actif — R46B11
 
-Le schéma FSM emploie encore `event/from_state/to_state`. `next_state` est
-connu après sélection de la transition mais n'est pas conservé dans tous les
-diagnostics, notamment lors d'un refus de garde. Une correction limitée aux
-libellés du Profiler serait incohérente avec le contrat runtime.
+- Base : `bf190ab7afecc09493d2d5c98513420613f45fbc`.
+- ZIP : `opus_p117w_r46b11_fsm_signal_contract.zip`.
+- SHA-256 : `7c78b527357f5adc37d87109b94c06eec2a1be454eee5a3744e4732dc5a3fcd0`.
+- Statut : livré, validation et push owner requis.
+- Handoff : `CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OPUS_P117W_R46B11_FSM_SIGNAL_CONTRACT_DELIVERY_2026-08-03.md`.
 
-## Cible active — R46B11
-
-Migration contractuelle atomique vers :
+## Contrat FSM R46B11
 
 ```text
 table_fsm + current_state + signal -> next_state
 ```
 
-Portée : contrats et API FSM, processeur, dispatcher, configurations front/back,
-générateurs et consommateurs OWASYS, télémétrie, Profiler et smokes concernés.
-
-Règles :
-
-- nom réel de table systématiquement visible ;
-- `signal` uniquement dans le domaine FSM ;
-- transition candidate complète lors d'un refus de garde ;
-- `transition_not_found` sans cible inventée pour un signal inconnu ;
-- aucun alias ancien ni fallback silencieux ;
-- `fsm_contract` interne au snapshot seulement, absent de la vue.
+- aucun alias silencieux `event/from_state/to_state` ;
+- nom réel de la table systématiquement visible ;
+- garde refusée : transition candidate complète et `guard_refused` ;
+- signal inconnu : `transition_not_found` sans cible inventée ;
+- `fsm_contract` interne au snapshot uniquement, absent de la vue.
 
 ## Invariants
 
