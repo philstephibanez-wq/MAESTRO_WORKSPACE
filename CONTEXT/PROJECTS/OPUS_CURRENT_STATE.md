@@ -21,16 +21,16 @@ Workspace : philstephibanez-wq/MAESTRO_WORKSPACE
 - Les détails structurés REST/BDD, le terme visible Étape et l'instrumentation SCORE restent acquis.
 - `fullstack-test` est un témoin, jamais une cible de correction locale.
 
-## Livrable owner actif — R46B14
+## Livrable owner actif — R46B15
 
 - Base : `f5809c58c847a9137aa81f716d368d6f0da74832`.
-- ZIP : `opus_p117w_r46b14_registry_clear_idempotency.zip`.
-- SHA-256 : `b6dfd73e87aaaf708ee44c3b0de9da9a5b9cd745dfc184fe7b1d7038357d6e73`.
-- Fichiers complets : 3.
+- ZIP : `opus_p117w_r46b15_remote_record_replay_idempotency.zip`.
+- SHA-256 : `0bde7455e12082f5a0905294955418263b7db7eb129ef377900dcc5e77aacf85`.
+- Fichiers complets : 4.
 - Statut : livré, validation et push owner requis.
-- Handoff : `CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OPUS_P117W_R46B14_REGISTRY_CLEAR_IDEMPOTENCY_2026-08-03.md`.
+- Handoff : `CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OPUS_P117W_R46B15_REMOTE_RECORD_REPLAY_IDEMPOTENCY_2026-08-03.md`.
 
-R46B14 rend `registry.clear` idempotent, retire le faux identifiant système `owasys`, rattache les événements techniques à `owasys-back` et empêche le front de reclasser une erreur non-FSM en refus FSM.
+R46B14 est appliqué localement mais non acquis. R46B15 le remplace intégralement, conserve l'idempotence de `registry.clear` et rend idempotent le rejeu du même enregistrement Profiler distant sans masquer une collision réelle de spans.
 
 ## Invariants
 
