@@ -23,24 +23,24 @@ La continuité vient des dépôts GitHub et du workspace versionné, jamais du s
 ```text
 OPUS repository : philstephibanez-wq/OPUS
 branch          : master
-owner head      : d8eba2e5e0631a2e59edd5d509ba017edfbe2037
-acquired        : R46B12
-owner delivery  : R46B13
+owner head      : f5809c58c847a9137aa81f716d368d6f0da74832
+acquired        : R46B13
+owner delivery  : R46B15
 workspace       : philstephibanez-wq/MAESTRO_WORKSPACE
 ```
 
-R46B10 est annulé et interdit. R46B12 est acquis. R46B13 est le livrable owner actif pour le panneau Routage et contrôleur.
+R46B10 est annulé et interdit. R46B13 est acquis. R46B14 n'est ni commité ni poussé ; R46B15 le remplace.
 
-## R46B13
+## R46B15
 
 ```text
-ZIP     : opus_p117w_r46b13_routing_controller_evidence.zip
-SHA-256 : a6d2730b021d6806d8526aaa10567380443a93504f6b0543a37534bc2a1c13ae
-FILES   : 2
-BASE    : d8eba2e5e0631a2e59edd5d509ba017edfbe2037
+ZIP     : opus_p117w_r46b15_remote_record_replay_idempotency.zip
+SHA-256 : 0bde7455e12082f5a0905294955418263b7db7eb129ef377900dcc5e77aacf85
+FILES   : 4
+BASE    : f5809c58c847a9137aa81f716d368d6f0da74832
 ```
 
-Le Profiler expose la route normalisée, les paramètres assainis, l'origine de la règle de dispatch, la classe et la méthode du contrôleur réellement sélectionné.
+R46B15 conserve l'idempotence de `registry.clear` et corrige le rejeu d'un même enregistrement Profiler distant par `trace_id + record_id`, sans neutraliser les collisions réelles de spans.
 
 ## Architecture OWASYS
 
