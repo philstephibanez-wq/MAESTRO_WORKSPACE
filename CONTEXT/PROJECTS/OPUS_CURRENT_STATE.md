@@ -7,51 +7,47 @@ Dernière mise à jour : 2026-08-03.
 ```text
 OPUS : philstephibanez-wq/OPUS
 Branche : master
-HEAD owner publié : 07756d41d171fec1758722874adaa889a931026e
-Dernier acquis : R45A3
+HEAD owner publié : 4a4193094f1ea33270909008a0a1a0c8eac61c3e
+Dernier acquis : R45B1
 Racine owner : H:/OPUS
 Workspace : philstephibanez-wq/MAESTRO_WORKSPACE
 ```
 
 ## État acquis
 
-- R45A3 est poussé et acquis ; la frontière REST/Profiler conserve le résultat métier et les codes canoniques.
-- R45A2 est poussé et acquis ; le modèle typé générique ACL/SSO est présent.
-- R46B15 est acquis ; `registry.clear` et le rejeu Profiler distant sont idempotents.
-- R45A1 est acquis : priorité du deny et chargement ACL structuré.
+- R45B1 est poussé et acquis au commit `c585ceb` ; le gate backend est actif.
+- Le commit owner `4a419309… cleanup` supprime seulement le site témoin.
+- R45A3 est acquis ; la frontière REST/Profiler conserve le résultat métier.
+- R45A2 et R45A1 sont acquis ; le socle ACL/SSO deny-first est présent.
+- R46B15 est acquis ; `registry.clear` et le rejeu Profiler sont idempotents.
 - R46B10 est annulé et interdit.
-- Le contrat FSM V2 reste `table_fsm + current_state + signal -> next_state`.
 - Les sites générés sont des témoins, jamais des cibles de correction locale.
 
-## Validation runtime acquise
-
-La collision sur `test` est désormais restituée sous son code canonique
-`OPUS_SCAFFOLD_TARGET_ALREADY_EXISTS`. Elle ne doit pas déclencher de suppression
-automatique ni de nouvelle tentative avec le même identifiant.
-
-## Livrable owner actif — R45B1
+## Livrable owner actif — R45B2
 
 ```text
-ZIP     : opus_p117w_r45b1_profile_conformance_gate.zip
-SHA-256 : 38fb6a3832e14bfea4ecc3bb10f3b1450ef20833698805386c29d3f4fe30ba5d
+ZIP     : opus_p117w_r45b2_backend_rest_profile_runtime.zip
+SHA-256 : 39bf3866f4a1c02f5b0a2bbb826223117a7bd8a5dbaf5b4accf5ca5fcf2c489f
 FILES   : 2
-BASE    : 07756d41d171fec1758722874adaa889a931026e
+BASE    : 4a4193094f1ea33270909008a0a1a0c8eac61c3e
 STATUS  : livré, validation et push owner requis
 ```
 
-R45B1 corrige `presentation=false` pour backend et bloque avant écriture puis à
-la validation tout artefact SCORE/JavaScript/TypeScript/package manager,
-template/layout ou couche `shared` dans ce profil.
+R45B2 fait produire au profil backend un Singleton PHP, un contrôleur REST
+contractuel, une FSM, ACL/SSO, une authentification HMAC, un catalogue Composer
+allow-listé et des diagnostics propres, sans SCORE/JavaScript/`shared`.
+
+Le profil fullstack reçoit le manifeste
+`OPUS_FULLSTACK_REST_CORRELATION_V1`. Son client REST frontend reste le jalon
+R45B3 et n'est pas déclaré acquis prématurément.
 
 ## Suite gouvernée
 
-Après acquisition de R45B1, R45B2 poursuit le scaffold réellement distinct :
+Après acquisition de R45B2 :
 
-- frontend : SCORE et client REST avec backend cible ;
-- backend : REST, FSM, SSO, ACL et persistance, sans SCORE ni JavaScript ;
-- fullstack : un seul site, frontière REST obligatoire, sans `shared`.
-
-R45C (wizard structuré) et R45D (administration Sécurité) restent ultérieurs.
+- R45B3 : client REST frontend générique et validateurs croisés ;
+- R45C : wizard OWASYS structuré ;
+- R45D : administration Sécurité.
 
 NO ACL BYPASS.  
 NO CONTRACT, NO PATCH.  
