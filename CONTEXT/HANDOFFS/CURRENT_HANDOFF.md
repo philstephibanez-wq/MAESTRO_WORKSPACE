@@ -10,46 +10,45 @@ CONTEXT/SPECIFICATIONS/MAESTRO_OPUS_OWASYS_GLOBAL_DEVELOPMENT_RULES_2026-07-24.m
 CONTEXT/PROJECTS/OPUS/OPUS_SITE_STANDARD_CONTRACT.md
 CONTEXT/SPECIFICATIONS/OPUS_DEVELOPER_PROFILER_CONTRACT_2026-07-31.md
 CONTEXT/PROJECTS/OPUS_CURRENT_STATE.md
-CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OPUS_P117W_R46B9_SCORE_RENDER_PROFILER_2026-08-03.md
+CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OPUS_P117W_R46B10_FSM_DEBUG_TRANSITION_SUMMARY_2026-08-03.md
 ```
 
 ## Base exacte
 
-- OPUS GitHub : `7bd73ab4324cff26ebb6bee7622a8159aca787a1`.
-- Commit owner : `opus_p117w_r46b8_profiler_structured_debug_details`.
-- R46B8 est poussé et acquis.
-- La capture runtime valide les détails structurés, la terminologie **Étape** et
-  l'onglet actif.
-- R46B9 est le livrable actif : instrumentation du moteur SCORE réel.
+- OPUS GitHub : `bf190ab7afecc09493d2d5c98513420613f45fbc`.
+- Commit owner : `opus_p117w_r46b9_score_render_profiler_collector`.
+- R46B9 est poussé et acquis.
+- Les captures runtime valident les détails structurés REST/BDD et l'onglet actif.
+- R46B10 est le livrable actif : résumé FSM utile au débogage.
 - Site témoin : `fullstack-test`; ne jamais le corriger directement.
 
-## Cause R46B9
+## Cause R46B10
 
-L'onglet SCORE ne contient qu'un événement périphérique
-`score.response.rendered`. `ScoreTemplateRenderer` exécute réellement le
-template, le layout et les fragments, mais ne reçoit pas le Profiler actif et
-ne mesure aucune de ces phases.
+Le collecteur FSM transporte les états et le signal, mais le résumé générique
+affiche d'abord `fsm_contract`. Le nom fonctionnel de la table n'est pas
+transporté et la transition n'est pas lisible directement.
 
-R46B9 traite la chaîne réelle :
+R46B10 traite :
 
 ```text
-Étape HTTP
--> OwasysScorePageRenderer
--> ScoreTemplateRenderer
--> template/layout/fragments SCORE
--> sortie ou échec
+nom réel de table FSM
++ état courant
++ signal
++ état suivant
+-> résumé développeur lisible
 ```
 
 ## Ordre de travail
 
-1. Appliquer R46B9 sur OPUS `7bd73ab4324cff26ebb6bee7622a8159aca787a1`.
-2. Linter les trois fichiers PHP du ZIP.
-3. Exécuter les smokes Profiler, SCORE et OPUS, puis `git diff --check`.
+1. Appliquer R46B10 sur OPUS `bf190ab7afecc09493d2d5c98513420613f45fbc`.
+2. Linter les deux fichiers PHP du ZIP.
+3. Exécuter les smokes FSM, Profiler et OPUS, puis `git diff --check`.
 4. Parcourir `/applications?profiler=1`.
-5. Vérifier plusieurs événements SCORE réels et une étape `score.render`.
-6. Vérifier template/layout/fragments, durées, tailles et causalité HTTP.
-7. Vérifier qu'aucune donnée de view-model sensible n'est stockée.
-8. Ne commit/push OPUS qu'après validation owner.
+5. Vérifier le nom de table sur chaque ligne FSM.
+6. Vérifier `état courant → signal → état suivant`.
+7. Vérifier l'absence visible de `fsm_contract`, JSON brut compris.
+8. Vérifier les gardes et transitions refusées.
+9. Ne commit/push OPUS qu'après validation owner.
 
 ## Autorité
 
