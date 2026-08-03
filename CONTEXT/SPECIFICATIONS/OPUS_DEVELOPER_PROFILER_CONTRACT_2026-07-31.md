@@ -79,13 +79,13 @@ Collecter méthode, route normalisée, statut HTTP, contrôleur/action, durée e
 
 ### FSM
 
-- `fsm.event.received`
+- `fsm.signal.received`
 - `fsm.guard.evaluated`
 - `fsm.transition.applied`
 - `fsm.transition.rejected`
 - `fsm.action.executed`
 
-Collecter état initial, événement, gardes, transition, état final et raison d'un refus.
+Collecter nom de table FSM, `current_state`, `signal`, gardes, `next_state` et raison d'un refus. Une transition refusée conserve le `next_state` candidat ; un signal inconnu utilise `transition_not_found` sans cible inventée.
 
 ### Sécurité
 
