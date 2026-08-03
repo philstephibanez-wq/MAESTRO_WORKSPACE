@@ -23,24 +23,24 @@ La continuité vient des dépôts GitHub et du workspace versionné, jamais du s
 ```text
 OPUS repository : philstephibanez-wq/OPUS
 branch          : master
-owner head      : bf190ab7afecc09493d2d5c98513420613f45fbc
-acquired        : R46B9
-owner delivery  : R46B11
+owner head      : bd0c5d20f2e510b3666df8ed758b7a906c9f46ea
+acquired        : R46B11
+owner delivery  : R46B12
 workspace       : philstephibanez-wq/MAESTRO_WORKSPACE
 ```
 
-R46B10 est annulé et interdit. R46B11 est livré sur le HEAD indiqué et attend validation, commit et push owner.
+R46B10 est annulé et interdit. R46B11 est acquis mais contient une collision PHP confirmée qui bloque `owasys-front`. R46B12 est le correctif owner actif.
 
-## R46B11
+## R46B12
 
 ```text
-ZIP     : opus_p117w_r46b11_fsm_signal_contract.zip
-SHA-256 : 7c78b527357f5adc37d87109b94c06eec2a1be454eee5a3744e4732dc5a3fcd0
-FILES   : 17
-CONTRACT: table_fsm + current_state + signal -> next_state
+ZIP     : opus_p117w_r46b12_runtime_signal_resolver_collision_fix.zip
+SHA-256 : 013f8347a4c52c4fcf15ef28eeddfd71e4acc484e15503660968f9252622f76e
+FILES   : 1
+BASE    : bd0c5d20f2e510b3666df8ed758b7a906c9f46ea
 ```
 
-Aucun alias silencieux `event/from_state/to_state`. Le nom réel de la table est affiché systématiquement. Une garde refusée conserve la cible candidate ; un signal inconnu produit `transition_not_found` sans cible inventée.
+La résolution complète de requête devient `resolveRequestSignal(...)`. La résolution de route reste `resolveSignal(string $routeKey)`. Le contrat FSM V2 n'est pas modifié.
 
 ## Architecture OWASYS
 
