@@ -13,55 +13,51 @@ Racine owner : H:/OPUS
 Workspace : philstephibanez-wq/MAESTRO_WORKSPACE
 ```
 
-## État acquis R46
+## État acquis
 
-- Trace causale V2, HTTP, REST, ACL, BDD, FSM et corrélation distribuée acquis.
-- Profiler SCORE dans une iframe same-origin avec 18 onglets acquis.
-- Collecte détaillée et assainie des requêtes/résultats BDD et REST acquise.
-- Onglet actif, détails hiérarchiques repliables, JSON brut secondaire et terme
-  visible **Étape** acquis avec R46B8.
-- Instrumentation réelle template/layout/fragments SCORE acquise avec R46B9.
-- R46C2 reste rejeté et n'a jamais été intégré.
-- Témoin guidé : `fullstack-test`, jamais corrigé directement.
+- R46B9 est poussé et acquis.
+- R46B10 est annulé et ne doit pas être appliqué.
+- Les détails structurés REST/BDD, l'onglet actif, le terme visible Étape et
+  l'instrumentation réelle SCORE restent acquis.
+- R46C2 reste rejeté.
+- `fullstack-test` est un témoin, jamais une cible de correction locale.
 
 ## Défaut actif
 
-Le panneau FSM reçoit les données réelles de transition, mais son résumé
-générique expose d'abord `fsm_contract`. Il ne raconte donc pas directement la
-transition et n'identifie pas la table FSM par son nom fonctionnel.
+Le schéma FSM emploie encore `event/from_state/to_state`. `next_state` est
+connu après sélection de la transition mais n'est pas conservé dans tous les
+diagnostics, notamment lors d'un refus de garde. Une correction limitée aux
+libellés du Profiler serait incohérente avec le contrat runtime.
 
-## Cible active — R46B10
+## Cible active — R46B11
 
-R46B10 :
+Migration contractuelle atomique vers :
 
-- transporte le vrai `name` de chaque configuration sous `fsm_name`;
-- affiche systématiquement le nom de table;
-- résume `état courant → signal → état suivant`;
-- complète les événements de garde avec source, signal et cible;
-- masque `fsm_contract` dans toute l'interface sans le retirer du runtime;
-- ne modifie aucune transition, garde, action ou donnée métier.
+```text
+table_fsm + current_state + signal -> next_state
+```
 
-## Suite R46
+Portée : contrats et API FSM, processeur, dispatcher, configurations front/back,
+générateurs et consommateurs OWASYS, télémétrie, Profiler et smokes concernés.
 
-1. appliquer et linter R46B10 sur le HEAD owner;
-2. exécuter les smokes FSM, Profiler et OPUS;
-3. prouver le nom de table et la transition complète dans l'onglet FSM;
-4. vérifier l'absence visible de `fsm_contract`;
-5. pousser uniquement après validation owner;
-6. poursuivre les collecteurs réellement incomplets selon le contrat.
+Règles :
+
+- nom réel de table systématiquement visible ;
+- `signal` uniquement dans le domaine FSM ;
+- transition candidate complète lors d'un refus de garde ;
+- `transition_not_found` sans cible inventée pour un signal inconnu ;
+- aucun alias ancien ni fallback silencieux ;
+- `fsm_contract` interne au snapshot seulement, absent de la vue.
 
 ## Invariants
 
-- aucune correction locale de `fullstack-test`;
-- SCORE uniquement; Singleton, FSM, I18n, SSO et ACL deny-by-default;
-- backend sans JavaScript; aucun `shared`;
-- frontend sans accès direct à la BDD;
-- Logger/Profiler corrélés sans secret;
-- Profiler uniquement dev/local;
-- aucune affirmation sans événement collecté;
-- assistant : ZIP différentiel seulement pour OPUS/OWASYS;
-- owner : validation et push.
+- ZIP différentiel seulement pour OPUS/OWASYS ;
+- validation et push par l'owner ;
+- aucune correction locale du site témoin ;
+- SCORE, Singleton, FSM, I18n, SSO et ACL deny-by-default ;
+- aucune donnée inventée dans le Profiler.
 
 NO ACL BYPASS.  
-NO EVENT, NO CLAIM.  
+NO CONTRACT, NO PATCH.  
+NO SOURCE OF TRUTH, NO PATCH.  
 NO FALLBACK SILENCIEUX.
