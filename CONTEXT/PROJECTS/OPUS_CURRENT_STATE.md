@@ -7,14 +7,15 @@ Dernière mise à jour : 2026-08-03.
 ```text
 OPUS : philstephibanez-wq/OPUS
 Branche : master
-HEAD owner publié : ad33c64cb091711bcf98e7a1c9307cb4029e0ca6
-Dernier acquis : R45A2
+HEAD owner publié : 07756d41d171fec1758722874adaa889a931026e
+Dernier acquis : R45A3
 Racine owner : H:/OPUS
 Workspace : philstephibanez-wq/MAESTRO_WORKSPACE
 ```
 
 ## État acquis
 
+- R45A3 est poussé et acquis ; la frontière REST/Profiler conserve le résultat métier et les codes canoniques.
 - R45A2 est poussé et acquis ; le modèle typé générique ACL/SSO est présent.
 - R46B15 est acquis ; `registry.clear` et le rejeu Profiler distant sont idempotents.
 - R45A1 est acquis : priorité du deny et chargement ACL structuré.
@@ -22,25 +23,29 @@ Workspace : philstephibanez-wq/MAESTRO_WORKSPACE
 - Le contrat FSM V2 reste `table_fsm + current_state + signal -> next_state`.
 - Les sites générés sont des témoins, jamais des cibles de correction locale.
 
-## Défaut runtime confirmé
+## Validation runtime acquise
 
-Une première création `site.create` peut réussir côté Composer et produire HTTP `201`, puis être requalifiée en échec parce que `RestServer` lit sa trace avant de la finaliser. Une nouvelle tentative sur le même identifiant rencontre ensuite la cible existante, mais le code canonique du scaffold est masqué.
+La collision sur `test` est désormais restituée sous son code canonique
+`OPUS_SCAFFOLD_TARGET_ALREADY_EXISTS`. Elle ne doit pas déclencher de suppression
+automatique ni de nouvelle tentative avec le même identifiant.
 
-## Livrable owner actif — R45A3
+## Livrable owner actif — R45B1
 
 ```text
-ZIP     : opus_p117w_r45a3_rest_profiler_transaction_boundary.zip
-SHA-256 : 6ceb5e5a55ca0b501dffc9748190fdc62b4a862ca8767df48fc278843e57b96d
-FILES   : 1
-BASE    : ad33c64cb091711bcf98e7a1c9307cb4029e0ca6
+ZIP     : opus_p117w_r45b1_profile_conformance_gate.zip
+SHA-256 : 38fb6a3832e14bfea4ecc3bb10f3b1450ef20833698805386c29d3f4fe30ba5d
+FILES   : 2
+BASE    : 07756d41d171fec1758722874adaa889a931026e
 STATUS  : livré, validation et push owner requis
 ```
 
-R45A3 finalise la trace avant lecture, rend la télémétrie non transactionnelle vis-à-vis du résultat métier et conserve les codes canoniques avec détails.
+R45B1 corrige `presentation=false` pour backend et bloque avant écriture puis à
+la validation tout artefact SCORE/JavaScript/TypeScript/package manager,
+template/layout ou couche `shared` dans ce profil.
 
 ## Suite gouvernée
 
-Après acquisition de R45A3, R45B doit rendre les profils réellement distincts :
+Après acquisition de R45B1, R45B2 poursuit le scaffold réellement distinct :
 
 - frontend : SCORE et client REST avec backend cible ;
 - backend : REST, FSM, SSO, ACL et persistance, sans SCORE ni JavaScript ;
