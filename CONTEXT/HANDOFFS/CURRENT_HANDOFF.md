@@ -10,38 +10,33 @@ CONTEXT/SPECIFICATIONS/MAESTRO_OPUS_OWASYS_GLOBAL_DEVELOPMENT_RULES_2026-07-24.m
 CONTEXT/PROJECTS/OPUS/OPUS_SITE_STANDARD_CONTRACT.md
 CONTEXT/SPECIFICATIONS/OPUS_DEVELOPER_PROFILER_CONTRACT_2026-07-31.md
 CONTEXT/PROJECTS/OPUS_CURRENT_STATE.md
-CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OPUS_P117W_R46B12_RUNTIME_SIGNAL_RESOLVER_COLLISION_FIX_2026-08-03.md
+CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OPUS_P117W_R46B13_ROUTING_CONTROLLER_EVIDENCE_2026-08-03.md
 ```
 
 ## Base exacte
 
-- OPUS GitHub : `bd0c5d20f2e510b3666df8ed758b7a906c9f46ea`.
-- R46B11 est poussé et acquis.
+- OPUS GitHub : `d8eba2e5e0631a2e59edd5d509ba017edfbe2037`.
+- R46B12 est poussé et acquis.
 - R46B10 reste annulé et interdit.
-- R46B11 contient une collision PHP confirmée dans `OwasysRuntimeController`.
-- R46B12 est le correctif owner actif.
+- Contrat FSM V2 : `table_fsm + current_state + signal -> next_state`.
 - Site témoin : `fullstack-test`; ne jamais le corriger directement.
 
 ## Livrable actif
 
 ```text
-ZIP     : opus_p117w_r46b12_runtime_signal_resolver_collision_fix.zip
-SHA-256 : 013f8347a4c52c4fcf15ef28eeddfd71e4acc484e15503660968f9252622f76e
-FILES   : 1
-BASE    : bd0c5d20f2e510b3666df8ed758b7a906c9f46ea
+ZIP     : opus_p117w_r46b13_routing_controller_evidence.zip
+SHA-256 : a6d2730b021d6806d8526aaa10567380443a93504f6b0543a37534bc2a1c13ae
+FILES   : 2
+BASE    : d8eba2e5e0631a2e59edd5d509ba017edfbe2037
 ```
 
 ## Correction
 
-La résolution complète de requête devient `resolveRequestSignal(...)`. La méthode existante `resolveSignal(string $routeKey)` conserve la résolution du signal de route. Le contrat FSM actif reste :
-
-```text
-table_fsm + current_state + signal -> next_state
-```
+Le panneau « Routage et contrôleur » reçoit les événements contractuels exacts `http.route.resolved` et `http.controller.selected`, avec route normalisée, paramètres assainis, origine de la règle, classe et méthode du contrôleur. Le view-model générique les classe dans le panneau Routage et les résume sans inventer de décision.
 
 ## Prochaine action
 
-L'owner applique R46B12 sur le HEAD exact, exécute `php -l`, démarre le front, recharge `/fr-FR/` et valide le panneau FSM avant commit et push.
+L'owner applique R46B13 sur le HEAD exact, exécute lint, smokes et validation du site, puis vérifie le panneau Routage sur les chemins runtime, création et source avant commit et push.
 
 ## Autorité
 
