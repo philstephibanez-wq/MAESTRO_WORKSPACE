@@ -1,5 +1,15 @@
 # Project Index — MAESTRO WORKSPACE
 
+## Checkpoint canonique courant — 2026-08-03
+
+- OPUS `master` : `ad33c64cb091711bcf98e7a1c9307cb4029e0ca6`.
+- Acquis : R45A2 et R46B15.
+- Livrable owner actif : R45A3, frontière transactionnelle REST / Profiler.
+- Prochain développement après validation owner : R45B, profils `frontend`, `backend` et `fullstack` réellement distincts.
+- OWASYS courant : deux applications autonomes `owasys-front` et `owasys-back`.
+- Le handoff courant et `OPUS_CURRENT_STATE.md` priment sur les checkpoints historiques conservés plus bas.
+
+
 ## Global development contract
 
 - Binding specification: `CONTEXT/SPECIFICATIONS/MAESTRO_OPUS_OWASYS_GLOBAL_DEVELOPMENT_RULES_2026-07-24.md`
