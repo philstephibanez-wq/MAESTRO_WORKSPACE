@@ -23,26 +23,26 @@ La continuité vient des dépôts GitHub et du workspace versionné, jamais du s
 ```text
 OPUS repository : philstephibanez-wq/OPUS
 branch          : master
-owner head      : 07756d41d171fec1758722874adaa889a931026e
-acquired        : R45A3 + R45A2 + R46B15
-owner delivery  : R45B1
+owner head      : 4a4193094f1ea33270909008a0a1a0c8eac61c3e
+acquired        : R45B1 + R45A3 + R45A2 + R46B15
+owner delivery  : R45B2
 workspace       : philstephibanez-wq/MAESTRO_WORKSPACE
 ```
 
-R46B10 est annulé et interdit. Le workflow actif est la création d'un site. R45B est découpé en gates atomiques.
+R46B10 est annulé et interdit. Le workflow actif est la création d'un site par OWASYS. Les sites générés ne sont pas des cibles de correction locale.
 
-## R45B1
+## R45B2
 
 ```text
-ZIP     : opus_p117w_r45b1_profile_conformance_gate.zip
-SHA-256 : 38fb6a3832e14bfea4ecc3bb10f3b1450ef20833698805386c29d3f4fe30ba5d
+ZIP     : opus_p117w_r45b2_backend_rest_profile_runtime.zip
+SHA-256 : 39bf3866f4a1c02f5b0a2bbb826223117a7bd8a5dbaf5b4accf5ca5fcf2c489f
 FILES   : 2
-BASE    : 07756d41d171fec1758722874adaa889a931026e
+BASE    : 4a4193094f1ea33270909008a0a1a0c8eac61c3e
 ```
 
-R45B1 interdit qu'un backend non conforme soit écrit ou validé et corrige sa
-capacité de présentation. Après validation owner, R45B2 ajoutera le runtime REST
-générique et la corrélation fullstack, sans `shared`.
+R45B2 génère le runtime backend PHP/REST/Composer réellement distinct, conserve
+le gate R45B1 et ajoute la corrélation fullstack sans `shared`. R45B3 ajoutera
+le client REST frontend générique et les validateurs croisés.
 
 ## Architecture OWASYS
 
