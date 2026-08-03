@@ -23,24 +23,24 @@ La continuité vient des dépôts GitHub et du workspace versionné, jamais du s
 ```text
 OPUS repository : philstephibanez-wq/OPUS
 branch          : master
-owner head      : f5809c58c847a9137aa81f716d368d6f0da74832
-acquired        : R46B13
-owner delivery  : R46B15
+owner head      : e5878b367146a37c8f0c27a103491dc59a7a21db
+acquired        : R46B15
+owner delivery  : R45A2
 workspace       : philstephibanez-wq/MAESTRO_WORKSPACE
 ```
 
-R46B10 est annulé et interdit. R46B13 est acquis. R46B14 n'est ni commité ni poussé ; R46B15 le remplace.
+R46B10 est annulé et interdit. R46B15 est acquis. Le workflow actif revient à la création d'un site avec R45A2, préalable contractuel à R45B.
 
-## R46B15
+## R45A2
 
 ```text
-ZIP     : opus_p117w_r46b15_remote_record_replay_idempotency.zip
-SHA-256 : 0bde7455e12082f5a0905294955418263b7db7eb129ef377900dcc5e77aacf85
-FILES   : 4
-BASE    : f5809c58c847a9137aa81f716d368d6f0da74832
+ZIP     : opus_p117w_r45a2_typed_access_control_model.zip
+SHA-256 : 05bd036c90d53cbcd51cf49c3d0a582c3dcf92b79f00caf50ead671274270140
+FILES   : 16
+BASE    : e5878b367146a37c8f0c27a103491dc59a7a21db
 ```
 
-R46B15 conserve l'idempotence de `registry.clear` et corrige le rejeu d'un même enregistrement Profiler distant par `trace_id + record_id`, sans neutraliser les collisions réelles de spans.
+R45A2 fournit le modèle typé générique pour rôles, permissions, ressources, scopes, attributions SSO, règles ACL et requêtes d'autorisation. Après validation owner, R45B rendra les profils `frontend`, `backend` et `fullstack` réellement distincts.
 
 ## Architecture OWASYS
 
