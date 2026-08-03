@@ -7,60 +7,48 @@ Dernière mise à jour : 2026-08-03.
 ```text
 OPUS : philstephibanez-wq/OPUS
 Branche : master
-HEAD owner publié : 6bee0bde41fa1bfb7a933c5b667da40fdb2d47d7
-Commit : opus_p117w_r46b5b_fsm_started_deduplication
+HEAD owner publié : 7bd73ab4324cff26ebb6bee7622a8159aca787a1
+Commit : opus_p117w_r46b8_profiler_structured_debug_details
 Racine owner : H:/OPUS
 Workspace : philstephibanez-wq/MAESTRO_WORKSPACE
 ```
 
-## État acquis
+## État acquis R46
 
-- R46A1 : modèle de traces V2 validé et poussé.
-- R46B1 : collecteur REST présent sur `master`.
-- R46B2 : span HTTP racine validé et poussé.
-- R46B3 : collecteur ACL validé sur autorisation et refus, puis poussé.
-- R46B4 : collecteur BDD poussé.
-- R46B5 : interface Profiler SCORE par 18 onglets poussée.
-- R46B5A : collecteur FSM générique poussé.
-- R46B5B : déduplication de `fsm.transition.started` poussée au HEAD.
-- R46B6 : corrélation distribuée REST→Composer→BDD et état visuel de l'onglet actif livrés ; validation owner requise.
-- R46C1 : iframe/SCORE poussé.
-- R46C3 : session centralisée, iframe HTTP 200, ACL et SCORE validés puis poussés.
-- R46C2 : diagnostic rejeté, jamais intégré.
+- Trace causale V2, HTTP, REST, ACL, BDD, FSM et corrélation distribuée acquis.
+- Profiler SCORE dans une iframe same-origin avec 18 onglets acquis.
+- Collecte détaillée et assainie des requêtes/résultats BDD et REST acquise.
+- Onglet actif, détails hiérarchiques repliables, JSON brut secondaire et terme
+  visible **Étape** acquis avec R46B8.
+- R46C2 reste rejeté et n'a jamais été intégré.
 - Témoin guidé : `fullstack-test`, jamais corrigé directement.
 
-## Preuves acquises
+## Défaut actif
 
-- HTTP : requête GET 200, span racine et événements corrélés.
-- ACL : autorisation et refus deny-by-default réellement mesurés.
-- FSM : transition `change_app` réellement mesurée, enfant du span HTTP, puis événement de début dédupliqué.
-- SCORE : Profiler rendu dans l'iframe same-origin avec 18 onglets fonctionnels.
+Le panneau SCORE reste insuffisant : `OwasysFrontApplication` publie un seul
+événement `score.response.rendered`, mais le moteur générique
+`ScoreTemplateRenderer` ne reçoit pas le Profiler actif. Les résolutions de
+template/layout, fragments, durées, sorties et échecs ne sont donc pas mesurés.
 
-## Défaut observé après R46B5B
+## Cible active — R46B9
 
-La capture runtime affiche `Database 0` alors que `/applications` obtient son registre via REST, Composer et SQLite. La cause n'est pas le collecteur SQLite R46B4 : le frontend n'injectait pas son Profiler dans `RestClient` et ne fusionnait pas les enregistrements backend portant le même `trace_id`.
+R46B9 :
 
-## Cible active — R46B6
-
-R46B6 :
-
-- injecte le Profiler actif dans le client REST du registre ;
-- demande la télémétrie distante uniquement en environnement développeur ;
-- retourne les enregistrements V2 déjà assainis du même `trace_id` ;
-- fusionne les spans Composer/BDD sous le span REST frontend ;
-- conserve les deux applications autonomes et interdit tout accès SQLite direct depuis le frontend ;
-- ne transporte ni SQL brut, ni paramètres, ni secret ;
-- marque visuellement l'onglet SCORE sélectionné sans JavaScript.
+- injecte explicitement le Profiler et l'étape HTTP dans le renderer SCORE ;
+- crée une étape `score.render` enfant de l'étape HTTP ;
+- mesure résolution du template/layout et rendu des fragments ;
+- mesure fin ou échec, durée et taille de sortie ;
+- ne collecte que les noms de clés du view-model, jamais ses valeurs ;
+- conserve SCORE uniquement et n'ajoute aucun JavaScript.
 
 ## Suite R46
 
-1. appliquer et linter R46B6 sur le HEAD owner ;
-2. exécuter les smokes OPUS/REST/Profiler/FSM ;
-3. prouver sur `/applications?profiler=1` les compteurs REST, Composer et Database non nuls ;
-4. vérifier le même `trace_id`, les liens parents et l'absence de données sensibles ;
-5. vérifier l'état actif de chaque onglet ;
-6. pousser uniquement après validation owner ;
-7. poursuivre les collecteurs R46B manquants et l'agrégation distribuée R46D.
+1. appliquer et linter R46B9 sur le HEAD owner ;
+2. exécuter les smokes OPUS/SCORE/Profiler ;
+3. prouver sur `/applications?profiler=1` les étapes et événements SCORE ;
+4. vérifier la causalité sous HTTP et l'absence de données sensibles ;
+5. pousser uniquement après validation owner ;
+6. poursuivre les autres collecteurs réellement incomplets selon le contrat.
 
 ## Invariants
 
