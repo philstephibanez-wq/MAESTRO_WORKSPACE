@@ -23,24 +23,24 @@ La continuité vient des dépôts GitHub et du workspace versionné, jamais du s
 ```text
 OPUS repository : philstephibanez-wq/OPUS
 branch          : master
-owner head      : bd0c5d20f2e510b3666df8ed758b7a906c9f46ea
-acquired        : R46B11
-owner delivery  : R46B12
+owner head      : d8eba2e5e0631a2e59edd5d509ba017edfbe2037
+acquired        : R46B12
+owner delivery  : R46B13
 workspace       : philstephibanez-wq/MAESTRO_WORKSPACE
 ```
 
-R46B10 est annulé et interdit. R46B11 est acquis mais contient une collision PHP confirmée qui bloque `owasys-front`. R46B12 est le correctif owner actif.
+R46B10 est annulé et interdit. R46B12 est acquis. R46B13 est le livrable owner actif pour le panneau Routage et contrôleur.
 
-## R46B12
+## R46B13
 
 ```text
-ZIP     : opus_p117w_r46b12_runtime_signal_resolver_collision_fix.zip
-SHA-256 : 013f8347a4c52c4fcf15ef28eeddfd71e4acc484e15503660968f9252622f76e
-FILES   : 1
-BASE    : bd0c5d20f2e510b3666df8ed758b7a906c9f46ea
+ZIP     : opus_p117w_r46b13_routing_controller_evidence.zip
+SHA-256 : a6d2730b021d6806d8526aaa10567380443a93504f6b0543a37534bc2a1c13ae
+FILES   : 2
+BASE    : d8eba2e5e0631a2e59edd5d509ba017edfbe2037
 ```
 
-La résolution complète de requête devient `resolveRequestSignal(...)`. La résolution de route reste `resolveSignal(string $routeKey)`. Le contrat FSM V2 n'est pas modifié.
+Le Profiler expose la route normalisée, les paramètres assainis, l'origine de la règle de dispatch, la classe et la méthode du contrôleur réellement sélectionné.
 
 ## Architecture OWASYS
 
