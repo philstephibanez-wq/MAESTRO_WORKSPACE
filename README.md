@@ -15,12 +15,12 @@ Lire dans cet ordre :
 ## Source active
 
 ```text
-OPUS owner head : edf17d28d32b1c2f293ba7993252b6e1748c906c
+OPUS owner head : 21ce3ccbaa2c09adabc18d4bf021fbb126db9717
 acquired        : R45B2A1
-owner delivery  : R45B2A1R2
+owner delivery  : R45B2A1R3
 ```
 
-R45B2A1R2 remplace le ZIP R45B2A1R1 non acquis. Il cumule `everyone` et la correction des validations standard/générées. La cible reste OWASYS et le générateur OPUS ; aucun site généré n'est corrigé localement.
+R45B2A1R3 remplace les ZIP R45B2A1R1 et R45B2A1R2 non acquis. Il cumule `everyone`, la correction des validations standard/générées et l'onboarding d'identités de session sans secret. Aucun site généré n'est corrigé localement.
 
 ## Architecture OWASYS
 
