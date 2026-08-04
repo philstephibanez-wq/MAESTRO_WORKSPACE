@@ -23,26 +23,24 @@ La continuité vient des dépôts GitHub et du workspace versionné, jamais du s
 ```text
 OPUS repository : philstephibanez-wq/OPUS
 branch          : master
-owner head      : 4a4193094f1ea33270909008a0a1a0c8eac61c3e
-acquired        : R45B1 + R45A3 + R45A2 + R46B15
-owner delivery  : R45B2
+owner head      : dac97628f182b62ee7d2759583441f5bdf179c36
+acquired        : R45B2 + R45B1 + R45A3 + R45A2 + R46B15
+owner delivery  : R45B2A1
 workspace       : philstephibanez-wq/MAESTRO_WORKSPACE
 ```
 
-R46B10 est annulé et interdit. Le workflow actif est la création d'un site par OWASYS. Les sites générés ne sont pas des cibles de correction locale.
+R46B10 est annulé et interdit. La cible est OWASYS et le générateur OPUS ; les sites générés ne sont pas des cibles de correction locale.
 
-## R45B2
+## R45B2A1
 
 ```text
-ZIP     : opus_p117w_r45b2_backend_rest_profile_runtime.zip
-SHA-256 : 39bf3866f4a1c02f5b0a2bbb826223117a7bd8a5dbaf5b4accf5ca5fcf2c489f
-FILES   : 2
-BASE    : 4a4193094f1ea33270909008a0a1a0c8eac61c3e
+ZIP     : opus_p117w_r45b2a1_fsm_everyone_timeline.zip
+SHA-256 : 4d4b1ee5b8585f8d1529578e08b4cbb6575ef1414c8c6c4ca86b3752776399fd
+FILES   : 4
+BASE    : dac97628f182b62ee7d2759583441f5bdf179c36
 ```
 
-R45B2 génère le runtime backend PHP/REST/Composer réellement distinct, conserve
-le gate R45B1 et ajoute la corrélation fullstack sans `shared`. R45B3 ajoutera
-le client REST frontend générique et les validateurs croisés.
+R45B2A1 génère et valide un nom canonique de FSM, réserve `anonymous` à l'état d'authentification, utilise `everyone` comme sujet collectif et synthétise la timeline principale. R45B2A2 ajoutera la rétention/rotation JSONL configurable.
 
 ## Architecture OWASYS
 
@@ -56,18 +54,6 @@ owasys-front -> REST sécurisé -> owasys-back -> Composer
 - Déploiement possible sur deux bastions distincts.
 - Aucun JavaScript, TypeScript, Node ou gestionnaire JavaScript dans le backend.
 - Logger et Profiler obligatoires dans les deux applications.
-
-## Contrat global
-
-- relire GitHub et les contrats avant tout changement ;
-- traiter la cause ;
-- toute classe concrète OPUS implémente son interface homonyme à quatre marqueurs ;
-- livrer OPUS/OWASYS uniquement par ZIP différentiel direct de fichiers complets ;
-- l'assistant n'écrit directement que dans `MAESTRO_WORKSPACE` ;
-- applications Singleton, FSM, I18n, ACL deny-by-default, SSO/Auth0-proxy, bastion et SCORE ;
-- configuration via `File`, puis `Json`, `Xml` ou `Yaml` ;
-- aucun echo UI, aucun mélange HTML/PHP, aucun fallback silencieux ;
-- secrets interdits dans Git, argv, logs, Profiler et artefacts.
 
 NO ACL BYPASS.  
 NO CONTRACT, NO PATCH.  
