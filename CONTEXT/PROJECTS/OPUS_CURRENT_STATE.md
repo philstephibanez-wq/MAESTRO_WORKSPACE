@@ -7,24 +7,23 @@ Dernière mise à jour : 2026-08-04.
 ```text
 OPUS : philstephibanez-wq/OPUS
 Branche : master
-HEAD owner publié : 21ce3ccbaa2c09adabc18d4bf021fbb126db9717
-Dernier acquis : R45B2A1
+HEAD owner publié : 61c83d8a56bdbbb792fdf4d5c1a39e79b249cf30
+Dernier acquis : R45B2A1R3
 ```
 
-## Livrable owner actif — R45B2A1R3
+## Livrable owner actif — R45B2A1R4
 
 ```text
-ZIP     : opus_p117w_r45b2a1r3_session_identity_onboarding.zip
-SHA-256 : 5794c90454beb8df8fefceaba7dc1abb37216ca243f8833ae5c680f596816a46
-FILES   : 4
-BASE    : 21ce3ccbaa2c09adabc18d4bf021fbb126db9717
+ZIP     : opus_p117w_r45b2a1r4_canonical_fsm_transition_fields.zip
+SHA-256 : dca1517533e6d4dab61e96e0ee335df7993252e35e5112951005a9e0ba8cef0e
+FILES   : 1
+BASE    : 61c83d8a56bdbbb792fdf4d5c1a39e79b249cf30
 STATUS  : livré, validation et push owner requis
 ```
 
-R45B2A1R3 est cumulatif : autorisation collective `everyone`, distinction des validations standard/générées et onboarding d'identités de session sans secret. Aucun site généré n'est modifié.
+R45B2A1R3 est acquis. La création atteint désormais le runtime, qui révèle `OPUS_FSM_TRANSITION_FIELDS_INVALID` : le scaffold écrit `event`/`to` alors que le contrat principal exige `signal`/`next_state`.
 
-Les résultats owner ayant précédé ce livrable sont non conformes : validations structurelles des deux bastions en échec, puis `OWASYS_CREATION_USERS_PROVIDER_INVALID` au stade sécurité.
-Aucun commit owner avant validation réussie des deux bastions.
+R45B2A1R4 corrige uniquement les producteurs frontend/fullstack et backend dans `SiteScaffoldPlan`. Aucun site généré n'est modifié.
 
 ## Suite gouvernée
 
