@@ -7,25 +7,25 @@ Date : 2026-08-04
 1. `README-FIRST.md`
 2. `CONTEXT/SPECIFICATIONS/MAESTRO_OPUS_OWASYS_GLOBAL_DEVELOPMENT_RULES_2026-07-24.md`
 3. `CONTEXT/PROJECTS/OPUS/OPUS_SITE_STANDARD_CONTRACT.md`
-4. `CONTEXT/SPECIFICATIONS/OPUS_P117W_R45B2A1R3_SESSION_IDENTITY_ONBOARDING_2026-08-04.md`
-5. `CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OPUS_P117W_R45B2A1R3_SESSION_IDENTITY_ONBOARDING_2026-08-04.md`
+4. `CONTEXT/SPECIFICATIONS/OPUS_P117W_R45B2A1R4_CANONICAL_FSM_TRANSITION_FIELDS_2026-08-04.md`
+5. `CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OPUS_P117W_R45B2A1R4_CANONICAL_FSM_TRANSITION_FIELDS_2026-08-04.md`
 6. `CONTEXT/PROJECTS/OPUS_CURRENT_STATE.md`
 
 ## Base exacte
 
-OPUS `master` : `21ce3ccbaa2c09adabc18d4bf021fbb126db9717`.
-R45B2A1 est acquis. R45B2A1R3 remplace les ZIP R45B2A1R1 et R45B2A1R2 non acquis.
+OPUS `master` : `61c83d8a56bdbbb792fdf4d5c1a39e79b249cf30`.
+R45B2A1R3 est acquis. R45B2A1R4 corrige le contrat des transitions FSM générées.
 
 ## Livrable actif
 
 ```text
-ZIP     : opus_p117w_r45b2a1r3_session_identity_onboarding.zip
-SHA-256 : 5794c90454beb8df8fefceaba7dc1abb37216ca243f8833ae5c680f596816a46
-FILES   : 4
-BASE    : 21ce3ccbaa2c09adabc18d4bf021fbb126db9717
+ZIP     : opus_p117w_r45b2a1r4_canonical_fsm_transition_fields.zip
+SHA-256 : dca1517533e6d4dab61e96e0ee335df7993252e35e5112951005a9e0ba8cef0e
+FILES   : 1
+BASE    : 61c83d8a56bdbbb792fdf4d5c1a39e79b249cf30
 ```
 
-Cible : runtime, validateur et générateur OPUS, plus validation OWASYS du blueprint. Aucun site généré n'est une cible de correction.
+Cible : générateur OPUS uniquement. Aucun site généré n'est une cible de correction.
 
 NO ACL BYPASS.
 NO CONTRACT, NO PATCH.
