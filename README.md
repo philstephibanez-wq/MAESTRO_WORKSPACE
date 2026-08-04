@@ -15,12 +15,12 @@ Lire dans cet ordre :
 ## Source active
 
 ```text
-OPUS owner head : 21ce3ccbaa2c09adabc18d4bf021fbb126db9717
-acquired        : R45B2A1
-owner delivery  : R45B2A1R3
+OPUS owner head : 61c83d8a56bdbbb792fdf4d5c1a39e79b249cf30
+acquired        : R45B2A1R3
+owner delivery  : R45B2A1R4
 ```
 
-R45B2A1R3 remplace les ZIP R45B2A1R1 et R45B2A1R2 non acquis. Il cumule `everyone`, la correction des validations standard/générées et l'onboarding d'identités de session sans secret. Aucun site généré n'est corrigé localement.
+R45B2A1R4 corrige le générateur FSM : les transitions utilisent le contrat canonique `signal` + `next_state`, jamais le reliquat `event` + `to`. Aucun site généré n'est corrigé localement.
 
 ## Architecture OWASYS
 
