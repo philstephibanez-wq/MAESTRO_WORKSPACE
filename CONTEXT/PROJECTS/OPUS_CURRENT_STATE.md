@@ -7,24 +7,23 @@ Dernière mise à jour : 2026-08-04.
 ```text
 OPUS : philstephibanez-wq/OPUS
 Branche : master
-HEAD owner publié : edf17d28d32b1c2f293ba7993252b6e1748c906c
+HEAD owner publié : 21ce3ccbaa2c09adabc18d4bf021fbb126db9717
 Dernier acquis : R45B2A1
 ```
 
-## Livrable owner actif — R45B2A1R2
+## Livrable owner actif — R45B2A1R3
 
 ```text
-ZIP     : opus_p117w_r45b2a1r2_everyone_validation_regressions.zip
-SHA-256 : c8dbf7d0c726c659b666728b208fcd7b024aaa5c7c04fe9ccf39591ada122516
-FILES   : 2
-BASE    : edf17d28d32b1c2f293ba7993252b6e1748c906c
+ZIP     : opus_p117w_r45b2a1r3_session_identity_onboarding.zip
+SHA-256 : 5794c90454beb8df8fefceaba7dc1abb37216ca243f8833ae5c680f596816a46
+FILES   : 4
+BASE    : 21ce3ccbaa2c09adabc18d4bf021fbb126db9717
 STATUS  : livré, validation et push owner requis
 ```
 
-R45B2A1R2 est cumulatif : autorisation collective `everyone`, distinction des noms FSM standard/généré et exigences du runtime backend généré limitées aux applications générées. Aucun fichier OWASYS ni site témoin n'est modifié.
+R45B2A1R3 est cumulatif : autorisation collective `everyone`, distinction des validations standard/générées et onboarding d'identités de session sans secret. Aucun site généré n'est modifié.
 
-Les résultats owner ayant précédé ce livrable sont non conformes :
-`owasys-front = OPUS_SITE_FSM_CONTRACT_INVALID` et `owasys-back = OPUS_SITE_REQUIRED_PATH_MISSING`.
+Les résultats owner ayant précédé ce livrable sont non conformes : validations structurelles des deux bastions en échec, puis `OWASYS_CREATION_USERS_PROVIDER_INVALID` au stade sécurité.
 Aucun commit owner avant validation réussie des deux bastions.
 
 ## Suite gouvernée
