@@ -23,24 +23,24 @@ La continuité vient des dépôts GitHub et du workspace versionné, jamais du s
 ```text
 OPUS repository : philstephibanez-wq/OPUS
 branch          : master
-owner head      : dac97628f182b62ee7d2759583441f5bdf179c36
-acquired        : R45B2 + R45B1 + R45A3 + R45A2 + R46B15
-owner delivery  : R45B2A1
+owner head      : edf17d28d32b1c2f293ba7993252b6e1748c906c
+acquired        : R45B2A1 + R45B2 + R45B1 + R45A3 + R45A2 + R46B15
+owner delivery  : R45B2A1R1
 workspace       : philstephibanez-wq/MAESTRO_WORKSPACE
 ```
 
 R46B10 est annulé et interdit. La cible est OWASYS et le générateur OPUS ; les sites générés ne sont pas des cibles de correction locale.
 
-## R45B2A1
+## R45B2A1R1
 
 ```text
-ZIP     : opus_p117w_r45b2a1_fsm_everyone_timeline.zip
-SHA-256 : 4d4b1ee5b8585f8d1529578e08b4cbb6575ef1414c8c6c4ca86b3752776399fd
-FILES   : 4
-BASE    : dac97628f182b62ee7d2759583441f5bdf179c36
+ZIP     : opus_p117w_r45b2a1r1_everyone_runtime_authorization.zip
+SHA-256 : 719df05a387a62426ef570e34fd6c7d4115ad82c6c43d929139c5ec3810b0c34
+FILES   : 1
+BASE    : edf17d28d32b1c2f293ba7993252b6e1748c906c
 ```
 
-R45B2A1 génère et valide un nom canonique de FSM, réserve `anonymous` à l'état d'authentification, utilise `everyone` comme sujet collectif et synthétise la timeline principale. R45B2A2 ajoutera la rétention/rotation JSONL configurable.
+R45B2A1R1 reconnaît `everyone` comme sujet collectif implicite dans le runtime des applications générées. `anonymous` reste un état d'authentification, les rôles métier restent distincts et toute politique sans `everyone` demeure deny-by-default. R45B2A2 ajoutera ensuite la rétention/rotation JSONL configurable.
 
 ## Architecture OWASYS
 
