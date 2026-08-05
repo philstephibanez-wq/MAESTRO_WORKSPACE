@@ -7,28 +7,28 @@ Date : 2026-08-05
 1. `README-FIRST.md`
 2. `CONTEXT/SPECIFICATIONS/MAESTRO_OPUS_OWASYS_GLOBAL_DEVELOPMENT_RULES_2026-07-24.md`
 3. `CONTEXT/PROJECTS/OPUS/OPUS_SITE_STANDARD_CONTRACT.md`
-4. `CONTEXT/SPECIFICATIONS/OPUS_P117W_R45B2A1R7_GENERATED_WEB_PROFILER_SURFACE_2026-08-05.md`
-5. `CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OPUS_P117W_R45B2A1R7_GENERATED_WEB_PROFILER_SURFACE_2026-08-05.md`
+4. `CONTEXT/SPECIFICATIONS/OPUS_P117W_R45B2A2_PROFILER_BOUNDED_JSONL_ROTATION_2026-08-05.md`
+5. `CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OPUS_P117W_R45B2A2_PROFILER_BOUNDED_JSONL_ROTATION_2026-08-05.md`
 6. `CONTEXT/SPECIFICATIONS/OPUS_OWASYS_SECURE_SOURCE_EDITOR_AND_GIT_WORKFLOW_2026-08-05.md`
 7. `CONTEXT/PROJECTS/OPUS_CURRENT_STATE.md`
 
 ## Base exacte
 
-OPUS `master` : `381de7d4a6ca145c7a572630cb84d97a0741da6c`.
-R45B2A1R6 est acquis. L'instrumentation FSM est présente. Le défaut actif est l'absence de surface Web Profiler dans les applications générées.
+OPUS `master` : `00ba1221de99b838e211adb1cb4f5925a11f3193`.
+R45B2A1R7 est acquis. La surface Web Profiler des applications générées est présente. Le défaut actif est la croissance non bornée du stockage JSONL.
 
 ## Livrable actif
 
 ```text
-ZIP     : opus_p117w_r45b2a1r7_generated_web_profiler_surface.zip
-SHA-256 : 21b70a957df89954814d7e19610a38014734012a6a1841dca72ba6e1f29f2359
+ZIP     : opus_p117w_r45b2a2_profiler_bounded_jsonl_rotation.zip
+SHA-256 : 20bf71f25fd2db05e9525af29512fb99c6c5d233812463675759d6d69c4020c5
 FILES   : 2
-BASE    : 381de7d4a6ca145c7a572630cb84d97a0741da6c
+BASE    : 00ba1221de99b838e211adb1cb4f5925a11f3193
 ```
 
-Cible : runtime généré et générateur OPUS. Aucun site généré n'est une cible de correction.
+Cible : stockage Profiler générique et générateur OPUS. Aucun site généré n'est une cible de correction.
 
-Suite après acquisition fonctionnelle : rétention bornée du Profiler, puis éditeur Sources/Git selon E1/E2/E3.
+Suite après acquisition fonctionnelle : éditeur Sources/Git selon E1/E2/E3.
 
 NO ACL BYPASS.
 NO CONTRACT, NO PATCH.
