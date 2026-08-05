@@ -7,32 +7,42 @@ Dernière mise à jour : 2026-08-05.
 ```text
 OPUS : philstephibanez-wq/OPUS
 Branche : master
-HEAD owner publié : 17bfadf500148d0bf2de9f00a1806bd756053426
-Dernier acquis : R45B2A2
+HEAD owner publié : 2c268e998c7f714c17476050e652d7afb88db9f4
+Dernier jalon scaffold publié : R45B2A4
 ```
 
-## Livrable owner actif — R45B2A3
+## État des jalons précédents
+
+- R45B2A2 est acquis et publie la rétention/rotation bornée du Profiler JSONL.
+- R45B2A3 est publié à `a1afd6415c9ddbd80b7944756210f33c36f7253b` et ajoute le module `application/profiler` au scaffold générique.
+- `test7` a ensuite été généré par OWASYS.
+- R45B2A4 est publié au HEAD courant et aligne `profiler:view` sur les rôles de la page d’accueil dans le scaffold générique.
+- Le commit R45B2A4 contient aussi des fichiers générés de `test7`; ils ne constituent pas la cible du livrable E1.
+
+## Livrable owner actif — E1
 
 ```text
-ZIP     : opus_p117w_r45b2a3_generated_profiler_fsm_module.zip
-SHA-256 : 66d270c9dc95fa89e11a2fa0c3f35a5b564e95ea6c2866c6764488169ff81c0d
-FILES   : 1
-BASE    : 17bfadf500148d0bf2de9f00a1806bd756053426
-STATUS  : livré, validation et push owner requis
+ZIP     : opus_p117w_e1_source_workspace.zip
+SHA-256 : b4b4b681ea9e7ca19c06529f9bf59ba8125e31a2aadd7d89927f3c6be71bb657
+FILES   : 3
+BASE    : 2c268e998c7f714c17476050e652d7afb88db9f4
+STATUS  : livré, application, validation et push owner requis
 ```
 
-R45B2A2 est acquis. La rétention/rotation bornée du Profiler JSONL est publiée.
+E1 crée le service générique `SiteSourceWorkspace` pour liste, lecture, métadonnées, diff, verrouillage optimiste et écriture atomique. La façade `SiteSourceInspector` conserve ses contrats read-only V1.
 
-R45B2A3 corrige l'incohérence générique entre l'état FSM `profiler` et l'arbre applicatif généré. Aucun site généré n'est modifié par le ZIP.
+Le smoke owner reste hors ZIP.
 
 ## Suites gouvernées
 
-1. validation owner de `test6` régénéré ;
-2. E1/E2/E3 : éditeur Sources générique OPUS, intégration OWASYS, Git contrôlé sans push implicite ;
-3. R45B3 : client REST frontend générique et validateurs croisés ;
-4. R45C : wizard OWASYS structuré ;
-5. R45D : administration Sécurité.
+1. validation, commit et push owner de E1 ;
+2. E2 : intégration OWASYS Sources, REST sécurisé puis Composer allow-listé, ACL, ViewModel et SCORE ;
+3. E3 : statut/diff/historique/stage/unstage/commit Git contrôlés sans push implicite ;
+4. R45B3 : client REST frontend générique et validateurs croisés ;
+5. R45C : wizard OWASYS structuré ;
+6. R45D : administration Sécurité.
 
 NO ACL BYPASS.
 NO LOCAL SITE FIX.
 NO FALLBACK SILENCIEUX.
+NO PUSH OPUS PAR L’ASSISTANT.
