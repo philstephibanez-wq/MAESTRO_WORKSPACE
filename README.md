@@ -15,14 +15,14 @@ Lire dans cet ordre :
 ## Source active
 
 ```text
-OPUS owner head : 0d593557bdceb700e1985cbe03523e93b83619d2
-acquired        : R45B2A1R4
-owner delivery  : R45B2A1R5
+OPUS owner head : d18badad99298376a25d388bb0a76e25efc14d98
+acquired        : R45B2A1R5
+owner delivery  : R45B2A1R6
 ```
 
-R45B2A1R5 corrige le rendu générique des sites nouvellement générés : assets statiques servis depuis `www` et footer SCORE sans exposition du contrat interne. Aucun site généré n'est corrigé localement.
+R45B2A1R6 relie le Profiler actif au runtime généré et mesure réellement le chargement, la résolution et les transitions FSM, y compris le cas initial sans changement d'état. Aucun site généré n'est corrigé localement.
 
-La suite immédiate, après acquisition, est l'instrumentation FSM réelle du Profiler. L'éditeur Sources/Git est spécifié séparément selon E1/E2/E3.
+La suite immédiate, après acquisition, est la rétention bornée et la rotation JSONL du Profiler. L'éditeur Sources/Git est spécifié séparément selon E1/E2/E3.
 
 ## Architecture OWASYS
 
