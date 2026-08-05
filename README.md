@@ -15,12 +15,14 @@ Lire dans cet ordre :
 ## Source active
 
 ```text
-OPUS owner head : 61c83d8a56bdbbb792fdf4d5c1a39e79b249cf30
-acquired        : R45B2A1R3
-owner delivery  : R45B2A1R4
+OPUS owner head : 0d593557bdceb700e1985cbe03523e93b83619d2
+acquired        : R45B2A1R4
+owner delivery  : R45B2A1R5
 ```
 
-R45B2A1R4 corrige le générateur FSM : les transitions utilisent le contrat canonique `signal` + `next_state`, jamais le reliquat `event` + `to`. Aucun site généré n'est corrigé localement.
+R45B2A1R5 corrige le rendu générique des sites nouvellement générés : assets statiques servis depuis `www` et footer SCORE sans exposition du contrat interne. Aucun site généré n'est corrigé localement.
+
+La suite immédiate, après acquisition, est l'instrumentation FSM réelle du Profiler. L'éditeur Sources/Git est spécifié séparément selon E1/E2/E3.
 
 ## Architecture OWASYS
 
