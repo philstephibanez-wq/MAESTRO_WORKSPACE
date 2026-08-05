@@ -7,23 +7,23 @@ Dernière mise à jour : 2026-08-05.
 ```text
 OPUS : philstephibanez-wq/OPUS
 Branche : master
-HEAD owner publié : d18badad99298376a25d388bb0a76e25efc14d98
-Dernier acquis : R45B2A1R5
+HEAD owner publié : 381de7d4a6ca145c7a572630cb84d97a0741da6c
+Dernier acquis : R45B2A1R6
 ```
 
-## Livrable owner actif — R45B2A1R6
+## Livrable owner actif — R45B2A1R7
 
 ```text
-ZIP     : opus_p117w_r45b2a1r6_generated_runtime_fsm_profiler.zip
-SHA-256 : b5937135d47dbfbec62bafd40a7754423c8db5caf1e11b9cc6c113b197a56d1d
-FILES   : 3
-BASE    : d18badad99298376a25d388bb0a76e25efc14d98
+ZIP     : opus_p117w_r45b2a1r7_generated_web_profiler_surface.zip
+SHA-256 : 21b70a957df89954814d7e19610a38014734012a6a1841dca72ba6e1f29f2359
+FILES   : 2
+BASE    : 381de7d4a6ca145c7a572630cb84d97a0741da6c
 STATUS  : livré, validation et push owner requis
 ```
 
-R45B2A1R5 est acquis. `test5` confirme le service des assets, le thème SCORE et le footer public corrigé.
+R45B2A1R6 est acquis. Le runtime généré reçoit le Profiler actif et mesure réellement la FSM.
 
-R45B2A1R6 injecte le Profiler actif dans le runtime généré, transmet l'instrumentation au moteur FSM et couvre aussi le cas initial sans changement d'état. Aucun site généré n'est modifié.
+R45B2A1R7 ajoute la route, l'état FSM, la politique ACL deny-by-default et le lien SCORE nécessaires pour ouvrir une trace terminée uniquement en environnement de développement. Aucun site généré n'est modifié.
 
 ## Suites gouvernées
 
