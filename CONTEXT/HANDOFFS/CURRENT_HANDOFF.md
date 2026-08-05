@@ -7,28 +7,28 @@ Date : 2026-08-05
 1. `README-FIRST.md`
 2. `CONTEXT/SPECIFICATIONS/MAESTRO_OPUS_OWASYS_GLOBAL_DEVELOPMENT_RULES_2026-07-24.md`
 3. `CONTEXT/PROJECTS/OPUS/OPUS_SITE_STANDARD_CONTRACT.md`
-4. `CONTEXT/SPECIFICATIONS/OPUS_P117W_R45B2A1R5_GENERATED_SITE_STATIC_ASSETS_FOOTER_2026-08-05.md`
-5. `CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OPUS_P117W_R45B2A1R5_GENERATED_SITE_STATIC_ASSETS_FOOTER_2026-08-05.md`
+4. `CONTEXT/SPECIFICATIONS/OPUS_P117W_R45B2A1R6_GENERATED_RUNTIME_FSM_PROFILER_2026-08-05.md`
+5. `CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OPUS_P117W_R45B2A1R6_GENERATED_RUNTIME_FSM_PROFILER_2026-08-05.md`
 6. `CONTEXT/SPECIFICATIONS/OPUS_OWASYS_SECURE_SOURCE_EDITOR_AND_GIT_WORKFLOW_2026-08-05.md`
 7. `CONTEXT/PROJECTS/OPUS_CURRENT_STATE.md`
 
 ## Base exacte
 
-OPUS `master` : `0d593557bdceb700e1985cbe03523e93b83619d2`.
-R45B2A1R4 est acquis. R45B2A1R5 corrige le rendu générique des sites nouvellement générés.
+OPUS `master` : `d18badad99298376a25d388bb0a76e25efc14d98`.
+R45B2A1R5 est acquis. `test5` confirme le rendu SCORE corrigé. R45B2A1R6 instrumente réellement la FSM du runtime généré.
 
 ## Livrable actif
 
 ```text
-ZIP     : opus_p117w_r45b2a1r5_generated_site_static_assets_footer.zip
-SHA-256 : fc9028fc703dc29f3d0c5255358e93d1c96170dc2c87aaf422579cc5a5b579ea
-FILES   : 1
-BASE    : 0d593557bdceb700e1985cbe03523e93b83619d2
+ZIP     : opus_p117w_r45b2a1r6_generated_runtime_fsm_profiler.zip
+SHA-256 : b5937135d47dbfbec62bafd40a7754423c8db5caf1e11b9cc6c113b197a56d1d
+FILES   : 3
+BASE    : d18badad99298376a25d388bb0a76e25efc14d98
 ```
 
-Cible : générateur OPUS uniquement. Aucun site généré n'est une cible de correction.
+Cible : runtime, moteur FSM et générateur OPUS. Aucun site généré n'est une cible de correction.
 
-Suite après acquisition : instrumentation FSM réelle du Profiler, puis rétention bornée, puis éditeur Sources/Git selon E1/E2/E3.
+Suite après acquisition : rétention bornée du Profiler, puis éditeur Sources/Git selon E1/E2/E3.
 
 NO ACL BYPASS.
 NO CONTRACT, NO PATCH.
