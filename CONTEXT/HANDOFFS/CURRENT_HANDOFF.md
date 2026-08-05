@@ -9,38 +9,41 @@ Date : 2026-08-05
 3. `CONTEXT/PROJECTS/OPUS/OPUS_SITE_STANDARD_CONTRACT.md`
 4. `CONTEXT/SPECIFICATIONS/OPUS_OWASYS_SECURE_SOURCE_EDITOR_AND_GIT_WORKFLOW_2026-08-05.md`
 5. `CONTEXT/SPECIFICATIONS/OPUS_P117W_E1_SOURCE_WORKSPACE_2026-08-05.md`
-6. `CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OPUS_P117W_E1_SOURCE_WORKSPACE_2026-08-05.md`
-7. `CONTEXT/PROJECTS/OPUS_CURRENT_STATE.md`
+6. `CONTEXT/SPECIFICATIONS/OPUS_P117W_E2A_SOURCE_REST_COMPOSER_2026-08-05.md`
+7. `CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OPUS_P117W_E2A_SOURCE_REST_COMPOSER_2026-08-05.md`
+8. `CONTEXT/PROJECTS/OPUS_CURRENT_STATE.md`
 
 ## Base exacte
 
-OPUS `master` : `2c268e998c7f714c17476050e652d7afb88db9f4`.
+OPUS `master` : `60f45aae8ee6f3a10096069076900a41c33d9a19`.
 
-R45B2A3 est publié à `a1afd6415c9ddbd80b7944756210f33c36f7253b` et a permis la génération de `test7`.
-R45B2A4 est publié à la base courante et corrige la visibilité ACL générique du Profiler.
+E1 est acquis et publié à cette base. Sa comparaison avec la base précédente contient exactement les trois fichiers annoncés.
 
 ## Livrable actif
 
 ```text
-ZIP     : opus_p117w_e1_source_workspace.zip
-SHA-256 : b4b4b681ea9e7ca19c06529f9bf59ba8125e31a2aadd7d89927f3c6be71bb657
-FILES   : 3
-BASE    : 2c268e998c7f714c17476050e652d7afb88db9f4
+ZIP     : opus_p117w_e2a_source_rest_composer.zip
+SHA-256 : cb6ff147974ef987cb416a106f28a6b4f13fabcb20a62d6e4b3f986c25ea7f13
+FILES   : 7
+BASE    : 60f45aae8ee6f3a10096069076900a41c33d9a19
 STATUS  : livré, application, validation et push owner requis
 ```
 
-Cible : service générique OPUS Sources E1.
+Cible : frontière Sources E2A dans `owasys-back` et extensions génériques OPUS nécessaires au transport structuré REST/Composer.
 
-Aucun site généré, aucun fichier OWASYS et aucune opération Git ne sont ciblés.
+Le contenu et le hash de version restent dans la requête Composer structurée et ne passent jamais dans `argv`.
+
+Aucun fichier `owasys-front`, aucun site généré et aucune opération Git ne sont ciblés.
 Le smoke owner est fourni séparément du ZIP.
 
 ## Suite après acquisition
 
-E2 : intégration OWASYS Sources via REST sécurisé, Composer allow-listé, ACL deny-by-default, ViewModel et SCORE.
+E2B : éditeur Sources dans `owasys-front`, POST backend, preview distincte de write, ViewModel, SCORE, conflit explicite, maintien du fichier et de la locale dans l’URL et fallback sans JavaScript obligatoire.
 
 E3 : Git contrôlé, séparé de l’enregistrement Source et sans push implicite.
 
 NO ACL BYPASS.
+NO CONTENT IN ARGV.
 NO CONTRACT, NO PATCH.
 NO SOURCE OF TRUTH, NO PATCH.
 NO FALLBACK SILENCIEUX.
