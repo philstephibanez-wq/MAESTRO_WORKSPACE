@@ -24,6 +24,20 @@ STATUS  : livré, validation fonctionnelle et push owner requis
 
 Le correctif porte exclusivement sur le scaffold générique. `test6` doit être supprimé puis régénéré après application.
 
+## Protocole owner corrigé
+
+Le protocole initialement communiqué omettait les options contractuelles de mutation. La suppression sécurisée R23 exige simultanément `--confirm=<id>` et `--write`. La création exige également `--write`; sans cette option, elle reste en mode aperçu.
+
+```cmd
+cd /d H:\OPUS
+composer opus:delete-site -- test6 --confirm=test6 --write
+composer opus:create-site -- test6 --write
+composer opus:validate-site -- test6
+composer opus:dev-server -- test6 --port=8800
+```
+
+Le serveur de développement éventuellement actif sur le port 8800 doit être arrêté avant la suppression. Aucun nouveau correctif OPUS ne doit être produit avant le résultat de cette régénération complète : les erreurs `OPUS_DELETE_SITE_CONFIRMATION_INVALID`, `OPUS_SCAFFOLD_TARGET_ALREADY_EXISTS` et `OPUS_SITE_MODULE_DIRECTORY_MISSING` observées le 2026-08-05 proviennent toutes du fait que l'ancien `test6` n'avait pas été supprimé.
+
 ## Suite
 
 Après acquisition fonctionnelle de R45B2A3 : reprendre E1/E2/E3, éditeur Sources et Git contrôlé.
