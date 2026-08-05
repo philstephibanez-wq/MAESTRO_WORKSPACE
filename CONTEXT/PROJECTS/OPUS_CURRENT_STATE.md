@@ -1,36 +1,38 @@
 # OPUS CURRENT STATE
 
-Dernière mise à jour : 2026-08-04.
+Dernière mise à jour : 2026-08-05.
 
 ## Dépôt
 
 ```text
 OPUS : philstephibanez-wq/OPUS
 Branche : master
-HEAD owner publié : 61c83d8a56bdbbb792fdf4d5c1a39e79b249cf30
-Dernier acquis : R45B2A1R3
+HEAD owner publié : 0d593557bdceb700e1985cbe03523e93b83619d2
+Dernier acquis : R45B2A1R4
 ```
 
-## Livrable owner actif — R45B2A1R4
+## Livrable owner actif — R45B2A1R5
 
 ```text
-ZIP     : opus_p117w_r45b2a1r4_canonical_fsm_transition_fields.zip
-SHA-256 : dca1517533e6d4dab61e96e0ee335df7993252e35e5112951005a9e0ba8cef0e
+ZIP     : opus_p117w_r45b2a1r5_generated_site_static_assets_footer.zip
+SHA-256 : fc9028fc703dc29f3d0c5255358e93d1c96170dc2c87aaf422579cc5a5b579ea
 FILES   : 1
-BASE    : 61c83d8a56bdbbb792fdf4d5c1a39e79b249cf30
+BASE    : 0d593557bdceb700e1985cbe03523e93b83619d2
 STATUS  : livré, validation et push owner requis
 ```
 
-R45B2A1R3 est acquis. La création atteint désormais le runtime, qui révèle `OPUS_FSM_TRANSITION_FIELDS_INVALID` : le scaffold écrit `event`/`to` alors que le contrat principal exige `signal`/`next_state`.
+R45B2A1R4 est acquis. La création de `test4` franchit le chargement FSM et atteint le rendu SCORE.
 
-R45B2A1R4 corrige uniquement les producteurs frontend/fullstack et backend dans `SiteScaffoldPlan`. Aucun site généré n'est modifié.
+R45B2A1R5 corrige uniquement `SiteScaffoldPlan` : le routeur PHP de développement rend la main aux fichiers statiques réels confinés sous `www`, et le footer affiche le nom public du site au lieu du contrat interne. Aucun site généré n'est modifié.
 
-## Suite gouvernée
+## Suites gouvernées
 
-- R45B2A2 : rétention bornée et rotation JSONL configurable ;
-- R45B3 : client REST frontend générique et validateurs croisés ;
-- R45C : wizard OWASYS structuré ;
-- R45D : administration Sécurité.
+1. instrumentation réelle des événements FSM du runtime généré afin que le panneau Profiler ne reste pas à zéro ;
+2. R45B2A2 : rétention bornée et rotation JSONL configurable ;
+3. E1/E2/E3 : éditeur Sources générique OPUS, intégration OWASYS, Git contrôlé sans push implicite ;
+4. R45B3 : client REST frontend générique et validateurs croisés ;
+5. R45C : wizard OWASYS structuré ;
+6. R45D : administration Sécurité.
 
 NO ACL BYPASS.
 NO LOCAL SITE FIX.
