@@ -7,31 +7,30 @@ Dernière mise à jour : 2026-08-05.
 ```text
 OPUS : philstephibanez-wq/OPUS
 Branche : master
-HEAD owner publié : 381de7d4a6ca145c7a572630cb84d97a0741da6c
-Dernier acquis : R45B2A1R6
+HEAD owner publié : 00ba1221de99b838e211adb1cb4f5925a11f3193
+Dernier acquis : R45B2A1R7
 ```
 
-## Livrable owner actif — R45B2A1R7
+## Livrable owner actif — R45B2A2
 
 ```text
-ZIP     : opus_p117w_r45b2a1r7_generated_web_profiler_surface.zip
-SHA-256 : 21b70a957df89954814d7e19610a38014734012a6a1841dca72ba6e1f29f2359
+ZIP     : opus_p117w_r45b2a2_profiler_bounded_jsonl_rotation.zip
+SHA-256 : 20bf71f25fd2db05e9525af29512fb99c6c5d233812463675759d6d69c4020c5
 FILES   : 2
-BASE    : 381de7d4a6ca145c7a572630cb84d97a0741da6c
+BASE    : 00ba1221de99b838e211adb1cb4f5925a11f3193
 STATUS  : livré, validation et push owner requis
 ```
 
-R45B2A1R6 est acquis. Le runtime généré reçoit le Profiler actif et mesure réellement la FSM.
+R45B2A1R7 est acquis. Les applications générées disposent de la surface Web Profiler contractuelle en environnement de développement.
 
-R45B2A1R7 ajoute la route, l'état FSM, la politique ACL deny-by-default et le lien SCORE nécessaires pour ouvrir une trace terminée uniquement en environnement de développement. Aucun site généré n'est modifié.
+R45B2A2 borne le stockage JSONL, effectue une rotation configurable et conserve la lecture des traces archivées. Aucun site généré n'est modifié.
 
 ## Suites gouvernées
 
-1. R45B2A2 : rétention bornée et rotation JSONL configurable ;
-2. E1/E2/E3 : éditeur Sources générique OPUS, intégration OWASYS, Git contrôlé sans push implicite ;
-3. R45B3 : client REST frontend générique et validateurs croisés ;
-4. R45C : wizard OWASYS structuré ;
-5. R45D : administration Sécurité.
+1. E1/E2/E3 : éditeur Sources générique OPUS, intégration OWASYS, Git contrôlé sans push implicite ;
+2. R45B3 : client REST frontend générique et validateurs croisés ;
+3. R45C : wizard OWASYS structuré ;
+4. R45D : administration Sécurité.
 
 NO ACL BYPASS.
 NO LOCAL SITE FIX.
