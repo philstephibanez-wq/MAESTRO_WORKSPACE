@@ -10,8 +10,8 @@ Date : 2026-08-06
 4. `CONTEXT/SPECIFICATIONS/OPUS_OWASYS_SECURE_SOURCE_EDITOR_AND_GIT_WORKFLOW_2026-08-05.md`
 5. `CONTEXT/SPECIFICATIONS/OPUS_P117W_E1_SOURCE_WORKSPACE_2026-08-05.md`
 6. `CONTEXT/SPECIFICATIONS/OPUS_P117W_E2A_SOURCE_REST_COMPOSER_2026-08-05.md`
-7. `CONTEXT/SPECIFICATIONS/OPUS_P117W_R46_DEV_SERVER_SITE_OPTION_2026-08-06.md`
-8. `CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OPUS_P117W_R46_DEV_SERVER_SITE_OPTION_2026-08-06.md`
+7. `CONTEXT/SPECIFICATIONS/OPUS_P117W_E2B_SOURCE_EDITOR_FRONT_2026-08-06.md`
+8. `CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OPUS_P117W_E2B_SOURCE_EDITOR_FRONT_2026-08-06.md`
 9. `CONTEXT/PROJECTS/OPUS_CURRENT_STATE.md`
 
 ## Base exacte
@@ -20,37 +20,53 @@ OPUS `master` : `1fc49e9e53efdd002513cc7b037a07cb2faacffc`.
 
 E2A est acquis et publié à cette base.
 
+R46 `dev-server --site=` est abandonné par décision owner et ne doit jamais être appliqué. Le contrat positionnel est conservé :
+
+```text
+composer opus:dev-server -- <application-id> [--host=<local-address>] [--port=<local-port>]
+```
+
 ## Livrable actif
 
 ```text
-ZIP     : opus_p117w_r46_dev_server_site_option.zip
-SHA-256 : 4112fef6bff85d9dc8d064439eda7397793d06917ac5c9390949bdc8b1140f33
-FILES   : 1
+ZIP     : opus_p117w_e2b_source_editor_front.zip
+SHA-256 : da9df8d1e17a16797fdf09a78413fde32db5d9307d30f577addc292ecc21254b
+FILES   : 34
 BASE    : 1fc49e9e53efdd002513cc7b037a07cb2faacffc
 STATUS  : livré, application, validation et push owner requis
 ```
 
-Cible : parseur générique OPUS de `opus:dev-server` et aide publique.
-
-Nouveau contrat :
+Smoke owner séparé :
 
 ```text
-composer opus:dev-server -- --site=<site> [--host=<local-address>] [--port=<local-port>]
+FILE    : smoke_opus_p117w_e2b_source_editor_front_owner.php
+SHA-256 : 97055a9b832e84bf9bbcdefbb2f764f25ef341c3b124c17f7bd26b703dc0ace4
+OUTPUT  : OPUS_P117W_E2B_SOURCE_EDITOR_FRONT_OK
 ```
 
-La forme positionnelle et la forme `--site test7` sont interdites. Aucun site généré, aucun fichier OWASYS et aucune correction locale de `test7` ne sont ciblés.
+## Cible E2B
 
-Le smoke owner est fourni séparément du ZIP.
+- éditeur Sources dans `owasys-front` ;
+- fallback SCORE/POST sans JavaScript obligatoire ;
+- CodeMirror 6, arbre, onglets, ouverture GET JSON et indicateur dirty en amélioration progressive ;
+- preview REST POST distincte de write REST PUT ;
+- verrou optimiste SHA-256 ;
+- conflit HTTP 409 sans écrasement ;
+- POST/Redirect/GET après écriture ;
+- ACL viewer lecture seule, developer/admin édition ;
+- service CSRF OPUS générique, scopé et à usage unique ;
+- 25 catalogues de langue de base UE + ukrainien.
+
+Aucun fichier `owasys-back`, aucun site généré et aucune opération Git ne sont ciblés.
 
 ## Suite après acquisition
 
-E2B : éditeur Sources dans `owasys-front`, POST backend, preview distincte de write, ViewModel, SCORE, conflit explicite, maintien du fichier et de la locale dans l'URL et fallback sans JavaScript obligatoire.
-
-E3 : Git contrôlé, séparé de l'enregistrement Source et sans push implicite.
+E3 : Git contrôlé, séparé de l'enregistrement Source : statut, diff, historique, stage, unstage, commit et restauration bornée. Aucun push implicite, aucun argument Git libre, aucun reset/rebase destructif.
 
 NO ACL BYPASS.
 NO CONTENT IN ARGV.
-NO POSITIONAL DEV-SERVER SITE.
+NO DIRECT FRONTEND FILESYSTEM ACCESS.
+NO IMPLICIT GIT OPERATION.
 NO CONTRACT, NO PATCH.
 NO SOURCE OF TRUTH, NO PATCH.
 NO FALLBACK SILENCIEUX.
