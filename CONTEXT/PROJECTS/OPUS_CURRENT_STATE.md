@@ -7,9 +7,9 @@ Dernière mise à jour : 2026-08-06.
 ```text
 OPUS : philstephibanez-wq/OPUS
 Branche : master
-HEAD owner publié : 4b1f621051a306443ada7eb5fada2a8e9363b0aa
-Dernier acquis : E3A Git workspace générique/backend
-Livrable actif : E3B Git workspace frontend
+HEAD owner publié : 7b390b662573b1e71bd8d770bbcad3d3b386325b
+Dernier acquis : E3B Git workspace frontend
+Livrable actif : R45B3 contrat client REST et catalogues croisés
 ```
 
 ## Jalons acquis
@@ -21,6 +21,9 @@ Livrable actif : E3B Git workspace frontend
 - E2A : frontière Source REST/Composer, publiée à `1fc49e9e53efdd002513cc7b037a07cb2faacffc`.
 - E2B : éditeur Sources frontend, publié à `d6548ec0fb1dc4bd376e730a943f45e502eed51e` et validé par édition réelle depuis OWASYS.
 - E3A : workspace Git générique/backend, publié à `4b1f621051a306443ada7eb5fada2a8e9363b0aa`.
+- E3B : interface Git frontend, publiée à `7b390b662573b1e71bd8d770bbcad3d3b386325b` et validée par création effective d’un commit depuis OWASYS `Sources et Git`.
+
+E3B est le fils direct d’E3A et contient exactement 32 fichiers gouvernés.
 
 R46 `dev-server --site=` est abandonné et ne doit jamais être appliqué.
 
@@ -32,43 +35,11 @@ composer opus:dev-server -- <application-id> [--host=<local-address>] [--port=<l
 
 Le dépôt racine ne déclare pas de script `composer dev-server` sans préfixe `opus:`.
 
-## État E3A
+## État E3B acquis
 
-E3A fournit :
+E3B fournit :
 
-- `SiteGitWorkspace` générique et interface homonyme ;
-- statut, diff, historique, stage, unstage, commit et restauration ;
-- confinement au site OPUS sélectionné ;
-- refus d'un commit si l'index contient un chemin extérieur au site ;
-- aucune commande Git libre et aucun push ;
-- REST sécurisé et Composer allow-listé dans OWASYS-back ;
-- ACL viewer lecture, developer/admin mutation ;
-- Logger/Profiler sans contenu Git sensible ;
-- projection déterministe du rôle principal : `admin > developer > viewer`.
-
-Le commit E3A contient exactement onze fichiers gouvernés et aucun fichier de site généré.
-
-## Livrable owner actif — E3B
-
-```text
-ZIP     : opus_p117w_e3b_git_workspace_front.zip
-SHA-256 : f6cdd8160f16586851b2983373eedba473e865db237db2c388b005bebcc49743
-FILES   : 32
-BASE    : 4b1f621051a306443ada7eb5fada2a8e9363b0aa
-STATUS  : livré, application, validation fonctionnelle, commit et push owner requis
-```
-
-Smoke owner :
-
-```text
-smoke_opus_p117w_e3b_git_workspace_front_owner.php
-SHA-256 : 4cc4c4cbe15d20d0f83f96d7a8431e420aea3ffcf2b4ecb9dc6a85b953bf5f6a
-OUTPUT  : OPUS_P117W_E3B_GIT_WORKSPACE_FRONT_OK
-```
-
-E3B ajoute :
-
-- interface Git dans le module `source` existant ;
+- interface Git intégrée au module `source` ;
 - status, diff, historique, stage, unstage, commit et restore ;
 - SCORE et fallback POST sans JavaScript ;
 - CSRF Git distinct du CSRF Source ;
@@ -79,35 +50,77 @@ E3B ajoute :
 - aucun accès Git, filesystem ou shell direct depuis OWASYS-front ;
 - expurgation récursive générique des corps REST sensibles dans le Profiler.
 
-Le ZIP ne contient aucun fichier OWASYS-back, aucun JavaScript, aucune configuration Composer et aucun site généré.
+La validation owner confirme un commit réel créé depuis l’interface OWASYS.
+
+## Livrable owner actif — R45B3
+
+```text
+ZIP     : opus_p117w_r45b3_rest_client_contract.zip
+SHA-256 : 06de2d80caebba9aebe9308eeed2f690a3c382ab582bc549e0e96fe3ce9889f7
+FILES   : 8
+BASE    : 7b390b662573b1e71bd8d770bbcad3d3b386325b
+STATUS  : livré, application, validation, commit et push owner requis
+```
+
+Smoke owner :
+
+```text
+smoke_opus_p117w_r45b3_rest_client_contract_owner.php
+SHA-256 : e77aefa501706d1e5e9a2c17ddbbe610bd27f0e495c1d9e7423a9e33251ad838
+OUTPUT  : OPUS_P117W_R45B3_REST_CLIENT_CONTRACT_OK
+```
+
+R45B3 ajoute :
+
+- `RestResourceCatalog` générique et interface homonyme ;
+- catalogue partagé de 23 ressources ;
+- fingerprint déterministe indépendant de l’ordre ;
+- validation croisée frontend/backend et inline/externe ;
+- en-tête runtime `X-Opus-Rest-Catalog` ;
+- refus client des méthodes et ressources non déclarées avant transport ;
+- HTTP 409 avant Composer en cas de dérive ;
+- statuts, enveloppes JSON, content-type et traces strictement contrôlés ;
+- limites de requête et de réponse à 2 MiB ;
+- acteur REST normalisé ;
+- redirections désactivées ;
+- `profiler_records` et corps sensibles expurgés des diagnostics.
+
+Fingerprint normalisé :
+
+```text
+6deb58f201e5e6a8b12cee96ff006a1a4969442af2f1d1dcb05e5374220ace86
+```
+
+Le ZIP ne contient aucun site généré, aucune nouvelle opération métier, aucun JavaScript backend et aucun secret.
 
 ## Validation owner attendue
 
-1. lint PHP et parsing des 27 JSON ;
-2. `composer validate` et autoload optimisé ;
-3. smoke owner ;
-4. test OWASYS status/diff/history ;
-5. stage puis unstage ;
-6. stage puis commit explicite ;
-7. restauration avec hash et confirmation exacte ;
-8. vérification qu'un enregistrement Source ne stage ni ne commit ;
-9. vérification viewer lecture seule et developer/admin mutation ;
-10. commit et push owner après succès.
+1. HEAD exact avant extraction ;
+2. contrôle des SHA-256 ;
+3. lint des quatre fichiers PHP ;
+4. parsing des quatre fichiers JSON ;
+5. `composer validate` ;
+6. autoload optimisé ;
+7. smoke owner ;
+8. tests OWASYS Source et Git ;
+9. dérive volontaire de fingerprint donnant HTTP 409 sans Composer ;
+10. trace corrélée et Profiler sans contenu sensible ;
+11. commit et push owner après succès.
 
 ## Suite gouvernée
 
-1. acquisition owner E3B ;
-2. R45B3 : durcissement et validation croisée du client REST frontend générique ;
-3. R45C : wizard OWASYS structuré ;
-4. R45D : administration Sécurité.
+1. acquisition owner R45B3 ;
+2. R45C : wizard OWASYS structuré ;
+3. R45D : administration Sécurité.
 
 NO ACL BYPASS.
-NO CONTENT, DIFF, COMMIT MESSAGE OR CONFIRMATION IN PROFILER.
+NO UNDECLARED REST RESOURCE.
+NO CLIENT/SERVER CATALOG DRIFT.
+NO UNBOUNDED REST BODY.
+NO TRACE MISMATCH.
+NO CONTENT, DIFF, COMMIT MESSAGE, CONFIRMATION OR PROFILER RECORDS IN PROFILER.
 NO DIRECT FRONTEND FILESYSTEM OR GIT ACCESS.
-NO IMPLICIT GIT OPERATION.
-NO FREE GIT COMMAND.
-NO FOREIGN STAGED PATH.
 NO BACKEND JAVASCRIPT.
 NO LOCAL SITE FIX.
 NO FALLBACK SILENCIEUX.
-NO PUSH OPUS PAR L'ASSISTANT.
+NO PUSH OPUS PAR L’ASSISTANT.
