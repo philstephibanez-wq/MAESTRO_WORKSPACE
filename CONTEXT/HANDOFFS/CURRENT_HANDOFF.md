@@ -11,16 +11,19 @@ Date : 2026-08-06
 5. `CONTEXT/SPECIFICATIONS/OPUS_P117W_E1_SOURCE_WORKSPACE_2026-08-05.md`
 6. `CONTEXT/SPECIFICATIONS/OPUS_P117W_E2A_SOURCE_REST_COMPOSER_2026-08-05.md`
 7. `CONTEXT/SPECIFICATIONS/OPUS_P117W_E2B_SOURCE_EDITOR_FRONT_2026-08-06.md`
-8. `CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OPUS_P117W_E2B_SOURCE_EDITOR_FRONT_2026-08-06.md`
-9. `CONTEXT/PROJECTS/OPUS_CURRENT_STATE.md`
+8. `CONTEXT/SPECIFICATIONS/OPUS_P117W_E3A_GIT_WORKSPACE_BACKEND_2026-08-06.md`
+9. `CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OPUS_P117W_E3A_GIT_WORKSPACE_BACKEND_2026-08-06.md`
+10. `CONTEXT/PROJECTS/OPUS_CURRENT_STATE.md`
 
 ## Base exacte
 
-OPUS `master` : `1fc49e9e53efdd002513cc7b037a07cb2faacffc`.
+OPUS `master` : `fac5f8d94f29f8529ad9b99f72a0b83f9a74240f`.
 
-E2A est acquis et publié à cette base.
+E2B est acquis au commit `d6548ec0fb1dc4bd376e730a943f45e502eed51e` et validé par une édition réelle depuis OWASYS Sources.
 
-R46 `dev-server --site=` est abandonné par décision owner et ne doit jamais être appliqué. Le contrat positionnel est conservé :
+Le HEAD courant inclut ensuite les opérations owner sur le site témoin. Aucun fichier de site témoin ne doit entrer dans E3A.
+
+R46 `dev-server --site=` reste abandonné. Le contrat positionnel reste :
 
 ```text
 composer opus:dev-server -- <application-id> [--host=<local-address>] [--port=<local-port>]
@@ -29,44 +32,46 @@ composer opus:dev-server -- <application-id> [--host=<local-address>] [--port=<l
 ## Livrable actif
 
 ```text
-ZIP     : opus_p117w_e2b_source_editor_front.zip
-SHA-256 : da9df8d1e17a16797fdf09a78413fde32db5d9307d30f577addc292ecc21254b
-FILES   : 34
-BASE    : 1fc49e9e53efdd002513cc7b037a07cb2faacffc
+ZIP     : opus_p117w_e3a_git_workspace_backend.zip
+SHA-256 : 18bfeca293b10d911c717e266823b10771d1899b81dd5ae3edd281ca242bfcdc
+FILES   : 11
+BASE    : fac5f8d94f29f8529ad9b99f72a0b83f9a74240f
 STATUS  : livré, application, validation et push owner requis
 ```
 
 Smoke owner séparé :
 
 ```text
-FILE    : smoke_opus_p117w_e2b_source_editor_front_owner.php
-SHA-256 : 97055a9b832e84bf9bbcdefbb2f764f25ef341c3b124c17f7bd26b703dc0ace4
-OUTPUT  : OPUS_P117W_E2B_SOURCE_EDITOR_FRONT_OK
+FILE    : smoke_opus_p117w_e3a_git_workspace_backend_owner.php
+SHA-256 : bb37d9e0fe75a4f516593968e79fc1d134ffdeab1c7c9ea6e7944f67c9634db7
+OUTPUT  : OPUS_P117W_E3A_GIT_WORKSPACE_BACKEND_OK
 ```
 
-## Cible E2B
+## Cible E3A
 
-- éditeur Sources dans `owasys-front` ;
-- fallback SCORE/POST sans JavaScript obligatoire ;
-- CodeMirror 6, arbre, onglets, ouverture GET JSON et indicateur dirty en amélioration progressive ;
-- preview REST POST distincte de write REST PUT ;
-- verrou optimiste SHA-256 ;
-- conflit HTTP 409 sans écrasement ;
-- POST/Redirect/GET après écriture ;
-- ACL viewer lecture seule, developer/admin édition ;
-- service CSRF OPUS générique, scopé et à usage unique ;
-- 25 catalogues de langue de base UE + ukrainien.
+- service Git générique OPUS borné au site sélectionné ;
+- statut, diff, historique, stage, unstage, commit et restauration ;
+- aucun push, aucune commande Git libre ;
+- refus du commit si l'index contient un chemin extérieur au site ;
+- restauration avec hash optimiste et confirmation renforcée ;
+- REST sécurisé puis Composer allow-listé dans OWASYS-back ;
+- ACL viewer lecture, developer/admin mutation ;
+- Logger et Profiler corrélés sans contenu Git sensible ;
+- correction du rôle principal affiché par priorité `admin > developer > viewer`.
 
-Aucun fichier `owasys-back`, aucun site généré et aucune opération Git ne sont ciblés.
+E3A ne contient aucune page Git frontend, aucun JavaScript backend et aucun fichier de site généré.
 
 ## Suite après acquisition
 
-E3 : Git contrôlé, séparé de l'enregistrement Source : statut, diff, historique, stage, unstage, commit et restauration bornée. Aucun push implicite, aucun argument Git libre, aucun reset/rebase destructif.
+E3B : intégration Git dans OWASYS-front via SCORE, FSM, I18n, ACL, CSRF et fallback sans JavaScript. L'enregistrement Source, le stage et le commit restent trois actions explicites et séparées.
 
 NO ACL BYPASS.
-NO CONTENT IN ARGV.
-NO DIRECT FRONTEND FILESYSTEM ACCESS.
+NO CONTENT OR COMMIT MESSAGE IN ARGV.
+NO DIRECT FRONTEND FILESYSTEM OR GIT ACCESS.
 NO IMPLICIT GIT OPERATION.
+NO FREE GIT COMMAND.
+NO FOREIGN STAGED PATH.
+NO BACKEND JAVASCRIPT.
 NO CONTRACT, NO PATCH.
 NO SOURCE OF TRUTH, NO PATCH.
 NO FALLBACK SILENCIEUX.
