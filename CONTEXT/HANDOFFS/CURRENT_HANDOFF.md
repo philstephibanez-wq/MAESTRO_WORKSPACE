@@ -12,16 +12,15 @@ Date : 2026-08-06
 6. `CONTEXT/SPECIFICATIONS/OPUS_P117W_E2A_SOURCE_REST_COMPOSER_2026-08-05.md`
 7. `CONTEXT/SPECIFICATIONS/OPUS_P117W_E2B_SOURCE_EDITOR_FRONT_2026-08-06.md`
 8. `CONTEXT/SPECIFICATIONS/OPUS_P117W_E3A_GIT_WORKSPACE_BACKEND_2026-08-06.md`
-9. `CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OPUS_P117W_E3A_GIT_WORKSPACE_BACKEND_2026-08-06.md`
-10. `CONTEXT/PROJECTS/OPUS_CURRENT_STATE.md`
+9. `CONTEXT/SPECIFICATIONS/OPUS_P117W_E3B_GIT_WORKSPACE_FRONT_2026-08-06.md`
+10. `CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OPUS_P117W_E3B_GIT_WORKSPACE_FRONT_2026-08-06.md`
+11. `CONTEXT/PROJECTS/OPUS_CURRENT_STATE.md`
 
 ## Base exacte
 
-OPUS `master` : `fac5f8d94f29f8529ad9b99f72a0b83f9a74240f`.
+OPUS `master` : `4b1f621051a306443ada7eb5fada2a8e9363b0aa`.
 
-E2B est acquis au commit `d6548ec0fb1dc4bd376e730a943f45e502eed51e` et validé par une édition réelle depuis OWASYS Sources.
-
-Le HEAD courant inclut ensuite les opérations owner sur le site témoin. Aucun fichier de site témoin ne doit entrer dans E3A.
+E3A est acquis au commit `4b1f621051a306443ada7eb5fada2a8e9363b0aa` avec exactement les onze fichiers attendus du workspace Git générique et de sa frontière OWASYS-back.
 
 R46 `dev-server --site=` reste abandonné. Le contrat positionnel reste :
 
@@ -32,41 +31,54 @@ composer opus:dev-server -- <application-id> [--host=<local-address>] [--port=<l
 ## Livrable actif
 
 ```text
-ZIP     : opus_p117w_e3a_git_workspace_backend.zip
-SHA-256 : 18bfeca293b10d911c717e266823b10771d1899b81dd5ae3edd281ca242bfcdc
-FILES   : 11
-BASE    : fac5f8d94f29f8529ad9b99f72a0b83f9a74240f
-STATUS  : livré, application, validation et push owner requis
+ZIP     : opus_p117w_e3b_git_workspace_front.zip
+SHA-256 : f6cdd8160f16586851b2983373eedba473e865db237db2c388b005bebcc49743
+FILES   : 32
+BASE    : 4b1f621051a306443ada7eb5fada2a8e9363b0aa
+STATUS  : livré, application, validation fonctionnelle, commit et push owner requis
 ```
 
 Smoke owner séparé :
 
 ```text
-FILE    : smoke_opus_p117w_e3a_git_workspace_backend_owner.php
-SHA-256 : bb37d9e0fe75a4f516593968e79fc1d134ffdeab1c7c9ea6e7944f67c9634db7
-OUTPUT  : OPUS_P117W_E3A_GIT_WORKSPACE_BACKEND_OK
+FILE    : smoke_opus_p117w_e3b_git_workspace_front_owner.php
+SHA-256 : 4cc4c4cbe15d20d0f83f96d7a8431e420aea3ffcf2b4ecb9dc6a85b953bf5f6a
+OUTPUT  : OPUS_P117W_E3B_GIT_WORKSPACE_FRONT_OK
 ```
 
-## Cible E3A
+## Cible E3B
 
-- service Git générique OPUS borné au site sélectionné ;
-- statut, diff, historique, stage, unstage, commit et restauration ;
-- aucun push, aucune commande Git libre ;
-- refus du commit si l'index contient un chemin extérieur au site ;
-- restauration avec hash optimiste et confirmation renforcée ;
-- REST sécurisé puis Composer allow-listé dans OWASYS-back ;
-- ACL viewer lecture, developer/admin mutation ;
-- Logger et Profiler corrélés sans contenu Git sensible ;
-- correction du rôle principal affiché par priorité `admin > developer > viewer`.
+- intégration Git dans le module/state `source` existant ;
+- status, diff, historique, stage, unstage, commit et restauration ;
+- SCORE et formulaires POST sans JavaScript obligatoire ;
+- CSRF Git distinct, FSM explicite et ACL deny-by-default ;
+- viewer en lecture seule, developer/admin en mutation ;
+- vingt-cinq catalogues I18n UE configurés plus ukrainien ;
+- aucun Git, shell ou accès filesystem direct dans OWASYS-front ;
+- enregistrement Source, stage et commit toujours séparés ;
+- aucune opération Git implicite ;
+- expurgation récursive des corps REST sensibles dans le Profiler OPUS.
 
-E3A ne contient aucune page Git frontend, aucun JavaScript backend et aucun fichier de site généré.
+E3B ne contient aucun fichier backend, aucun JavaScript, aucune configuration Composer et aucun fichier de site généré.
+
+## Validation owner obligatoire
+
+- lint PHP et parsing JSON ;
+- `composer validate` et autoload optimisé ;
+- smoke owner ;
+- test OWASYS réel de status/diff/history/stage/unstage/commit/restore ;
+- confirmation qu'un enregistrement Source ne stage ni ne commit ;
+- confirmation viewer lecture seule et developer/admin mutation ;
+- commit et push owner seulement après succès.
 
 ## Suite après acquisition
 
-E3B : intégration Git dans OWASYS-front via SCORE, FSM, I18n, ACL, CSRF et fallback sans JavaScript. L'enregistrement Source, le stage et le commit restent trois actions explicites et séparées.
+R45B3 : durcissement et validation croisée du client REST frontend générique.
+
+Puis R45C wizard structuré et R45D administration Sécurité.
 
 NO ACL BYPASS.
-NO CONTENT OR COMMIT MESSAGE IN ARGV.
+NO CONTENT, DIFF, COMMIT MESSAGE OR CONFIRMATION IN PROFILER.
 NO DIRECT FRONTEND FILESYSTEM OR GIT ACCESS.
 NO IMPLICIT GIT OPERATION.
 NO FREE GIT COMMAND.
