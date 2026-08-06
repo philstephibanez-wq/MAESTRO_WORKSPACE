@@ -19,10 +19,11 @@ Dernier acquis : E2A source REST / Composer
 - R45B2A4 est publié à `2c268e998c7f714c17476050e652d7afb88db9f4` et aligne `profiler:view` sur les rôles de la page d'accueil dans le scaffold générique.
 - E1 est publié à `60f45aae8ee6f3a10096069076900a41c33d9a19`.
 - E2A est publié à `1fc49e9e53efdd002513cc7b037a07cb2faacffc`.
+- R46 `dev-server --site=` est abandonné et n'a jamais été acquis.
 
 ## E1 acquis
 
-`SiteSourceWorkspace` fournit désormais dans OPUS :
+`SiteSourceWorkspace` fournit :
 
 - liste et lecture bornées ;
 - métadonnées et empreinte SHA-256 ;
@@ -34,7 +35,7 @@ Dernier acquis : E2A source REST / Composer
 
 ## E2A acquis
 
-E2A ajoute :
+E2A fournit :
 
 - transport générique `request` pour les paramètres Composer exclus d'`argv` ;
 - conservation exacte du contenu avec `trim=false` ;
@@ -44,38 +45,57 @@ E2A ajoute :
 - provider OWASYS-back utilisant exclusivement E1 ;
 - statut HTTP 409 pour conflit optimiste.
 
-## Livrable owner actif — R46
+## Contrat dev-server conservé
 
 ```text
-ZIP     : opus_p117w_r46_dev_server_site_option.zip
-SHA-256 : 4112fef6bff85d9dc8d064439eda7397793d06917ac5c9390949bdc8b1140f33
-FILES   : 1
+composer opus:dev-server -- <application-id> [--host=<local-address>] [--port=<local-port>]
+```
+
+Le dépôt racine ne déclare pas de script `composer dev-server` sans préfixe `opus:`.
+
+## Livrable owner actif — E2B
+
+```text
+ZIP     : opus_p117w_e2b_source_editor_front.zip
+SHA-256 : da9df8d1e17a16797fdf09a78413fde32db5d9307d30f577addc292ecc21254b
+FILES   : 34
 BASE    : 1fc49e9e53efdd002513cc7b037a07cb2faacffc
 STATUS  : livré, application, validation et push owner requis
 ```
 
-R46 remplace l'identifiant positionnel de `opus:dev-server` par le contrat explicite :
+E2B ajoute :
+
+- éditeur Sources SCORE et POST sans JavaScript obligatoire ;
+- CodeMirror, arbre, onglets et sélection GET JSON en amélioration progressive ;
+- preview REST POST distincte de write REST PUT ;
+- conflit HTTP 409 sans écrasement ;
+- POST/Redirect/GET après enregistrement ;
+- ACL viewer lecture seule et developer/admin édition ;
+- service CSRF OPUS générique, scopé, lié à la session et à usage unique ;
+- 25 catalogues I18n de base couvrant les langues UE configurées et l'ukrainien.
+
+Aucun fichier backend, aucun site généré et aucune opération Git ne figurent dans E2B.
+
+Smoke owner :
 
 ```text
-composer opus:dev-server -- --site=<site> [--host=<local-address>] [--port=<local-port>]
+smoke_opus_p117w_e2b_source_editor_front_owner.php
+SHA-256 : 97055a9b832e84bf9bbcdefbb2f764f25ef341c3b124c17f7bd26b703dc0ace4
+OUTPUT  : OPUS_P117W_E2B_SOURCE_EDITOR_FRONT_OK
 ```
-
-La forme positionnelle et `--site test7` sont refusées. La correction est générique et ne modifie pas `test7`.
-
-Le smoke owner reste hors ZIP.
 
 ## Suites gouvernées
 
-1. validation, commit et push owner de R46 ;
-2. E2B : éditeur Sources dans `owasys-front`, ViewModel, SCORE, preview/write et conflit concurrent ;
-3. E3 : statut/diff/historique/stage/unstage/commit Git contrôlés sans push implicite ;
-4. R45B3 : client REST frontend générique et validateurs croisés ;
-5. R45C : wizard OWASYS structuré ;
-6. R45D : administration Sécurité.
+1. validation, commit et push owner de E2B ;
+2. E3 : statut/diff/historique/stage/unstage/commit/restauration Git contrôlés sans push implicite ;
+3. R45B3 : client REST frontend générique et validateurs croisés ;
+4. R45C : wizard OWASYS structuré ;
+5. R45D : administration Sécurité.
 
 NO ACL BYPASS.
 NO CONTENT IN ARGV.
-NO POSITIONAL DEV-SERVER SITE.
+NO DIRECT FRONTEND FILESYSTEM ACCESS.
+NO IMPLICIT GIT OPERATION.
 NO LOCAL SITE FIX.
 NO FALLBACK SILENCIEUX.
 NO PUSH OPUS PAR L'ASSISTANT.
