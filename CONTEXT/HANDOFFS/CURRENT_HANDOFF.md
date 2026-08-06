@@ -13,14 +13,15 @@ Date : 2026-08-06
 7. `CONTEXT/SPECIFICATIONS/OPUS_P117W_E2B_SOURCE_EDITOR_FRONT_2026-08-06.md`
 8. `CONTEXT/SPECIFICATIONS/OPUS_P117W_E3A_GIT_WORKSPACE_BACKEND_2026-08-06.md`
 9. `CONTEXT/SPECIFICATIONS/OPUS_P117W_E3B_GIT_WORKSPACE_FRONT_2026-08-06.md`
-10. `CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OPUS_P117W_E3B_GIT_WORKSPACE_FRONT_2026-08-06.md`
-11. `CONTEXT/PROJECTS/OPUS_CURRENT_STATE.md`
+10. `CONTEXT/SPECIFICATIONS/OPUS_P117W_R45B3_REST_CLIENT_CONTRACT_2026-08-06.md`
+11. `CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OPUS_P117W_R45B3_REST_CLIENT_CONTRACT_2026-08-06.md`
+12. `CONTEXT/PROJECTS/OPUS_CURRENT_STATE.md`
 
 ## Base exacte
 
-OPUS `master` : `4b1f621051a306443ada7eb5fada2a8e9363b0aa`.
+OPUS `master` : `7b390b662573b1e71bd8d770bbcad3d3b386325b`.
 
-E3A est acquis au commit `4b1f621051a306443ada7eb5fada2a8e9363b0aa` avec exactement les onze fichiers attendus du workspace Git générique et de sa frontière OWASYS-back.
+E3B est acquis au commit `7b390b662573b1e71bd8d770bbcad3d3b386325b`, fils direct d’E3A, avec exactement les 32 fichiers attendus. La validation owner confirme la création effective d’un commit Git depuis OWASYS `Sources et Git`.
 
 R46 `dev-server --site=` reste abandonné. Le contrat positionnel reste :
 
@@ -31,61 +32,71 @@ composer opus:dev-server -- <application-id> [--host=<local-address>] [--port=<l
 ## Livrable actif
 
 ```text
-ZIP     : opus_p117w_e3b_git_workspace_front.zip
-SHA-256 : f6cdd8160f16586851b2983373eedba473e865db237db2c388b005bebcc49743
-FILES   : 32
-BASE    : 4b1f621051a306443ada7eb5fada2a8e9363b0aa
-STATUS  : livré, application, validation fonctionnelle, commit et push owner requis
+ZIP     : opus_p117w_r45b3_rest_client_contract.zip
+SHA-256 : 06de2d80caebba9aebe9308eeed2f690a3c382ab582bc549e0e96fe3ce9889f7
+FILES   : 8
+BASE    : 7b390b662573b1e71bd8d770bbcad3d3b386325b
+STATUS  : livré, application, validation, commit et push owner requis
 ```
 
 Smoke owner séparé :
 
 ```text
-FILE    : smoke_opus_p117w_e3b_git_workspace_front_owner.php
-SHA-256 : 4cc4c4cbe15d20d0f83f96d7a8431e420aea3ffcf2b4ecb9dc6a85b953bf5f6a
-OUTPUT  : OPUS_P117W_E3B_GIT_WORKSPACE_FRONT_OK
+FILE    : smoke_opus_p117w_r45b3_rest_client_contract_owner.php
+SHA-256 : e77aefa501706d1e5e9a2c17ddbbe610bd27f0e495c1d9e7423a9e33251ad838
+OUTPUT  : OPUS_P117W_R45B3_REST_CLIENT_CONTRACT_OK
 ```
 
-## Cible E3B
+## Cible R45B3
 
-- intégration Git dans le module/state `source` existant ;
-- status, diff, historique, stage, unstage, commit et restauration ;
-- SCORE et formulaires POST sans JavaScript obligatoire ;
-- CSRF Git distinct, FSM explicite et ACL deny-by-default ;
-- viewer en lecture seule, developer/admin en mutation ;
-- vingt-cinq catalogues I18n UE configurés plus ukrainien ;
-- aucun Git, shell ou accès filesystem direct dans OWASYS-front ;
-- enregistrement Source, stage et commit toujours séparés ;
-- aucune opération Git implicite ;
-- expurgation récursive des corps REST sensibles dans le Profiler OPUS.
+- catalogue REST générique OPUS partagé par client et serveur ;
+- 23 ressources Source, Git, Registry, construction et sécurité ;
+- fingerprint déterministe indépendant de l’ordre des routes ;
+- validation croisée inline/externe au boot du backend ;
+- échange runtime `X-Opus-Rest-Catalog` ;
+- refus des méthodes et ressources frontend non déclarées avant transport ;
+- HTTP 409 avant Composer en cas de dérive catalogue ;
+- statuts, enveloppes, content-type et traces strictement validés ;
+- corps de requête et lecture de réponse bornés ;
+- acteur REST normalisé ;
+- Profiler expurgé des corps et enregistrements sensibles.
 
-E3B ne contient aucun fichier backend, aucun JavaScript, aucune configuration Composer et aucun fichier de site généré.
+Empreinte fonctionnelle du catalogue :
+
+```text
+6deb58f201e5e6a8b12cee96ff006a1a4969442af2f1d1dcb05e5374220ace86
+```
+
+R45B3 ne contient aucun fichier de site généré, aucune nouvelle opération métier et aucun JavaScript backend.
 
 ## Validation owner obligatoire
 
-- lint PHP et parsing JSON ;
-- `composer validate` et autoload optimisé ;
-- smoke owner ;
-- test OWASYS réel de status/diff/history/stage/unstage/commit/restore ;
-- confirmation qu'un enregistrement Source ne stage ni ne commit ;
-- confirmation viewer lecture seule et developer/admin mutation ;
+- vérifier le HEAD et les deux SHA-256 ;
+- extraire le ZIP à la racine OPUS ;
+- lint des quatre PHP et parsing des quatre JSON ;
+- `composer validate` puis autoload optimisé ;
+- exécuter le smoke owner ;
+- tester les opérations Source et Git réelles ;
+- provoquer une dérive de fingerprint et confirmer HTTP 409 sans Composer ;
+- confirmer trace corrélée et absence de contenu sensible dans le Profiler ;
 - commit et push owner seulement après succès.
 
 ## Suite après acquisition
 
-R45B3 : durcissement et validation croisée du client REST frontend générique.
+R45C : wizard OWASYS structuré.
 
-Puis R45C wizard structuré et R45D administration Sécurité.
+Puis R45D : administration Sécurité.
 
 NO ACL BYPASS.
-NO CONTENT, DIFF, COMMIT MESSAGE OR CONFIRMATION IN PROFILER.
+NO UNDECLARED REST RESOURCE.
+NO CLIENT/SERVER CATALOG DRIFT.
+NO UNBOUNDED REST BODY.
+NO TRACE MISMATCH.
+NO CONTENT, DIFF, COMMIT MESSAGE, CONFIRMATION OR PROFILER RECORDS IN PROFILER.
 NO DIRECT FRONTEND FILESYSTEM OR GIT ACCESS.
-NO IMPLICIT GIT OPERATION.
-NO FREE GIT COMMAND.
-NO FOREIGN STAGED PATH.
 NO BACKEND JAVASCRIPT.
 NO CONTRACT, NO PATCH.
 NO SOURCE OF TRUTH, NO PATCH.
 NO FALLBACK SILENCIEUX.
 NO LOCAL SITE FIX.
-NO PUSH OPUS PAR L'ASSISTANT.
+NO PUSH OPUS PAR L’ASSISTANT.
