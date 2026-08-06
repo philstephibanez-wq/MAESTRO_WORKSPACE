@@ -7,43 +7,21 @@ Dernière mise à jour : 2026-08-06.
 ```text
 OPUS : philstephibanez-wq/OPUS
 Branche : master
-HEAD owner publié : 1fc49e9e53efdd002513cc7b037a07cb2faacffc
-Dernier acquis : E2A source REST / Composer
+HEAD owner publié : fac5f8d94f29f8529ad9b99f72a0b83f9a74240f
+Dernier acquis : E2B éditeur Sources frontend
+Livrable actif : E3A Git workspace générique/backend
 ```
 
-## État des jalons précédents
+## Jalons acquis
 
-- R45B2A2 est acquis et publie la rétention/rotation bornée du Profiler JSONL.
-- R45B2A3 est publié à `a1afd6415c9ddbd80b7944756210f33c36f7253b` et ajoute le module `application/profiler` au scaffold générique.
-- `test7` a ensuite été généré par OWASYS.
-- R45B2A4 est publié à `2c268e998c7f714c17476050e652d7afb88db9f4` et aligne `profiler:view` sur les rôles de la page d'accueil dans le scaffold générique.
-- E1 est publié à `60f45aae8ee6f3a10096069076900a41c33d9a19`.
-- E2A est publié à `1fc49e9e53efdd002513cc7b037a07cb2faacffc`.
-- R46 `dev-server --site=` est abandonné et n'a jamais été acquis.
+- R45B2A2 : rétention/rotation bornée du Profiler JSONL.
+- R45B2A3 : module `application/profiler` dans le scaffold générique.
+- R45B2A4 : alignement de `profiler:view` dans le scaffold.
+- E1 : `SiteSourceWorkspace`, publié à `60f45aae8ee6f3a10096069076900a41c33d9a19`.
+- E2A : frontière Source REST/Composer, publiée à `1fc49e9e53efdd002513cc7b037a07cb2faacffc`.
+- E2B : éditeur Sources frontend, publié à `d6548ec0fb1dc4bd376e730a943f45e502eed51e` et validé par édition réelle du site `test` depuis OWASYS.
 
-## E1 acquis
-
-`SiteSourceWorkspace` fournit :
-
-- liste et lecture bornées ;
-- métadonnées et empreinte SHA-256 ;
-- diff de prévisualisation ;
-- verrouillage optimiste ;
-- verrou interprocessus ;
-- écriture atomique ;
-- instrumentation Logger/Profiler sans contenu source.
-
-## E2A acquis
-
-E2A fournit :
-
-- transport générique `request` pour les paramètres Composer exclus d'`argv` ;
-- conservation exacte du contenu avec `trim=false` ;
-- routes REST preview et write ;
-- opérations Composer allow-listées ;
-- ACL admin/developer pour mutation ;
-- provider OWASYS-back utilisant exclusivement E1 ;
-- statut HTTP 409 pour conflit optimiste.
+R46 `dev-server --site=` est abandonné et ne doit jamais être appliqué.
 
 ## Contrat dev-server conservé
 
@@ -53,49 +31,69 @@ composer opus:dev-server -- <application-id> [--host=<local-address>] [--port=<l
 
 Le dépôt racine ne déclare pas de script `composer dev-server` sans préfixe `opus:`.
 
-## Livrable owner actif — E2B
+## État E2B
+
+E2B fournit :
+
+- éditeur Sources SCORE et fallback POST sans JavaScript ;
+- CodeMirror en amélioration progressive ;
+- preview distincte de write ;
+- verrou optimiste SHA-256 et conflit HTTP 409 ;
+- ACL viewer lecture seule, developer/admin édition ;
+- CSRF OPUS générique ;
+- catalogues I18n UE configurés et ukrainien.
+
+Le test fonctionnel owner a confirmé la persistance d'une modification dans le site témoin.
+
+Une anomalie d'affichage du rôle a ensuite été identifiée : l'ACL reconnaissait correctement `admin`, mais l'UI affichait le premier rôle reçu, éventuellement `viewer`. E3A corrige la projection sans modifier les droits.
+
+## Livrable owner actif — E3A
 
 ```text
-ZIP     : opus_p117w_e2b_source_editor_front.zip
-SHA-256 : da9df8d1e17a16797fdf09a78413fde32db5d9307d30f577addc292ecc21254b
-FILES   : 34
-BASE    : 1fc49e9e53efdd002513cc7b037a07cb2faacffc
+ZIP     : opus_p117w_e3a_git_workspace_backend.zip
+SHA-256 : 18bfeca293b10d911c717e266823b10771d1899b81dd5ae3edd281ca242bfcdc
+FILES   : 11
+BASE    : fac5f8d94f29f8529ad9b99f72a0b83f9a74240f
 STATUS  : livré, application, validation et push owner requis
 ```
-
-E2B ajoute :
-
-- éditeur Sources SCORE et POST sans JavaScript obligatoire ;
-- CodeMirror, arbre, onglets et sélection GET JSON en amélioration progressive ;
-- preview REST POST distincte de write REST PUT ;
-- conflit HTTP 409 sans écrasement ;
-- POST/Redirect/GET après enregistrement ;
-- ACL viewer lecture seule et developer/admin édition ;
-- service CSRF OPUS générique, scopé, lié à la session et à usage unique ;
-- 25 catalogues I18n de base couvrant les langues UE configurées et l'ukrainien.
-
-Aucun fichier backend, aucun site généré et aucune opération Git ne figurent dans E2B.
 
 Smoke owner :
 
 ```text
-smoke_opus_p117w_e2b_source_editor_front_owner.php
-SHA-256 : 97055a9b832e84bf9bbcdefbb2f764f25ef341c3b124c17f7bd26b703dc0ace4
-OUTPUT  : OPUS_P117W_E2B_SOURCE_EDITOR_FRONT_OK
+smoke_opus_p117w_e3a_git_workspace_backend_owner.php
+SHA-256 : bb37d9e0fe75a4f516593968e79fc1d134ffdeab1c7c9ea6e7944f67c9634db7
+OUTPUT  : OPUS_P117W_E3A_GIT_WORKSPACE_BACKEND_OK
 ```
 
-## Suites gouvernées
+E3A ajoute :
 
-1. validation, commit et push owner de E2B ;
-2. E3 : statut/diff/historique/stage/unstage/commit/restauration Git contrôlés sans push implicite ;
+- `SiteGitWorkspace` générique et interface homonyme ;
+- statut, diff, historique, stage, unstage, commit et restauration ;
+- confinement au site OPUS sélectionné ;
+- refus d'un commit si l'index contient un chemin extérieur au site ;
+- aucune commande Git libre et aucun push ;
+- REST sécurisé et Composer allow-listé dans OWASYS-back ;
+- ACL viewer lecture, developer/admin mutation ;
+- Logger/Profiler sans contenu Git sensible ;
+- projection déterministe du rôle principal : `admin > developer > viewer`.
+
+E3A ne contient aucune page Git frontend, aucun fichier de site généré et aucun JavaScript backend.
+
+## Suite gouvernée
+
+1. validation, commit et push owner de E3A ;
+2. E3B : interface Git SCORE dans OWASYS-front avec FSM, I18n, ACL, CSRF et fallback sans JavaScript ;
 3. R45B3 : client REST frontend générique et validateurs croisés ;
 4. R45C : wizard OWASYS structuré ;
 5. R45D : administration Sécurité.
 
 NO ACL BYPASS.
-NO CONTENT IN ARGV.
-NO DIRECT FRONTEND FILESYSTEM ACCESS.
+NO CONTENT OR COMMIT MESSAGE IN ARGV.
+NO DIRECT FRONTEND FILESYSTEM OR GIT ACCESS.
 NO IMPLICIT GIT OPERATION.
+NO FREE GIT COMMAND.
+NO FOREIGN STAGED PATH.
+NO BACKEND JAVASCRIPT.
 NO LOCAL SITE FIX.
 NO FALLBACK SILENCIEUX.
 NO PUSH OPUS PAR L'ASSISTANT.
