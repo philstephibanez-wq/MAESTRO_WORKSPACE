@@ -7,74 +7,144 @@ Dernière mise à jour : 2026-08-07.
 ```text
 OPUS : philstephibanez-wq/OPUS
 Branche : master
-HEAD owner publié : de705d2dbfde8b4da69c7af046acd78453ecde31
-Dernier acquis : R45B4 Profiler configurable par environnement
-R45B5 : publié mais NON acquis fonctionnellement
-Livrable actif : R45B5B réparation catalogues REST Stage all
+HEAD owner publié : 3a7b891c17be447161d5c70299207f2590c9247a
+Commit HEAD : suppression de try via owasys
+R45B5B publié : 99b76efe7905b82176134d1fa745b3c16763654b
+Livrable actif : R45B6 cohérence des permissions OWASYS
 ```
 
-## Incident courant
+## État après R45B5B
 
-Le commit owner `de705d2dbfde8b4da69c7af046acd78453ecde31` (`opus_p117w_r45b5_generated_runtime_error_stage_all`) contient l'évolution R45B5 mais OWASYS échoue au bootstrap avec :
+R45B5B a réparé les catalogues REST Stage all en remplaçant l'identifiant invalide `git.stage_all` par `git.stage-all`. Le commit est publié et l'interface OWASYS est revenue.
+
+Le commit owner suivant `3a7b891c17be447161d5c70299207f2590c9247a` supprime l'application `try` via OWASYS et constitue la base exacte de R45B6.
+
+## Audit R45B6
+
+L'audit couvre toute la surface OWASYS actuellement exposée :
 
 ```text
-OPUS_REST_API_RESOURCE_DEFINITION_INVALID
+login
+account/password
+applications
+applications/new
+structure
+data
+workflows
+security
+source / Sources et Git
+build
+Web Profiler
 ```
 
-Cause prouvée sur GitHub : les catalogues utilisent l'identifiant REST invalide `git.stage_all`.
-
-`RestResourceCatalog` impose `^[a-z][a-z0-9]*(?:[.-][a-z0-9]+)*$`; `_` est interdit. La correction est `git.stage-all`.
-
-R45B5A n'a rien modifié sur le dépôt owner : il exigeait à tort le HEAD R45B4 `2376a4de...` et a arrêté avant écriture avec `R45B5A_BASE_HEAD_MISMATCH:de705...`.
-
-## Livrable actif R45B5B
+Chaîne contrôlée :
 
 ```text
-ZIP     : opus_p117w_r45b5b_rest_catalog_repair.zip
-SHA-256 : dbc98775a7ed11c50b0b41df17d020eb6de3df8373bd1890ea956bed43a4695d
-SCRIPT  : apply_opus_p117w_r45b5b.php
-SHA-256 : 9b0fd9e779f8d91c76432995ebdd93fbe9a30e4f128d00cfa1075571cf99099a
-BASE    : de705d2dbfde8b4da69c7af046acd78453ecde31
-FILES   : 4
+SSO identity
+-> normalized session roles
+-> front ACL
+-> FSM/navigation
+-> controller action gate
+-> ViewModel capability
+-> SCORE control
+-> secured REST
+-> back ACL
+-> Composer operation allow-list
+```
+
+### Défauts confirmés
+
+1. `viewer` possède `registry:open`, mais le frontend utilisait `registry:write` pour tous les POST Applications et le backend réservait select/clear aux rôles d'écriture. Le viewer ne pouvait donc pas établir le contexte applicatif nécessaire aux autres pages.
+2. Le template Registry rendait create/select/clear/delete sans capacités d'action explicites.
+3. `viewer` possède `account:open`, mais pas `account:change`, alors que le formulaire de changement de mot de passe était toujours rendu. Le backend agit pourtant sur le sujet authentifié lui-même.
+4. Sources/Git utilisait un helper local qui capturait tout `Throwable` et retournait `false`, pouvant convertir une erreur non-ACL en faux message « lecture seule ».
+
+## Livrable actif R45B6
+
+```text
+ZIP     : opus_p117w_r45b6_permission_surface_consistency.zip
+SHA-256 : 1c0c7aa71856529c0fd2a4ca3c1886afdd43ced0b04f0e25118afe5772b8ceaf
+SCRIPT  : apply_opus_p117w_r45b6_permission_surface_consistency.php
+SHA-256 : 332e9f5a7bfe09ed38447209386ef6ab5c13f9866f0934f311b981fd2d8a241a
+BASE    : 3a7b891c17be447161d5c70299207f2590c9247a
+TARGETS : 8
+OUTPUT  : OPUS_P117W_R45B6_APPLIED / FILES=8
 ```
 
 Smoke séparé :
 
 ```text
-smoke_opus_p117w_r45b5b_rest_catalog_repair_owner.php
-SHA-256 : de3d4fcb95f8bc658f4e7f601bdacf3e17e6fbad31debbdc47a31524906aa8c9
-OUTPUT  : OPUS_P117W_R45B5B_SMOKE_OK
+smoke_opus_p117w_r45b6_permission_surface_consistency_owner.php
+SHA-256 : 3cf8e7deb5ee59d6611e01f9fa3e5a07a1139af5e30204a5a4d207d65590389a
+OUTPUT  : OPUS_P117W_R45B6_SMOKE_OK
 ```
 
-Fichiers réparés :
+## Matrice viewer cible
+
+Autorisé :
 
 ```text
-sites/owasys-front/config/rest.resources.json
-sites/owasys-back/config/backend.resources.json
-sites/owasys-back/config/backend.rest.json
-sites/owasys-back/config/backend.operations.json
+registry:open
+registry:select
+structure:open
+data:open
+workflows:open
+security:open
+source:open
+git:read
+build:open
+account:open
+account:change
 ```
 
-Le script R45B5B valide les candidats avec le vrai `RestResourceCatalog` avant toute écriture et contrôle simultanément la route collectionnelle Stage all, la route Stage individuelle, la symétrie front/back et le fingerprint.
+Interdit :
 
-## Validation immédiate
+```text
+creation:open
+registry:delete
+source:preview
+source:write
+git:stage
+git:unstage
+git:commit
+git:restore
+profiler:view
+```
 
-1. HEAD `de705d2dbfde8b4da69c7af046acd78453ecde31`.
-2. appliquer R45B5B.
-3. attendu `OPUS_P117W_R45B5B_APPLIED` + `FILES=4`.
-4. smoke -> `OPUS_P117W_R45B5B_SMOKE_OK`.
-5. `git status --short` doit montrer quatre JSON modifiés.
-6. relancer owasys-back puis owasys-front.
-7. confirmer disparition de `OPUS_REST_API_RESOURCE_DEFINITION_INVALID`.
-8. tester Stage all.
-9. tester `try` seulement après retour d'OWASYS.
-10. commit/push owner après tous les gates.
+Le changement de mot de passe est self-service et conditionné au provider `local-password`. Auth0-proxy ne reçoit pas de formulaire local.
+
+Admin reste `*:*`. Developer conserve les droits de mutation existants.
+
+## Fichiers R45B6
+
+```text
+sites/owasys-front/config/acl.json
+sites/owasys-back/config/acl.json
+sites/owasys-back/config/backend.operations.json
+sites/owasys-back/application/registry/services/OwasysCommandProvider.php
+sites/owasys-front/application/default/controllers/RuntimeController.php
+sites/owasys-front/application/registry/templates/index.score
+sites/owasys-front/application/account/templates/index.score
+sites/owasys-front/application/source/controllers/SourceController.php
+```
+
+## Prévalidation assistant
+
+- script apply : `php -l` OK ;
+- smoke owner : `php -l` OK ;
+- ZIP : un script différentiel uniquement ;
+- SHA-256 calculés et consignés ;
+- application complète sur le dépôt owner et tests navigateur restent obligatoires côté owner.
 
 ## Suite gouvernée
 
-Après acquisition R45B5/R45B5B : R45C wizard OWASYS structuré, puis R45D administration Sécurité.
+1. acquisition owner R45B6 ;
+2. R45C wizard OWASYS structuré ;
+3. R45D administration Sécurité/RBAC.
 
-NO LOCAL TRY FIX.
-NO REST REGEX WIDENING.
+NO ACL BYPASS.
+NO UI ACTION WITHOUT CAPABILITY.
+NO SILENT ACL FALLBACK.
+NO ROLE ADMINISTRATION IN R45B6.
 NO BACKEND JAVASCRIPT.
-NO PUSH OPUS PAR L’ASSISTANT.
+NO PUSH OPUS BY ASSISTANT.
