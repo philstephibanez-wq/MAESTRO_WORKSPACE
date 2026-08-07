@@ -15,8 +15,8 @@ Livrable actif : R45B4 Profiler configurable par environnement
 ## Jalons acquis
 
 - R45B2A2 : rétention/rotation bornée du Profiler JSONL.
-- R45B2A3 : module `application/profiler` dans le scaffold historique, désormais remplacé par la politique R45B4.
-- R45B2A4 : alignement historique de `profiler:view`, désormais remplacé par la politique R45B4.
+- R45B2A3 : module `application/profiler` du scaffold historique, désormais remplacé par la politique R45B4 pour les nouveaux sites.
+- R45B2A4 : alignement historique de `profiler:view`, désormais remplacé par la politique R45B4 pour les nouveaux sites.
 - E1 : `SiteSourceWorkspace`, publié à `60f45aae8ee6f3a10096069076900a41c33d9a19`.
 - E2A : frontière Source REST/Composer, publiée à `1fc49e9e53efdd002513cc7b037a07cb2faacffc`.
 - E2B : éditeur Sources frontend, publié à `d6548ec0fb1dc4bd376e730a943f45e502eed51e` et validé par édition réelle depuis OWASYS.
@@ -33,8 +33,6 @@ R46 `dev-server --site=` est abandonné et ne doit jamais être appliqué.
 ```text
 composer opus:dev-server -- <application-id> [--host=<local-address>] [--port=<local-port>]
 ```
-
-Le dépôt racine ne déclare pas de script `composer dev-server` sans préfixe `opus:`.
 
 ## État R45B3 acquis
 
@@ -64,19 +62,23 @@ opus_p117w_r45b3_rest_client_contract
 
 ```text
 ZIP     : opus_p117w_r45b4_profiler_environment_config.zip
-SHA-256 : dba3294a4dca74749e78bfb183985e1b501a6cb09b9805aa77537bd66931de98
-FILES   : 10
+SHA-256 : e67034362a664b78c0b993f46c358c9dea5e9a7b4b8747fc14b6dc0a0e23da16
+FILES   : 9
 BASE    : 6be07a76e20dfeea09b51c7c016083da626bf974
 STATUS  : livré, application, validation, commit et push owner requis
 ```
 
-Smoke inclus :
+Le ZIP ne contient que les neuf fichiers OPUS complets et exclut tout smoke, audit, rapport, log, cache, vendor et temporaire conformément au contrat global.
+
+Smoke owner séparé :
 
 ```text
-tools/smoke_p117w_r45b4_profiler_environment.php
-SHA-256 : baf59d199eeea2e2528fdcb6d5cfe265a07ac4098df2cc5352fed9dba3a20b7b
+smoke_opus_p117w_r45b4_profiler_environment_owner.php
+SHA-256 : 65aaa0dfc8adf171db262383452f0fc1b3914568d9d4997ce73d899c061f50a9
 OUTPUT  : OPUS_P117W_R45B4_SMOKE_OK
 ```
+
+Le smoke séparé utilise `token_get_all()` pour l'audit exhaustif des classes concrètes OPUS et doit être supprimé avant commit.
 
 R45B4 traite la cause générique du Web Profiler :
 
@@ -96,21 +98,32 @@ R45B4 traite la cause générique du Web Profiler :
 - `config/environment.yaml` généré avec commentaires YAML explicites ;
 - aucune correction de `test7` ni d'un autre site généré existant.
 
+## Prévalidation assistant
+
+- neuf fichiers PHP du ZIP : lint OK ;
+- harnais local : `R45B4_LOCAL_HARNESS_OK` ;
+- audit `token_get_all()` du smoke : test synthétique `AUDIT_OK` ;
+- ZIP : neuf fichiers complets, aucune pollution interdite.
+
+Le dépôt OPUS complet n'étant pas présent dans l'environnement de l'assistant, l'autoload optimisé et le smoke exhaustif restent des gates owner obligatoires avant conformité.
+
 ## Validation owner attendue
 
 1. HEAD exact `6be07a76e20dfeea09b51c7c016083da626bf974` avant extraction ;
-2. contrôle SHA-256 du ZIP ;
-3. extraction à la racine `H:\OPUS` ;
+2. contrôle SHA-256 du ZIP et du smoke séparé ;
+3. extraction du ZIP à la racine `H:\OPUS` ;
 4. `composer dump-autoload -o` ;
-5. `php tools\smoke_p117w_r45b4_profiler_environment.php` ;
-6. génération d'un nouveau site via OWASYS ;
-7. contrôle du YAML commenté et de `links=false` ;
-8. contrôle `links=true` ;
-9. contrôle de l'accès direct en `dev` ;
-10. contrôle du refus d'activation Web Profiler en production ;
-11. contrôle HTTP 404 lorsque le Web Profiler n'est pas enregistré ;
-12. confirmation qu'aucune logique Profiler propre au site n'est générée ;
-13. commit et push owner après succès.
+5. copie temporaire du smoke à la racine OPUS ;
+6. exécution du smoke et résultat `OPUS_P117W_R45B4_SMOKE_OK` ;
+7. suppression du smoke avant commit ;
+8. génération d'un nouveau site via OWASYS ;
+9. contrôle du YAML commenté et de `links=false` ;
+10. contrôle `links=true` ;
+11. contrôle accès direct en `dev` ;
+12. contrôle refus d'activation Web Profiler en production ;
+13. contrôle HTTP 404 lorsque le Web Profiler n'est pas enregistré ;
+14. confirmation qu'aucune logique Profiler propre au site n'est générée ;
+15. commit et push owner après succès.
 
 ## Suite gouvernée
 
@@ -121,6 +134,7 @@ R45B4 traite la cause générique du Web Profiler :
 NO PROFILER WEB OUTSIDE DEV.
 NO SITE-OWNED PROFILER ROUTE/FSM/ACL/TEMPLATE.
 NO OPUS_ENV GATE IN WEB CONTROLLER.
+NO SMOKE IN OPUS ZIP.
 NO ACL BYPASS.
 NO BACKEND JAVASCRIPT.
 NO LOCAL SITE FIX.
