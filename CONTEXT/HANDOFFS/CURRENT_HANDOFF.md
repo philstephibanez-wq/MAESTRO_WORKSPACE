@@ -1,6 +1,6 @@
 # CURRENT HANDOFF — MAESTRO WORKSPACE
 
-Date : 2026-08-06
+Date : 2026-08-07
 
 ## Lire
 
@@ -14,14 +14,15 @@ Date : 2026-08-06
 8. `CONTEXT/SPECIFICATIONS/OPUS_P117W_E3A_GIT_WORKSPACE_BACKEND_2026-08-06.md`
 9. `CONTEXT/SPECIFICATIONS/OPUS_P117W_E3B_GIT_WORKSPACE_FRONT_2026-08-06.md`
 10. `CONTEXT/SPECIFICATIONS/OPUS_P117W_R45B3_REST_CLIENT_CONTRACT_2026-08-06.md`
-11. `CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OPUS_P117W_R45B3_REST_CLIENT_CONTRACT_2026-08-06.md`
-12. `CONTEXT/PROJECTS/OPUS_CURRENT_STATE.md`
+11. `CONTEXT/SPECIFICATIONS/OPUS_P117W_R45B4_PROFILER_ENVIRONMENT_CONFIG_2026-08-07.md`
+12. `CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OPUS_P117W_R45B4_PROFILER_ENVIRONMENT_CONFIG_2026-08-07.md`
+13. `CONTEXT/PROJECTS/OPUS_CURRENT_STATE.md`
 
 ## Base exacte
 
-OPUS `master` : `7b390b662573b1e71bd8d770bbcad3d3b386325b`.
+OPUS `master` : `6be07a76e20dfeea09b51c7c016083da626bf974`.
 
-E3B est acquis au commit `7b390b662573b1e71bd8d770bbcad3d3b386325b`, fils direct d’E3A, avec exactement les 32 fichiers attendus. La validation owner confirme la création effective d’un commit Git depuis OWASYS `Sources et Git`.
+R45B3 est acquis au commit `6be07a76e20dfeea09b51c7c016083da626bf974` (`opus_p117w_r45b3_rest_client_contract`). R45B4 doit être appliqué exclusivement sur ce HEAD.
 
 R46 `dev-server --site=` reste abandonné. Le contrat positionnel reste :
 
@@ -32,54 +33,56 @@ composer opus:dev-server -- <application-id> [--host=<local-address>] [--port=<l
 ## Livrable actif
 
 ```text
-ZIP     : opus_p117w_r45b3_rest_client_contract.zip
-SHA-256 : 06de2d80caebba9aebe9308eeed2f690a3c382ab582bc549e0e96fe3ce9889f7
-FILES   : 8
-BASE    : 7b390b662573b1e71bd8d770bbcad3d3b386325b
+ZIP     : opus_p117w_r45b4_profiler_environment_config.zip
+SHA-256 : dba3294a4dca74749e78bfb183985e1b501a6cb09b9805aa77537bd66931de98
+FILES   : 10
+BASE    : 6be07a76e20dfeea09b51c7c016083da626bf974
 STATUS  : livré, application, validation, commit et push owner requis
 ```
 
-Smoke owner séparé :
+Smoke inclus :
 
 ```text
-FILE    : smoke_opus_p117w_r45b3_rest_client_contract_owner.php
-SHA-256 : e77aefa501706d1e5e9a2c17ddbbe610bd27f0e495c1d9e7423a9e33251ad838
-OUTPUT  : OPUS_P117W_R45B3_REST_CLIENT_CONTRACT_OK
+FILE    : tools/smoke_p117w_r45b4_profiler_environment.php
+SHA-256 : baf59d199eeea2e2528fdcb6d5cfe265a07ac4098df2cc5352fed9dba3a20b7b
+OUTPUT  : OPUS_P117W_R45B4_SMOKE_OK
 ```
 
-## Cible R45B3
+## Cible R45B4
 
-- catalogue REST générique OPUS partagé par client et serveur ;
-- 23 ressources Source, Git, Registry, construction et sécurité ;
-- fingerprint déterministe indépendant de l’ordre des routes ;
-- validation croisée inline/externe au boot du backend ;
-- échange runtime `X-Opus-Rest-Catalog` ;
-- refus des méthodes et ressources frontend non déclarées avant transport ;
-- HTTP 409 avant Composer en cas de dérive catalogue ;
-- statuts, enveloppes, content-type et traces strictement validés ;
-- corps de requête et lecture de réponse bornés ;
-- acteur REST normalisé ;
-- Profiler expurgé des corps et enregistrements sensibles.
-
-Empreinte fonctionnelle du catalogue :
-
-```text
-6deb58f201e5e6a8b12cee96ff006a1a4969442af2f1d1dcb05e5374220ace86
-```
-
-R45B3 ne contient aucun fichier de site généré, aucune nouvelle opération métier et aucun JavaScript backend.
+- configuration `config/environment.yaml` lue par `File` + `StructuredFileLoader` ;
+- collecte, Web Profiler et liens pilotés séparément ;
+- Web Profiler autorisé uniquement en environnement exact `dev` ;
+- `ProfilerLinkProvider` générique injectant `diagnostics.profiler_*` ;
+- lien `/_opus/profiler/trace/{trace_id}` fourni uniquement si `links=true` ;
+- route directe disponible avec `web.enabled=true` même si `links=false` ;
+- vraie 404 lorsque le Web Profiler n'est pas enregistré ;
+- aucun `OPUS_ENV` ni `accessGranted` dans `WebProfilerController` ;
+- aucun contrôleur/vue/fournisseur Web Profiler instancié en production ;
+- aucun route/FSM/ACL/I18n/template/CSS Profiler propre au site généré ;
+- layout SCORE limité au slot générique `diagnostics.profiler_available` ;
+- configuration générée commentée en YAML ;
+- aucune correction locale de `test7` ou d'un autre site existant.
 
 ## Validation owner obligatoire
 
-- vérifier le HEAD et les deux SHA-256 ;
-- extraire le ZIP à la racine OPUS ;
-- lint des quatre PHP et parsing des quatre JSON ;
-- `composer validate` puis autoload optimisé ;
-- exécuter le smoke owner ;
-- tester les opérations Source et Git réelles ;
-- provoquer une dérive de fingerprint et confirmer HTTP 409 sans Composer ;
-- confirmer trace corrélée et absence de contenu sensible dans le Profiler ;
-- commit et push owner seulement après succès.
+```text
+cd /d H:\OPUS
+certutil -hashfile "%USERPROFILE%\Downloads\opus_p117w_r45b4_profiler_environment_config.zip" SHA256
+tar -xf "%USERPROFILE%\Downloads\opus_p117w_r45b4_profiler_environment_config.zip"
+composer dump-autoload -o
+php tools\smoke_p117w_r45b4_profiler_environment.php
+```
+
+Attendu :
+
+```text
+OPUS_P117W_R45B4_SMOKE_OK
+```
+
+Puis générer un nouveau site via OWASYS et valider `links=false`, `links=true`, accès direct en `dev`, refus d'activation Web en production et HTTP 404 lorsque le Web Profiler est absent.
+
+Commit et push OPUS uniquement par l'owner après succès.
 
 ## Suite après acquisition
 
@@ -87,13 +90,10 @@ R45C : wizard OWASYS structuré.
 
 Puis R45D : administration Sécurité.
 
+NO PROFILER WEB OUTSIDE DEV.
+NO SITE-OWNED PROFILER ROUTE/FSM/ACL/TEMPLATE.
+NO OPUS_ENV GATE IN WEB CONTROLLER.
 NO ACL BYPASS.
-NO UNDECLARED REST RESOURCE.
-NO CLIENT/SERVER CATALOG DRIFT.
-NO UNBOUNDED REST BODY.
-NO TRACE MISMATCH.
-NO CONTENT, DIFF, COMMIT MESSAGE, CONFIRMATION OR PROFILER RECORDS IN PROFILER.
-NO DIRECT FRONTEND FILESYSTEM OR GIT ACCESS.
 NO BACKEND JAVASCRIPT.
 NO CONTRACT, NO PATCH.
 NO SOURCE OF TRUTH, NO PATCH.
