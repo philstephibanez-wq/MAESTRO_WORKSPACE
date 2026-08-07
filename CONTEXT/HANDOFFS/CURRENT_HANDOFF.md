@@ -34,19 +34,23 @@ composer opus:dev-server -- <application-id> [--host=<local-address>] [--port=<l
 
 ```text
 ZIP     : opus_p117w_r45b4_profiler_environment_config.zip
-SHA-256 : dba3294a4dca74749e78bfb183985e1b501a6cb09b9805aa77537bd66931de98
-FILES   : 10
+SHA-256 : e67034362a664b78c0b993f46c358c9dea5e9a7b4b8747fc14b6dc0a0e23da16
+FILES   : 9
 BASE    : 6be07a76e20dfeea09b51c7c016083da626bf974
 STATUS  : livré, application, validation, commit et push owner requis
 ```
 
-Smoke inclus :
+Le ZIP est strictement différentiel et ne contient aucun smoke, audit, rapport, log, cache, vendor ou temporaire.
+
+Smoke owner séparé :
 
 ```text
-FILE    : tools/smoke_p117w_r45b4_profiler_environment.php
-SHA-256 : baf59d199eeea2e2528fdcb6d5cfe265a07ac4098df2cc5352fed9dba3a20b7b
+FILE    : smoke_opus_p117w_r45b4_profiler_environment_owner.php
+SHA-256 : 65aaa0dfc8adf171db262383452f0fc1b3914568d9d4997ce73d899c061f50a9
 OUTPUT  : OPUS_P117W_R45B4_SMOKE_OK
 ```
+
+Le smoke n'est pas destiné à être committé dans OPUS. Il audite avec `token_get_all()` toutes les classes concrètes sous `Opus/**/*.php`, en plus du contrat R45B4.
 
 ## Cible R45B4
 
@@ -54,24 +58,36 @@ OUTPUT  : OPUS_P117W_R45B4_SMOKE_OK
 - collecte, Web Profiler et liens pilotés séparément ;
 - Web Profiler autorisé uniquement en environnement exact `dev` ;
 - `ProfilerLinkProvider` générique injectant `diagnostics.profiler_*` ;
-- lien `/_opus/profiler/trace/{trace_id}` fourni uniquement si `links=true` ;
+- URL `/_opus/profiler/trace/{trace_id}` ;
 - route directe disponible avec `web.enabled=true` même si `links=false` ;
 - vraie 404 lorsque le Web Profiler n'est pas enregistré ;
 - aucun `OPUS_ENV` ni `accessGranted` dans `WebProfilerController` ;
-- aucun contrôleur/vue/fournisseur Web Profiler instancié en production ;
-- aucun route/FSM/ACL/I18n/template/CSS Profiler propre au site généré ;
+- aucun contrôleur/vue/fournisseur Web Profiler instancié lorsqu'il n'est pas enregistré ;
+- aucune route/FSM/ACL/I18n/template/CSS Profiler propre au site généré ;
 - layout SCORE limité au slot générique `diagnostics.profiler_available` ;
 - configuration générée commentée en YAML ;
 - aucune correction locale de `test7` ou d'un autre site existant.
+
+## Prévalidation assistant
+
+- neuf fichiers PHP du ZIP : `php -l` OK ;
+- harnais local : `R45B4_LOCAL_HARNESS_OK` ;
+- audit `token_get_all()` du smoke : test synthétique `AUDIT_OK` ;
+- contrôle du ZIP : neuf fichiers complets, aucune pollution interdite.
+
+L'autoload optimisé et le smoke exhaustif sur le dépôt OPUS réel restent obligatoires côté owner avant conformité.
 
 ## Validation owner obligatoire
 
 ```text
 cd /d H:\OPUS
 certutil -hashfile "%USERPROFILE%\Downloads\opus_p117w_r45b4_profiler_environment_config.zip" SHA256
+certutil -hashfile "%USERPROFILE%\Downloads\smoke_opus_p117w_r45b4_profiler_environment_owner.php" SHA256
 tar -xf "%USERPROFILE%\Downloads\opus_p117w_r45b4_profiler_environment_config.zip"
 composer dump-autoload -o
-php tools\smoke_p117w_r45b4_profiler_environment.php
+copy /Y "%USERPROFILE%\Downloads\smoke_opus_p117w_r45b4_profiler_environment_owner.php" "H:\OPUS\smoke_opus_p117w_r45b4_profiler_environment_owner.php"
+php smoke_opus_p117w_r45b4_profiler_environment_owner.php
+del /Q "H:\OPUS\smoke_opus_p117w_r45b4_profiler_environment_owner.php"
 ```
 
 Attendu :
@@ -93,6 +109,7 @@ Puis R45D : administration Sécurité.
 NO PROFILER WEB OUTSIDE DEV.
 NO SITE-OWNED PROFILER ROUTE/FSM/ACL/TEMPLATE.
 NO OPUS_ENV GATE IN WEB CONTROLLER.
+NO SMOKE IN OPUS ZIP.
 NO ACL BYPASS.
 NO BACKEND JAVASCRIPT.
 NO CONTRACT, NO PATCH.
