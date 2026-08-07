@@ -16,14 +16,15 @@ Date : 2026-08-07
 10. `CONTEXT/SPECIFICATIONS/OPUS_P117W_R45B3_REST_CLIENT_CONTRACT_2026-08-06.md`
 11. `CONTEXT/SPECIFICATIONS/OPUS_P117W_R45B4_PROFILER_ENVIRONMENT_CONFIG_2026-08-07.md`
 12. `CONTEXT/SPECIFICATIONS/OPUS_P117W_R45B5_GENERATED_RUNTIME_ERROR_STAGE_ALL_2026-08-07.md`
-13. `CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OPUS_P117W_R45B5_GENERATED_RUNTIME_ERROR_STAGE_ALL_2026-08-07.md`
-14. `CONTEXT/PROJECTS/OPUS_CURRENT_STATE.md`
+13. `CONTEXT/SPECIFICATIONS/OPUS_P117W_R45B5A_REST_OPERATION_IDENTIFIER_FIX_2026-08-07.md`
+14. `CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OPUS_P117W_R45B5A_REST_OPERATION_IDENTIFIER_FIX_2026-08-07.md`
+15. `CONTEXT/PROJECTS/OPUS_CURRENT_STATE.md`
 
 ## Base exacte
 
-OPUS `master` : `2376a4de07e4f504aeac1be1d8a183d43c34df80`.
+OPUS `master` publié : `2376a4de07e4f504aeac1be1d8a183d43c34df80`.
 
-R45B4 est acquis au commit `2376a4de07e4f504aeac1be1d8a183d43c34df80` (`opus_p117w_r45b4_profiler_environment_config`). R45B5 doit être appliqué exclusivement sur ce HEAD.
+R45B4 est acquis. R45B5 a été appliqué localement sur ce HEAD mais n'est pas acquis et ne doit pas être committé seul.
 
 R46 `dev-server --site=` reste abandonné. Contrat :
 
@@ -31,118 +32,90 @@ R46 `dev-server --site=` reste abandonné. Contrat :
 composer opus:dev-server -- <application-id> [--host=<local-address>] [--port=<local-port>]
 ```
 
-## Livrable actif — R45B5
+## Incident bloquant R45B5
+
+Après application R45B5, OWASYS-front échoue au bootstrap avec :
 
 ```text
-ZIP     : opus_p117w_r45b5_generated_runtime_error_stage_all.zip
-SHA-256 : 74e70f1b93c7b719497aeb99c704fd4d5c2e38489ec235bba8aacf924caf15cc
-FILES   : 1 script différentiel complet
-TARGETS : 38 fichiers suivis
-BASE    : 2376a4de07e4f504aeac1be1d8a183d43c34df80
-STATUS  : livré, application, validation, commit et push owner requis
+OPUS_REST_API_RESOURCE_DEFINITION_INVALID
 ```
 
-Script :
+Cause racine : R45B5 a créé l'identifiant REST invalide :
 
 ```text
-apply_opus_p117w_r45b5.php
-SHA-256 : 967ddf96a845b59994c3c6eb4a118e9a57a9c31145c2cf40aa81de52860c6ef2
-OUTPUT  : OPUS_P117W_R45B5_APPLIED
-FILES   : 38
+git.stage_all
+```
+
+Le contrat `RestResourceCatalog` autorise des segments séparés uniquement par `.` ou `-`. L'identifiant corrigé est :
+
+```text
+git.stage-all
+```
+
+Ne pas élargir la grammaire REST pour accepter `_`.
+
+## Livrable actif — R45B5A
+
+```text
+ZIP     : opus_p117w_r45b5a_rest_operation_identifier_fix.zip
+SHA-256 : 9612f091296cbbcd9f5295f0d77113f40222924531c6787c1d4eda68e6920dfd
+SCRIPT  : apply_opus_p117w_r45b5a.php
+SHA-256 : 36b7e8715b0c72934007e1bf3cdf3d2f303eef904bb075c9c63f0f425881b71c
+OUTPUT  : OPUS_P117W_R45B5A_APPLIED
+FILES   : 4
+BASE    : HEAD R45B4 + modifications locales R45B5 non committées
 ```
 
 Smoke owner séparé :
 
 ```text
-FILE    : smoke_opus_p117w_r45b5_generated_runtime_error_stage_all_owner.php
-SHA-256 : 22c496ebf5fe77552bfb39febce5cee81da7306bf6dd4c4a77f865623f0f2ee7
-OUTPUT  : OPUS_P117W_R45B5_SMOKE_OK
+FILE    : smoke_opus_p117w_r45b5a_rest_operation_identifier_fix_owner.php
+SHA-256 : 059755a7267b7379aceccc4bd3987e397a827fd9c7a3f7a1c87925ea757e0a19
+OUTPUT  : OPUS_P117W_R45B5A_SMOKE_OK
 ```
 
-Le ZIP ne contient aucun smoke, audit, rapport, log, cache, vendor, temporaire ou secret. Le script et le smoke ne sont pas destinés à être committés dans OPUS.
-
-## Cause 1 — HTTP 500 `try`
-
-Le `catch` de `GeneratedSiteRuntime` appelait le Profiler avec `status=failed`, valeur interdite par `Trace`.
-
-R45B5 corrige :
+R45B5A corrige uniquement :
 
 ```text
-request.failed -> status=error
+sites/owasys-back/config/backend.operations.json
+sites/owasys-back/config/backend.resources.json
+sites/owasys-back/config/backend.rest.json
+sites/owasys-front/config/rest.resources.json
 ```
 
-Le contrat Profiler reste strict ; aucune valeur `failed` n'est ajoutée aux statuts de `Trace`.
-
-L'URL de la capture `:8800/fr-FR/applications` n'est pas créée artificiellement dans `try`. L'accueil générique du site généré reste `/`, donc le test de `try` se fait sur :
-
-```text
-http://127.0.0.1:8800/fr-FR/
-```
-
-Une route absente doit ensuite produire une HTTP 404 OPUS propre, jamais le 500 générique de la régression R45B4.
-
-## Cause 2 — Stage all
-
-Nouvelle chaîne contractuelle :
-
-```text
-SCORE + CSRF
--> PUT /api/v1/applications/{site_id}/git/index
--> git.stage_all
--> owasys:git-stage-all
--> owasys:git:stage-all
--> SiteGitWorkspace::stageAll()
-```
-
-Exécution bornée :
-
-```text
-git add -A -- sites/<site_id>
-```
-
-Stage all :
-
-- ne reçoit aucun chemin libre du navigateur ;
-- ne peut stager qu'un site validé ;
-- refuse les conflits ;
-- conserve le stage fichier par fichier ;
-- conserve l'interdiction de commit si l'index contient un chemin étranger ;
-- réutilise l'ACL `git:stage` et la FSM `stage_source/source_staged` ;
-- ajoute un bouton SCORE sans JavaScript ;
-- ajoute `git.stage_all` et `git.stage_all_success` aux 24 langues officielles UE configurées plus ukrainien.
+Le script valide réellement `RestResourceCatalog` avant toute écriture, résout la route Stage all collectionnelle et vérifie que le stage individuel reste disponible.
 
 ## Validation owner obligatoire
 
 ```text
 cd /d H:\OPUS
 git rev-parse HEAD
-certutil -hashfile "%USERPROFILE%\Downloads\opus_p117w_r45b5_generated_runtime_error_stage_all.zip" SHA256
-certutil -hashfile "%USERPROFILE%\Downloads\smoke_opus_p117w_r45b5_generated_runtime_error_stage_all_owner.php" SHA256
-if exist "%TEMP%\opus_r45b5" rmdir /S /Q "%TEMP%\opus_r45b5"
-mkdir "%TEMP%\opus_r45b5"
-tar -xf "%USERPROFILE%\Downloads\opus_p117w_r45b5_generated_runtime_error_stage_all.zip" -C "%TEMP%\opus_r45b5"
-php "%TEMP%\opus_r45b5\apply_opus_p117w_r45b5.php" "H:\OPUS"
+certutil -hashfile "%USERPROFILE%\Downloads\opus_p117w_r45b5a_rest_operation_identifier_fix.zip" SHA256
+certutil -hashfile "%USERPROFILE%\Downloads\smoke_opus_p117w_r45b5a_rest_operation_identifier_fix_owner.php" SHA256
+if exist "%TEMP%\opus_r45b5a" rmdir /S /Q "%TEMP%\opus_r45b5a"
+mkdir "%TEMP%\opus_r45b5a"
+tar -xf "%USERPROFILE%\Downloads\opus_p117w_r45b5a_rest_operation_identifier_fix.zip" -C "%TEMP%\opus_r45b5a"
+php "%TEMP%\opus_r45b5a\apply_opus_p117w_r45b5a.php" "H:\OPUS"
 composer validate
-composer dump-autoload -o
-copy /Y "%USERPROFILE%\Downloads\smoke_opus_p117w_r45b5_generated_runtime_error_stage_all_owner.php" "H:\OPUS\smoke_opus_p117w_r45b5_generated_runtime_error_stage_all_owner.php"
-php smoke_opus_p117w_r45b5_generated_runtime_error_stage_all_owner.php
-del /Q "H:\OPUS\smoke_opus_p117w_r45b5_generated_runtime_error_stage_all_owner.php"
-rmdir /S /Q "%TEMP%\opus_r45b5"
+copy /Y "%USERPROFILE%\Downloads\smoke_opus_p117w_r45b5a_rest_operation_identifier_fix_owner.php" "H:\OPUS\smoke_opus_p117w_r45b5a_rest_operation_identifier_fix_owner.php"
+php smoke_opus_p117w_r45b5a_rest_operation_identifier_fix_owner.php
+del /Q "H:\OPUS\smoke_opus_p117w_r45b5a_rest_operation_identifier_fix_owner.php"
+rmdir /S /Q "%TEMP%\opus_r45b5a"
 ```
 
-Attendus :
+Attendu :
 
 ```text
-OPUS_P117W_R45B5_APPLIED
-FILES=38
-OPUS_P117W_R45B5_SMOKE_OK
+OPUS_P117W_R45B5A_APPLIED
+FILES=4
+OPUS_P117W_R45B5A_SMOKE_OK
 ```
 
-Puis relancer OWASYS-front/back, tester `Tout stager` sur `try`, vérifier qu'aucun autre site n'est stagé, puis démarrer `try` et tester `/fr-FR/` ainsi qu'une route inexistante.
+Ne pas exécuter l'ancien smoke R45B5 après R45B5A : il attend explicitement `git.stage_all` et est obsolète.
 
-Commit et push OPUS uniquement par l'owner après succès.
+Ensuite relancer d'abord `owasys-back`, puis `owasys-front`. Si OWASYS revient, tester Stage all, puis `try` sur `/fr-FR/` et une route inexistante. Commit/push OPUS uniquement après succès de tous les gates.
 
-## Suite après acquisition
+## Suite gouvernée après acquisition R45B5 + R45B5A
 
 ```text
 R45C — wizard OWASYS structuré
@@ -150,7 +123,7 @@ R45D — administration Sécurité
 ```
 
 NO LOCAL TRY FIX.
-NO PROFILER STATUS CONTRACT WIDENING.
+NO REST REGEX WIDENING.
 NO CROSS-SITE STAGE.
 NO FREE GIT PATH OR COMMAND.
 NO ACL BYPASS.
