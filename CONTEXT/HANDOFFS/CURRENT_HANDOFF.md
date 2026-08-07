@@ -15,105 +15,147 @@ Date : 2026-08-07
 9. `CONTEXT/SPECIFICATIONS/OPUS_P117W_E3B_GIT_WORKSPACE_FRONT_2026-08-06.md`
 10. `CONTEXT/SPECIFICATIONS/OPUS_P117W_R45B3_REST_CLIENT_CONTRACT_2026-08-06.md`
 11. `CONTEXT/SPECIFICATIONS/OPUS_P117W_R45B4_PROFILER_ENVIRONMENT_CONFIG_2026-08-07.md`
-12. `CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OPUS_P117W_R45B4_PROFILER_ENVIRONMENT_CONFIG_2026-08-07.md`
-13. `CONTEXT/PROJECTS/OPUS_CURRENT_STATE.md`
+12. `CONTEXT/SPECIFICATIONS/OPUS_P117W_R45B5_GENERATED_RUNTIME_ERROR_STAGE_ALL_2026-08-07.md`
+13. `CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OPUS_P117W_R45B5_GENERATED_RUNTIME_ERROR_STAGE_ALL_2026-08-07.md`
+14. `CONTEXT/PROJECTS/OPUS_CURRENT_STATE.md`
 
 ## Base exacte
 
-OPUS `master` : `6be07a76e20dfeea09b51c7c016083da626bf974`.
+OPUS `master` : `2376a4de07e4f504aeac1be1d8a183d43c34df80`.
 
-R45B3 est acquis au commit `6be07a76e20dfeea09b51c7c016083da626bf974` (`opus_p117w_r45b3_rest_client_contract`). R45B4 doit être appliqué exclusivement sur ce HEAD.
+R45B4 est acquis au commit `2376a4de07e4f504aeac1be1d8a183d43c34df80` (`opus_p117w_r45b4_profiler_environment_config`). R45B5 doit être appliqué exclusivement sur ce HEAD.
 
-R46 `dev-server --site=` reste abandonné. Le contrat positionnel reste :
+R46 `dev-server --site=` reste abandonné. Contrat :
 
 ```text
 composer opus:dev-server -- <application-id> [--host=<local-address>] [--port=<local-port>]
 ```
 
-## Livrable actif
+## Livrable actif — R45B5
 
 ```text
-ZIP     : opus_p117w_r45b4_profiler_environment_config.zip
-SHA-256 : e67034362a664b78c0b993f46c358c9dea5e9a7b4b8747fc14b6dc0a0e23da16
-FILES   : 9
-BASE    : 6be07a76e20dfeea09b51c7c016083da626bf974
+ZIP     : opus_p117w_r45b5_generated_runtime_error_stage_all.zip
+SHA-256 : 74e70f1b93c7b719497aeb99c704fd4d5c2e38489ec235bba8aacf924caf15cc
+FILES   : 1 script différentiel complet
+TARGETS : 38 fichiers suivis
+BASE    : 2376a4de07e4f504aeac1be1d8a183d43c34df80
 STATUS  : livré, application, validation, commit et push owner requis
 ```
 
-Le ZIP est strictement différentiel et ne contient aucun smoke, audit, rapport, log, cache, vendor ou temporaire.
+Script :
+
+```text
+apply_opus_p117w_r45b5.php
+SHA-256 : 967ddf96a845b59994c3c6eb4a118e9a57a9c31145c2cf40aa81de52860c6ef2
+OUTPUT  : OPUS_P117W_R45B5_APPLIED
+FILES   : 38
+```
 
 Smoke owner séparé :
 
 ```text
-FILE    : smoke_opus_p117w_r45b4_profiler_environment_owner.php
-SHA-256 : 65aaa0dfc8adf171db262383452f0fc1b3914568d9d4997ce73d899c061f50a9
-OUTPUT  : OPUS_P117W_R45B4_SMOKE_OK
+FILE    : smoke_opus_p117w_r45b5_generated_runtime_error_stage_all_owner.php
+SHA-256 : 22c496ebf5fe77552bfb39febce5cee81da7306bf6dd4c4a77f865623f0f2ee7
+OUTPUT  : OPUS_P117W_R45B5_SMOKE_OK
 ```
 
-Le smoke n'est pas destiné à être committé dans OPUS. Il audite avec `token_get_all()` toutes les classes concrètes sous `Opus/**/*.php`, en plus du contrat R45B4.
+Le ZIP ne contient aucun smoke, audit, rapport, log, cache, vendor, temporaire ou secret. Le script et le smoke ne sont pas destinés à être committés dans OPUS.
 
-## Cible R45B4
+## Cause 1 — HTTP 500 `try`
 
-- configuration `config/environment.yaml` lue par `File` + `StructuredFileLoader` ;
-- collecte, Web Profiler et liens pilotés séparément ;
-- Web Profiler autorisé uniquement en environnement exact `dev` ;
-- `ProfilerLinkProvider` générique injectant `diagnostics.profiler_*` ;
-- URL `/_opus/profiler/trace/{trace_id}` ;
-- route directe disponible avec `web.enabled=true` même si `links=false` ;
-- vraie 404 lorsque le Web Profiler n'est pas enregistré ;
-- aucun `OPUS_ENV` ni `accessGranted` dans `WebProfilerController` ;
-- aucun contrôleur/vue/fournisseur Web Profiler instancié lorsqu'il n'est pas enregistré ;
-- aucune route/FSM/ACL/I18n/template/CSS Profiler propre au site généré ;
-- layout SCORE limité au slot générique `diagnostics.profiler_available` ;
-- configuration générée commentée en YAML ;
-- aucune correction locale de `test7` ou d'un autre site existant.
+Le `catch` de `GeneratedSiteRuntime` appelait le Profiler avec `status=failed`, valeur interdite par `Trace`.
 
-## Prévalidation assistant
+R45B5 corrige :
 
-- neuf fichiers PHP du ZIP : `php -l` OK ;
-- harnais local : `R45B4_LOCAL_HARNESS_OK` ;
-- audit `token_get_all()` du smoke : test synthétique `AUDIT_OK` ;
-- contrôle du ZIP : neuf fichiers complets, aucune pollution interdite.
+```text
+request.failed -> status=error
+```
 
-L'autoload optimisé et le smoke exhaustif sur le dépôt OPUS réel restent obligatoires côté owner avant conformité.
+Le contrat Profiler reste strict ; aucune valeur `failed` n'est ajoutée aux statuts de `Trace`.
+
+L'URL de la capture `:8800/fr-FR/applications` n'est pas créée artificiellement dans `try`. L'accueil générique du site généré reste `/`, donc le test de `try` se fait sur :
+
+```text
+http://127.0.0.1:8800/fr-FR/
+```
+
+Une route absente doit ensuite produire une HTTP 404 OPUS propre, jamais le 500 générique de la régression R45B4.
+
+## Cause 2 — Stage all
+
+Nouvelle chaîne contractuelle :
+
+```text
+SCORE + CSRF
+-> PUT /api/v1/applications/{site_id}/git/index
+-> git.stage_all
+-> owasys:git-stage-all
+-> owasys:git:stage-all
+-> SiteGitWorkspace::stageAll()
+```
+
+Exécution bornée :
+
+```text
+git add -A -- sites/<site_id>
+```
+
+Stage all :
+
+- ne reçoit aucun chemin libre du navigateur ;
+- ne peut stager qu'un site validé ;
+- refuse les conflits ;
+- conserve le stage fichier par fichier ;
+- conserve l'interdiction de commit si l'index contient un chemin étranger ;
+- réutilise l'ACL `git:stage` et la FSM `stage_source/source_staged` ;
+- ajoute un bouton SCORE sans JavaScript ;
+- ajoute `git.stage_all` et `git.stage_all_success` aux 24 langues officielles UE configurées plus ukrainien.
 
 ## Validation owner obligatoire
 
 ```text
 cd /d H:\OPUS
-certutil -hashfile "%USERPROFILE%\Downloads\opus_p117w_r45b4_profiler_environment_config.zip" SHA256
-certutil -hashfile "%USERPROFILE%\Downloads\smoke_opus_p117w_r45b4_profiler_environment_owner.php" SHA256
-tar -xf "%USERPROFILE%\Downloads\opus_p117w_r45b4_profiler_environment_config.zip"
+git rev-parse HEAD
+certutil -hashfile "%USERPROFILE%\Downloads\opus_p117w_r45b5_generated_runtime_error_stage_all.zip" SHA256
+certutil -hashfile "%USERPROFILE%\Downloads\smoke_opus_p117w_r45b5_generated_runtime_error_stage_all_owner.php" SHA256
+if exist "%TEMP%\opus_r45b5" rmdir /S /Q "%TEMP%\opus_r45b5"
+mkdir "%TEMP%\opus_r45b5"
+tar -xf "%USERPROFILE%\Downloads\opus_p117w_r45b5_generated_runtime_error_stage_all.zip" -C "%TEMP%\opus_r45b5"
+php "%TEMP%\opus_r45b5\apply_opus_p117w_r45b5.php" "H:\OPUS"
+composer validate
 composer dump-autoload -o
-copy /Y "%USERPROFILE%\Downloads\smoke_opus_p117w_r45b4_profiler_environment_owner.php" "H:\OPUS\smoke_opus_p117w_r45b4_profiler_environment_owner.php"
-php smoke_opus_p117w_r45b4_profiler_environment_owner.php
-del /Q "H:\OPUS\smoke_opus_p117w_r45b4_profiler_environment_owner.php"
+copy /Y "%USERPROFILE%\Downloads\smoke_opus_p117w_r45b5_generated_runtime_error_stage_all_owner.php" "H:\OPUS\smoke_opus_p117w_r45b5_generated_runtime_error_stage_all_owner.php"
+php smoke_opus_p117w_r45b5_generated_runtime_error_stage_all_owner.php
+del /Q "H:\OPUS\smoke_opus_p117w_r45b5_generated_runtime_error_stage_all_owner.php"
+rmdir /S /Q "%TEMP%\opus_r45b5"
 ```
 
-Attendu :
+Attendus :
 
 ```text
-OPUS_P117W_R45B4_SMOKE_OK
+OPUS_P117W_R45B5_APPLIED
+FILES=38
+OPUS_P117W_R45B5_SMOKE_OK
 ```
 
-Puis générer un nouveau site via OWASYS et valider `links=false`, `links=true`, accès direct en `dev`, refus d'activation Web en production et HTTP 404 lorsque le Web Profiler est absent.
+Puis relancer OWASYS-front/back, tester `Tout stager` sur `try`, vérifier qu'aucun autre site n'est stagé, puis démarrer `try` et tester `/fr-FR/` ainsi qu'une route inexistante.
 
 Commit et push OPUS uniquement par l'owner après succès.
 
 ## Suite après acquisition
 
-R45C : wizard OWASYS structuré.
+```text
+R45C — wizard OWASYS structuré
+R45D — administration Sécurité
+```
 
-Puis R45D : administration Sécurité.
-
-NO PROFILER WEB OUTSIDE DEV.
-NO SITE-OWNED PROFILER ROUTE/FSM/ACL/TEMPLATE.
-NO OPUS_ENV GATE IN WEB CONTROLLER.
-NO SMOKE IN OPUS ZIP.
+NO LOCAL TRY FIX.
+NO PROFILER STATUS CONTRACT WIDENING.
+NO CROSS-SITE STAGE.
+NO FREE GIT PATH OR COMMAND.
 NO ACL BYPASS.
 NO BACKEND JAVASCRIPT.
-NO CONTRACT, NO PATCH.
-NO SOURCE OF TRUTH, NO PATCH.
+NO REST CATALOG DRIFT.
+NO SMOKE IN OPUS ZIP.
 NO FALLBACK SILENCIEUX.
-NO LOCAL SITE FIX.
 NO PUSH OPUS PAR L’ASSISTANT.
