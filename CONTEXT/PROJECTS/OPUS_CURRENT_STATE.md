@@ -7,141 +7,74 @@ Dernière mise à jour : 2026-08-07.
 ```text
 OPUS : philstephibanez-wq/OPUS
 Branche : master
-HEAD owner publié : 2376a4de07e4f504aeac1be1d8a183d43c34df80
+HEAD owner publié : de705d2dbfde8b4da69c7af046acd78453ecde31
 Dernier acquis : R45B4 Profiler configurable par environnement
-Livrable actif : R45B5A correction identifiant opération REST Stage all
+R45B5 : publié mais NON acquis fonctionnellement
+Livrable actif : R45B5B réparation catalogues REST Stage all
 ```
 
-## Jalons acquis
+## Incident courant
 
-- R45B2A2 : rétention/rotation bornée du Profiler JSONL.
-- R45B2A3 : module Profiler historique du scaffold, remplacé par R45B4.
-- R45B2A4 : alignement historique `profiler:view`, remplacé par R45B4.
-- E1 : `SiteSourceWorkspace`, publié à `60f45aae8ee6f3a10096069076900a41c33d9a19`.
-- E2A : frontière Source REST/Composer, publiée à `1fc49e9e53efdd002513cc7b037a07cb2faacffc`.
-- E2B : éditeur Sources frontend, publié à `d6548ec0fb1dc4bd376e730a943f45e502eed51e`.
-- E3A : workspace Git générique/backend, publié à `4b1f621051a306443ada7eb5fada2a8e9363b0aa`.
-- E3B : interface Git frontend, publiée à `7b390b662573b1e71bd8d770bbcad3d3b386325b`.
-- R45B3 : contrat client REST/catalogues croisés, publié à `6be07a76e20dfeea09b51c7c016083da626bf974`.
-- R45B4 : Profiler configurable par environnement, publié à `2376a4de07e4f504aeac1be1d8a183d43c34df80`.
-
-R45B4 reste la dernière base acquise.
-
-R46 `dev-server --site=` reste abandonné.
-
-## Contrat dev-server
-
-```text
-composer opus:dev-server -- <application-id> [--host=<local-address>] [--port=<local-port>]
-```
-
-## R45B5 — état NON acquis
-
-R45B5 a été appliqué localement pour :
-
-- corriger le statut Profiler invalide `failed` du chemin d'erreur `GeneratedSiteRuntime` en `error` ;
-- ajouter le Stage all générique borné au site courant.
-
-Mais R45B5 contient une régression bloquante REST et ne doit pas être committé seul.
-
-Symptôme réel après application :
+Le commit owner `de705d2dbfde8b4da69c7af046acd78453ecde31` (`opus_p117w_r45b5_generated_runtime_error_stage_all`) contient l'évolution R45B5 mais OWASYS échoue au bootstrap avec :
 
 ```text
 OPUS_REST_API_RESOURCE_DEFINITION_INVALID
 ```
 
-au bootstrap OWASYS-front.
+Cause prouvée sur GitHub : les catalogues utilisent l'identifiant REST invalide `git.stage_all`.
 
-## Cause racine R45B5
+`RestResourceCatalog` impose `^[a-z][a-z0-9]*(?:[.-][a-z0-9]+)*$`; `_` est interdit. La correction est `git.stage-all`.
 
-R45B5 a déclaré l'identifiant REST :
+R45B5A n'a rien modifié sur le dépôt owner : il exigeait à tort le HEAD R45B4 `2376a4de...` et a arrêté avant écriture avec `R45B5A_BASE_HEAD_MISMATCH:de705...`.
 
-```text
-git.stage_all
-```
-
-`RestResourceCatalog` impose :
+## Livrable actif R45B5B
 
 ```text
-^[a-z][a-z0-9]*(?:[.-][a-z0-9]+)*$
-```
-
-Le `_` est interdit. Le bon identifiant est :
-
-```text
-git.stage-all
-```
-
-La grammaire REST ne doit pas être élargie pour accepter le mauvais identifiant.
-
-## Livrable actif — R45B5A
-
-```text
-ZIP     : opus_p117w_r45b5a_rest_operation_identifier_fix.zip
-SHA-256 : 9612f091296cbbcd9f5295f0d77113f40222924531c6787c1d4eda68e6920dfd
-SCRIPT  : apply_opus_p117w_r45b5a.php
-SHA-256 : 36b7e8715b0c72934007e1bf3cdf3d2f303eef904bb075c9c63f0f425881b71c
-OUTPUT  : OPUS_P117W_R45B5A_APPLIED
+ZIP     : opus_p117w_r45b5b_rest_catalog_repair.zip
+SHA-256 : dbc98775a7ed11c50b0b41df17d020eb6de3df8373bd1890ea956bed43a4695d
+SCRIPT  : apply_opus_p117w_r45b5b.php
+SHA-256 : 9b0fd9e779f8d91c76432995ebdd93fbe9a30e4f128d00cfa1075571cf99099a
+BASE    : de705d2dbfde8b4da69c7af046acd78453ecde31
 FILES   : 4
 ```
 
-Smoke owner séparé :
+Smoke séparé :
 
 ```text
-smoke_opus_p117w_r45b5a_rest_operation_identifier_fix_owner.php
-SHA-256 : 059755a7267b7379aceccc4bd3987e397a827fd9c7a3f7a1c87925ea757e0a19
-OUTPUT  : OPUS_P117W_R45B5A_SMOKE_OK
+smoke_opus_p117w_r45b5b_rest_catalog_repair_owner.php
+SHA-256 : de3d4fcb95f8bc658f4e7f601bdacf3e17e6fbad31debbdc47a31524906aa8c9
+OUTPUT  : OPUS_P117W_R45B5B_SMOKE_OK
 ```
 
-R45B5A répare uniquement les quatre catalogues/configurations qui portent l'identifiant d'opération REST :
+Fichiers réparés :
 
 ```text
-sites/owasys-back/config/backend.operations.json
+sites/owasys-front/config/rest.resources.json
 sites/owasys-back/config/backend.resources.json
 sites/owasys-back/config/backend.rest.json
-sites/owasys-front/config/rest.resources.json
+sites/owasys-back/config/backend.operations.json
 ```
 
-Le script valide réellement `RestResourceCatalog` avant écriture et contrôle :
+Le script R45B5B valide les candidats avec le vrai `RestResourceCatalog` avant toute écriture et contrôle simultanément la route collectionnelle Stage all, la route Stage individuelle, la symétrie front/back et le fingerprint.
 
-- la route collectionnelle `PUT /api/v1/applications/{site_id}/git/index` -> `git.stage-all` ;
-- la route individuelle `PUT /api/v1/applications/{site_id}/git/index/{*path}` -> `git.stage` ;
-- l'identité des catalogues front, backend externe et backend inline.
+## Validation immédiate
 
-## Point de contrôle sur l'ancien smoke R45B5
-
-L'ancien smoke R45B5 instancie `RestResourceCatalog` mais attend ensuite explicitement `git.stage_all`. Après R45B5A il devient obsolète et ne doit plus être exécuté. R45B5A fournit son propre smoke avec l'identifiant contractuel corrigé.
-
-## Validation owner attendue
-
-1. HEAD Git toujours `2376a4de07e4f504aeac1be1d8a183d43c34df80` ;
-2. modifications locales R45B5 présentes et non committées ;
-3. appliquer R45B5A ;
-4. `OPUS_P117W_R45B5A_APPLIED` + `FILES=4` ;
-5. `composer validate` ;
-6. smoke R45B5A -> `OPUS_P117W_R45B5A_SMOKE_OK` ;
-7. relancer `owasys-back`, puis `owasys-front` ;
-8. confirmer retour de l'interface OWASYS ;
-9. tester Stage all réel ;
-10. tester `try` sur `/fr-FR/` ;
-11. tester une route absente et confirmer une erreur OPUS propre, pas un crash PHP ;
-12. commit/push owner du lot R45B5 + R45B5A seulement après succès.
+1. HEAD `de705d2dbfde8b4da69c7af046acd78453ecde31`.
+2. appliquer R45B5B.
+3. attendu `OPUS_P117W_R45B5B_APPLIED` + `FILES=4`.
+4. smoke -> `OPUS_P117W_R45B5B_SMOKE_OK`.
+5. `git status --short` doit montrer quatre JSON modifiés.
+6. relancer owasys-back puis owasys-front.
+7. confirmer disparition de `OPUS_REST_API_RESOURCE_DEFINITION_INVALID`.
+8. tester Stage all.
+9. tester `try` seulement après retour d'OWASYS.
+10. commit/push owner après tous les gates.
 
 ## Suite gouvernée
 
-Après acquisition R45B5 + R45B5A :
-
-```text
-R45C — wizard OWASYS structuré
-R45D — administration Sécurité
-```
+Après acquisition R45B5/R45B5B : R45C wizard OWASYS structuré, puis R45D administration Sécurité.
 
 NO LOCAL TRY FIX.
 NO REST REGEX WIDENING.
-NO CROSS-SITE STAGE.
-NO FREE GIT PATH OR COMMAND.
-NO ACL BYPASS.
 NO BACKEND JAVASCRIPT.
-NO REST CATALOG DRIFT.
-NO FALLBACK SILENCIEUX.
 NO PUSH OPUS PAR L’ASSISTANT.
