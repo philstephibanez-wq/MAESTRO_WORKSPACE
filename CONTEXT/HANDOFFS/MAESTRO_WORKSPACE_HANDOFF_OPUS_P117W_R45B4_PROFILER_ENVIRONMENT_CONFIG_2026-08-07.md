@@ -16,19 +16,23 @@ R45B3 est acquis. R45B4 ne modifie aucun site généré existant.
 
 ```text
 ZIP     : opus_p117w_r45b4_profiler_environment_config.zip
-SHA-256 : dba3294a4dca74749e78bfb183985e1b501a6cb09b9805aa77537bd66931de98
-FILES   : 10
+SHA-256 : e67034362a664b78c0b993f46c358c9dea5e9a7b4b8747fc14b6dc0a0e23da16
+FILES   : 9
 BASE    : 6be07a76e20dfeea09b51c7c016083da626bf974
 STATUS  : application, validation, commit et push owner requis
 ```
 
-Smoke inclus :
+Le ZIP contient uniquement les neuf fichiers OPUS complets à leurs chemins finaux. Conformément au contrat global, aucun smoke, audit, rapport, log, cache, vendor ou temporaire n'est inclus.
+
+Smoke owner séparé :
 
 ```text
-FILE    : tools/smoke_p117w_r45b4_profiler_environment.php
-SHA-256 : baf59d199eeea2e2528fdcb6d5cfe265a07ac4098df2cc5352fed9dba3a20b7b
+FILE    : smoke_opus_p117w_r45b4_profiler_environment_owner.php
+SHA-256 : 65aaa0dfc8adf171db262383452f0fc1b3914568d9d4997ce73d899c061f50a9
 OUTPUT  : OPUS_P117W_R45B4_SMOKE_OK
 ```
+
+Le smoke n'est pas destiné à être committé dans OPUS.
 
 ## Fichiers du ZIP
 
@@ -42,7 +46,6 @@ Opus/Profiler/WebProfilerController.php
 Opus/Scaffold/ProfilerEnvironmentScaffoldPolicy.php
 Opus/Scaffold/ProfilerEnvironmentScaffoldPolicyInterface.php
 Opus/Scaffold/ScaffoldEntry.php
-tools/smoke_p117w_r45b4_profiler_environment.php
 ```
 
 ## Cause traitée
@@ -53,7 +56,10 @@ Le contrôleur ne lit plus `OPUS_ENV` et ne reçoit plus `accessGranted`. La rou
 
 ## Configuration générée
 
+Le fichier réel est du YAML standard commenté :
+
 ```yaml
+contract: OPUS_PROFILER_ENVIRONMENT_CONFIG_V1
 environment: dev
 profiler:
   collect: true
@@ -62,7 +68,7 @@ profiler:
     links: false
 ```
 
-Le fichier réel comporte les commentaires explicatifs YAML demandés et le contrat `OPUS_PROFILER_ENVIRONMENT_CONFIG_V1`.
+Les commentaires documentent l'environnement, la collecte, l'enregistrement Web, les liens et le refus du Web Profiler en production.
 
 ## Résultat scaffold
 
@@ -91,19 +97,31 @@ Hors environnement exact `dev`, toute tentative d'activer `profiler.web.enabled`
 Lorsque le Web Profiler n'est pas enregistré :
 
 - pas de contrôleur Web Profiler ;
-- pas de fournisseur de lien ;
 - pas de `WebProfilerView` ;
+- pas de fournisseur de lien ;
 - pas de route Profiler de site ;
 - URL `/_opus/profiler/trace/{trace_id}` => HTTP 404.
+
+## Prévalidation assistant
+
+- `php -l` : neuf fichiers du ZIP OK ;
+- harnais local : `R45B4_LOCAL_HARNESS_OK` ;
+- audit `token_get_all()` du smoke validé sur arbre synthétique : `AUDIT_OK` ;
+- ZIP contrôlé sans pollution contractuellement interdite.
+
+Le dépôt OPUS complet n'est pas présent dans l'environnement de l'assistant : l'autoload optimisé et le smoke exhaustif restent des gates owner obligatoires avant conformité.
 
 ## Validation owner
 
 ```text
 cd /d H:\OPUS
 certutil -hashfile "%USERPROFILE%\Downloads\opus_p117w_r45b4_profiler_environment_config.zip" SHA256
+certutil -hashfile "%USERPROFILE%\Downloads\smoke_opus_p117w_r45b4_profiler_environment_owner.php" SHA256
 tar -xf "%USERPROFILE%\Downloads\opus_p117w_r45b4_profiler_environment_config.zip"
 composer dump-autoload -o
-php tools\smoke_p117w_r45b4_profiler_environment.php
+copy /Y "%USERPROFILE%\Downloads\smoke_opus_p117w_r45b4_profiler_environment_owner.php" "H:\OPUS\smoke_opus_p117w_r45b4_profiler_environment_owner.php"
+php smoke_opus_p117w_r45b4_profiler_environment_owner.php
+del /Q "H:\OPUS\smoke_opus_p117w_r45b4_profiler_environment_owner.php"
 ```
 
 Attendu :
@@ -131,6 +149,7 @@ R45D — administration Sécurité
 NO PROFILER WEB OUTSIDE DEV.  
 NO SITE-OWNED PROFILER ROUTE/FSM/ACL/TEMPLATE.  
 NO OPUS_ENV GATE IN WEB CONTROLLER.  
+NO SMOKE IN OPUS ZIP.  
 NO LOCAL SITE FIX.  
 NO BACKEND JAVASCRIPT.  
 NO PUSH OPUS PAR L’ASSISTANT.
