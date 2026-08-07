@@ -10,85 +10,90 @@ Date : 2026-08-07
 4. `CONTEXT/SPECIFICATIONS/OPUS_P117W_R45B4_PROFILER_ENVIRONMENT_CONFIG_2026-08-07.md`
 5. `CONTEXT/SPECIFICATIONS/OPUS_P117W_R45B5_GENERATED_RUNTIME_ERROR_STAGE_ALL_2026-08-07.md`
 6. `CONTEXT/SPECIFICATIONS/OPUS_P117W_R45B5B_REST_CATALOG_REPAIR_2026-08-07.md`
-7. `CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OPUS_P117W_R45B5B_REST_CATALOG_REPAIR_2026-08-07.md`
-8. `CONTEXT/PROJECTS/OPUS_CURRENT_STATE.md`
+7. `CONTEXT/SPECIFICATIONS/OPUS_P117W_R45B6_PERMISSION_SURFACE_CONSISTENCY_2026-08-07.md`
+8. `CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OPUS_P117W_R45B6_PERMISSION_SURFACE_CONSISTENCY_2026-08-07.md`
+9. `CONTEXT/PROJECTS/OPUS_CURRENT_STATE.md`
 
 ## Base exacte
 
-OPUS `master` owner publié : `de705d2dbfde8b4da69c7af046acd78453ecde31` (`opus_p117w_r45b5_generated_runtime_error_stage_all`).
-
-R45B5 est publié mais NON acquis fonctionnellement.
-
-R45B5A est abandonné : son script exigeait le HEAD pré-R45B5 `2376a4de07e4f504aeac1be1d8a183d43c34df80`; sur le HEAD réel `de705...` il a retourné `R45B5A_BASE_HEAD_MISMATCH` avant toute écriture. Aucun fichier OPUS n'a donc été modifié par R45B5A.
-
-## Incident bloquant
-
-OWASYS affiche au bootstrap :
+OPUS `master` owner publié :
 
 ```text
-OPUS_REST_API_RESOURCE_DEFINITION_INVALID
+3a7b891c17be447161d5c70299207f2590c9247a
+suppression de try via owasys
 ```
 
-Cause prouvée au HEAD `de705...` :
+R45B5B a été publié juste avant au commit `99b76efe7905b82176134d1fa745b3c16763654b` et a rétabli le bootstrap REST OWASYS. La capture owner suivante confirme le retour de l'interface `Sources et Git`.
+
+## Livrable actif — R45B6
 
 ```text
-git.stage_all
+ZIP     : opus_p117w_r45b6_permission_surface_consistency.zip
+SHA-256 : 1c0c7aa71856529c0fd2a4ca3c1886afdd43ced0b04f0e25118afe5772b8ceaf
+SCRIPT  : apply_opus_p117w_r45b6_permission_surface_consistency.php
+SHA-256 : 332e9f5a7bfe09ed38447209386ef6ab5c13f9866f0934f311b981fd2d8a241a
+BASE    : 3a7b891c17be447161d5c70299207f2590c9247a
+TARGETS : 8
+OUTPUT  : OPUS_P117W_R45B6_APPLIED / FILES=8
 ```
 
-est utilisé comme identifiant d'opération REST dans les catalogues. `RestResourceCatalog` interdit `_`; l'identifiant contractuel est :
+Smoke owner séparé :
 
 ```text
-git.stage-all
+FILE    : smoke_opus_p117w_r45b6_permission_surface_consistency_owner.php
+SHA-256 : 3cf8e7deb5ee59d6611e01f9fa3e5a07a1139af5e30204a5a4d207d65590389a
+OUTPUT  : OPUS_P117W_R45B6_SMOKE_OK
 ```
 
-Ne pas élargir la grammaire REST.
+## Cause traitée
 
-## Livrable actif — R45B5B
+L'audit de toutes les pages a identifié une incohérence transversale entre permissions d'ouverture, permissions d'action et contrôles SCORE :
+
+- viewer pouvait ouvrir Applications mais pas sélectionner une application ;
+- Registry rendait création/sélection/suppression sans capacités action-spécifiques ;
+- viewer pouvait ouvrir Compte mais pas changer son propre mot de passe local, alors que le formulaire était affiché ;
+- Sources/Git capturait tout `Throwable` comme un faux refus ACL et pouvait afficher à tort « lecture seule ».
+
+R45B6 aligne identité -> ACL front -> FSM -> ViewModel -> SCORE -> REST -> ACL back -> allow-list Composer.
+
+## Matrice viewer cible
 
 ```text
-ZIP     : opus_p117w_r45b5b_rest_catalog_repair.zip
-SHA-256 : dbc98775a7ed11c50b0b41df17d020eb6de3df8373bd1890ea956bed43a4695d
-SCRIPT  : apply_opus_p117w_r45b5b.php
-SHA-256 : 9b0fd9e779f8d91c76432995ebdd93fbe9a30e4f128d00cfa1075571cf99099a
-BASE    : de705d2dbfde8b4da69c7af046acd78453ecde31
-FILES   : 4
-OUTPUT  : OPUS_P117W_R45B5B_APPLIED
+ALLOW registry:open, registry:select
+ALLOW structure:open, data:open, workflows:open, security:open
+ALLOW source:open, git:read, build:open
+ALLOW account:open, account:change
+
+DENY creation:open
+DENY registry:delete
+DENY source:preview, source:write
+DENY git:stage, git:unstage, git:commit, git:restore
+DENY profiler:view
 ```
 
-Smoke séparé :
+`account:change` est self-service et le formulaire n'est rendu que pour `local-password`. Auth0-proxy ne reçoit aucun formulaire local.
 
-```text
-FILE    : smoke_opus_p117w_r45b5b_rest_catalog_repair_owner.php
-SHA-256 : de3d4fcb95f8bc658f4e7f601bdacf3e17e6fbad31debbdc47a31524906aa8c9
-OUTPUT  : OPUS_P117W_R45B5B_SMOKE_OK
-```
+## Gates owner
 
-R45B5B corrige uniquement :
+1. HEAD exact `3a7b891c17be447161d5c70299207f2590c9247a` ;
+2. huit cibles propres ;
+3. application du ZIP ;
+4. `OPUS_P117W_R45B6_APPLIED` et `FILES=8` ;
+5. autoload optimisé ;
+6. smoke séparé -> `OPUS_P117W_R45B6_SMOKE_OK` ;
+7. tester admin/developer/viewer ;
+8. viewer : sélection d'application OK, pages lecture OK, Source/Git lecture seule réelle, aucune mutation ;
+9. viewer local-password : changement de son propre mot de passe OK ;
+10. admin/developer : mutations conservées ;
+11. Auth0 : aucun formulaire local ;
+12. commit/push OPUS uniquement par l'owner après succès.
 
-```text
-sites/owasys-front/config/rest.resources.json
-sites/owasys-back/config/backend.resources.json
-sites/owasys-back/config/backend.rest.json
-sites/owasys-back/config/backend.operations.json
-```
+## Suite
 
-Le script refuse un HEAD différent ou des cibles déjà modifiées, construit les candidats en mémoire, instancie réellement `RestResourceCatalog`, résout Stage all et Stage individuel, vérifie l'identité/fingerprint des catalogues, puis écrit seulement si tout est valide.
+Après acquisition R45B6 : R45C wizard OWASYS structuré, puis R45D administration Sécurité/RBAC.
 
-## Gate owner immédiat
-
-Après application et smoke, `git status --short` doit montrer quatre JSON modifiés. Relancer d'abord owasys-back puis owasys-front. Si l'interface revient sans erreur REST, tester Stage all, puis `try`.
-
-Commit/push OPUS uniquement par l'owner après succès.
-
-## Suite après acquisition
-
-```text
-R45C — wizard OWASYS structuré
-R45D — administration Sécurité
-```
-
-NO LOCAL TRY FIX.
-NO REST REGEX WIDENING.
-NO CROSS-SITE STAGE.
+NO ACL BYPASS.
+NO UI ACTION WITHOUT CAPABILITY.
+NO SILENT ACL FALLBACK.
 NO BACKEND JAVASCRIPT.
-NO PUSH OPUS PAR L’ASSISTANT.
+NO PUSH OPUS BY ASSISTANT.
