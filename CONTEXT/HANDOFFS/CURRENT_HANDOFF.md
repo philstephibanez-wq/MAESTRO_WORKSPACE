@@ -8,8 +8,8 @@ Date : 2026-08-08
 2. `CONTEXT/SPECIFICATIONS/MAESTRO_OPUS_OWASYS_GLOBAL_DEVELOPMENT_RULES_2026-07-24.md`
 3. `CONTEXT/PROJECTS/OPUS/OPUS_SITE_STANDARD_CONTRACT.md`
 4. `CONTEXT/SPECIFICATIONS/OWASYS_VS_GENERATED_SITE_FSM_WORKFLOW_CONTRACT_2026-08-08.md`
-5. `CONTEXT/SPECIFICATIONS/OPUS_P117W_R45C2_DEV_PREVIEW_RUNTIME_FIX_2026-08-08.md`
-6. `CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OPUS_P117W_R45C2_DEV_PREVIEW_RUNTIME_FIX_2026-08-08.md`
+5. `CONTEXT/SPECIFICATIONS/OPUS_P117W_R45C3_STRUCTURED_WORKFLOW_SEQUENCE_2026-08-08.md`
+6. `CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OPUS_P117W_R45C3_STRUCTURED_WORKFLOW_SEQUENCE_2026-08-08.md`
 7. `CONTEXT/PROJECTS/OPUS_CURRENT_STATE.md`
 
 ## Base exacte OPUS
@@ -17,119 +17,93 @@ Date : 2026-08-08
 OPUS `master` owner publié :
 
 ```text
-5770a144ed6524de5462eaae780cccc5b1aa8a47
-opus_p117w_r45c1_dev_preview_button
+058984bfb0229bf5f27c74cd2b59c6614bf74b4e
+opus_p117w_r45c2_dev_preview_runtime_fix
 ```
 
-R45B6 est acquis au commit précédent `6b3665c4c26c8bee8791a2bf80d3e4be4abe4b9a`.
-R45C1 est acquis et constitue la base exacte du correctif R45C2.
+R45C2 est acquis.
 
-## Retour owner R45C1
+## Retour owner R45C2
 
-Application courante :
+Le bouton `Visualiser le site` fonctionne désormais et la prévisualisation s'ouvre correctement.
 
-```text
-site_id : test
-site_name : OPUS test
-profile : fullstack
-```
+Le correctif R45C2 est donc considéré acquis sur la base owner publiée ci-dessus.
 
-Dans `Construction et validation`, le bouton `Visualiser le site` est présent mais :
+## Livrable actif — R45C3
 
 ```text
-Le serveur de développement n’a pas pu être démarré.
-```
-
-Aucun nouvel onglet n'est ouvert.
-
-## Cause R45C1 traitée dans R45C2
-
-La source publiée confirme :
-
-- lancement Windows background via `cmd.exe /C start /B` ;
-- stdout/stderr du serveur jetés vers `NUL` ;
-- erreur du flux Build capturée par un `catch (Throwable)` puis réduite à `build.preview_failed` ;
-- POST dans l'onglet courant, suivi seulement d'un éventuel second lien.
-
-R45C2 supprime le détour shell, conserve les diagnostics runtime, refuse le fallback silencieux et transforme le clic SCORE en nouvel onglet + HTTP 303 vers le site local validé.
-
-## Livrable actif — R45C2
-
-```text
-ZIP     : opus_p117w_r45c2_dev_preview_runtime_fix.zip
-SHA-256 : 4ce81c7f0847daa144a53d2437380d5f0c1d5fac7ac3d77b10952665173e2042
-SCRIPT  : apply_opus_p117w_r45c2_dev_preview_runtime_fix.php
-SHA-256 : c8a160bfb03734968bd3c3b4c5ec1e048a6557796e4e827d9d2a4444ffe8306f
-BASE    : 5770a144ed6524de5462eaae780cccc5b1aa8a47
-TARGETS : 3
-OUTPUT  : OPUS_P117W_R45C2_APPLIED / FILES=3
+ZIP     : opus_p117w_r45c3_structured_workflow_sequence.zip
+SHA-256 : dfed4919c19c95fa055f01576369de621a35757290003629f753c997f2659399
+SCRIPT  : apply_opus_p117w_r45c3_structured_workflow_sequence.php
+SHA-256 : 690a5588462859142cce828b6a26d982ab016df867b69d4935c2b40b2893b982
+BASE    : 058984bfb0229bf5f27c74cd2b59c6614bf74b4e
+TARGETS : 2
+OUTPUT  : OPUS_P117W_R45C3_APPLIED / FILES=2
 ```
 
 Smoke owner séparé :
 
 ```text
-FILE    : smoke_opus_p117w_r45c2_dev_preview_runtime_fix_owner.php
-SHA-256 : 32c75c0aa36eb62e884f940df159d58ebae1b8ee6b594504226d3d843df70a54
-OUTPUT  : OPUS_P117W_R45C2_SMOKE_OK
+FILE    : smoke_opus_p117w_r45c3_structured_workflow_sequence_owner.php
+SHA-256 : 6b8cec5f07f1526ed3f676d014c6eef11af3d7a60fdafc86e9c854f0672accbf
+OUTPUT  : OPUS_P117W_R45C3_SMOKE_OK / FILES=2
 ```
 
-## Contrat FSM / workflow acquis
+## Cause traitée R45C3
 
-Deux FSM indépendantes :
+La FSM OWASYS publiée reste alignée sur un ancien ordre de construction et une création réussie saute directement vers `build`.
+
+R45C3 rend la FSM OWASYS conforme au contrat acquis :
 
 ```text
-FSM OWASYS
-= navigation OWASYS
-+ guards sécurité OWASYS
-+ métier OWASYS de construction des sites
-
-FSM SITE GÉNÉRÉ
-= pages/navigation du site
-+ guards sécurité du site
-+ workflow métier du site
+Applications
+-> Sources de données
+-> Structure
+-> Sécurité
+-> Workflows
+-> Sources et Git
+-> Construction et validation
 ```
 
-OWASYS édite/valide la FSM du site comme ressource mais ne l'exécute jamais comme sa propre FSM.
+La création réussie et la sélection d'une application ouvrent `Sources de données`.
 
-Workflow de construction OWASYS cible :
+`Sources de données` est une étape éventuelle : aucune BDD n'est imposée.
+
+La sécurité OWASYS et la sécurité du site généré restent strictement séparées.
+
+## Cibles R45C3
 
 ```text
-login
--> application existante/nouvelle + mode frontend|backend|fullstack
--> sécurité cible : rôles/utilisateurs
--> matérialisation du site
--> BDD éventuelle
--> pages/routes/API + ACL CRUD
--> workflows métier du site
--> contenu SCORE + liaisons données
--> validation / Git / build / preview / export
+sites/owasys-front/config/fsm.json
+sites/owasys-front/application/creation/controllers/CreationController.php
 ```
 
-L'administration des utilisateurs et rôles OWASYS reste admin-only.
+Aucune classe `Opus/**/*.php` n'est modifiée.
 
-## Gates owner R45C2
+## Gates owner R45C3
 
-1. HEAD exact `5770a144...` ;
-2. trois cibles propres ;
+1. HEAD exact `058984bfb0229bf5f27c74cd2b59c6614bf74b4e` ;
+2. les deux cibles propres ;
 3. appliquer ZIP ;
-4. `OPUS_P117W_R45C2_APPLIED` + `FILES=3` ;
+4. `OPUS_P117W_R45C3_APPLIED` + `FILES=2` ;
 5. `composer dump-autoload -o` ;
-6. smoke séparé -> `OPUS_P117W_R45C2_SMOKE_OK` ;
+6. smoke séparé -> `OPUS_P117W_R45C3_SMOKE_OK` ;
 7. relancer OWASYS back/front ;
-8. sélectionner `test` ;
-9. cliquer `Visualiser le site` ;
-10. nouvel onglet direct sur le site attendu ;
-11. le site doit exécuter sa propre FSM ;
-12. en cas d'échec, relever le code exact et `sites/test/var/logs/dev-server.process.log` ;
+8. vérifier l'ordre des onglets et du diagramme FSM ;
+9. sélectionner une application -> `Sources de données` ;
+10. créer une application -> après matérialisation, `Sources de données` ;
+11. vérifier que `Visualiser le site` R45C2 fonctionne toujours ;
+12. vérifier qu'aucune FSM de site généré n'est couplée à la FSM OWASYS ;
 13. commit/push OPUS uniquement par l'owner après succès.
 
 ## Suite
 
-Après acquisition R45C2 : reprendre R45C workflow OWASYS structuré selon le contrat ci-dessus, puis administration Sécurité/RBAC admin-only.
+Après acquisition R45C3 : R45D administration Sécurité/RBAC OWASYS admin-only, distincte des rôles et ACL propres aux sites générés.
 
 NO SITE-SPECIFIC PATCH.
 NO SILENT FALLBACK.
 NO FSM MERGE.
+NO ROLE MERGE.
 NO ACL BYPASS.
 NO BACKEND JAVASCRIPT.
 NO PUSH OPUS BY ASSISTANT.
