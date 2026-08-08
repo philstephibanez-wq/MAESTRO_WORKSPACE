@@ -12,6 +12,8 @@ Commit : opus_p117w_r45c2_dev_preview_runtime_fix
 Dernier état acquis publié : R45C2
 ```
 
+Relecture GitHub effectuée le 2026-08-09 : `058984bf` reste le dernier commit publié. Les commits owner locaux `0e0e5485` et `5994903d` ne sont pas accessibles dans le dépôt canonique.
+
 ## État owner local
 
 Après `git fetch origin` :
@@ -114,7 +116,7 @@ sites/owasys-front/application/default/controllers/RuntimeController.php
 sites/owasys-back/config/site.json
 ```
 
-Ce ZIP doit être attaché à la conversation avant tout nouveau patch OPUS/OWASYS.
+Le ZIP n'est pas encore attaché à la conversation et n'est pas disponible via GitHub. Il doit être relu avant tout nouveau patch OPUS/OWASYS.
 
 ## Gate actif
 
