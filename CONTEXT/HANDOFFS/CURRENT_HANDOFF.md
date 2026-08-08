@@ -14,12 +14,14 @@ Date : 2026-08-09
 
 ## Source publiée
 
-OPUS `origin/master` publie :
+OPUS `origin/master` publie toujours :
 
 ```text
 058984bfb0229bf5f27c74cd2b59c6614bf74b4e
 opus_p117w_r45c2_dev_preview_runtime_fix
 ```
+
+Relecture GitHub du 2026-08-09 : les derniers commits publiés restent R45C2, R45C1 et R45B6 ; les commits owner locaux `0e0e5485` et `5994903d` ne sont toujours pas présents sur le dépôt canonique.
 
 R45C2 reste le dernier état acquis publié.
 
@@ -37,8 +39,6 @@ Après `git fetch origin` :
 `git status --short` est vide : working tree propre.
 
 La base effective de travail owner est donc `5994903d`.
-
-Les commits `5994903d` et `0e0e5485` ne sont pas disponibles sur GitHub canonique au moment de cette relecture.
 
 ## R45C3 / R45C4
 
@@ -78,7 +78,7 @@ L'owner a préparé localement :
 
 Ce ZIP contient le sous-ensemble critique RestClient / Registry / Runtime / configurations front-back demandé.
 
-Il doit être attaché à la conversation avant toute modification OPUS/OWASYS.
+Au 2026-08-09, ce ZIP n'est pas attaché à la conversation et n'est pas accessible via GitHub. Il doit être fourni avant toute modification OPUS/OWASYS.
 
 ## Gate actif
 
