@@ -7,86 +7,24 @@ Dernière mise à jour : 2026-08-08.
 ```text
 OPUS : philstephibanez-wq/OPUS
 Branche : master
-HEAD owner publié : 5770a144ed6524de5462eaae780cccc5b1aa8a47
-Commit HEAD : opus_p117w_r45c1_dev_preview_button
-R45B6 publié : 6b3665c4c26c8bee8791a2bf80d3e4be4abe4b9a
-Livrable actif : R45C2 dev preview runtime fix
+HEAD owner publié : 058984bfb0229bf5f27c74cd2b59c6614bf74b4e
+Commit HEAD : opus_p117w_r45c2_dev_preview_runtime_fix
+R45C2 acquis : 058984bfb0229bf5f27c74cd2b59c6614bf74b4e
+Livrable actif : R45C3 structured OWASYS workflow sequence
 ```
 
-## Acquisition R45C1
+## Acquisition R45C2
 
-R45C1 est publié par l'owner au commit :
+R45C2 est publié par l'owner au commit :
 
 ```text
-5770a144ed6524de5462eaae780cccc5b1aa8a47
+058984bfb0229bf5f27c74cd2b59c6614bf74b4e
+opus_p117w_r45c2_dev_preview_runtime_fix
 ```
 
-Il ajoute dans `Construction et validation` un bouton `Visualiser le site` passant par le flux OWASYS contractuel jusqu'à `opus:dev-server --background --auto-port`.
+Retour owner : le bouton `Visualiser le site` fonctionne et la prévisualisation attendue s'ouvre correctement.
 
-## Retour owner R45C1
-
-Cas réel publié :
-
-```text
-sites/test
-site_name : OPUS test
-profile : fullstack
-```
-
-Le bouton apparaît mais le serveur ne démarre pas et aucun nouvel onglet ne s'ouvre.
-
-## Audit R45C1
-
-La source publiée montre quatre défauts :
-
-1. `SiteCommandService::startBackgroundDevelopmentServer()` utilise sous Windows `cmd.exe /C start /B` au lieu de lancer directement le serveur PHP connu du framework ;
-2. stdout/stderr du serveur sont envoyés vers `NUL`, supprimant le diagnostic runtime ;
-3. le contrôleur OWASYS Build capture tout `Throwable` et le remplace par `build.preview_failed` ;
-4. le POST reste dans l'onglet courant et ne redirige pas directement vers l'URL du site.
-
-Le site `test` n'est pas modifié localement. Le correctif reste générique OPUS/OWASYS.
-
-## Livrable actif R45C2
-
-```text
-ZIP     : opus_p117w_r45c2_dev_preview_runtime_fix.zip
-SHA-256 : 4ce81c7f0847daa144a53d2437380d5f0c1d5fac7ac3d77b10952665173e2042
-SCRIPT  : apply_opus_p117w_r45c2_dev_preview_runtime_fix.php
-SHA-256 : c8a160bfb03734968bd3c3b4c5ec1e048a6557796e4e827d9d2a4444ffe8306f
-BASE    : 5770a144ed6524de5462eaae780cccc5b1aa8a47
-TARGETS : 3
-OUTPUT  : OPUS_P117W_R45C2_APPLIED / FILES=3
-```
-
-Smoke séparé :
-
-```text
-smoke_opus_p117w_r45c2_dev_preview_runtime_fix_owner.php
-SHA-256 : 32c75c0aa36eb62e884f940df159d58ebae1b8ee6b594504226d3d843df70a54
-OUTPUT  : OPUS_P117W_R45C2_SMOKE_OK
-```
-
-## R45C2 — comportement cible
-
-Framework :
-
-- lancement direct `PHP_BINARY -S` via `proc_open` ;
-- aucun shell Windows/Unix intermédiaire ;
-- port local auto conservé ;
-- PID contrôlé et renvoyé ;
-- stdout/stderr -> `sites/<site>/var/logs/dev-server.process.log` ;
-- log remis à zéro à chaque lancement ;
-- sortie prématurée explicitement remontée ;
-- CLI historique sans `--background` conservée.
-
-OWASYS :
-
-- front -> REST sécurisé -> back -> Composer -> service OPUS conservé ;
-- aucune exception technique convertie silencieusement en message générique ;
-- formulaire SCORE `target=_blank`, sans JavaScript ;
-- après transition FSM OWASYS, HTTP 303 vers une URL locale strictement validée ;
-- viewer ne reçoit pas la capacité `build:preview` ;
-- backend-only ne reçoit pas le bouton.
+R45C2 est donc acquis.
 
 ## Contrat FSM / workflow
 
@@ -103,7 +41,7 @@ FSM SITE = pages/navigation + sécurité + métier propre au site
 
 OWASYS ne fusionne jamais sa FSM, ses rôles ou son ACL avec ceux du site généré.
 
-Workflow OWASYS cible :
+Workflow cible :
 
 ```text
 1 login
@@ -111,33 +49,99 @@ Workflow OWASYS cible :
 3 définir rôles/utilisateurs de la cible
 4 matérialiser/générer
 5 BDD éventuelle
-6 pages/routes/API + droits CRUD
-7 workflows métier du site
-8 contenu SCORE + données
-9 validation / Git / build / preview / export
+6 pages/routes/API
+7 ACL CRUD par ressource
+8 workflows métier du site
+9 contenu SCORE + données
+10 validation / Git / build / preview / export
 ```
 
-## Prévalidation assistant R45C2
+## Cause active avant R45C3
+
+La FSM OWASYS publiée conserve encore l'ancien ordre :
+
+```text
+Applications
+-> Structure
+-> Sources de données
+-> Workflows
+-> Sécurité
+-> Sources et Git
+-> Construction et validation
+```
+
+et :
+
+- `select_app` entre dans `structure` ;
+- `application_created` entre dans `build` ;
+- `CreationController` redirige explicitement vers `build` après création réussie.
+
+Cette séquence n'est plus conforme au contrat acquis.
+
+## Livrable actif R45C3
+
+```text
+ZIP     : opus_p117w_r45c3_structured_workflow_sequence.zip
+SHA-256 : dfed4919c19c95fa055f01576369de621a35757290003629f753c997f2659399
+SCRIPT  : apply_opus_p117w_r45c3_structured_workflow_sequence.php
+SHA-256 : 690a5588462859142cce828b6a26d982ab016df867b69d4935c2b40b2893b982
+BASE    : 058984bfb0229bf5f27c74cd2b59c6614bf74b4e
+TARGETS : 2
+OUTPUT  : OPUS_P117W_R45C3_APPLIED / FILES=2
+```
+
+Smoke séparé :
+
+```text
+smoke_opus_p117w_r45c3_structured_workflow_sequence_owner.php
+SHA-256 : 6b8cec5f07f1526ed3f676d014c6eef11af3d7a60fdafc86e9c854f0672accbf
+OUTPUT  : OPUS_P117W_R45C3_SMOKE_OK / FILES=2
+```
+
+## R45C3 — comportement cible
+
+Navigation et projection FSM OWASYS :
+
+```text
+Applications
+-> Sources de données
+-> Structure
+-> Sécurité
+-> Workflows
+-> Sources et Git
+-> Construction et validation
+```
+
+Après sélection d'une application existante ou matérialisation d'une nouvelle application, OWASYS entre dans `Sources de données`.
+
+`Sources de données` est une étape éventuelle ; aucune BDD n'est imposée.
+
+Les transitions wildcard d'accès direct restent soumises à l'ACL et au contexte d'application.
+
+R45C3 ne modifie aucune classe `Opus/**/*.php`, aucune FSM de site généré et aucun fichier `owasys-back`.
+
+## Prévalidation assistant R45C3
 
 - base distante exacte identifiée ;
-- ZIP différentiel : un script uniquement ;
-- 3 fichiers OPUS/OWASYS cibles ;
-- apply script `php -l` OK ;
-- smoke `php -l` OK ;
-- smoke inclut audit exhaustif des interfaces homonymes OPUS ;
-- lancement direct PHP validé conceptuellement sur environnement local Linux ;
-- validation Windows owner obligatoire avant conformité finale.
+- script d'application exige le HEAD exact et des cibles propres ;
+- chaque transformation est ancrée sur la source R45C2 et doit correspondre exactement une fois ;
+- JSON final validé avant écriture ;
+- script d'application PHP lint OK ;
+- smoke PHP lint OK ;
+- smoke vérifie l'ordre de navigation, les transitions FSM, la redirection de création et l'absence de JavaScript interdit dans `owasys-back` ;
+- aucune classe concrète OPUS n'est ajoutée ou modifiée.
 
 ## Suite gouvernée
 
-1. acquisition owner R45C2 ;
-2. reprise R45C workflow OWASYS structuré selon le nouveau contrat ;
-3. administration Sécurité/RBAC réservée à admin ;
+1. acquisition owner R45C3 ;
+2. R45D administration Sécurité/RBAC OWASYS réservée à admin ;
+3. séparation stricte entre sécurité OWASYS et sécurité des sites générés ;
 4. poursuite pages/API/BDD/CRUD/workflows métier selon profil du site.
 
 NO SITE-SPECIFIC PATCH.
 NO SILENT FALLBACK.
 NO FSM MERGE.
+NO ROLE MERGE.
 NO ACL BYPASS.
 NO BACKEND JAVASCRIPT.
 NO PUSH OPUS BY ASSISTANT.
