@@ -1,6 +1,6 @@
 # CURRENT HANDOFF — MAESTRO WORKSPACE
 
-Date : 2026-08-08
+Date : 2026-08-09
 
 ## Lire
 
@@ -8,141 +8,89 @@ Date : 2026-08-08
 2. `CONTEXT/SPECIFICATIONS/MAESTRO_OPUS_OWASYS_GLOBAL_DEVELOPMENT_RULES_2026-07-24.md`
 3. `CONTEXT/PROJECTS/OPUS/OPUS_SITE_STANDARD_CONTRACT.md`
 4. `CONTEXT/SPECIFICATIONS/OWASYS_VS_GENERATED_SITE_FSM_WORKFLOW_CONTRACT_2026-08-08.md`
-5. `CONTEXT/SPECIFICATIONS/OPUS_P117W_R45C3_STRUCTURED_WORKFLOW_SEQUENCE_2026-08-08.md`
-6. `CONTEXT/SPECIFICATIONS/OPUS_P117W_R45C4_REST_PEER_FAIL_FAST_2026-08-08.md`
-7. `CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OPUS_P117W_R45C4_REST_PEER_FAIL_FAST_2026-08-08.md`
-8. `CONTEXT/PROJECTS/OPUS_CURRENT_STATE.md`
+5. `CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_INCIDENT_OPUS_P117W_R45C3_R45C4_DELIVERY_INVALID_2026-08-09.md`
+6. `CONTEXT/PROJECTS/OPUS_CURRENT_STATE.md`
 
-## Base exacte OPUS
+## Source de vérité publiée
 
-OPUS `master` owner publié :
+OPUS `master` GitHub publie toujours :
 
 ```text
 058984bfb0229bf5f27c74cd2b59c6614bf74b4e
 opus_p117w_r45c2_dev_preview_runtime_fix
 ```
 
-R45C2 est acquis.
+R45C2 reste le dernier état acquis publié.
 
-R45C3 est appliqué localement par l'owner sur cette base mais pas encore publié.
+## État owner local
 
-## Retour owner R45C3
-
-La projection FSM/navigation visible est conforme au nouvel ordre :
+Le retour owner du 2026-08-09 montre :
 
 ```text
-Applications
--> Sources de données
--> Structure
--> Sécurité
--> Workflows
--> Sources et Git
--> Construction et validation
+HEAD local = 0e0e54857214144d6c98ebec85cf9eee007676a0
 ```
 
-Mais la navigation runtime est bloquée. La pile owner montre :
+Ce commit n'est pas résolvable sur GitHub au moment de la relecture.
+
+Le front OWASYS renvoie HTTP 500 sur :
 
 ```text
-owasys-front
--> RegistryModel::synchronize()
--> Opus\Api\Rest\RestClient::request()
--> fopen()
--> Maximum execution time exceeded
+http://127.0.0.1:8000/fr-FR/applications
 ```
 
-Le front a été lancé sur 8000. Le contrat canonique désigne `owasys-back` comme peer REST de développement sur 8080.
+## R45C3 / R45C4
 
-La cause bloquante est donc la frontière REST et non la séquence FSM R45C3.
+R45C3 n'est pas acquis : la projection FSM est visible, mais la validation runtime complète n'a pas abouti.
 
-## Cause R45C4
+R45C4 est retiré et ne doit plus être utilisé.
 
-Le client REST OPUS possède un timeout HTTP long (`timeout_seconds = 120`) mais aucun budget distinct de connexion au peer.
+Les deux livraisons précédentes étaient non conformes au format imposé par `README-FIRST.md` : elles reposaient sur des scripts `apply_*` au lieu de ZIP différentiels contenant uniquement les fichiers complets à leurs chemins finaux.
 
-Il tente directement `fopen()` sur l'endpoint REST. Un peer absent ou non joignable peut épuiser le budget global PHP avant que le transport ne récupère la main pour remonter une erreur OPUS contrôlée.
+R45C4 avait en plus une garde de HEAD obsolète par rapport au HEAD owner local et un smoke séparé invoqué sans garantie de présence.
 
-Ce défaut est générique au framework ; aucun patch local de navigation, de Registry ou de site généré n'est autorisé.
-
-## Livrable actif — R45C4
+## Blocage avant prochain livrable
 
 ```text
-ZIP     : opus_p117w_r45c4_rest_peer_fail_fast.zip
-SHA-256 : 7b6584492135c39e0c5ed0d7422fd4f67cd2b0800480c90bc533f951e423d04e
-SCRIPT  : apply_opus_p117w_r45c4_rest_peer_fail_fast.php
-SHA-256 : 37edb3e1ed40360ac8f1eff9dd340ef6cbf14b37736b25efc1aafeaa8919ccf3
-BASE    : 058984bfb0229bf5f27c74cd2b59c6614bf74b4e
-TARGETS : 2
-OUTPUT  : OPUS_P117W_R45C4_APPLIED / FILES=2
+NO SOURCE OF TRUTH, NO PATCH.
 ```
 
-Smoke owner séparé :
+La source owner live correspondant au HEAD `0e0e548...` doit être relue avant toute nouvelle correction OPUS/OWASYS.
 
-```text
-FILE    : smoke_opus_p117w_r45c4_rest_peer_fail_fast_owner.php
-SHA-256 : c4d93515752a1812c5cf2fcce8c54e61b50bbe85e9b8483b2fbcbe773fd70b83
-OUTPUT  : OPUS_P117W_R45C4_SMOKE_OK / FILES=2
-```
-
-## Cibles R45C4
+Fichiers minimaux à obtenir :
 
 ```text
 Opus/Api/Rest/RestClient.php
+Opus/Api/Rest/RestClientInterface.php
 sites/owasys-front/config/rest-api.json
-```
-
-R45C4 ajoute `connect_timeout_seconds = 2` et un préflight TCP générique avant l'ouverture HTTP.
-
-Peer absent/non joignable :
-
-```text
-OPUS_REST_API_PEER_UNAVAILABLE
-```
-
-Le timeout HTTP long reste inchangé pour les requêtes réelles après connexion.
-
-## Empilement R45C3 + R45C4
-
-Cibles R45C3 :
-
-```text
+sites/owasys-front/config/site.json
 sites/owasys-front/config/fsm.json
 sites/owasys-front/application/creation/controllers/CreationController.php
+sites/owasys-front/application/registry/models/RegistryModel.php
+sites/owasys-front/application/default/controllers/RuntimeController.php
+sites/owasys-back/config/site.json
 ```
 
-Cibles R45C4 :
+## Règle de prochain livrable
 
-```text
-Opus/Api/Rest/RestClient.php
-sites/owasys-front/config/rest-api.json
-```
+Le prochain ZIP différentiel :
 
-Les cibles sont disjointes.
-
-Ne pas committer R45C3 avant R45C4 : le script R45C4 exige encore le HEAD exact R45C2 `058984...` et tolère les modifications R45C3 parce qu'il ne contrôle que ses propres cibles.
-
-## Gates owner R45C4
-
-1. HEAD toujours `058984bfb0229bf5f27c74cd2b59c6614bf74b4e` ;
-2. conserver R45C3 non committé ;
-3. appliquer R45C4 ;
-4. `OPUS_P117W_R45C4_APPLIED / FILES=2` ;
-5. `composer dump-autoload -o` ;
-6. smoke -> `OPUS_P117W_R45C4_SMOKE_OK / FILES=2` ;
-7. lancer `owasys-back` sur 8080 ;
-8. lancer `owasys-front` sur 8000 ;
-9. vérifier navigation complète et ordre R45C3 ;
-10. arrêter volontairement le back et vérifier un échec rapide `OPUS_REST_API_PEER_UNAVAILABLE` ;
-11. relancer le back et vérifier la reprise ;
-12. vérifier `Visualiser le site` R45C2 ;
-13. commit/push OPUS uniquement par l'owner après succès de R45C3 + R45C4.
+- contient uniquement les fichiers complets modifiés à leurs chemins finaux ;
+- ne contient aucun script `apply_*`, smoke, rapport, log ou temporaire ;
+- est construit uniquement après relecture des fichiers owner live ;
+- est validé avec les deux applications OWASYS dans leur état de runtime réel ;
+- n'est jamais poussé dans OPUS par l'assistant.
 
 ## Suite
 
-Après acquisition R45C3/R45C4 : R45D administration Sécurité/RBAC OWASYS admin-only, distincte des rôles et ACL propres aux sites générés.
+1. récupérer la source live owner exacte ;
+2. diagnostiquer le HTTP 500 et la frontière REST sur cette source ;
+3. livrer un ZIP différentiel direct conforme ;
+4. valider runtime front + back ;
+5. seulement après acquisition, reprendre R45D Sécurité/RBAC.
 
 NO SITE-SPECIFIC PATCH.
 NO SILENT FALLBACK.
 NO REST BYPASS.
-NO AUTO-START CROSS-APPLICATION.
 NO FSM MERGE.
 NO ROLE MERGE.
 NO ACL BYPASS.
