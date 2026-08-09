@@ -9,159 +9,108 @@ Date : 2026-08-09
 3. `CONTEXT/PROJECTS/OPUS/OPUS_SITE_STANDARD_CONTRACT.md`
 4. `CONTEXT/SPECIFICATIONS/OWASYS_VS_GENERATED_SITE_FSM_WORKFLOW_CONTRACT_2026-08-08.md`
 5. `CONTEXT/SPECIFICATIONS/OPUS_OWASYS_APPLICATION_CREATION_AND_RESOURCE_SECURITY_CONTRACT_2026-07-31.md`
-6. `CONTEXT/SPECIFICATIONS/OPUS_P117W_R45D1_SECURITY_SNAPSHOT_WORKSPACE_2026-08-09.md`
-7. `CONTEXT/SPECIFICATIONS/OPUS_P117W_R45D2_CONTROLLED_SECURITY_MUTATIONS_2026-08-09.md`
-8. `CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OPUS_P117W_R45D2_CONTROLLED_SECURITY_MUTATIONS_2026-08-09.md`
+6. `CONTEXT/SPECIFICATIONS/OPUS_P117W_R45D2_CONTROLLED_SECURITY_MUTATIONS_2026-08-09.md`
+7. `CONTEXT/SPECIFICATIONS/OPUS_P117W_R45D2A1_CREATION_SECURITY_INPUT_CANONICALIZATION_2026-08-09.md`
+8. `CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OPUS_P117W_R45D2A1_CREATION_SECURITY_INPUTS_2026-08-09.md`
 9. `CONTEXT/PROJECTS/OPUS_CURRENT_STATE.md`
 
-## Base canonique OPUS
+## OPUS GitHub courant
 
 ```text
-af8ac2f5ed2c9d2d528b5f94863d018d3c7aa121
-opus_p117w_r45d1_security_snapshot_workspace
+4be105ebbc81b3164d7dcc26aa69ddd7400d2dd2  site: essai pour analyser la génération
+e822848896734f92eb2fd631449e625a55aa8e08  opus_p117w_r45d2_controlled_security_mutations
+af8ac2f5ed2c9d2d528b5f94863d018d3c7aa121  opus_p117w_r45d1_security_snapshot_workspace
 ```
 
-R45D1 est acquis et publié sur `OPUS/master`.
+R45D2 est donc publié. `4be105...` ajoute le site diagnostique `essai` fourni par l'owner.
 
-## Preuve runtime R45D1 reçue
+## Preuves runtime reçues
 
-Le screenshot owner du 2026-08-09 montre `/fr-FR/security` avec `owasys-back` sélectionné :
+R45D1 : le workspace `Sécurité` réel est rendu sur `owasys-back`, en lecture seule, avec ACL/SSO réels.
+
+R45D2 : le site généré `essai` est visible dans le workspace sécurité, avec cible `fullstack`, `OPUS_GENERATED_APPLICATION_ACL_V1`, `OPUS_GENERATED_APPLICATION_SSO_V1`, identité `steve` issue de `security.onboarding` et surface de mutations contrôlées.
+
+La preview/commit complète R45D2 reste à valider.
+
+## Incident création authentifiée
+
+Le screenshot owner montre :
 
 ```text
-Sécurité rendue réellement
-lecture seule
-ACL = OPUS_ACL_POLICY_V1
-SSO = OPUS_SSO_CONFIGURATION_V1
-default = deny
-default provider = auth0-proxy
-identités = aucune donnée
-providers = auth0-proxy + service-hmac
+OWASYS_CREATION_LOGIN_PROVIDER_INVALID
 ```
 
-L'absence d'identités est cohérente avec l'absence de configuration d'utilisateurs initiaux pour cette application système. Cette preuve confirme le remplacement du pending/501 sur cette vue. Elle ne prouve pas encore les cinq vues, le changement de langue ni toute la corrélation Profiler.
+avec `authentication_required=true`, `login_page=true`, `provider=session`.
 
-## Workflow acquis
+Cause confirmée : le formulaire OWASYS exposait indépendamment des paramètres que `SiteScaffoldPlan` exige cohérents. Le défaut est dans la projection du wizard, pas dans REST/Composer/scaffold.
+
+Le même formulaire conservait `home_roles=everyone` lors de l'activation de l'authentification, créant un deuxième conflit latent.
+
+## Livrable actif — R45D2A1
 
 ```text
-Applications
--> Sources de données
--> Structure
--> Sécurité
--> Workflows
--> Sources et Git
--> Construction et validation
+ZIP     : opus_p117w_r45d2a1_creation_security_input_canonicalization.zip
+SHA-256 : 3827223744bd55a2fe0ef9060cd4783cbaa800c06d1cdbddd289b1ddb385239f
+BASE    : 4be105ebbc81b3164d7dcc26aa69ddd7400d2dd2
+FILES   : 2
 ```
 
-Aucun patch `RestClient` n'est retenu. R45C4 reste retiré.
-
-## Livrable actif — R45D2
+Fichiers :
 
 ```text
-ZIP     : opus_p117w_r45d2_controlled_security_mutations.zip
-SHA-256 : 3f40e620dae36cd57eb671f2efc8071fbe288831558d6201d40e80a4394558ba
-BASE    : af8ac2f5ed2c9d2d528b5f94863d018d3c7aa121
-FILES   : 38
+sites/owasys-front/application/creation/controllers/CreationController.php
+sites/owasys-front/application/creation/templates/index.score
 ```
 
-R45D2 ajoute les premières mutations réelles de sécurité cible sous pipeline contrôlée :
+R45D2A1 ne relâche aucune garde OPUS. Le wizard produit les combinaisons canoniques :
 
 ```text
-identity.reference
-role.create
-permission.grant
-assignment.grant
-resource.allow
+public + session       -> auth=false, login=false, home=everyone
+auth + session         -> auth=true,  login=false, home=roles
+auth + local-password  -> auth=true,  login=true,  home=roles
+auth + auth0-proxy     -> auth=true,  login=false, home=roles
 ```
 
-Flux :
+Public + provider autre que `session` reste rejeté explicitement : aucun fallback silencieux.
+
+La case indépendante `Créer une page de connexion` est supprimée : `local-password` authentifié implique explicitement la page login. Le champ `home_roles` initial est également supprimé et calculé selon l'exposition ; sa valeur reste visible dans le récapitulatif.
+
+Aucune classe `Opus/**/*.php`, aucun backend, aucun fichier de `sites/essai` et aucune logique R45D2 de mutation ne sont modifiés.
+
+## Validation statique R45D2A1
 
 ```text
-SCORE
--> SSO/ACL/CSRF front
--> REST sécurisé preview
--> owasys-back
--> Composer allow-listé
--> plan déterministe
--> SCORE preview
--> confirmation + nouvelle réauthentification
--> REST PATCH
--> owasys-back
--> Composer allow-listé
--> state hash / concurrence
--> File::writeAtomic
--> validation
--> commit|rollback
--> Logger/Profiler
--> SCORE
+PHP lint controller        OK
+public + session           OK
+public + auth0             rejet explicite
+auth + session             OK / no login
+auth + local-password      OK / login
+auth + auth0               OK / no login
+SCORE if/endif             équilibré
+new I18n keys              0
+backend JS/Node delta      0
 ```
 
-## Protections R45D2
+## Gate owner immédiat
 
-- mutations backend `admin` OWASYS uniquement ;
-- ACL `security:manage` front et back ;
-- token CSRF lié session/site et usage unique ;
-- réauthentification fraîche obligatoire ;
-- R45D2 supporte la fresh-auth OWASYS `local-password` uniquement ;
-- aucun mot de passe n'est envoyé par REST ;
-- `owasys-front` et `owasys-back` toujours protégés/read-only ;
-- seule une cible `generated-opus-application` générée par Composer est mutable ;
-- preview sans écriture ;
-- `current_state_hash` + token de confirmation déterministe ;
-- écriture via `File::writeAtomic` ;
-- validation et rollback ;
-- audit avec acteur, cible, motif, hashes avant/après, résultat, trace_id ;
-- aucun secret projeté/loggé/profilé.
-
-Auth0 fresh-auth n'est pas approximé. Si l'admin OWASYS n'est pas `local-password`, les mutations sont indisponibles.
-
-`assignment.grant` exige un véritable store runtime `local-password` cible ; aucun stockage d'attribution inexistant n'est inventé.
-
-Les mutations destructives restent hors R45D2.
-
-```text
-NO ROLE MERGE.
-NO FSM MERGE.
-NO ACL BYPASS.
-LE DROIT APPARTIENT À LA RESSOURCE, PAS AU BOUTON.
-```
-
-## Validation statique R45D2
-
-```text
-PHP lint                 OK
-JSON                     OK (32)
-I18n base                OK (25)
-SCORE control balance    OK
-REST security catalogs   OK
-Composer allow-list      OK
-backend JS/Node delta    0
-Opus/**/*.php delta      0
-mutation plan dynamic    0
-```
-
-## Gate owner
-
-1. vérifier HEAD exact `af8ac2f5...` et working tree propre ;
-2. extraire le ZIP ;
-3. lint/config/autoload ;
-4. lancer back puis front ;
-5. confirmer `owasys-front`/`owasys-back` read-only ;
-6. créer/sélectionner une application générée de test ;
-7. preview d'une mutation additive : aucun fichier ne doit changer ;
-8. confirmation avec nouvelle réauthentification ;
-9. vérifier commit réel + nouveau snapshot ;
-10. vérifier rejet d'un hash concurrent obsolète ;
-11. vérifier Logger/Profiler sans secret ;
-12. owner commit/push OPUS uniquement après succès.
+1. extraire R45D2A1 ;
+2. lint + autoload ;
+3. relancer back puis front ;
+4. création fullstack publique/session ;
+5. création fullstack authentifiée/session ;
+6. création fullstack authentifiée/local-password ;
+7. création fullstack authentifiée/auth0-proxy ;
+8. confirmer une création et contrôler le blueprint généré ;
+9. reprendre ensuite preview/commit R45D2.
 
 ## Profiler `.lock`
 
-Audit OPUS générique séparé ; aucune suppression aveugle. Ne bloque pas R45D2.
+Audit OPUS générique séparé ; aucune suppression aveugle.
 
+NO VALIDATOR RELAXATION.
 NO SITE-SPECIFIC PATCH.
 NO SILENT FALLBACK.
 NO REST BYPASS.
-NO AUTO-START CROSS-APPLICATION.
 NO FSM MERGE.
 NO ROLE MERGE.
 NO ACL BYPASS.
