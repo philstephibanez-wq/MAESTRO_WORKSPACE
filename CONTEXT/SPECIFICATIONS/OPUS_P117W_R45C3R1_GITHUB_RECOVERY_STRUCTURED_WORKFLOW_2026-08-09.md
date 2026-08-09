@@ -30,7 +30,7 @@ Ils doivent être conservés uniquement sur une branche de sauvegarde avant rese
 - `CONTEXT/PROJECTS/OPUS/OPUS_SITE_STANDARD_CONTRACT.md` ;
 - `CONTEXT/SPECIFICATIONS/OWASYS_VS_GENERATED_SITE_FSM_WORKFLOW_CONTRACT_2026-08-08.md`.
 
-## Diagnostic de l'incident HTTP 500
+## Diagnostic de l'incident HTTP 500 — cause runtime rétablie
 
 La pile owner observée était :
 
@@ -50,9 +50,19 @@ La source GitHub canonique confirme :
 - `owasys-front` écoute sur `127.0.0.1:8000` ;
 - `opus:dev-server -- owasys-front` lance l'application demandée et injecte/valide le peer, mais ne démarre pas automatiquement `owasys-back`.
 
-Le test précédent ne montrait que le lancement du front. La pile est donc cohérente avec un peer backend absent ou indisponible ; aucun élément de la source GitHub ne justifie de modifier `RestClient` pour récupérer R45C3.
+Le 2026-08-09, l'owner a constaté deux processus PHP résiduels en mémoire. Après arrêt forcé de ces deux processus et suppression du site de test, OWASYS est reparti normalement.
 
-R45C4 reste retiré.
+Les traces runtime fournies après nettoyage confirment :
+
+- `owasys-back` actif sur `127.0.0.1:8080` ;
+- `owasys-front` actif sur `127.0.0.1:8000` ;
+- `GET /api/v1/applications` réussi ;
+- `owasys:registry-sync` réussi ;
+- `PUT /api/v1/session/application/owasys-back` réussi ;
+- `owasys:registry-select` réussi ;
+- navigation frontend `/fr-FR/applications` puis `/fr-FR/data` réussie.
+
+Conclusion : le timeout précédent est classé comme incident runtime lié à des processus PHP résiduels / conflit d'instance, pas comme défaut établi de `RestClient`. Aucun changement `RestClient` n'est retenu dans R45C3R1. R45C4 reste retiré.
 
 ## Correction fonctionnelle R45C3R1
 
@@ -131,20 +141,21 @@ Le ZIP contient exclusivement les deux fichiers complets à leurs chemins finaux
 ## Procédure owner
 
 1. arrêter les serveurs de développement en cours ;
-2. `git fetch origin` ;
-3. sauvegarder `5994903d` sur une branche locale dédiée ;
-4. reset hard de `master` vers `origin/master` ;
-5. vérifier HEAD `058984bf` et working tree propre ;
-6. extraire le ZIP directement dans `H:\OPUS` ;
-7. lint PHP + chargement FSM via `StructuredFileLoader` + Composer autoload ;
-8. lancer `owasys-back` sur 8080 ;
-9. lancer `owasys-front` sur 8000 ;
-10. valider navigation, sélection/création vers `Sources de données`, preview R45C2 ;
-11. seulement après succès, commit/push OPUS par l'owner.
+2. vérifier qu'aucun processus PHP résiduel ne conserve les ports 8000/8080 ;
+3. `git fetch origin` ;
+4. sauvegarder `5994903d` sur une branche locale dédiée ;
+5. reset hard de `master` vers `origin/master` ;
+6. vérifier HEAD `058984bf` et working tree propre ;
+7. extraire le ZIP directement dans `H:\OPUS` ;
+8. lint PHP + chargement FSM via `StructuredFileLoader` + Composer autoload ;
+9. lancer `owasys-back` sur 8080 ;
+10. lancer `owasys-front` sur 8000 ;
+11. valider navigation, sélection/création vers `Sources de données`, preview R45C2 ;
+12. seulement après succès, commit/push OPUS par l'owner.
 
 ## Gate runtime
 
-R45C3R1 n'est pas acquis avant validation avec les deux applications actives.
+R45C3R1 n'est pas acquis avant validation avec les deux applications actives et une seule instance PHP attendue par serveur de développement.
 
 NO SITE-SPECIFIC PATCH.  
 NO SILENT FALLBACK.  
