@@ -34,9 +34,9 @@ R45C4 : RETIRÉ / INVALIDÉ.
 
 Ils ne servent pas de source au nouveau livrable.
 
-## Diagnostic GitHub de l'incident HTTP 500
+## Incident runtime HTTP 500 — état rétabli
 
-Pile owner :
+Pile owner initiale :
 
 ```text
 owasys-front
@@ -55,7 +55,33 @@ Source canonique :
 - `SiteCommandService::devServer()` lance uniquement l'application demandée ;
 - le peer est injecté et validé, sans auto-start cross-application.
 
-Le test owner précédent montrait uniquement le lancement du frontend. La pile est cohérente avec un backend absent ou indisponible. Aucun changement `RestClient` n'est retenu dans la récupération.
+Le 2026-08-09, l'owner a trouvé deux processus PHP résiduels en mémoire. Après arrêt forcé de ces deux processus et suppression du site de test, OWASYS est reparti.
+
+Les logs fournis après nettoyage montrent un runtime sain :
+
+```text
+owasys-back 127.0.0.1:8080
+GET /api/v1/applications -> succès
+owasys:registry-sync -> succès
+PUT /api/v1/session/application/owasys-back -> succès
+owasys:registry-select -> succès
+owasys-front 127.0.0.1:8000
+/fr-FR/applications -> succès
+/fr-FR/data -> succès
+```
+
+Conclusion actuelle : incident lié à des processus PHP résiduels / conflit d'instance. Aucun changement `RestClient` n'est retenu.
+
+## Profiler `.lock`
+
+Des fichiers `.lock` ont été observés dans le répertoire profiler. Ils sont classés comme artefacts de synchronisation runtime à auditer séparément :
+
+- ils ne doivent jamais être exposés comme traces profiler ;
+- un lock d'une opération active peut être légitime et transitoire ;
+- un lock orphelin après terminaison normale doit être considéré comme un défaut d'hygiène runtime ;
+- aucune suppression aveugle n'est autorisée tant que la propriété et le cycle de vie exacts des locks n'ont pas été relus dans la source OPUS canonique.
+
+Ce sujet ne bloque pas R45C3R1 mais doit être traité génériquement dans OPUS si l'audit confirme un défaut.
 
 ## Livrable actif — R45C3R1
 
@@ -93,20 +119,23 @@ Aucune classe `Opus/**/*.php` n'est modifiée.
 
 ## Validation requise
 
-1. reset owner vers GitHub R45C2 après branche de sauvegarde ;
-2. appliquer R45C3R1 ;
-3. lint/autoload/FSM ;
-4. lancer backend 8080 ;
-5. lancer frontend 8000 ;
-6. valider `/fr-FR/applications` ;
-7. valider navigation et projection FSM ;
-8. valider sélection/création ;
-9. valider preview R45C2 ;
-10. owner commit/push seulement après succès.
+1. arrêter les serveurs de développement et vérifier l'absence de processus PHP résiduel ;
+2. reset owner vers GitHub R45C2 après branche de sauvegarde ;
+3. appliquer R45C3R1 ;
+4. lint/autoload/FSM ;
+5. lancer backend 8080 ;
+6. lancer frontend 8000 ;
+7. valider `/fr-FR/applications` ;
+8. valider navigation et projection FSM ;
+9. valider sélection/création ;
+10. valider preview R45C2 ;
+11. owner commit/push seulement après succès.
 
 ## Suite gouvernée
 
 R45D Sécurité/RBAC seulement après acquisition R45C3R1.
+
+L'audit générique du cycle de vie des `.lock` du Profiler peut être mené en parallèle en lecture seule, mais toute correction OPUS correspondante reste soumise à la source canonique et à un livrable séparé.
 
 NO SITE-SPECIFIC PATCH.
 NO SILENT FALLBACK.
