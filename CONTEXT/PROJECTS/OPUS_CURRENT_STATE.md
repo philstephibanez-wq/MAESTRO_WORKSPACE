@@ -2,52 +2,80 @@
 
 Dernière mise à jour : 2026-08-09.
 
-## Dépôt publié
+## Dépôt canonique
 
 ```text
 OPUS : philstephibanez-wq/OPUS
-Branche canonique distante : master
+Branche : master
 origin/master : 058984bfb0229bf5f27c74cd2b59c6614bf74b4e
 Commit : opus_p117w_r45c2_dev_preview_runtime_fix
 Dernier état acquis publié : R45C2
 ```
 
-Relecture GitHub effectuée le 2026-08-09 : `058984bf` reste le dernier commit publié. Les commits owner locaux `0e0e5485` et `5994903d` ne sont pas accessibles dans le dépôt canonique.
+L'owner a explicitement demandé de repartir de GitHub pour récupérer les deux livraisons locales non acquises.
 
-## État owner local
-
-Après `git fetch origin` :
+## État local avant récupération
 
 ```text
-## master...origin/master [ahead 2]
 5994903d (HEAD -> master) cleanup
 0e0e5485 opus_p117w_r45c3_structured_workflow_sequence
 058984bf (origin/master, origin/HEAD) opus_p117w_r45c2_dev_preview_runtime_fix
-5770a144 opus_p117w_r45c1_dev_preview_button
-6b3665c4 opus_p117w_r45b6_permission_surface_consistency
 ```
 
-`git status --short` est vide.
+Working tree : propre.  
+Branche locale : ahead 2.
 
-Le HEAD owner réel est donc :
+Plan de récupération : sauvegarder `5994903d` sur une branche locale puis replacer `master` sur `origin/master`.
+
+## R45C3 / R45C4 historiques
+
+R45C3 précédent : NON ACQUIS.  
+R45C4 : RETIRÉ / INVALIDÉ.
+
+Ils ne servent pas de source au nouveau livrable.
+
+## Diagnostic GitHub de l'incident HTTP 500
+
+Pile owner :
 
 ```text
-5994903d cleanup
+owasys-front
+-> RegistryModel::synchronize()
+-> Opus\Api\Rest\RestClient::request()
+-> fopen()
+-> Maximum execution time exceeded
 ```
 
-La branche locale est propre et en avance de deux commits sur `origin/master`.
+Source canonique :
 
-## R45C3
+- `RegistryModel` appelle REST `/api/v1/applications` ;
+- le frontend a pour peer `owasys-back` ;
+- frontend dev : `127.0.0.1:8000` ;
+- backend dev : `127.0.0.1:8080` ;
+- `SiteCommandService::devServer()` lance uniquement l'application demandée ;
+- le peer est injecté et validé, sans auto-start cross-application.
 
-Commit local owner :
+Le test owner précédent montrait uniquement le lancement du frontend. La pile est cohérente avec un backend absent ou indisponible. Aucun changement `RestClient` n'est retenu dans la récupération.
+
+## Livrable actif — R45C3R1
 
 ```text
-0e0e5485 opus_p117w_r45c3_structured_workflow_sequence
+opus_p117w_r45c3r1_github_recovery_structured_workflow.zip
+SHA-256 d54fb21ca36288dbd9d7db279b92cacc55b34715cb5572be34ab2ca79496e2e7
+BASE 058984bfb0229bf5f27c74cd2b59c6614bf74b4e
+FILES 2
 ```
 
-Statut fonctionnel : NON ACQUIS.
+Fichiers :
 
-La projection OWASYS visible montre :
+```text
+sites/owasys-front/config/fsm.json
+sites/owasys-front/application/creation/controllers/CreationController.php
+```
+
+Le ZIP est différentiel direct et ne contient aucun script, smoke, rapport, log ou temporaire.
+
+## R45C3R1 — workflow cible
 
 ```text
 Applications
@@ -59,94 +87,26 @@ Applications
 -> Construction et validation
 ```
 
-Mais la validation runtime complète a échoué sur la navigation vers `Applications`.
+Sélection ou création : entrée dans `Sources de données`.
 
-Le commit local `5994903d cleanup` est postérieur à R45C3 et constitue désormais la base réelle du diagnostic.
+Aucune classe `Opus/**/*.php` n'est modifiée.
 
-## R45C4
+## Validation requise
 
-Statut : RETIRÉ / INVALIDÉ.
-
-Ne plus utiliser l'ancien ZIP, le script `apply_*` ni le smoke associé.
-
-Aucune hypothèse issue de R45C4 n'est considérée acquise avant relecture de la source live `5994903d`.
-
-## Incident runtime actif
-
-URL :
-
-```text
-http://127.0.0.1:8000/fr-FR/applications
-```
-
-Résultat : HTTP 500.
-
-Pile précédente disponible :
-
-```text
-owasys-front
--> RegistryModel::synchronize()
--> Opus\Api\Rest\RestClient::request()
--> fopen()
--> Maximum execution time exceeded
-```
-
-La cause doit être réétablie sur les fichiers exacts du HEAD `5994903d` et avec l'état effectif de `owasys-back`.
-
-## Source owner préparée
-
-L'owner a créé :
-
-```text
-%USERPROFILE%\Downloads\opus_5994903d_live_source.zip
-```
-
-avec notamment :
-
-```text
-Opus/Api/Rest/RestClient.php
-Opus/Api/Rest/RestClientInterface.php
-sites/owasys-front/config/rest-api.json
-sites/owasys-front/config/site.json
-sites/owasys-front/config/fsm.json
-sites/owasys-front/application/creation/controllers/CreationController.php
-sites/owasys-front/application/registry/models/RegistryModel.php
-sites/owasys-front/application/registry/controllers/RegistryController.php
-sites/owasys-front/application/default/controllers/RuntimeController.php
-sites/owasys-back/config/site.json
-```
-
-Le ZIP n'est pas encore attaché à la conversation et n'est pas disponible via GitHub. Il doit être relu avant tout nouveau patch OPUS/OWASYS.
-
-## Gate actif
-
-```text
-NO SOURCE OF TRUTH, NO PATCH.
-NO CONTRACT, NO PATCH.
-NO BRICOLAGE DELIVERY.
-```
-
-## Contrat du prochain livrable
-
-Le prochain ZIP différentiel OPUS/OWASYS devra :
-
-- être basé exclusivement sur les fichiers live exacts `5994903d` ;
-- contenir uniquement les fichiers complets modifiés à leurs chemins finaux ;
-- ne contenir aucun script `apply_*`, smoke, rapport, log, cache, temporaire ou dépendance ;
-- conserver les interfaces homonymes et les quatre marqueurs pour toute classe OPUS touchée ;
-- respecter REST sécurisé, Logger/Profiler, FSM, ACL, SSO et séparation front/back ;
-- ne contenir aucun JavaScript/TypeScript côté `owasys-back` ;
-- être validé end-to-end avec `owasys-back` puis `owasys-front` ;
-- être commit/push dans OPUS exclusivement par l'owner après validation.
+1. reset owner vers GitHub R45C2 après branche de sauvegarde ;
+2. appliquer R45C3R1 ;
+3. lint/autoload/FSM ;
+4. lancer backend 8080 ;
+5. lancer frontend 8000 ;
+6. valider `/fr-FR/applications` ;
+7. valider navigation et projection FSM ;
+8. valider sélection/création ;
+9. valider preview R45C2 ;
+10. owner commit/push seulement après succès.
 
 ## Suite gouvernée
 
-1. attacher et relire `opus_5994903d_live_source.zip` ;
-2. diagnostiquer le HTTP 500 sur cette source ;
-3. statuer sur R45C3 ;
-4. livrer le correctif direct conforme ;
-5. valider runtime front + back ;
-6. seulement après acquisition stable, reprendre R45D Sécurité/RBAC.
+R45D Sécurité/RBAC seulement après acquisition R45C3R1.
 
 NO SITE-SPECIFIC PATCH.
 NO SILENT FALLBACK.
