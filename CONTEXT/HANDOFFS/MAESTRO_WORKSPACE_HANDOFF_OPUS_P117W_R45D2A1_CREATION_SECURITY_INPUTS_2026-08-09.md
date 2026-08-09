@@ -39,7 +39,16 @@ Le provider reste un choix explicite. Public + provider autre que `session` rest
 
 La case indépendante `login_page` et le champ indépendant `home_roles` sont retirés du formulaire ; leurs valeurs calculées restent visibles dans le récapitulatif.
 
-## Fichiers cibles
+## Livrable
+
+```text
+ZIP     : opus_p117w_r45d2a1_creation_security_input_canonicalization.zip
+SHA-256 : 3827223744bd55a2fe0ef9060cd4783cbaa800c06d1cdbddd289b1ddb385239f
+BASE    : 4be105ebbc81b3164d7dcc26aa69ddd7400d2dd2
+FILES   : 2
+```
+
+Fichiers :
 
 ```text
 sites/owasys-front/application/creation/controllers/CreationController.php
@@ -53,7 +62,7 @@ Aucun fichier `Opus/**/*.php`, backend, site `essai`, catalogue I18n ou sécurit
 ```text
 PHP lint controller        OK
 public + session           OK
-public + auth0             reject explicite
+public + auth0             rejet explicite
 required + session         OK / no login
 required + local-password  OK / login
 required + auth0           OK / no login
@@ -62,13 +71,20 @@ new I18n keys              0
 backend JS/Node delta      0
 ```
 
+## Gate local-password distinct
+
+Le scaffold canonique ne versionne aucun secret. Pour `local-password`, l'onboarding généré porte `password-setup-required` et référence `var/auth/local-users.json`; la présence d'une page login ne constitue donc pas à elle seule un provisionnement de mot de passe initial.
+
+R45D2A1 corrige le défaut de création du blueprint. Le provisionnement runtime initial d'un credential local, s'il est requis par l'owner, doit rester une évolution séparée et sécurisée : aucun mot de passe dans Git, logs, Profiler, argv ou ZIP.
+
 ## Gate suivant
 
-Owner applique le ZIP R45D2A1, relance `owasys-back` puis `owasys-front`, et teste les quatre combinaisons canoniques depuis une création neuve.
+Owner applique le ZIP R45D2A1, relance si nécessaire `owasys-back` puis `owasys-front`, et teste les quatre combinaisons canoniques depuis une création neuve.
 
-Après acquisition, reprendre la validation R45D2 des mutations de sécurité sur un site généré.
+Après acquisition, reprendre la validation R45D2 des mutations de sécurité sur un site généré puis traiter le provisioning runtime local-password si nécessaire.
 
 NO VALIDATOR RELAXATION.
 NO SILENT FALLBACK.
 NO SITE-SPECIFIC PATCH.
+NO SECRET VERSIONING.
 NO PUSH OPUS BY ASSISTANT.
