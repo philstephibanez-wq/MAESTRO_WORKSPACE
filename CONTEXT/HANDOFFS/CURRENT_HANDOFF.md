@@ -34,7 +34,7 @@ GitHub `origin/master` reste sur cette base.
 058984bf origin/master
 ```
 
-La working tree est propre. Les deux commits locaux doivent être sauvegardés sur une branche locale puis `master` doit être replacé exactement sur `origin/master`.
+La working tree était propre. Les deux commits locaux doivent être sauvegardés sur une branche locale puis `master` doit être replacé exactement sur `origin/master` avant application du livrable de récupération.
 
 ## Incident précédent
 
@@ -51,7 +51,7 @@ owasys-front
 -> Maximum execution time exceeded
 ```
 
-## Cause réétablie depuis GitHub
+## Cause runtime rétablie
 
 Le Registry frontend utilise obligatoirement le REST sécurisé vers `owasys-back`.
 
@@ -64,7 +64,22 @@ owasys-back  : http://127.0.0.1:8080
 
 Le service `opus:dev-server` lance uniquement l'application demandée ; le peer déclaré est validé/injecté dans l'environnement mais n'est pas auto-démarré.
 
-Le retour owner ayant montré uniquement `composer opus:dev-server -- owasys-front`, la pile timeout est cohérente avec un backend absent ou indisponible. R45C3R1 ne modifie donc pas `RestClient` et rétablit la validation avec les deux bastions lancés séparément, backend d'abord.
+Le 2026-08-09, l'owner a identifié deux processus PHP résiduels en mémoire. Après arrêt forcé de ces deux processus et suppression du site de test, OWASYS est reparti normalement.
+
+Les logs fournis après nettoyage confirment :
+
+```text
+owasys-back actif 127.0.0.1:8080
+GET /api/v1/applications OK
+owasys:registry-sync OK
+PUT /api/v1/session/application/owasys-back OK
+owasys:registry-select OK
+owasys-front actif 127.0.0.1:8000
+/fr-FR/applications OK
+/fr-FR/data OK
+```
+
+Le timeout précédent est donc classé comme incident runtime lié à des processus PHP résiduels / conflit d'instance. Aucun patch `RestClient` n'est retenu. R45C4 reste retiré.
 
 ## Livrable actif — R45C3R1
 
@@ -98,24 +113,38 @@ Applications
 
 Sélection d'une application existante ou création réussie : `Sources de données`.
 
-## Gates owner
+## Profiler `.lock`
 
-1. sauvegarde branche locale de `5994903d` ;
-2. reset `master` sur `origin/master` ;
-3. HEAD exact `058984bf` et working tree propre ;
-4. extraction directe du ZIP ;
-5. PHP lint + chargement FSM via `StructuredFileLoader` + autoload Composer ;
-6. lancer `owasys-back` sur 8080 ;
-7. lancer `owasys-front` sur 8000 ;
-8. `/fr-FR/applications` sans HTTP 500 ;
-9. ordre navigation/FSM conforme ;
-10. sélection/création -> `Sources de données` ;
-11. preview R45C2 toujours fonctionnelle ;
-12. commit/push OPUS uniquement par l'owner après succès.
+Des `.lock` ont été observés dans le répertoire profiler. Ce point est désormais un suivi OPUS générique distinct :
+
+- aucun `.lock` ne doit être exposé comme trace ;
+- un lock actif peut être transitoire ;
+- un lock orphelin persistant après terminaison normale doit être traité à la source ;
+- aucune suppression aveugle n'est autorisée sans relecture du cycle de vie réel des locks dans OPUS.
+
+Ce suivi ne remplace ni ne bloque l'acquisition R45C3R1.
+
+## Gates owner R45C3R1
+
+1. arrêter les serveurs de développement et vérifier qu'aucun PHP résiduel ne conserve 8000/8080 ;
+2. sauvegarder la pile locale `5994903d` ;
+3. reset `master` sur `origin/master` ;
+4. HEAD exact `058984bf` et working tree propre ;
+5. extraction directe du ZIP ;
+6. PHP lint + chargement FSM via `StructuredFileLoader` + autoload Composer ;
+7. lancer `owasys-back` sur 8080 ;
+8. lancer `owasys-front` sur 8000 ;
+9. `/fr-FR/applications` sans HTTP 500 ;
+10. ordre navigation/FSM conforme ;
+11. sélection/création -> `Sources de données` ;
+12. preview R45C2 toujours fonctionnelle ;
+13. commit/push OPUS uniquement par l'owner après succès.
 
 ## Suite
 
 R45D Sécurité/RBAC reste suspendu jusqu'à acquisition R45C3R1.
+
+L'audit Profiler `.lock` peut avancer en lecture seule en parallèle mais tout correctif OPUS correspondant doit faire l'objet d'un livrable séparé fondé sur la source canonique.
 
 NO SITE-SPECIFIC PATCH.
 NO SILENT FALLBACK.
