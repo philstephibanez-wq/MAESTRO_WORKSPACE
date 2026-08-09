@@ -9,103 +9,118 @@ Date : 2026-08-09
 3. `CONTEXT/PROJECTS/OPUS/OPUS_SITE_STANDARD_CONTRACT.md`
 4. `CONTEXT/SPECIFICATIONS/OWASYS_VS_GENERATED_SITE_FSM_WORKFLOW_CONTRACT_2026-08-08.md`
 5. `CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_INCIDENT_OPUS_P117W_R45C3_R45C4_DELIVERY_INVALID_2026-08-09.md`
-6. `CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OPUS_P117W_R45C3_LOCAL_CLEANUP_5994903D_2026-08-09.md`
-7. `CONTEXT/PROJECTS/OPUS_CURRENT_STATE.md`
+6. `CONTEXT/SPECIFICATIONS/OPUS_P117W_R45C3R1_GITHUB_RECOVERY_STRUCTURED_WORKFLOW_2026-08-09.md`
+7. `CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OPUS_P117W_R45C3R1_GITHUB_RECOVERY_2026-08-09.md`
+8. `CONTEXT/PROJECTS/OPUS_CURRENT_STATE.md`
 
-## Source publiée
+## Décision owner
 
-OPUS `origin/master` publie toujours :
+L'owner demande de repartir du GitHub canonique afin d'éliminer les effets des deux livraisons locales non acquises.
+
+## Base canonique OPUS
 
 ```text
 058984bfb0229bf5f27c74cd2b59c6614bf74b4e
 opus_p117w_r45c2_dev_preview_runtime_fix
 ```
 
-Relecture GitHub du 2026-08-09 : les derniers commits publiés restent R45C2, R45C1 et R45B6 ; les commits owner locaux `0e0e5485` et `5994903d` ne sont toujours pas présents sur le dépôt canonique.
+GitHub `origin/master` reste sur cette base.
 
-R45C2 reste le dernier état acquis publié.
-
-## État owner local exact
-
-Après `git fetch origin` :
+État local owner avant récupération :
 
 ```text
-## master...origin/master [ahead 2]
-5994903d (HEAD -> master) cleanup
+5994903d cleanup
 0e0e5485 opus_p117w_r45c3_structured_workflow_sequence
-058984bf (origin/master, origin/HEAD) opus_p117w_r45c2_dev_preview_runtime_fix
+058984bf origin/master
 ```
 
-`git status --short` est vide : working tree propre.
+La working tree est propre. Les deux commits locaux doivent être sauvegardés sur une branche locale puis `master` doit être replacé exactement sur `origin/master`.
 
-La base effective de travail owner est donc `5994903d`.
+## Incident précédent
 
-## R45C3 / R45C4
+R45C3 précédent : NON ACQUIS.  
+R45C4 précédent : RETIRÉ / INVALIDÉ.
 
-R45C3 existe comme commit local owner `0e0e5485`, mais reste NON ACQUIS : la projection FSM est correcte, la validation runtime complète n'est pas acquise.
-
-R45C4 est RETIRÉ / INVALIDÉ et ne doit plus être utilisé.
-
-## Incident runtime actif
-
-URL observée :
-
-```text
-http://127.0.0.1:8000/fr-FR/applications
-```
-
-Résultat : HTTP 500.
-
-Pile antérieure :
+Pile owner observée :
 
 ```text
 owasys-front
 -> RegistryModel::synchronize()
--> Opus\Api\Rest\RestClient::request()
+-> RestClient::request()
 -> fopen()
 -> Maximum execution time exceeded
 ```
 
-Le diagnostic doit être repris sur la source exacte `5994903d` et avec l'état réel des deux bastions.
+## Cause réétablie depuis GitHub
 
-## Source live owner
+Le Registry frontend utilise obligatoirement le REST sécurisé vers `owasys-back`.
 
-L'owner a préparé localement :
-
-```text
-%USERPROFILE%\Downloads\opus_5994903d_live_source.zip
-```
-
-Ce ZIP contient le sous-ensemble critique RestClient / Registry / Runtime / configurations front-back demandé.
-
-Au 2026-08-09, ce ZIP n'est pas attaché à la conversation et n'est pas accessible via GitHub. Il doit être fourni avant toute modification OPUS/OWASYS.
-
-## Gate actif
+Configuration canonique de développement :
 
 ```text
-NO CONTRACT, NO PATCH.
-NO SOURCE OF TRUTH, NO PATCH.
-NO BRICOLAGE DELIVERY.
+owasys-front : http://127.0.0.1:8000
+owasys-back  : http://127.0.0.1:8080
 ```
 
-Aucun nouveau ZIP OPUS/OWASYS ne doit être généré tant que la source `5994903d` n'a pas été relue.
+Le service `opus:dev-server` lance uniquement l'application demandée ; le peer déclaré est validé/injecté dans l'environnement mais n'est pas auto-démarré.
 
-## Prochain livrable
+Le retour owner ayant montré uniquement `composer opus:dev-server -- owasys-front`, la pile timeout est cohérente avec un backend absent ou indisponible. R45C3R1 ne modifie donc pas `RestClient` et rétablit la validation avec les deux bastions lancés séparément, backend d'abord.
 
-Après lecture de `opus_5994903d_live_source.zip` :
+## Livrable actif — R45C3R1
 
-1. établir la cause exacte du HTTP 500 / transport REST ;
-2. statuer factuellement sur R45C3 ;
-3. produire un ZIP différentiel direct contenant uniquement les fichiers complets modifiés à leurs chemins finaux ;
-4. aucun `apply_*`, smoke, rapport, log, cache, temporaire ou dépendance ;
-5. valider front + back end-to-end ;
-6. commit/push OPUS uniquement par l'owner après succès.
+```text
+ZIP     : opus_p117w_r45c3r1_github_recovery_structured_workflow.zip
+SHA-256 : d54fb21ca36288dbd9d7db279b92cacc55b34715cb5572be34ab2ca79496e2e7
+BASE    : 058984bfb0229bf5f27c74cd2b59c6614bf74b4e
+FILES   : 2
+```
 
-R45D Sécurité/RBAC reste suspendu jusqu'à acquisition stable du runtime R45C3.
+Contenu exclusif :
+
+```text
+sites/owasys-front/config/fsm.json
+sites/owasys-front/application/creation/controllers/CreationController.php
+```
+
+Aucun `apply_*`, smoke, rapport, log, cache, temporaire ou dépendance.
+
+## Comportement cible
+
+```text
+Applications
+-> Sources de données
+-> Structure
+-> Sécurité
+-> Workflows
+-> Sources et Git
+-> Construction et validation
+```
+
+Sélection d'une application existante ou création réussie : `Sources de données`.
+
+## Gates owner
+
+1. sauvegarde branche locale de `5994903d` ;
+2. reset `master` sur `origin/master` ;
+3. HEAD exact `058984bf` et working tree propre ;
+4. extraction directe du ZIP ;
+5. PHP lint + chargement FSM via `StructuredFileLoader` + autoload Composer ;
+6. lancer `owasys-back` sur 8080 ;
+7. lancer `owasys-front` sur 8000 ;
+8. `/fr-FR/applications` sans HTTP 500 ;
+9. ordre navigation/FSM conforme ;
+10. sélection/création -> `Sources de données` ;
+11. preview R45C2 toujours fonctionnelle ;
+12. commit/push OPUS uniquement par l'owner après succès.
+
+## Suite
+
+R45D Sécurité/RBAC reste suspendu jusqu'à acquisition R45C3R1.
 
 NO SITE-SPECIFIC PATCH.
 NO SILENT FALLBACK.
 NO REST BYPASS.
+NO AUTO-START CROSS-APPLICATION.
 NO FSM MERGE.
 NO ROLE MERGE.
 NO ACL BYPASS.
