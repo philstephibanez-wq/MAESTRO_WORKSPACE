@@ -1,23 +1,34 @@
 # OPUS P117W R45D1 — SECURITY SNAPSHOT WORKSPACE
 
 Date : 2026-08-09  
-Statut : LIVRABLE OWNER À VALIDER
+Statut : ACQUIS / PUBLIÉ — VALIDATION RUNTIME OWNER PARTIELLE CONFIRMÉE
 
-## Base canonique
+## Base de construction
 
 ```text
-OPUS/master
 730f19032a5b69c66c14d4d4401813e0638353d1
 opus_p117w_r45c3r1_github_recovery_structured_workflow
 ```
 
-R45D1 repart exclusivement de cette source GitHub canonique.
+## Publication acquise
 
-## Objet
+R45D1 a été appliqué, committé et poussé par l'owner :
 
-R45D1 remplace l'écran `Sécurité` encore non implémenté par un workspace de sécurité réel, en lecture seule, pour l'application OPUS actuellement sélectionnée dans OWASYS.
+```text
+OPUS/master
+af8ac2f5ed2c9d2d528b5f94863d018d3c7aa121
+opus_p117w_r45d1_security_snapshot_workspace
+```
 
-Le flux reste strictement :
+Le screenshot owner reçu le 2026-08-09 confirme `/fr-FR/security` avec `owasys-back` sélectionné : workspace `Sécurité` réellement rendu, mode lecture seule, ACL `OPUS_ACL_POLICY_V1`, SSO `OPUS_SSO_CONFIGURATION_V1`, politique `deny`, fournisseur par défaut `auth0-proxy`, fournisseurs `auth0-proxy` et `service-hmac`, aucune identité initiale.
+
+L'absence d'identités est cohérente avec l'absence de `security.onboarding.json` sur cette cible système. Cette preuve confirme la disparition du pending/HTTP 501 pour cette vue. Elle ne vaut pas validation complète des cinq vues, du maintien de vue au changement de langue ou de la corrélation Profiler distribuée.
+
+## Objet acquis
+
+R45D1 remplace l'écran `Sécurité` non implémenté par un workspace réel, en lecture seule, de la sécurité de l'application OPUS sélectionnée dans OWASYS.
+
+Flux :
 
 ```text
 SCORE
@@ -36,19 +47,19 @@ Aucune lecture directe de la sécurité cible n'est effectuée par `owasys-front
 
 ## Vues R45D1
 
-Le workspace expose cinq vues distinctes, conservant le même état FSM OWASYS `security` :
-
-1. Identités ;
-2. Rôles ;
-3. Permissions ;
-4. Attributions ;
-5. Ressources et ACL.
+```text
+Identités
+Rôles
+Permissions
+Attributions
+Ressources et ACL
+```
 
 Le sélecteur utilise `GET /<locale>/security?view=...` et ne dépend pas de JavaScript.
 
 ## Séparation des référentiels
 
-R45D1 affiche la sécurité de l'application cible sélectionnée. Il ne fusionne jamais les rôles OWASYS avec les rôles de cette application.
+R45D1 affiche la sécurité de l'application cible sélectionnée sans fusion avec la sécurité propre d'OWASYS.
 
 ```text
 NO ROLE MERGE.
@@ -56,11 +67,11 @@ NO FSM MERGE.
 NO ACL BYPASS.
 ```
 
-L'administration des utilisateurs/rôles propres à OWASYS reste un référentiel distinct.
+```text
+LE DROIT APPARTIENT À LA RESSOURCE, PAS AU BOUTON.
+```
 
-## Contrats de sécurité lus
-
-Le backend accepte explicitement les contrats actuellement canoniques :
+## Contrats lus
 
 ```text
 ACL : OPUS_ACL_POLICY_V1
@@ -70,15 +81,13 @@ SSO : OPUS_GENERATED_APPLICATION_SSO_V1
 ONBOARDING optionnel : OPUS_SECURITY_ONBOARDING_V1
 ```
 
-Tout autre contrat est rejeté explicitement.
-
-L'absence de `security.onboarding.json` est exposée comme absence ; aucun utilisateur ou rôle n'est inventé.
+Tout autre contrat est rejeté explicitement. L'absence de `security.onboarding.json` est exposée comme absence ; aucun utilisateur, rôle ou mapping inexistant n'est inventé.
 
 Pour les stores `local-password`, seuls les champs non secrets sont projetés. Aucun `password_hash`, mot de passe, token, secret HMAC ou secret proxy n'est renvoyé au frontend, loggé ou profilé.
 
-## Modèle de snapshot
+## Snapshot
 
-Contrat réponse :
+Contrat :
 
 ```text
 OWASYS_SECURITY_SNAPSHOT_V1
@@ -97,19 +106,9 @@ assignments
 resources
 ```
 
-Pour `OPUS_ACL_POLICY_V1`, les associations rôle-permission sont réelles et peuvent être affichées.
-
-Pour `OPUS_GENERATED_APPLICATION_ACL_V1`, le contrat actuel ne persiste pas encore un mapping complet rôle -> permission. R45D1 l'indique explicitement et n'invente aucune association. Les politiques ressource -> rôles et la liste des permissions restent affichées telles qu'elles existent.
-
-Principe conservé :
-
-```text
-LE DROIT APPARTIENT À LA RESSOURCE, PAS AU BOUTON.
-```
+Pour `OPUS_ACL_POLICY_V1`, les associations rôle-permission réellement déclarées sont affichées. Pour `OPUS_GENERATED_APPLICATION_ACL_V1`, R45D1 n'invente pas une association rôle-permission lorsque le contrat ne la persiste pas explicitement.
 
 ## REST / Composer
-
-Nouvelle ressource REST :
 
 ```text
 GET /api/v1/applications/{site_id}/security
@@ -117,83 +116,57 @@ operation = security.snapshot
 status = 200
 ```
 
-Nouvelle commande publique allow-listée :
-
 ```text
 owasys:security-snapshot
 -> owasys:security:snapshot
 ```
 
-Rôles backend autorisés en lecture :
+Lecture backend autorisée aux rôles OWASYS `admin`, `developer`, `viewer`, avec ACL `security:read` côté back et `security:open` côté front.
 
-```text
-admin
-developer
-viewer
-```
+## I18n / SCORE
 
-Le backend applique en plus l'ACL `security:read`. `admin` conserve `*:*`.
-
-## FSM / UI
-
-`OwasysSecurityController` est un contrôleur applicatif OWASYS dédié. Il :
-
-- exige une identité OWASYS authentifiée ;
-- exige une application courante ;
-- applique `security:open` côté frontend ;
-- effectue la transition FSM `open_security` ;
-- interroge ensuite le backend par REST sécurisé ;
-- rend exclusivement `security/templates/index.score`.
-
-Aucun HTML n'est concaténé en PHP et aucun `echo` UI n'est ajouté.
-
-## I18n
-
-Le module fournit un catalogue de base pour toutes les langues OPUS supportées de l'Union européenne et l'ukrainien :
+R45D1 reste SCORE-only et fournit les catalogues de base pour :
 
 ```text
 bg hr cs da nl en et fi fr de el hu ga it lv lt mt pl pt ro sk sl es sv uk
 ```
 
-Les variantes régionales continuent à utiliser la chaîne de fallback OPUS existante.
+Les variantes régionales utilisent la chaîne de fallback OPUS.
 
-## Livrable
+## Livrable acquis
 
 ```text
 ZIP     : opus_p117w_r45d1_security_snapshot_workspace.zip
 SHA-256 : 3eb28c2e13b4c3b7f511564c524eaea47d4dad9c6b61041375cab5cf2c68eb27
 BASE    : 730f19032a5b69c66c14d4d4401813e0638353d1
 FILES   : 38
+COMMIT  : af8ac2f5ed2c9d2d528b5f94863d018d3c7aa121
 ```
 
-Le ZIP ne contient que des fichiers complets à leurs chemins finaux. Aucun apply script, smoke, rapport, log, cache, temporaire, `vendor`, JavaScript backend ou dépendance Node n'est livré.
+## Validation
 
-## Validation déjà effectuée hors runtime owner
+Statique :
 
-- PHP lint : 5 fichiers PHP modifiés/créés OK ;
-- parsing JSON : 32 fichiers JSON du livrable OK ;
-- cohérence REST front/back : ressource `security.snapshot` identique ;
-- cohérence operation -> script Composer -> alias provider vérifiée ;
-- 25 catalogues de langue module présents ;
-- aucun `.js/.mjs/.cjs/.ts/.tsx`, `package.json`, lockfile npm/yarn/pnpm dans `sites/owasys-back` du livrable ;
-- aucune classe `Opus/**/*.php` modifiée par R45D1.
+```text
+PHP lint                 OK
+JSON                     OK
+REST front/back          cohérent
+Composer allow-list      cohérent
+I18n base                25 catalogues
+backend JS/Node delta    0
+Opus/**/*.php modifié    0
+```
 
-## Gate owner
+Runtime owner confirmé à ce stade :
 
-1. HEAD OPUS exact sur la base indiquée avant extraction ;
-2. extraire le ZIP dans `H:\OPUS` ;
-3. lint PHP ;
-4. parsing JSON via `StructuredFileLoader` ;
-5. `composer dump-autoload -o` ;
-6. lancer `owasys-back`, puis `owasys-front` ;
-7. sélectionner une application ;
-8. ouvrir `Sécurité` ;
-9. vérifier absence de HTTP 501 / écran pending ;
-10. vérifier les cinq vues ;
-11. vérifier que le changement de langue conserve la vue de sécurité ;
-12. vérifier la corrélation Profiler front -> REST -> back -> Composer -> réponse ;
-13. owner commit/push uniquement après succès.
+```text
+/fr-FR/security sur owasys-back : OK
+pending/501 : absent sur cette vue
+snapshot système read-only : cohérent
+```
+
+Restent non prouvés par ce seul screenshot : cinq vues complètes, changement de langue conservant la vue et corrélation Profiler distribuée complète.
 
 ## Suite
 
-R45D2 portera les mutations de sécurité cible : preview déterministe, confirmation explicite, écriture atomique, validation avant commit, rollback en cas d'échec et audit. R45D1 ne modifie aucune sécurité cible.
+R45D2 porte les premières mutations additives de sécurité cible avec preview déterministe, confirmation explicite, réauthentification, contrôle de concurrence, écriture atomique, validation, rollback et audit. Les mutations destructives restent hors R45D2.
