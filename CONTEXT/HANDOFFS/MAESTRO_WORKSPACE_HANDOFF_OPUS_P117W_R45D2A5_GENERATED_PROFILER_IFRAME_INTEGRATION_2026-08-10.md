@@ -14,13 +14,13 @@ R45D2A3 est publié et fournit l’observabilité du login généré.
 
 Sur `essai2`, le lien Profiler ouvre `/_opus/profiler/trace/<trace_id>` dans la fenêtre principale. Le Profiler remplace donc la page de login alors que le contrat UI attendu est un Profiler embarqué.
 
-La route Web Profiler fonctionne ; la régression est dans son intégration à la page générée.
+La route Web Profiler fonctionne ; la régression est dans son intégration à la page générée. La capture montre également `SCORE = 0` malgré le rendu d’une page SCORE ; le runtime ne transmettait pas encore le Profiler aux renderers SCORE principaux.
 
 ## Livrable R45D2A5
 
 ```text
 ZIP     : opus_p117w_r45d2a5_generated_profiler_iframe_integration.zip
-SHA-256 : 9ee324fae8a26f6d5083951cfc182c9d9709fb2f874e91747cbf29f8508d74bd
+SHA-256 : 08072a4a09963ce1f0e6dc61fece6be769cb43d54fb7bda3163a62acb757c1a5
 BASE    : dfab7d0ae9fe8456887ff3f1f0280c0141f27b26
 FILES   : 3
 ```
@@ -33,7 +33,7 @@ Opus/Application/Runtime/templates/profiler-iframe.score
 Opus/Profiler/ProfilerConfiguration.php
 ```
 
-Effet attendu : page applicative conservée + trace courante dans iframe SCORE same-origin. Le lien direct historique est neutralisé dans le ViewModel après composition de l’iframe.
+Effet attendu : page applicative conservée + trace courante dans iframe SCORE same-origin. Le lien direct historique est neutralisé dans le ViewModel après composition de l’iframe. Les renderers SCORE page/erreur/iframe alimentent le Profiler actif.
 
 ## Login `essai2`
 
