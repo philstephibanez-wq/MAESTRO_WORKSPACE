@@ -7,9 +7,11 @@ Dernière mise à jour : 2026-08-10.
 ```text
 OPUS : philstephibanez-wq/OPUS
 Branche : master
-origin/master : 31f6c142a1b41a16d6f1cdc17cd48f3d866c3b33
-Commit : opus_p117w_r45d2a10_login_prg_profiler_correlation
+origin/master : 76b25c1b2bace4598f3535101a46283fa52684f5
+Commit : test
 ```
+
+Le commit `76b25c1b...` ne touche que `sites/essai2/config/site.json` (`site_name: OPUS essai2 -> essai2`). Le dernier livrable framework/OWASYS publié est R45D2A11 sous `509904785c8d9d4b2e6deed7314e1e690c0ee211`.
 
 ## États acquis
 
@@ -21,54 +23,45 @@ Commit : opus_p117w_r45d2a10_login_prg_profiler_correlation
 - R45D2A7 : projection hiérarchique Profiler acquise.
 - R45D2A8 : diagnostic local-password détaillé acquis.
 - R45D2A9B : message utilisateur login I18n + PRG acquis.
-- R45D2A10 : corrélation trace POST login à travers PRG publiée sous `31f6c142...`.
+- R45D2A10 : corrélation trace POST login à travers PRG acquise.
+- R45D2A11 : reset administrateur local-password + alerte login standardisée acquis ; `essai2/steve` se connecte avec succès.
 
-## Preuve essai2
+## Preuve owner courante
 
-Le credential `steve` existe mais le password soumis ne correspond pas au hash :
+Dans OWASYS Sources/Git, le compte admin + développeur peut effectivement modifier puis enregistrer `sites/essai2/config/site.json`. Le commit owner `76b25c1b...` prouve la mutation effective.
+
+Cependant l'UI affiche simultanément `source.read_only`.
+
+## Cause courante
+
+Dans `OwasysSourceController`, la décision ACL réelle est `$roleCanWrite`, mais `read_only` est calculé depuis `!$editable`, où `$editable` dépend aussi de `$selectedPresent`.
+
+Au rendu initial sans sélection, l'UI annonce donc faussement une restriction de rôle. Le chargement AJAX de la sélection active ensuite l'éditeur selon `$roleCanWrite`, ce qui produit l'incohérence observée.
+
+## Livrable actif — R45D2A12
 
 ```text
-OPUS_SSO_LOCAL_PASSWORD_INVALID
+ZIP     : opus_p117w_r45d2a12_source_acl_ui_truth.zip
+SHA-256 : 98dc1db93358d5d3b6e6d9c2fda564898a9bb8979109dc4d3d1a9e9298b04be3
+BASE    : 76b25c1b2bace4598f3535101a46283fa52684f5
+FILES   : 2
 ```
 
-La cause technique doit rester dans Logger/Profiler. L'UI reste non discriminante.
-
-## Prochaine cause
-
-Le provisioning initial refuse volontairement d'écraser un credential existant ; aucun contrat d'administration ne permet encore de reset le password sans connaître l'ancien. Le message login est fonctionnel mais son rendu n'est pas encore un composant visuel standard.
-
-## Livrable actif — R45D2A11
-
-```text
-ZIP     : opus_p117w_r45d2a11_local_password_reset_alert.zip
-SHA-256 : 6fd302cca2867ea7e75979c62a2ad8fa8748e12d383e19d558f9f07c048d65df
-BASE    : 31f6c142a1b41a16d6f1cdc17cd48f3d866c3b33
-FILES   : 5
-```
-
-R45D2A11 ajoute :
-
-- `LocalPasswordCredentialResetter` + interface homonyme quatre marqueurs ;
-- commande Composer `opus:local-password-reset` lisant le password uniquement via STDIN ;
-- conservation de l'identité et des rôles lors du reset ;
-- alerte login SCORE/CSS standardisée, accessible ;
-- migration générique des applications Composer générées existantes.
-
-Validation assistant : les cinq PHP du ZIP sont lintés sans erreur.
+R45D2A12 aligne `source.read_only` sur la décision ACL `source/write` uniquement. Il ne modifie ni le backend write guard, ni les rôles, ni les permissions.
 
 ## Gate owner
 
-1. appliquer R45D2A11 ;
-2. exécuter l'applicateur ;
-3. lint + `composer dump-autoload -o` ;
-4. reset `essai2/steve` avec saisie sécurisée ;
-5. valider login réussi ;
-6. tester un mauvais password et contrôler l'alerte ;
-7. contrôler que le Profiler corrélé affiche toujours la cause réelle du POST.
+1. appliquer R45D2A12 ;
+2. lancer l'applicateur ;
+3. lancer le smoke ;
+4. lint + dump-autoload ;
+5. tester OWASYS Sources/Git avec admin + développeur : aucun bandeau lecture seule ;
+6. confirmer que l'enregistrement fonctionne encore ;
+7. tester ensuite une identité sans `source/write` : vraie lecture seule + refus backend.
 
 NO SITE-SPECIFIC PATCH.
-NO PASSWORD IN ARGV.
-NO SECRET IN UI/LOGS/PROFILER.
-NO MANUAL STORE EDIT.
-NO ACL/SSO RELAXATION.
-NO PUSH OPUS BY ASSISTANT.
+NO ACL BYPASS.
+NO ROLE MERGE.
+NO SECRET.
+NO BACKEND JAVASCRIPT.
+NO PUSH OPUS/OWASYS BY ASSISTANT.
