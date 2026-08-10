@@ -7,8 +7,8 @@ Dernière mise à jour : 2026-08-10.
 ```text
 OPUS : philstephibanez-wq/OPUS
 Branche : master
-origin/master : 62ed6c6b7440034c5855e310899fb11d605fdf00
-Commit : opus_p117w_r45d2a5_generated_profiler_iframe_integration
+origin/master : ce7a628ddea08334b2d4139be36d12b176396c9b
+Commit : opus_p117w_r45d2a8_local_password_failure_diagnostics
 ```
 
 ## États acquis
@@ -20,12 +20,13 @@ Commit : opus_p117w_r45d2a5_generated_profiler_iframe_integration
 - R45D2A2 : redirection login + provisioning local-password runtime.
 - R45D2A3 : observabilité login publiée.
 - R45D2A5 : iframe Profiler publiée.
-- R45D2A7 : projection hiérarchique Profiler validée localement owner.
-- R45D2A8 : diagnostic local-password détaillé validé localement owner.
+- R45D2A6 : Profiler repliable validé owner.
+- R45D2A7 : projection hiérarchique Profiler publiée.
+- R45D2A8 : diagnostic local-password détaillé publié sous `ce7a628d...`.
 
 ## Site essai2 — preuve owner courante
 
-La capture owner du 2026-08-10 prouve :
+La capture owner prouve :
 
 ```text
 page /fr/login conservée
@@ -37,51 +38,53 @@ locale = fr
 error_code = OPUS_SSO_LOCAL_PASSWORD_INVALID
 ```
 
-La cause technique du refus est donc précise : le subject est trouvé et possède un hash, mais `password_verify()` échoue pour le mot de passe soumis.
+Le subject est trouvé et possède un hash ; `password_verify()` échoue pour le mot de passe soumis. Cette cause technique reste réservée au Logger/Profiler.
 
-Cette cause reste réservée au Logger/Profiler. Elle ne doit pas être affichée telle quelle au navigateur afin de ne pas exposer l'existence d'un compte.
-
-## Nouvelle exigence UI login
+## Exigence UI login
 
 Après un POST refusé :
 
-1. retour 303 vers la route login localisée ;
-2. message I18n utilisateur générique : identifiant ou mot de passe incorrect ;
-3. flash consommé après le GET suivant ;
-4. cause technique détaillée conservée dans Logger/Profiler ;
-5. aucun secret ou hash dans l'UI.
+1. flash session ;
+2. réponse 303 vers la route login localisée ;
+3. message SCORE/I18n utilisateur non discriminant ;
+4. consommation du flash après le GET suivant ;
+5. aucune cause technique, credential ou hash dans l'UI.
 
-## Livrable actif — R45D2A9
+## Incident R45D2A9
 
-```text
-ZIP     : opus_p117w_r45d2a9_login_user_feedback.zip
-SHA-256 : 776dde0bd303d5110804a14212d31786acd945dbe9c55ddaef39dd8281eb4a0f
-BASE    : 62ed6c6b7440034c5855e310899fb11d605fdf00 + R45D2A8 local
-FILES   : 4
-```
-
-R45D2A9 est cumulatif avec R45D2A8 :
+Le premier applicateur R45D2A9 a échoué avant toute écriture :
 
 ```text
-Opus/Application/Runtime/templates/profiler-iframe.score
-Opus/Profiler/WebProfilerView.php
-Opus/Security/Sso/LocalPasswordSsoProvider.php
-tools/r45d2a9_apply_login_user_feedback.php
+OPUS_R45D2A9_RUNTIME_FLASH_CONSUME_TARGET_INVALID
 ```
 
-L'applicateur est fail-fast. Il met à jour le runtime générique, le scaffold canonique et migre les catalogues login de toutes les applications Composer générées conformes au contrat. Aucun identifiant, password ou hash n'est introduit.
+Cause : ancre textuelle `profilerLinkProvider` non unique dans `GeneratedSiteRuntime.php`. Le constat owner « pas de local changes » est cohérent avec cet arrêt fail-fast.
 
-## Suite
+## Livrable actif — R45D2A9B
 
-1. owner applique R45D2A9 ;
-2. exécute `php tools/r45d2a9_apply_login_user_feedback.php` ;
-3. lint `GeneratedSiteRuntime.php`, `SiteScaffoldPlan.php`, `LocalPasswordSsoProvider.php`, `WebProfilerView.php` ;
-4. `composer dump-autoload -o` ;
-5. relance `essai2` ;
-6. teste un mauvais password : message utilisateur I18n attendu ;
-7. recharge : le flash doit disparaître ;
-8. vérifie que Profiler conserve `OPUS_SSO_LOCAL_PASSWORD_INVALID` ;
-9. provisionne/corrige ensuite le vrai password `steve` et reprend R45D2 preview/commit.
+```text
+ZIP     : opus_p117w_r45d2a9b_login_user_feedback_deterministic.zip
+SHA-256 : 86bfddcda0b5ddde9f7c6f6a0778e5e86cc893b238e437c050aca852fddf4036
+BASE    : ce7a628ddea08334b2d4139be36d12b176396c9b
+FILES   : 1
+```
+
+Fichier :
+
+```text
+tools/r45d2a9b_apply_login_user_feedback.php
+```
+
+L'applicateur cible des blocs complets et uniques du runtime canonique, corrige `GeneratedSiteRuntime`, `SiteScaffoldPlan`, puis migre génériquement les catalogues login des applications Composer générées conformes.
+
+## Validation attendue
+
+```text
+php tools\r45d2a9b_apply_login_user_feedback.php
+OPUS_R45D2A9B_APPLIED
+```
+
+Ensuite `git status --short` doit montrer des local changes sur le runtime, le scaffold et les catalogues login générés concernés. Un mauvais password doit produire le message utilisateur I18n ; le Profiler doit continuer à afficher `OPUS_SSO_LOCAL_PASSWORD_INVALID`.
 
 NO SITE-SPECIFIC PATCH.
 NO VALIDATOR RELAXATION.
