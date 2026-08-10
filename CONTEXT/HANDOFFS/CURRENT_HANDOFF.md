@@ -12,8 +12,9 @@ Date : 2026-08-10
 6. `CONTEXT/SPECIFICATIONS/OPUS_P117W_R45D2_CONTROLLED_SECURITY_MUTATIONS_2026-08-09.md`
 7. `CONTEXT/SPECIFICATIONS/OPUS_P117W_R45D2A3_GENERATED_LOGIN_OBSERVABILITY_2026-08-10.md`
 8. `CONTEXT/SPECIFICATIONS/OPUS_P117W_R45D2A4_GENERATED_PROFILER_LINK_DEV_POLICY_2026-08-10.md`
-9. `CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OPUS_P117W_R45D2A4_GENERATED_PROFILER_LINK_DEV_POLICY_2026-08-10.md`
-10. `CONTEXT/PROJECTS/OPUS_CURRENT_STATE.md`
+9. `CONTEXT/SPECIFICATIONS/OPUS_P117W_R45D2A5_GENERATED_PROFILER_IFRAME_INTEGRATION_2026-08-10.md`
+10. `CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OPUS_P117W_R45D2A5_GENERATED_PROFILER_IFRAME_INTEGRATION_2026-08-10.md`
+11. `CONTEXT/PROJECTS/OPUS_CURRENT_STATE.md`
 
 ## OPUS GitHub courant
 
@@ -24,14 +25,16 @@ f634e337ec0b5df0020bfba6eb240da0395a05bd  cleanup essai
 01b146876fd96282dfd0f618dc84341b49d6eec6  essai2 !
 ```
 
-R45D2A3 est publié.
+R45D2A3 est publié. R45D2A4 n'est pas la nouvelle cible UI : son lien direct est supersédé par R45D2A5.
 
 ## Preuves owner courantes
 
 - ignorer explicitement la déclaration retirée « Prévisualiser casse OWASYS » ;
-- `essai2` affiche sa page `/fr/login` mais refuse encore la connexion navigateur ;
+- `essai2` affiche `/fr/login` mais refuse encore la connexion navigateur ;
 - `steve` existe dans la sécurité cible avec `provider=local-password`, `status=active`, `role=admin`, `source=runtime.local-password` ;
-- aucun lien Profiler n'est visible sur `/fr/login` ;
+- le Web Profiler fonctionne et une trace est consultable ;
+- le lien Profiler remplace actuellement la page applicative par `/_opus/profiler/trace/<trace_id>` ;
+- le comportement attendu est page conservée + Profiler embarqué dans un iframe ;
 - `.lock` Profiler persistant reste normal et ne doit pas être purgé.
 
 ## Identités
@@ -47,63 +50,61 @@ identité cible -> provider + subject dans l'application sélectionnée
 
 ## Login essai2
 
-R45D2A3 journalise désormais :
+R45D2A3 journalise :
 
 ```text
 security.sso / authentication.succeeded
 security.sso / authentication.failed
 ```
 
-sans username/password/hash/POST brut. Si le login `steve` échoue encore, le prochain diagnostic doit partir du `error_code` corrélé dans `sites/essai2/var/logs/essai2.log`. Aucun correctif SSO supplémentaire n'est autorisé avant cette preuve.
+sans username/password/hash/POST brut.
 
-## Cause du Profiler absent
+La capture Profiler fournie après l'échec montre une trace avec `1` erreur mais `Security / ACL / SSO = 0`. Cette trace seule ne prouve donc pas la cause du POST de connexion. Aucun patch SSO supplémentaire ne doit être inventé avant obtention de l'`error_code` corrélé du POST `steve`.
 
-`sites/essai2/config/environment.yaml` contient :
+## Cause de la navigation Profiler
 
-```text
-environment = dev
-collect = true
-web.enabled = true
-web.links = false
-```
+La route Web Profiler autonome est correcte. La régression UX est générique : la surface générée expose `diagnostics.profiler_url` comme lien direct ; le navigateur quitte alors la page applicative.
 
-La valeur `links=false` est produite génériquement par `Opus\Scaffold\ProfilerEnvironmentScaffoldPolicy::environmentYaml()`. `GeneratedSiteRuntime` respecte cette valeur ; le template login n'est pas fautif.
+R45D2A5 conserve la route autonome comme source same-origin et compose son rendu dans un iframe SCORE à l'intérieur de la page courante. Le flag hérité de lien est neutralisé dans le ViewModel après composition pour supprimer la navigation-away des layouts déjà générés.
 
-## Livrable actif — R45D2A4
+## Livrable actif — R45D2A5
 
 ```text
-ZIP     : opus_p117w_r45d2a4_generated_profiler_link_dev_policy.zip
-SHA-256 : f503525aff801b664a3e3441fb250b202c0839cc1bb4da9a1eb0dc6107b00acb
+ZIP     : opus_p117w_r45d2a5_generated_profiler_iframe_integration.zip
+SHA-256 : 9ee324fae8a26f6d5083951cfc182c9d9709fb2f874e91747cbf29f8508d74bd
 BASE    : dfab7d0ae9fe8456887ff3f1f0280c0141f27b26
-FILES   : 2
+FILES   : 3
 ```
 
 Fichiers :
 
 ```text
+Opus/Application/Runtime/GeneratedSiteRuntime.php
+Opus/Application/Runtime/templates/profiler-iframe.score
 Opus/Profiler/ProfilerConfiguration.php
-Opus/Scaffold/ProfilerEnvironmentScaffoldPolicy.php
 ```
 
-R45D2A4 :
+R45D2A5 :
 
-- futurs sites générés dev -> `profiler.web.links=true` ;
-- sites existants lancés par `opus:dev-server` -> `OPUS_ENV=dev` active le lien si le site est lui-même configuré `environment: dev` ;
-- `collect` et `web.enabled` restent obligatoires ;
-- production guard inchangée ;
-- aucun fichier `sites/essai2` modifié ;
-- aucun changement ACL/SSO/FSM.
+- aucun fichier spécifique `sites/essai2` ;
+- surface Profiler intégrée via SCORE ;
+- iframe same-origin de la trace courante ;
+- page applicative conservée ;
+- compatibilité dev des sites générés existants via `OPUS_ENV=dev` ;
+- ACL/SSO/FSM inchangés ;
+- sidecars `.lock` inchangés.
 
 ## Gate owner immédiat
 
-1. appliquer R45D2A4 sur HEAD exact `dfab7d0...` ;
-2. lint + `composer dump-autoload -o` + `git diff --check` ;
-3. relancer preview/dev-server de `essai2` ;
-4. vérifier `OPUS Profiler` visible sur `/fr/login` et trace ouvrable ;
-5. tenter login `steve` avec le password provisionné pour `essai2` ;
-6. si échec, fournir les dernières lignes de `sites/essai2/var/logs/essai2.log` contenant `security.sso/authentication.failed` ;
-7. corriger ensuite uniquement cette cause ;
-8. reprendre ensuite R45D2 preview/commit avec le password admin OWASYS.
+1. HEAD GitHub/base exact `dfab7d0...` ;
+2. appliquer R45D2A5 ;
+3. lint + `composer dump-autoload -o` + `git diff --check` ;
+4. relancer preview/dev-server `essai2` ;
+5. vérifier que `/fr/login` reste visible et que le Profiler apparaît dans l'iframe de la même page ;
+6. tenter login avec `steve` et exactement le password provisionné pour `essai2/steve` ;
+7. dans l'iframe de la réponse d'échec, lire `Security / ACL / SSO` et l'`error_code` de `authentication.failed` ; à défaut lire les dernières lignes de `sites/essai2/var/logs/essai2.log` ;
+8. corriger ensuite uniquement la cause SSO prouvée ;
+9. reprendre R45D2 preview/commit avec le password admin OWASYS.
 
 NO SITE-SPECIFIC PATCH.
 NO VALIDATOR RELAXATION.
@@ -114,5 +115,6 @@ NO ROLE MERGE.
 NO ACL BYPASS.
 NO BACKEND JAVASCRIPT.
 NO SECRET IN LOGS/PROFILER.
+NO PROFILER NAVIGATION-AWAY.
 NO PROFILER LOCK PURGE.
 NO PUSH OPUS BY ASSISTANT.
