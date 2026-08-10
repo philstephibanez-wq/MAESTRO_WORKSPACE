@@ -1,6 +1,6 @@
 # OPUS CURRENT STATE
 
-Dernière mise à jour : 2026-08-09.
+Dernière mise à jour : 2026-08-10.
 
 ## Dépôt canonique
 
@@ -98,7 +98,7 @@ Toute ancienne hypothèse disant que le `.lock` devait disparaître est annulée
 
 ```text
 ZIP     : opus_p117w_r45d2a2_generated_local_password_runtime.zip
-SHA-256 : 764ca50be8b07eac4c64edd3d0ebb64a40113e70e19eadb79fd5fb8908c356c4
+SHA-256 : e9c92966b2fe1206a020134726995ab2ebe85bdb28e74857f241c57fa6bd5b7f
 BASE    : 01b146876fd96282dfd0f618dc84341b49d6eec6
 FILES   : 6
 ```
@@ -112,7 +112,7 @@ Fonctions :
 5. secret accepté uniquement sur STDIN non interactif ;
 6. store runtime sous `var/auth/` ;
 7. `File::writeAtomic` + `Json` ;
-8. sujet obligatoirement présent dans onboarding ;
+8. sujet obligatoirement présent dans onboarding avec statut `password-setup-required` ;
 9. overwrite silencieux interdit ;
 10. aucun patch spécifique `essai2`.
 
@@ -137,8 +137,8 @@ GeneratedSiteRuntime base blob   166fd209172991e6e0ce2a7833b0ca24f4ba3301 exact
 composer.json base blob          1ef3ce15b48c4d0152579aa2cb701bea0d64220d exact
 provisioner synthetic test       OK
 credential overwrite blocked     OK
-secret absent result             OK
-ZIP                              6 fichiers
+secret absent result/store       OK
+ZIP integrity                    OK, 6 fichiers
 ```
 
 ## Suite
