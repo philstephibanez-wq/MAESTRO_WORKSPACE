@@ -54,13 +54,15 @@ Les `.lock` persistants sont des sidecars de synchronisation et restent normaux.
 
 Le Web Profiler fonctionne. Le défaut confirmé est désormais l'intégration de sa surface : la navigation directe vers `/_opus/profiler/trace/<trace_id>` remplace la page applicative. Le contrat attendu est page conservée + trace courante dans un iframe SCORE same-origin.
 
+La capture montre également `SCORE = 0` malgré le rendu d'une page SCORE ; `GeneratedSiteRuntime` construisait les `ScoreTemplateRenderer` principaux sans leur transmettre le Profiler actif.
+
 R45D2A4 a rendu la surface Profiler disponible en dev ; sa présentation par lien direct est supersédée par R45D2A5.
 
 ## Livrable actif — R45D2A5
 
 ```text
 ZIP     : opus_p117w_r45d2a5_generated_profiler_iframe_integration.zip
-SHA-256 : 9ee324fae8a26f6d5083951cfc182c9d9709fb2f874e91747cbf29f8508d74bd
+SHA-256 : 08072a4a09963ce1f0e6dc61fece6be769cb43d54fb7bda3163a62acb757c1a5
 BASE    : dfab7d0ae9fe8456887ff3f1f0280c0141f27b26
 FILES   : 3
 ```
@@ -80,10 +82,11 @@ Fonctions :
 3. rendu de l'iframe via SCORE ;
 4. iframe inséré dans le contenu de la page courante ;
 5. neutralisation du lien direct hérité après composition ;
-6. intégration également disponible sur erreur SCORE tant que la trace est active ;
-7. route Web Profiler autonome conservée comme source de l'iframe ;
-8. ACL/SSO/FSM inchangés ;
-9. `.lock` inchangés.
+6. `ScoreTemplateRenderer` page/erreur/iframe alimentés par le Profiler actif ;
+7. intégration également disponible sur erreur SCORE tant que la trace est active ;
+8. route Web Profiler autonome conservée comme source de l'iframe ;
+9. ACL/SSO/FSM inchangés ;
+10. `.lock` inchangés.
 
 Validation assistant : PHP lint OK sur les deux PHP ; SCORE iframe présent ; interfaces homonymes existantes conformes aux quatre marqueurs ; ZIP direct 3 fichiers.
 
@@ -91,10 +94,11 @@ Validation assistant : PHP lint OK sur les deux PHP ; SCORE iframe présent ; in
 
 1. owner applique R45D2A5 sur `dfab7d0...` ;
 2. relance `essai2` et vérifie que `/fr/login` reste visible avec le Profiler dans l'iframe ;
-3. retente login `steve` avec exactement le password provisionné pour `essai2/steve` ;
-4. sur l'échec, relève l'`error_code` de `security.sso/authentication.failed` dans l'iframe de la même réponse ; à défaut dans `sites/essai2/var/logs/essai2.log` ;
-5. corriger uniquement la cause SSO prouvée ;
-6. reprendre ensuite la validation R45D2 preview/commit avec la fresh-auth OWASYS.
+3. vérifie que le panneau SCORE est alimenté ;
+4. retente login `steve` avec exactement le password provisionné pour `essai2/steve` ;
+5. sur l'échec, relève l'`error_code` de `security.sso/authentication.failed` dans l'iframe de la même réponse ; à défaut dans `sites/essai2/var/logs/essai2.log` ;
+6. corriger uniquement la cause SSO prouvée ;
+7. reprendre ensuite la validation R45D2 preview/commit avec la fresh-auth OWASYS.
 
 NO SITE-SPECIFIC PATCH.
 NO VALIDATOR RELAXATION.
