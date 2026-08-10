@@ -32,7 +32,7 @@ d39b66d05e4cfe5207b9f0063cb1574fc6f52726  opus_p117w_r45d2a1_creation_security_i
 
 ## Site essai2
 
-Le store runtime local-password contient désormais :
+Le store runtime local-password contient :
 
 ```text
 subject  = steve
@@ -42,7 +42,9 @@ roles    = admin
 source   = runtime.local-password
 ```
 
-Le login navigateur échoue encore. R45D2A3 fournit maintenant le code corrélé `security.sso/authentication.failed`; aucune nouvelle correction SSO ne doit être inventée avant lecture de ce code.
+Le login navigateur échoue encore. R45D2A3 fournit le code corrélé `security.sso/authentication.failed`; aucune nouvelle correction SSO ne doit être inventée avant lecture de ce code pour le POST de connexion.
+
+La dernière capture du Web Profiler montre une trace avec `1` erreur mais `Security / ACL / SSO = 0`. Cette capture ne suffit donc pas à attribuer l'échec à un sous-composant SSO précis.
 
 La déclaration owner « Prévisualiser casse OWASYS » a été retirée explicitement et n'est pas un défaut courant.
 
@@ -50,50 +52,54 @@ La déclaration owner « Prévisualiser casse OWASYS » a été retirée explici
 
 Les `.lock` persistants sont des sidecars de synchronisation et restent normaux.
 
-Le lien Profiler absent de `/fr/login` a une cause source confirmée :
+Le Web Profiler fonctionne. Le défaut confirmé est désormais l'intégration de sa surface : la navigation directe vers `/_opus/profiler/trace/<trace_id>` remplace la page applicative. Le contrat attendu est page conservée + trace courante dans un iframe SCORE same-origin.
 
-`sites/essai2/config/environment.yaml` est en `dev`, avec collecte et Web Profiler actifs, mais `profiler.web.links=false`.
+R45D2A4 a rendu la surface Profiler disponible en dev ; sa présentation par lien direct est supersédée par R45D2A5.
 
-Cette valeur vient de `Opus\Scaffold\ProfilerEnvironmentScaffoldPolicy::environmentYaml()`.
-
-## Livrable actif — R45D2A4
+## Livrable actif — R45D2A5
 
 ```text
-ZIP     : opus_p117w_r45d2a4_generated_profiler_link_dev_policy.zip
-SHA-256 : f503525aff801b664a3e3441fb250b202c0839cc1bb4da9a1eb0dc6107b00acb
+ZIP     : opus_p117w_r45d2a5_generated_profiler_iframe_integration.zip
+SHA-256 : 9ee324fae8a26f6d5083951cfc182c9d9709fb2f874e91747cbf29f8508d74bd
 BASE    : dfab7d0ae9fe8456887ff3f1f0280c0141f27b26
-FILES   : 2
+FILES   : 3
 ```
 
 Fichiers :
 
 ```text
+Opus/Application/Runtime/GeneratedSiteRuntime.php
+Opus/Application/Runtime/templates/profiler-iframe.score
 Opus/Profiler/ProfilerConfiguration.php
-Opus/Scaffold/ProfilerEnvironmentScaffoldPolicy.php
 ```
 
 Fonctions :
 
-1. futurs sites générés en dev : lien Web Profiler visible par défaut ;
-2. compatibilité des sites existants lancés par le serveur dev OPUS via `OPUS_ENV=dev` ;
-3. prérequis `collect=true` et `web.enabled=true` conservés ;
-4. garde production conservée ;
-5. aucun patch spécifique `essai2` ;
-6. aucun changement SSO/ACL/FSM.
+1. compatibilité dev pour les sites générés existants lancés avec `OPUS_ENV=dev`, sans fichier site-specific ;
+2. URL de trace issue de `ProfilerLinkProvider` ;
+3. rendu de l'iframe via SCORE ;
+4. iframe inséré dans le contenu de la page courante ;
+5. neutralisation du lien direct hérité après composition ;
+6. intégration également disponible sur erreur SCORE tant que la trace est active ;
+7. route Web Profiler autonome conservée comme source de l'iframe ;
+8. ACL/SSO/FSM inchangés ;
+9. `.lock` inchangés.
 
-Validation assistant : PHP lint OK sur les deux fichiers ; ZIP direct 2 fichiers.
+Validation assistant : PHP lint OK sur les deux PHP ; SCORE iframe présent ; interfaces homonymes existantes conformes aux quatre marqueurs ; ZIP direct 3 fichiers.
 
 ## Suite
 
-1. owner applique R45D2A4 ;
-2. relance `essai2` et valide le lien Profiler sur `/fr/login` ;
-3. retente login `steve` ;
-4. si échec, relève `security.sso/authentication.failed` dans le log `essai2` ;
-5. corriger uniquement la cause prouvée ;
+1. owner applique R45D2A5 sur `dfab7d0...` ;
+2. relance `essai2` et vérifie que `/fr/login` reste visible avec le Profiler dans l'iframe ;
+3. retente login `steve` avec exactement le password provisionné pour `essai2/steve` ;
+4. sur l'échec, relève l'`error_code` de `security.sso/authentication.failed` dans l'iframe de la même réponse ; à défaut dans `sites/essai2/var/logs/essai2.log` ;
+5. corriger uniquement la cause SSO prouvée ;
 6. reprendre ensuite la validation R45D2 preview/commit avec la fresh-auth OWASYS.
 
 NO SITE-SPECIFIC PATCH.
 NO VALIDATOR RELAXATION.
 NO SILENT FALLBACK.
+NO ACL/SSO RELAXATION.
+NO PROFILER NAVIGATION-AWAY.
 NO PROFILER LOCK PURGE.
 NO PUSH OPUS BY ASSISTANT.
