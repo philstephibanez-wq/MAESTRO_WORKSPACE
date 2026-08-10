@@ -12,115 +12,91 @@ Date : 2026-08-10
 6. `CONTEXT/SPECIFICATIONS/OPUS_P117W_R45D2_CONTROLLED_SECURITY_MUTATIONS_2026-08-09.md`
 7. `CONTEXT/SPECIFICATIONS/OPUS_P117W_R45D2A1_CREATION_SECURITY_INPUT_CANONICALIZATION_2026-08-09.md`
 8. `CONTEXT/SPECIFICATIONS/OPUS_P117W_R45D2A2_GENERATED_LOCAL_PASSWORD_RUNTIME_2026-08-09.md`
-9. `CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OPUS_P117W_R45D2A2_GENERATED_LOCAL_PASSWORD_RUNTIME_2026-08-09.md`
-10. `CONTEXT/PROJECTS/OPUS_CURRENT_STATE.md`
+9. `CONTEXT/SPECIFICATIONS/OPUS_P117W_R45D2A3_GENERATED_LOGIN_OBSERVABILITY_2026-08-10.md`
+10. `CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OPUS_P117W_R45D2A3_GENERATED_LOGIN_OBSERVABILITY_2026-08-10.md`
+11. `CONTEXT/PROJECTS/OPUS_CURRENT_STATE.md`
 
 ## OPUS GitHub courant
 
 ```text
+f634e337ec0b5df0020bfba6eb240da0395a05bd  cleanup essai
+052cc6e177875f9606051bf0f34a2a1f16865329  opus_p117w_r45d2a2_generated_local_password_runtime
 01b146876fd96282dfd0f618dc84341b49d6eec6  essai2 !
 d39b66d05e4cfe5207b9f0063cb1574fc6f52726  opus_p117w_r45d2a1_creation_security_input_canonicalization
-4be105ebbc81b3164d7dcc26aa69ddd7400d2dd2  site: essai pour analyser la génération
-e822848896734f92eb2fd631449e625a55aa8e08  opus_p117w_r45d2_controlled_security_mutations
 ```
 
-R45D2A1 est publié. `01b146...` ajoute le site diagnostique `essai2` généré après R45D2A1.
+R45D2A2 est publié. `f634e337...` supprime le site diagnostique `essai` et conserve `essai2`.
 
-## Preuves runtime courantes
+## Clarification Sécurité / Identités
 
-`essai2` :
+La vue **Sécurité > Identités** d'OWASYS affiche les identités de l'application cible sélectionnée, pas les comptes OWASYS.
 
 ```text
-fullstack
-authentication_required = true
-login_page = true
+acteur OWASYS       -> compte connecté à owasys-front ; réauthentifie les mutations
+identité cible      -> provider + subject dans l'application sélectionnée
+```
+
+Pour `essai2`, le screenshot owner montre :
+
+```text
+subject  = steve
 provider = local-password
-identity = steve
-identity state = password-setup-required
-role = admin
+status   = active
+role     = admin
+source   = runtime.local-password
 ```
 
-La racine preview renvoie `OPUS_AUTH_REQUIRED` au lieu de rediriger vers login.
+Cela prouve que le store runtime `local-password` contient le credential de `steve`. Cela ne prouve pas qu'un password navigateur a déjà été vérifié avec succès.
 
-Une mutation R45D2 renvoie `OPUS_SSO_AUTHENTICATION_FAILED`. Les logs corrélés montrent que le POST OWASYS front n'envoie aucun `security/previews` au back ; le back ne reçoit que `security.snapshot` 200. L'échec est donc la fresh reauthentication de l'administrateur OWASYS côté front, pas l'authentification cible `steve`.
+`Référencer une identité` référence un couple `provider + subject` pour l'application cible. Il ne crée pas de compte externe et ne fixe aucun password.
 
-## Profiler `.lock` — état définitif
+`Saisissez à nouveau votre mot de passe OWASYS` demande le password de l'acteur OWASYS courant, jamais celui de `steve`.
 
-Le `.lock` persistant est normal.
+## Profiler `.lock`
 
-`Opus\Profiler\Profiler` utilise un sidecar stable `<storage>.lock` :
-
-```text
-lecture -> LOCK_SH
-append/rotation -> LOCK_EX
-fin -> LOCK_UN + fclose
-```
-
-Le verrou réel est l'état OS du descripteur ouvert. Le fichier `.lock` restant sur disque n'indique pas un verrou encore détenu. Il ne doit pas être supprimé automatiquement et n'est pas une trace Profiler.
-
-Toute ancienne hypothèse indiquant qu'un `.lock` devait disparaître après une requête est annulée.
+Le `.lock` persistant reste normal : sidecar de synchronisation, pas trace, pas verrou OS nécessairement détenu.
 
 ```text
 NO PROFILER LOCK PURGE.
 ```
 
-## Livrable actif — R45D2A2
+## Livrable actif — R45D2A3
 
 ```text
-ZIP     : opus_p117w_r45d2a2_generated_local_password_runtime.zip
-SHA-256 : e9c92966b2fe1206a020134726995ab2ebe85bdb28e74857f241c57fa6bd5b7f
-BASE    : 01b146876fd96282dfd0f618dc84341b49d6eec6
-FILES   : 6
+ZIP     : opus_p117w_r45d2a3_generated_login_observability.zip
+SHA-256 : bfbc032c7e8e5147905e48035dda6208d924de5d5d0b0ff8e5ebb5f6ffaf05e3
+BASE    : f634e337ec0b5df0020bfba6eb240da0395a05bd
+FILES   : 1
 ```
 
-R45D2A2 corrige la cause générique :
+R45D2A3 traite la perte d'observabilité du login généré : `GeneratedSiteRuntime::handleLogin()` absorbait toute erreur SSO et ne produisait aucun événement Logger/Profiler permettant de distinguer credential invalide, store invalide ou provider invalide.
 
-- `GeneratedSiteRuntime` redirige une requête anonyme refusée vers la route login localisée lorsque `authentication_required=true` et `login_page=true` ;
-- ACL deny-by-default reste inchangée ;
-- une route publique ou la route login elle-même n'est pas redirigée ;
-- un provisioner OPUS générique crée le credential runtime initial `local-password` uniquement pour une identité déjà onboardée ;
-- credential fourni uniquement par STDIN non interactif ;
-- aucun password dans Git, argv, REST, logs ou Profiler ;
-- store uniquement sous `var/auth/`, écrit via `File::writeAtomic` + `Json` ;
-- aucun patch spécifique `sites/essai2`.
+Le correctif :
 
-Fichiers :
+- conserve le comportement SSO/ACL ;
+- corrèle `security.sso/authentication.succeeded` et `security.sso/authentication.failed` ;
+- journalise uniquement provider, locale et code d'erreur normalisé ;
+- n'enregistre aucun username, password, hash, POST brut, token ou secret ;
+- ne modifie aucun fichier `sites/essai2` ;
+- ne touche pas au Profiler `.lock`.
+
+Fichier :
 
 ```text
-composer.json
 Opus/Application/Runtime/GeneratedSiteRuntime.php
-Opus/Composer/LocalPasswordCredentialProvisionerComposerCommand.php
-Opus/Composer/LocalPasswordCredentialProvisionerComposerCommandInterface.php
-Opus/Security/Sso/LocalPasswordCredentialProvisioner.php
-Opus/Security/Sso/LocalPasswordCredentialProvisionerInterface.php
-```
-
-## Validation assistant R45D2A2
-
-```text
-PHP lint                         OK (5)
-composer.json JSON               OK
-interfaces 4 marqueurs           OK
-GeneratedSiteRuntime base blob   exact 166fd209172991e6e0ce2a7833b0ca24f4ba3301
-composer.json base blob          exact 1ef3ce15b48c4d0152579aa2cb701bea0d64220d
-provisioner synthetic test       OK
-overwrite rejection              OK
-secret absent result/store       OK
-ZIP integrity                    OK, 6 fichiers exacts
 ```
 
 ## Gate owner immédiat
 
-1. HEAD exact `01b146...` et working tree propre ;
-2. extraire R45D2A2 ;
-3. lint + composer JSON + dump-autoload ;
-4. provisionner `essai2/steve` via STDIN sécurisé ;
-5. relancer la preview ;
-6. racine `essai2` -> HTTP 303 vers login localisé ;
-7. login -> home authentifié ;
-8. vérifier que `var/auth/local-users.json` reste hors Git ;
-9. reprendre R45D2 preview avec le mot de passe de l'**admin OWASYS**, pas celui de `steve` ;
-10. si la fresh-auth OWASYS correcte échoue encore, traiter ce défaut séparément à partir de la preuve runtime.
+1. HEAD exact `f634e337...` et working tree propre ;
+2. extraire R45D2A3 ;
+3. lint + dump-autoload + diff-check ;
+4. relancer `essai2` ;
+5. login avec username `steve` et exactement le password provisionné pour `essai2/steve` ;
+6. ne pas utiliser le password admin OWASYS sur la page login de `essai2` ;
+7. si l'échec persiste, récupérer le code corrélé `security.sso/authentication.failed` dans Logger/Profiler ;
+8. corriger ensuite uniquement la cause prouvée ;
+9. reprendre R45D2 preview/commit avec le password admin OWASYS pour la réauthentification OWASYS.
 
 NO SITE-SPECIFIC PATCH.
 NO VALIDATOR RELAXATION.
@@ -132,5 +108,6 @@ NO ACL BYPASS.
 NO BACKEND JAVASCRIPT.
 NO SECRET OVER REST.
 NO SECRET IN ARGV.
+NO SECRET IN LOGS/PROFILER.
 NO PROFILER LOCK PURGE.
 NO PUSH OPUS BY ASSISTANT.
