@@ -16,11 +16,13 @@ Le Web Profiler générique fonctionne et la trace est accessible, mais l’int�
 
 La cause est générique : `GeneratedSiteRuntime` enrichit le ViewModel avec l’URL de trace, puis le layout généré l’expose comme navigation. Le problème n’est ni la route du Profiler ni un fichier propre à `essai2`.
 
+La capture owner montre en outre `SCORE = 0` alors qu’une page SCORE a été rendue. La source confirme que les `ScoreTemplateRenderer` principaux du runtime généré n’avaient pas reçu l’instance Profiler.
+
 ## Décision
 
 En développement, le Profiler d’une application générée doit rester dans la page courante. La route Web Profiler autonome reste la source de l’iframe, mais elle ne doit plus constituer la navigation normale de la page applicative.
 
-Le rendu du conteneur iframe doit lui-même passer par SCORE.
+Le rendu du conteneur iframe doit lui-même passer par SCORE, et les rendus SCORE de la page doivent alimenter le Profiler actif.
 
 ## Correctif R45D2A5
 
@@ -39,17 +41,18 @@ Comportement :
 3. la page applicative reste la page principale ;
 4. la trace courante est rendue dans un `iframe` SCORE sous le contenu de la page ;
 5. le lien direct hérité des anciens layouts est neutralisé dans le ViewModel après composition de l’iframe, afin qu’il ne puisse plus remplacer la page ;
-6. les pages d’erreur SCORE peuvent également embarquer la trace courante tant que le Profiler est actif ;
-7. la route autonome `/_opus/profiler/trace/<trace_id>` reste disponible comme source same-origin de l’iframe ;
-8. aucune modification de `sites/essai2`, ACL, SSO ou FSM ;
-9. aucune purge des sidecars `.lock` ;
-10. aucun secret ou champ de formulaire n’est injecté dans l’iframe ou dans le Profiler.
+6. les `ScoreTemplateRenderer` de page/erreur reçoivent le Profiler actif afin d’alimenter le panneau SCORE ;
+7. les pages d’erreur SCORE peuvent également embarquer la trace courante tant que le Profiler est actif ;
+8. la route autonome `/_opus/profiler/trace/<trace_id>` reste disponible comme source same-origin de l’iframe ;
+9. aucune modification de `sites/essai2`, ACL, SSO ou FSM ;
+10. aucune purge des sidecars `.lock` ;
+11. aucun secret ou champ de formulaire n’est injecté dans l’iframe ou dans le Profiler.
 
 ## Livrable
 
 ```text
 ZIP     : opus_p117w_r45d2a5_generated_profiler_iframe_integration.zip
-SHA-256 : 9ee324fae8a26f6d5083951cfc182c9d9709fb2f874e91747cbf29f8508d74bd
+SHA-256 : 08072a4a09963ce1f0e6dc61fece6be769cb43d54fb7bda3163a62acb757c1a5
 BASE    : dfab7d0ae9fe8456887ff3f1f0280c0141f27b26
 FILES   : 3
 ```
@@ -60,6 +63,7 @@ FILES   : 3
 PHP lint GeneratedSiteRuntime.php          OK
 PHP lint ProfilerConfiguration.php         OK
 SCORE iframe template                      présent
+ScoreTemplateRenderer -> Profiler          câblé page + erreur + iframe
 interfaces homonymes existantes            conformes aux 4 marqueurs
 site-specific files                         aucun
 Profiler .lock                              inchangé
