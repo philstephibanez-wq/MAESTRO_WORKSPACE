@@ -10,8 +10,8 @@ Date : 2026-08-10
 4. `CONTEXT/SPECIFICATIONS/OWASYS_VS_GENERATED_SITE_FSM_WORKFLOW_CONTRACT_2026-08-08.md`
 5. `CONTEXT/SPECIFICATIONS/OPUS_OWASYS_APPLICATION_CREATION_AND_RESOURCE_SECURITY_CONTRACT_2026-07-31.md`
 6. `CONTEXT/SPECIFICATIONS/OPUS_P117W_R45D2_CONTROLLED_SECURITY_MUTATIONS_2026-08-09.md`
-7. `CONTEXT/SPECIFICATIONS/OPUS_P117W_R45D2A8_LOCAL_PASSWORD_FAILURE_DIAGNOSTICS_2026-08-10.md`
-8. `CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OPUS_P117W_R45D2A8_LOCAL_PASSWORD_FAILURE_DIAGNOSTICS_2026-08-10.md`
+7. `CONTEXT/SPECIFICATIONS/OPUS_P117W_R45D2A9_LOGIN_USER_FEEDBACK_2026-08-10.md`
+8. `CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OPUS_P117W_R45D2A9_LOGIN_USER_FEEDBACK_2026-08-10.md`
 9. `CONTEXT/PROJECTS/OPUS_CURRENT_STATE.md`
 
 ## OPUS GitHub courant
@@ -25,7 +25,7 @@ f634e337ec0b5df0020bfba6eb240da0395a05bd  cleanup essai
 
 ## Preuves owner courantes
 
-Après application locale R45D2A7 :
+Après R45D2A8 local :
 
 ```text
 /fr/login reste affichée
@@ -34,63 +34,53 @@ Security / ACL / SSO = 1
 security.sso.authentication.failed
 provider = local-password
 locale = fr
-error_code = OPUS_SSO_AUTHENTICATION_FAILED
+error_code = OPUS_SSO_LOCAL_PASSWORD_INVALID
 ```
 
-La correction du Profiler est donc acquise : le panneau Security reçoit maintenant l'événement réel.
+La cause technique du refus est acquise : subject trouvé + hash présent + `password_verify()` faux.
 
-## Cause restante
+## Exigence UX courante
 
-`LocalPasswordSsoProvider::authenticate()` retournait `null` pour plusieurs causes distinctes :
+La cause technique ne doit pas être exposée à l'utilisateur. Après un POST refusé :
 
 ```text
-credentials absents
-subject absent du runtime store
-password_hash absent
-password_verify faux
+303 -> /<locale>/login
+flash I18n -> Identifiant ou mot de passe incorrect.
 ```
 
-`SsoManager` transforme ensuite le `null` en `OPUS_SSO_AUTHENTICATION_FAILED`. Ce code est donc encore trop générique pour décider si `essai2` souffre d'un problème de username, de provisioning/hash ou de mot de passe.
+Le flash est consommé après le GET de rendu ; Logger/Profiler conservent la cause technique détaillée.
 
-## Livrable actif — R45D2A8
+## Livrable actif — R45D2A9
 
 ```text
-ZIP     : opus_p117w_r45d2a8_local_password_failure_diagnostics.zip
-SHA-256 : 1a18337ac7d08bb1554bfda2688cc484a7fad0062218e19c02f3c1dc979d94ef
-BASE    : 62ed6c6b7440034c5855e310899fb11d605fdf00
-FILES   : 3
+ZIP     : opus_p117w_r45d2a9_login_user_feedback.zip
+SHA-256 : 776dde0bd303d5110804a14212d31786acd945dbe9c55ddaef39dd8281eb4a0f
+BASE    : 62ed6c6b7440034c5855e310899fb11d605fdf00 + R45D2A8 local
+FILES   : 4
 ```
 
-R45D2A8 supersède R45D2A7 et contient :
+R45D2A9 est cumulatif avec R45D2A8 et contient :
 
 ```text
 Opus/Application/Runtime/templates/profiler-iframe.score
 Opus/Profiler/WebProfilerView.php
 Opus/Security/Sso/LocalPasswordSsoProvider.php
+tools/r45d2a9_apply_login_user_feedback.php
 ```
 
-Codes techniques attendus après un nouveau POST login :
-
-```text
-OPUS_SSO_LOCAL_CREDENTIALS_REQUIRED
-OPUS_SSO_LOCAL_SUBJECT_UNKNOWN
-OPUS_SSO_LOCAL_PASSWORD_HASH_MISSING
-OPUS_SSO_LOCAL_PASSWORD_INVALID
-```
-
-Le message visible reste `Authentication failed`; aucune donnée sensible n'est journalisée.
+L'applicateur fail-fast met à jour le runtime/scaffold et migre les catalogues login de toutes les applications Composer générées conformes au contrat. Ce n'est pas un patch spécifique `essai2`.
 
 ## Gate owner immédiat
 
-1. appliquer R45D2A8 directement sur `62ed6c6b...` ;
-2. `php -l` sur les deux PHP ;
-3. `composer dump-autoload -o` ;
-4. relancer `composer opus:dev-server -- essai2` ;
-5. retenter le login `steve` ;
-6. ouvrir `Security / ACL / SSO` ;
-7. relever le nouveau `error_code` ;
-8. traiter uniquement cette cause ;
-9. reprendre ensuite R45D2 preview/commit avec fresh-auth OWASYS.
+1. extraire R45D2A9 dans `H:\OPUS` ;
+2. exécuter `php tools/r45d2a9_apply_login_user_feedback.php` ;
+3. lint des PHP modifiés ;
+4. `composer dump-autoload -o` ;
+5. relancer `composer opus:dev-server -- essai2` ;
+6. essayer un mauvais password : message utilisateur localisé attendu ;
+7. recharger : flash disparu attendu ;
+8. Profiler doit conserver `OPUS_SSO_LOCAL_PASSWORD_INVALID` ;
+9. ensuite corriger/provisionner le vrai password `steve` et reprendre R45D2 preview/commit.
 
 NO SITE-SPECIFIC PATCH.
 NO VALIDATOR RELAXATION.
@@ -100,7 +90,7 @@ NO FSM MERGE.
 NO ROLE MERGE.
 NO ACL BYPASS.
 NO BACKEND JAVASCRIPT.
-NO SECRET IN LOGS/PROFILER.
+NO SECRET IN UI/LOGS/PROFILER.
 NO PROFILER NAVIGATION-AWAY.
 NO PROFILER LOCK PURGE.
 NO PUSH OPUS BY ASSISTANT.
