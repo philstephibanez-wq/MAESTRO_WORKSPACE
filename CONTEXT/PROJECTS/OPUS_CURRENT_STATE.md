@@ -25,52 +25,49 @@ Commit : opus_p117w_r45d2a12_source_acl_ui_truth
 - R45D2A11 : reset administrateur local-password acquis ; `essai2/steve` se connecte avec succès.
 - R45D2A12 : UI Sources/Git alignée sur la décision ACL `source/write`, publiée sous `186517fd...`.
 
-## Preuve owner courante
+## Besoin owner courant
 
-La capture OWASYS Sources/Git montre le fichier réel `application/login/templates/index.score` de `essai2` et son ancien bloc :
+Après connexion à `essai2`, aucune déconnexion propre n'est disponible. Le registre de routes publié ne contient que `/` et `/login`. Le runtime ne possède aucun traitement logout.
 
-```score
-<p role="alert">[[ i18n: auth.error ]]</p>
-```
-
-Le dépôt confirme :
-
-- `SiteScaffoldPlan` génère toujours ce bloc legacy ;
-- `sites/essai2/application/login/templates/index.score` le contient encore ;
-- `sites/essai2/www/asset/css/default.css` ne contient pas de styles `opus-alert`.
-
-## Cause courante
-
-La standardisation visuelle annoncée avec R45D2A11 n'a pas été propagée dans le scaffold canonique ni vers les sites Composer déjà générés. R45D2A12 a ajouté une mise en forme LF au template `essai2`, ce qui impose une migration tolérant plusieurs représentations legacy connues plutôt qu'une ancre textuelle unique.
-
-## Livrable actif — R45D2A13
+## Livrable actif — R45D2A14
 
 ```text
-ZIP     : opus_p117w_r45d2a13_generated_login_alert_propagation.zip
-SHA-256 : f66e6b4614f4326e8b9ba6e14ad698b6443607b253b0f21e9921ac079c96855c
+ZIP     : opus_p117w_r45d2a14_generated_logout.zip
+SHA-256 : 2bdfb59b45b54a903722d5a2b63c5ecfc573c4eacb78049fbda3e0d4a88e0dbb
 BASE    : 186517fd37c14047e33308500d0699b8ac36ab44
-FILES   : 2
+FILES   : 3
 ```
 
-R45D2A13 :
+R45D2A14 supersède R45D2A13 et inclut la propagation du composant `opus-alert`.
 
-- remplace le `<p role="alert">` legacy du scaffold par un composant `opus-alert opus-alert-error` SCORE accessible ;
-- ajoute le CSS canonique correspondant ;
-- migre tous les sites `generated-opus-application` possédant un module login ;
-- accepte les variantes legacy compacte/LF/CRLF ;
-- smoke qu'aucun ancien `<p role="alert">` ne subsiste dans les sites contrôlés.
+R45D2A14 ajoute :
+
+- `POST /logout` exclusivement ;
+- CSRF `opus.generated.logout` single-use ;
+- surface SCORE `Déconnexion` pour identité session/local-password authentifiée ;
+- destruction complète de la session et expiration du cookie ;
+- redirection 303 vers la page login localisée ;
+- Logger + Profiler `security.sso.logout.succeeded` ;
+- I18n UE + ukrainien ;
+- migration générique de tous les sites Composer générés possédant un login ;
+- aucun faux logout local pour `auth0-proxy` ; le logout upstream reste à contracter avec le bastion/proxy.
 
 ## Gate owner
 
-1. appliquer R45D2A13 ;
+1. appliquer R45D2A14 ;
 2. lancer l'applicateur ;
 3. lancer le smoke ;
-4. lint `SiteScaffoldPlan.php` ;
+4. lint runtime + scaffold ;
 5. dump-autoload ;
 6. vérifier les local changes ;
-7. tester `essai2` avec mauvais mot de passe : composant d'erreur standard OPUS, texte I18n non discriminant, Profiler inchangé.
+7. relancer `essai2` ;
+8. connecté : action `Déconnexion` visible ;
+9. activation : POST CSRF, session détruite, redirection `/fr/login` ;
+10. `/fr` doit de nouveau demander une authentification ;
+11. mauvais mot de passe : alerte OPUS standard incluse par R45D2A14.
 
 NO SITE-SPECIFIC PATCH.
+NO GET LOGOUT.
 NO SSO/ACL RELAXATION.
 NO SECRET.
 NO BACKEND JAVASCRIPT.
