@@ -1,6 +1,6 @@
 # CURRENT HANDOFF — MAESTRO WORKSPACE
 
-Date : 2026-08-09
+Date : 2026-08-10
 
 ## Lire
 
@@ -68,7 +68,7 @@ NO PROFILER LOCK PURGE.
 
 ```text
 ZIP     : opus_p117w_r45d2a2_generated_local_password_runtime.zip
-SHA-256 : 764ca50be8b07eac4c64edd3d0ebb64a40113e70e19eadb79fd5fb8908c356c4
+SHA-256 : e9c92966b2fe1206a020134726995ab2ebe85bdb28e74857f241c57fa6bd5b7f
 BASE    : 01b146876fd96282dfd0f618dc84341b49d6eec6
 FILES   : 6
 ```
@@ -105,8 +105,8 @@ GeneratedSiteRuntime base blob   exact 166fd209172991e6e0ce2a7833b0ca24f4ba3301
 composer.json base blob          exact 1ef3ce15b48c4d0152579aa2cb701bea0d64220d
 provisioner synthetic test       OK
 overwrite rejection              OK
-secret absent result             OK
-ZIP                              6 fichiers exacts
+secret absent result/store       OK
+ZIP integrity                    OK, 6 fichiers exacts
 ```
 
 ## Gate owner immédiat
