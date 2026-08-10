@@ -8,8 +8,8 @@ Date : 2026-08-11
 2. `CONTEXT/SPECIFICATIONS/MAESTRO_OPUS_OWASYS_GLOBAL_DEVELOPMENT_RULES_2026-07-24.md`
 3. `CONTEXT/PROJECTS/OPUS/OPUS_SITE_STANDARD_CONTRACT.md`
 4. `CONTEXT/SPECIFICATIONS/OPUS_OWASYS_APPLICATION_CREATION_AND_RESOURCE_SECURITY_CONTRACT_2026-07-31.md`
-5. `CONTEXT/SPECIFICATIONS/OPUS_P117W_R45D2A13_GENERATED_LOGIN_ALERT_PROPAGATION_2026-08-11.md`
-6. `CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OPUS_P117W_R45D2A13_GENERATED_LOGIN_ALERT_PROPAGATION_2026-08-11.md`
+5. `CONTEXT/SPECIFICATIONS/OPUS_P117W_R45D2A14_GENERATED_LOGOUT_2026-08-11.md`
+6. `CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OPUS_P117W_R45D2A14_GENERATED_LOGOUT_2026-08-11.md`
 7. `CONTEXT/PROJECTS/OPUS_CURRENT_STATE.md`
 
 ## OPUS GitHub courant
@@ -24,49 +24,53 @@ Date : 2026-08-11
 
 - `essai2/steve` : connexion réussie ;
 - reset local-password : acquis ;
-- message utilisateur login I18n : acquis ;
+- message login I18n : acquis ;
 - Profiler intégré/repliable + corrélation login : acquis ;
-- R45D2A12 : `source.read_only` aligné sur ACL `source/write` et publié.
+- R45D2A12 : UI Sources/Git alignée sur ACL `source/write` et publiée.
 
-## Défaut courant
+## Besoin courant
 
-La capture owner dans OWASYS Sources/Git montre que `sites/essai2/application/login/templates/index.score` contient toujours l'ancien :
+`essai2` ne possède aucun moyen de déconnexion propre après authentification.
 
-```score
-<p role="alert">[[ i18n: auth.error ]]</p>
-```
+Le registre de routes publié ne contient que `/` et `/login`. `GeneratedSiteRuntime` sait authentifier et gérer la session mais n'implémente pas de logout.
 
-Le master confirme que `Opus/Scaffold/SiteScaffoldPlan.php` génère encore ce même ancien rendu et que le CSS de `essai2` ne contient aucun composant `opus-alert`.
-
-## Cause
-
-La partie visuelle « alerte login standardisée » prévue avec R45D2A11 n'a pas été propagée dans le scaffold canonique ni dans les sites générés existants.
-
-R45D2A12 a également introduit une simple mise en forme LF du bloc legacy de `essai2`; le correctif doit reconnaître les variantes réelles sans ancre textuelle unique fragile.
-
-## Livrable actif — R45D2A13
+## Livrable actif — R45D2A14
 
 ```text
-ZIP     : opus_p117w_r45d2a13_generated_login_alert_propagation.zip
-SHA-256 : f66e6b4614f4326e8b9ba6e14ad698b6443607b253b0f21e9921ac079c96855c
+ZIP     : opus_p117w_r45d2a14_generated_logout.zip
+SHA-256 : 2bdfb59b45b54a903722d5a2b63c5ecfc573c4eacb78049fbda3e0d4a88e0dbb
 BASE    : 186517fd37c14047e33308500d0699b8ac36ab44
-FILES   : 2
+FILES   : 3
 ```
 
-R45D2A13 corrige le scaffold, ajoute le style `opus-alert`, migre tous les sites Composer générés avec login et smoke la convergence.
+R45D2A14 supersède R45D2A13 et inclut la propagation du composant visuel `opus-alert`.
+
+Correction :
+
+- route `POST /logout` ;
+- CSRF scoped single-use ;
+- bouton/formulaire SCORE `Déconnexion` uniquement authentifié ;
+- session détruite + cookie expiré ;
+- redirection 303 vers `/locale/login` ;
+- Logger/Profiler `security.sso.logout.succeeded` ;
+- I18n UE + ukrainien ;
+- migration des sites Composer générés avec login.
 
 ## Gate immédiat
 
-1. extraire le ZIP dans `H:\OPUS` ;
-2. `php tools\r45d2a13_apply_generated_login_alert_propagation.php` ;
-3. `php tools\smoke_r45d2a13_generated_login_alert_propagation.php` ;
-4. `php -l Opus\Scaffold\SiteScaffoldPlan.php` ;
+1. extraire R45D2A14 dans `H:\OPUS` ;
+2. `php tools\r45d2a14_apply_generated_logout.php` ;
+3. `php tools\smoke_r45d2a14_generated_logout.php` ;
+4. lint runtime + scaffold ;
 5. `composer dump-autoload -o` ;
 6. `git status --short` ;
 7. relancer `essai2` ;
-8. mauvais mot de passe : alerte visuelle OPUS standard + message I18n + Profiler inchangé.
+8. connecté : `Déconnexion` visible ;
+9. activation : session supprimée et redirection `/fr/login` ;
+10. `/fr` doit redemander l'authentification.
 
 NO SITE-SPECIFIC PATCH.
+NO GET LOGOUT.
 NO SSO/ACL RELAXATION.
 NO SECRET.
 NO BACKEND JAVASCRIPT.
