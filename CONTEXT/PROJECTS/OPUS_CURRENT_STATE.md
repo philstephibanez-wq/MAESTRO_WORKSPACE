@@ -7,18 +7,19 @@ Dernière mise à jour : 2026-08-10.
 ```text
 OPUS : philstephibanez-wq/OPUS
 Branche : master
-origin/master : 01b146876fd96282dfd0f618dc84341b49d6eec6
-Commit : essai2 !
+origin/master : f634e337ec0b5df0020bfba6eb240da0395a05bd
+Commit : cleanup essai
 ```
 
 Historique immédiat :
 
 ```text
+f634e337ec0b5df0020bfba6eb240da0395a05bd  cleanup essai
+052cc6e177875f9606051bf0f34a2a1f16865329  opus_p117w_r45d2a2_generated_local_password_runtime
 01b146876fd96282dfd0f618dc84341b49d6eec6  essai2 !
 d39b66d05e4cfe5207b9f0063cb1574fc6f52726  opus_p117w_r45d2a1_creation_security_input_canonicalization
 4be105ebbc81b3164d7dcc26aa69ddd7400d2dd2  site: essai pour analyser la génération
 e822848896734f92eb2fd631449e625a55aa8e08  opus_p117w_r45d2_controlled_security_mutations
-af8ac2f5ed2c9d2d528b5f94863d018d3c7aa121  opus_p117w_r45d1_security_snapshot_workspace
 ```
 
 ## États acquis / publiés
@@ -29,11 +30,13 @@ R45D1 : workspace Sécurité réel acquis.
 
 R45D2 : mutations de sécurité additives publiées ; preview/commit complète encore à valider.
 
-R45D2A1 : wizard de création sécurité canonicalisé et publié sous `d39b66d...`.
+R45D2A1 : wizard de création sécurité canonicalisé et publié.
 
-## Site `essai2` observé
+R45D2A2 : runtime local-password publié sous `052cc6e...` : redirection vers login + provisioner initial hors Git/REST/argv.
 
-Le site généré après R45D2A1 déclare et projette :
+## Site `essai2`
+
+Configuration publiée :
 
 ```text
 profile = fullstack
@@ -41,50 +44,55 @@ authentication_required = true
 login_page = true
 provider = local-password
 initial identity = steve
-identity status = password-setup-required
 role = admin
 ```
 
-Il prouve que R45D2A1 génère maintenant la combinaison `auth + local-password + login` attendue.
-
-## Défauts runtime confirmés
-
-### Redirection login
-
-La preview de `essai2` sur une route protégée anonyme affiche :
+Le screenshot owner post-R45D2A2 montre :
 
 ```text
-OPUS_AUTH_REQUIRED
+steve
+provider = local-password
+status   = active
+roles    = admin
+source   = runtime.local-password
 ```
 
-alors que `config/routes.json` contient une route `login` et que `sso.json` contient `authentication_required=true`, `login_page=true`.
+Le store runtime contient donc l'identité/credential `steve`. OWASYS construit cet état à partir de `var/auth/local-users.json`. `active` ne signifie pas qu'une tentative de login navigateur a déjà réussi.
 
-Cause source : `GeneratedSiteRuntime` appelle l'ACL avant toute redirection vers login.
+## Clarification Identités OWASYS
 
-### Credential initial local-password
+La vue **Sécurité > Identités** affiche les identités de l'application cible sélectionnée.
 
-`security.onboarding.json` ne contient volontairement aucun secret et référence `var/auth/local-users.json`. `LocalPasswordSsoProvider` exige cependant un `password_hash` dans ce runtime store.
+L'acteur OWASYS courant est un plan de sécurité distinct :
 
-Aucun mécanisme générique publié ne provisionne encore ce credential initial sans secret dans Git/REST/argv.
+- il se connecte à OWASYS ;
+- ses rôles OWASYS gardent les actions d'administration ;
+- son password OWASYS sert à la fresh reauthentication avant mutation.
 
-### Mutation R45D2
+Une identité cible est le couple contractuel `provider + subject`. Pour `essai2`, `local-password + steve` est un utilisateur de `essai2`, pas un compte OWASYS.
 
-Le POST `/fr-FR/security` montrant `OPUS_SSO_AUTHENTICATION_FAILED` échoue côté front pendant la fresh reauthentication OWASYS. Les logs back corrélés ne contiennent aucun POST `security/previews`, uniquement un GET `security.snapshot` réussi.
+`Référencer une identité` ne crée pas de password. Les credentials `local-password` restent dans le store runtime non versionné.
 
-Ce défaut ne justifie pas de relâcher SSO. Le champ de réauthentification demande le password de l'admin **OWASYS**, pas le password de l'identité cible `steve`.
+## Login `essai2` — défaut d'observabilité confirmé
+
+R45D2A2 corrige la redirection login et le provisioning, mais `GeneratedSiteRuntime::handleLogin()` absorbe encore toute exception d'authentification :
+
+```text
+catch(Throwable) -> opus_login_error=true -> retour login
+```
+
+Le runtime ne produit actuellement aucun Logger/Profiler spécifique pour distinguer :
+
+- password incorrect ;
+- store absent/invalide ;
+- provider invalide ;
+- autre refus SSO sûr.
+
+Cette opacité est un défaut générique OPUS car Logger/Profiler sont contractuels pour SSO.
 
 ## Profiler `.lock`
 
-État source confirmé dans `Opus/Profiler/Profiler.php` : les `.lock` sont des sidecars persistants de synchronisation.
-
-```text
-fopen(<storage>.lock, c+b)
-LOCK_SH | LOCK_EX
-LOCK_UN
-fclose
-```
-
-La persistance du fichier ne signifie pas que le verrou OS reste détenu. Supprimer/recréer le sidecar entre opérations pourrait au contraire casser la synchronisation inter-processus.
+Les `.lock` restent des sidecars persistants de synchronisation.
 
 ```text
 .lock persistant = normal
@@ -92,63 +100,47 @@ La persistance du fichier ne signifie pas que le verrou OS reste détenu. Suppri
 NO PROFILER LOCK PURGE
 ```
 
-Toute ancienne hypothèse disant que le `.lock` devait disparaître est annulée.
-
-## Livrable actif — R45D2A2
+## Livrable actif — R45D2A3
 
 ```text
-ZIP     : opus_p117w_r45d2a2_generated_local_password_runtime.zip
-SHA-256 : e9c92966b2fe1206a020134726995ab2ebe85bdb28e74857f241c57fa6bd5b7f
-BASE    : 01b146876fd96282dfd0f618dc84341b49d6eec6
-FILES   : 6
+ZIP     : opus_p117w_r45d2a3_generated_login_observability.zip
+SHA-256 : bfbc032c7e8e5147905e48035dda6208d924de5d5d0b0ff8e5ebb5f6ffaf05e3
+BASE    : f634e337ec0b5df0020bfba6eb240da0395a05bd
+FILES   : 1
+```
+
+Fichier :
+
+```text
+Opus/Application/Runtime/GeneratedSiteRuntime.php
 ```
 
 Fonctions :
 
-1. redirection 303 vers la route login localisée pour route protégée anonyme quand auth+login sont déclarés ;
-2. ACL deny-by-default inchangée ;
-3. provisioner framework `LocalPasswordCredentialProvisioner` ;
-4. commande Composer `opus:local-password-provision` ;
-5. secret accepté uniquement sur STDIN non interactif ;
-6. store runtime sous `var/auth/` ;
-7. `File::writeAtomic` + `Json` ;
-8. sujet obligatoirement présent dans onboarding avec statut `password-setup-required` ;
-9. overwrite silencieux interdit ;
-10. aucun patch spécifique `essai2`.
+1. transmettre le `trace_id` courant au traitement login ;
+2. profiler/journaliser `security.sso/authentication.succeeded` ;
+3. profiler/journaliser `security.sso/authentication.failed` ;
+4. ne conserver que provider, locale et code d'erreur normalisé ;
+5. ne jamais enregistrer username, password, hash, POST brut ou secret ;
+6. ne modifier ni ACL, ni comportement d'authentification, ni `sites/essai2`.
 
-Fichiers :
+Validation assistant :
 
 ```text
-composer.json
-Opus/Application/Runtime/GeneratedSiteRuntime.php
-Opus/Composer/LocalPasswordCredentialProvisionerComposerCommand.php
-Opus/Composer/LocalPasswordCredentialProvisionerComposerCommandInterface.php
-Opus/Security/Sso/LocalPasswordCredentialProvisioner.php
-Opus/Security/Sso/LocalPasswordCredentialProvisionerInterface.php
-```
-
-## Validation assistant
-
-```text
-PHP lint                         OK (5)
-composer.json                    JSON OK
-interfaces homonymes             4 marqueurs OK
-GeneratedSiteRuntime base blob   166fd209172991e6e0ce2a7833b0ca24f4ba3301 exact
-composer.json base blob          1ef3ce15b48c4d0152579aa2cb701bea0d64220d exact
-provisioner synthetic test       OK
-credential overwrite blocked     OK
-secret absent result/store       OK
-ZIP integrity                    OK, 6 fichiers
+GeneratedSiteRuntime base blob : b9c1d659308b8d51adc45ef59b9a77d944f8b89b exact
+PHP lint                       : OK
+ZIP                            : 1 fichier exact
+secret nouveaux contextes      : aucun
 ```
 
 ## Suite
 
-1. owner applique R45D2A2 sur `01b146...` ;
-2. provisionne `essai2/steve` hors Git/REST/argv ;
-3. valide racine -> login -> home ;
-4. reprend R45D2 preview avec password OWASYS admin ;
-5. si fresh-auth correcte échoue encore, diagnostiquer l'identité/store OWASYS à partir de preuve runtime ;
-6. compléter ensuite couverture Profiler des refus métier si nécessaire.
+1. owner applique R45D2A3 sur `f634e337...` ;
+2. relance `essai2` ;
+3. tente login avec `username=steve` et le password provisionné pour `essai2/steve` ;
+4. si échec, récupère le code `security.sso/authentication.failed` ;
+5. traiter ensuite la cause prouvée ;
+6. reprendre R45D2 preview/commit avec le password admin OWASYS dans la fresh-auth OWASYS.
 
 NO SITE-SPECIFIC PATCH.
 NO VALIDATOR RELAXATION.
@@ -160,5 +152,6 @@ NO ACL BYPASS.
 NO BACKEND JAVASCRIPT.
 NO SECRET OVER REST.
 NO SECRET IN ARGV.
+NO SECRET IN LOGS/PROFILER.
 NO PROFILER LOCK PURGE.
 NO PUSH OPUS BY ASSISTANT.
