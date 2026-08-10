@@ -35,6 +35,7 @@ R45D2A3 est publié. R45D2A4 n'est pas la nouvelle cible UI : son lien direct es
 - le Web Profiler fonctionne et une trace est consultable ;
 - le lien Profiler remplace actuellement la page applicative par `/_opus/profiler/trace/<trace_id>` ;
 - le comportement attendu est page conservée + Profiler embarqué dans un iframe ;
+- la trace fournie affiche `SCORE = 0` malgré le rendu SCORE de la page ;
 - `.lock` Profiler persistant reste normal et ne doit pas être purgé.
 
 ## Identités
@@ -65,13 +66,13 @@ La capture Profiler fournie après l'échec montre une trace avec `1` erreur mai
 
 La route Web Profiler autonome est correcte. La régression UX est générique : la surface générée expose `diagnostics.profiler_url` comme lien direct ; le navigateur quitte alors la page applicative.
 
-R45D2A5 conserve la route autonome comme source same-origin et compose son rendu dans un iframe SCORE à l'intérieur de la page courante. Le flag hérité de lien est neutralisé dans le ViewModel après composition pour supprimer la navigation-away des layouts déjà générés.
+R45D2A5 conserve la route autonome comme source same-origin et compose son rendu dans un iframe SCORE à l'intérieur de la page courante. Le flag hérité de lien est neutralisé dans le ViewModel après composition pour supprimer la navigation-away des layouts déjà générés. Les renderers SCORE principaux reçoivent aussi le Profiler actif afin d'alimenter réellement le panneau SCORE.
 
 ## Livrable actif — R45D2A5
 
 ```text
 ZIP     : opus_p117w_r45d2a5_generated_profiler_iframe_integration.zip
-SHA-256 : 9ee324fae8a26f6d5083951cfc182c9d9709fb2f874e91747cbf29f8508d74bd
+SHA-256 : 08072a4a09963ce1f0e6dc61fece6be769cb43d54fb7bda3163a62acb757c1a5
 BASE    : dfab7d0ae9fe8456887ff3f1f0280c0141f27b26
 FILES   : 3
 ```
@@ -90,6 +91,7 @@ R45D2A5 :
 - surface Profiler intégrée via SCORE ;
 - iframe same-origin de la trace courante ;
 - page applicative conservée ;
+- renderers SCORE page/erreur/iframe instrumentés ;
 - compatibilité dev des sites générés existants via `OPUS_ENV=dev` ;
 - ACL/SSO/FSM inchangés ;
 - sidecars `.lock` inchangés.
@@ -101,10 +103,11 @@ R45D2A5 :
 3. lint + `composer dump-autoload -o` + `git diff --check` ;
 4. relancer preview/dev-server `essai2` ;
 5. vérifier que `/fr/login` reste visible et que le Profiler apparaît dans l'iframe de la même page ;
-6. tenter login avec `steve` et exactement le password provisionné pour `essai2/steve` ;
-7. dans l'iframe de la réponse d'échec, lire `Security / ACL / SSO` et l'`error_code` de `authentication.failed` ; à défaut lire les dernières lignes de `sites/essai2/var/logs/essai2.log` ;
-8. corriger ensuite uniquement la cause SSO prouvée ;
-9. reprendre R45D2 preview/commit avec le password admin OWASYS.
+6. vérifier que le panneau SCORE n'est plus à zéro après rendu de la page ;
+7. tenter login avec `steve` et exactement le password provisionné pour `essai2/steve` ;
+8. dans l'iframe de la réponse d'échec, lire `Security / ACL / SSO` et l'`error_code` de `authentication.failed` ; à défaut lire les dernières lignes de `sites/essai2/var/logs/essai2.log` ;
+9. corriger ensuite uniquement la cause SSO prouvée ;
+10. reprendre R45D2 preview/commit avec le password admin OWASYS.
 
 NO SITE-SPECIFIC PATCH.
 NO VALIDATOR RELAXATION.
