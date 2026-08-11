@@ -14,8 +14,9 @@ Date : 2026-08-11
 8. `CONTEXT/SPECIFICATIONS/OPUS_P117W_R45D2A19B_ACCOUNT_I18N_COMPLETENESS_2026-08-11.md`
 9. `CONTEXT/SPECIFICATIONS/OPUS_P117W_R45D2A19C_LOCAL_PASSWORD_CREDENTIAL_OWNERSHIP_2026-08-11.md`
 10. `CONTEXT/SPECIFICATIONS/OPUS_P117W_R45D2A19D_CREDENTIAL_OWNERSHIP_ATOMIC_CLEANUP_2026-08-11.md`
-11. `CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OPUS_P117W_R45D2A19D_CREDENTIAL_OWNERSHIP_ATOMIC_CLEANUP_2026-08-11.md`
-12. `CONTEXT/PROJECTS/OPUS_CURRENT_STATE.md`
+11. `CONTEXT/SPECIFICATIONS/OPUS_P117W_R45D2A19D1_SMOKE_API_ALIGNMENT_2026-08-11.md`
+12. `CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OPUS_P117W_R45D2A19D_CREDENTIAL_OWNERSHIP_ATOMIC_CLEANUP_2026-08-11.md`
+13. `CONTEXT/PROJECTS/OPUS_CURRENT_STATE.md`
 
 ## OPUS GitHub courant
 
@@ -53,7 +54,7 @@ Le master contient encore l'ancien flux backend password :
 - handler `OwasysCommandProvider::changePassword()` ;
 - permissions explicites `account:change` côté back.
 
-## Livrable actif — R45D2A19D
+## Livrable fonctionnel actif — R45D2A19D
 
 ```text
 ZIP     : opus_p117w_r45d2a19d_credential_ownership_atomic_cleanup.zip
@@ -64,16 +65,42 @@ FILES   : 2
 
 R45D2A19D supprime atomiquement l'ancien flux backend de changement de mot de passe, retire la capacité account explicite du back et resynchronise les trois catalogues REST.
 
+Owner a appliqué R45D2A19D et `git status --short` matérialise bien :
+
+- `composer.json` ;
+- `sites/owasys-back/application/registry/services/OwasysCommandProvider.php` ;
+- `sites/owasys-back/config/acl.json` ;
+- `sites/owasys-back/config/backend.operations.json` ;
+- `sites/owasys-back/config/backend.resources.json` ;
+- `sites/owasys-back/config/backend.rest.json` ;
+- `sites/owasys-back/config/composer.commands.json` ;
+- `sites/owasys-front/config/rest.resources.json`.
+
+## Correctif de validation actif — R45D2A19D1
+
+Le smoke R45D2A19D initial était erroné : il appelait `AclPolicy::isAllowed()`, méthode inexistante. L'API canonique est `AclPolicy::decide(...)->allowed`.
+
+Un second défaut latent du smoke est corrigé : `ComposerCommandRegistry::publicOperations()` retourne une liste, pas un tableau indexé par nom d'opération.
+
+```text
+ZIP     : opus_p117w_r45d2a19d1_smoke_api_alignment.zip
+SHA-256 : 9bc4e07453f936bea8cea968ff6833c30bf9032a7211922b49e67d0f182599aa
+FILES   : 1
+```
+
+R45D2A19D1 remplace uniquement :
+
+`tools/smoke_r45d2a19d_credential_ownership_atomic_cleanup.php`
+
 ## Gate immédiat
 
-1. appliquer R45D2A19D ;
-2. exiger `OPUS_R45D2A19D_APPLIED` ;
+1. extraire R45D2A19D1 ;
+2. `php -l tools\smoke_r45d2a19d_credential_ownership_atomic_cleanup.php` ;
 3. exiger `OPUS_R45D2A19D_SMOKE_OK fingerprint=... operations=...` ;
-4. lints + Composer validate/autoload ;
-5. vérifier `git status --short` : les fichiers back/config doivent réellement apparaître ;
-6. owner commit/push ;
-7. vérifier GitHub master après push ;
-8. seulement ensuite reprendre la matrice ACL developer/viewer.
+4. vérifier `git status --short` ;
+5. owner commit/push du correctif fonctionnel R45D2A19D uniquement lorsque le smoke corrigé passe ;
+6. vérifier GitHub master après push ;
+7. seulement ensuite reprendre la matrice ACL developer/viewer.
 
 ## Suite matrice ACL
 
