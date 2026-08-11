@@ -7,8 +7,8 @@ Dernière mise à jour : 2026-08-11.
 ```text
 OPUS : philstephibanez-wq/OPUS
 Branche : master
-origin/master : 1908e9ae4e28d599855b5e8d1e424a6c335d0507
-Commit : opus_p117w_r45d2a19c_local_password_credential_ownership
+origin/master : 38a053d585bfd0b154183a5ad7b043504634c043
+Commit : opus_p117w_r45d2a19d_credential_ownership_atomic_cleanup
 ```
 
 ## États acquis
@@ -22,60 +22,57 @@ Commit : opus_p117w_r45d2a19c_local_password_credential_ownership
 - admin Security Preview + Commit acquis.
 - R45D2A19 : break-glass local-password acquis.
 - R45D2A19B : page account/password I18n acquise.
-- R45D2A19C : changement de mot de passe local exécuté par le SSO front ; parcours fonctionnel owner acquis.
+- R45D2A19C : changement de mot de passe local exécuté par le SSO front.
+- R45D2A19D : ancien flux backend admin-password supprimé ; aucun mot de passe local ne traverse REST.
 
-## Publication partielle R45D2A19C
+## Matrice ACL cible
 
-La comparaison `ddd71ee3... -> 1908e9ae...` montre uniquement les 25 catalogues account et `RuntimeSecurity.php`.
+La matrice admin/developer/viewer reste contractuelle. L'ACL front courante donne :
 
-Le master contient encore des éléments obsolètes de l'ancien flux backend password : script Composer, commande interne, opération REST, route REST, handler back et permission explicite account côté back.
+- admin : `*:*` ;
+- developer : mutations registry/creation/structure/data/workflows/source/git/build/account/security + `profiler:view` ;
+- viewer : lecture registry/structure/data/workflows/security/source/git/build, `account:open` + `account:change`, sans Profiler et sans mutation.
 
-Le fonctionnement navigateur ne suffit donc pas à déclarer le contrat atomiquement fermé.
+La décision est fondée sur les permissions ACL effectives, jamais `primary_role` seul.
 
-## Livrable actif — R45D2A19D
+## Livrable actif — R45D2A20
 
 ```text
-ZIP     : opus_p117w_r45d2a19d_credential_ownership_atomic_cleanup.zip
-SHA-256 : 783a9474375d93ef1e2fe2ac336e2b63eec0c528b98a41df257687fee65e26ca
-BASE    : 1908e9ae4e28d599855b5e8d1e424a6c335d0507
-FILES   : 2
+ZIP     : opus_p117w_r45d2a20_standard_local_password_role_provisioning.zip
+SHA-256 : c74fb241be1b53237e9271ef5302f0e3ded1d0ae60451c4c34d157ff908e8b0c
+BASE    : 38a053d585bfd0b154183a5ad7b043504634c043
+FILES   : 4
 ```
 
-R45D2A19D :
+R45D2A20 généralise `LocalPasswordCredentialProvisioner` aux `standard-opus-application` :
 
-- supprime `owasys:admin-password-change` ;
-- supprime `owasys:security:admin-password:change` ;
-- supprime `security.admin-password.change` ;
-- supprime `/api/v1/security/admin-password` ;
-- supprime `OwasysCommandProvider::changePassword()` et imports associés ;
-- retire `account:change` explicite du backend developer/viewer ;
-- resynchronise backend.rest / backend.resources / front rest.resources ;
-- vérifie l'intégrité de toutes les opérations REST Composer restantes.
+- rôle explicite via `--role=<role>` ;
+- rôle validé contre `config/acl.json` ;
+- password uniquement via STDIN ;
+- store runtime non versionné ;
+- aucun compte hardcodé ;
+- compatibilité generated/onboarding maintenue ;
+- override de rôle generated interdit.
 
 ## Gate owner
 
 ```text
-OPUS_R45D2A19D_APPLIED
-OPUS_R45D2A19D_SMOKE_OK fingerprint=... operations=...
+OPUS_R45D2A20_SMOKE_OK
 ```
 
-Le `git status --short` doit montrer les fichiers back/config attendus avant commit. Après push, revérifier le master GitHub.
+Puis provisionner deux identités runtime dans `owasys-front` : developer et viewer, sans édition manuelle du store.
 
 ## Suite planifiée
 
-Matrice ACL contractuelle :
-
-1. developer : Security Preview + Commit ;
-2. viewer : Security lecture seule ;
+1. browser developer : Security Preview + Commit et autres mutations ;
+2. browser viewer : lecture seule ;
 3. viewer : Profiler refusé ;
-4. smoke exécutable de toute la matrice admin/developer/viewer.
+4. backend : refus réel des mutations viewer ;
+5. smoke exécutable de toute la matrice admin/developer/viewer.
 
-Si nécessaire pour les essais navigateur, généraliser `LocalPasswordCredentialProvisioner` aux applications OPUS standard en développement uniquement, sans compte codé en dur et sans versionner le store runtime.
-
-NO PARTIAL PUBLICATION.
-NO BACKEND ACCESS TO FRONT CREDENTIAL STORE.
-NO PASSWORD OVER REST.
+NO HARDCODED ACCOUNT.
 NO MANUAL STORE EDIT.
+NO PASSWORD IN ARGV/GIT/LOG/PROFILER.
 NO ACL BYPASS.
 NO VIEWER MUTATION.
 NO PRIMARY_ROLE AUTHORIZATION.
