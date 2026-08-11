@@ -14,17 +14,18 @@ Date : 2026-08-11
 8. `CONTEXT/SPECIFICATIONS/OPUS_P117W_R45D2A16B_DEV_SERVER_SINGLE_OWNER_BINDING_2026-08-11.md`
 9. `CONTEXT/SPECIFICATIONS/OPUS_P117W_R45D2A17_FRESH_AUTH_PHASE_BINDING_2026-08-11.md`
 10. `CONTEXT/SPECIFICATIONS/OPUS_P117W_R45D2A18_SECURITY_MUTATION_FSM_2026-08-11.md`
-11. `CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OPUS_P117W_R45D2A18_SECURITY_MUTATION_FSM_2026-08-11.md`
-12. `CONTEXT/PROJECTS/OPUS_CURRENT_STATE.md`
+11. `CONTEXT/SPECIFICATIONS/OPUS_P117W_R45D2A18B_REST_COMPOSER_CATALOG_INTEGRITY_2026-08-11.md`
+12. `CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OPUS_P117W_R45D2A18B_REST_COMPOSER_CATALOG_INTEGRITY_2026-08-11.md`
+13. `CONTEXT/PROJECTS/OPUS_CURRENT_STATE.md`
 
 ## OPUS GitHub courant
 
 ```text
+98b0233bf85f33037f45adde916514c6f8305a16  opus_p117w_r45d2a18_security_mutation_fsm
+8f0d6ba5a009fbd5c4348d1f4f6cc789ce813ee6  opus_p117w_r45d2a17_fresh_auth_phase_binding
+af4016a642c5595304fadbbdab5990bd7e6f3ea9  opus_p117w_r45d2a16b_dev_server_single_owner_binding
 9330511436d2e3c40728d1d1bbc93ce15598aa8f  opus_p117w_r45d2a16_security_acl_matrix_alignment
-8b70be74bb83da3f528a0d0e3e2bf74663205fa0  opus_p117w_r45d2a15b_rest_catalog_atomic_sync
 ```
-
-R45D2A16B est validé localement par l'owner ; sa protection refuse un second bind dev-server sur le même port. R45D2A17 est dans la progression locale owner mais n'est pas encore confirmé comme commit GitHub dans ce handoff.
 
 ## États owner acquis
 
@@ -36,9 +37,34 @@ R45D2A16B est validé localement par l'owner ; sa protection refuse un second bi
 - R45D2A14B : logout généré acquis ;
 - R45D2A15 : fresh-auth backend non forgeable ;
 - R45D2A15B : catalogues REST atomiquement synchronisés ;
-- R45D2A16 : matrice Sécurité admin/developer/viewer publiée ;
-- R45D2A16B : single-owner dev-server validé localement ;
-- logs owner 2026-08-11 07:49Z : `/fr-FR/security` fonctionne ; backend `security.snapshot` passe REST -> Composer en 200 avec trace corrélée.
+- R45D2A16 : matrice Sécurité admin/developer/viewer ;
+- R45D2A16B : single-owner dev-server publié et validé ;
+- R45D2A17 : fresh-auth lié à la phase preview|commit publié ;
+- R45D2A18 : Security Mutation FSM publié ;
+- `GET /fr-FR/security` sain ;
+- `security.snapshot` passe front -> REST -> back -> Composer en 200 avec trace corrélée.
+
+## Incident actif
+
+Le premier POST Preview atteint bien le back :
+
+```text
+POST /api/v1/applications/essai2/security/fresh-auth-proofs
+operation=security.fresh-auth-proof.issue
+```
+
+mais échoue avec :
+
+```text
+OPUS_REST_API_COMPOSER_SCRIPT_UNDECLARED
+```
+
+Cause confirmée :
+
+- `backend.operations.json` référence `owasys:security-fresh-auth-proof` ;
+- `composer.commands.json` déclare alias + provider interne ;
+- `composer.json` racine ne contient pas le script public `owasys:security-fresh-auth-proof` ;
+- `ComposerCommandRegistry` valide directement contre `composer.json` et refuse.
 
 ## Matrice ACL cible obligatoire
 
@@ -46,37 +72,37 @@ Voir `CONTEXT/SPECIFICATIONS/OWASYS_ROLE_CAPABILITY_MATRIX_2026-08-11.md`.
 
 Permissions ACL effectives uniquement. Backend décisif, UI alignée, deny-by-default. Admin + developer mutation ; viewer lecture seule ; viewer sans Profiler.
 
-## Livrable actif — R45D2A18
+## Livrable actif — R45D2A18B
 
 ```text
-ZIP     : opus_p117w_r45d2a18_security_mutation_fsm.zip
-SHA-256 : 4b54105a5836dfe4fb0136eee1a74b8c7bd6a71a2afc1b4ee1bf44ff59be4afd
-BASE    : R45D2A17 local + R45D2A16B local validé
-FILES   : 3
+ZIP     : opus_p117w_r45d2a18b_rest_composer_catalog_integrity.zip
+SHA-256 : a4dc4e13778f96037c5f9e9470e6c673e1f58857572e99757c01304458642a27
+BASE    : 98b0233bf85f33037f45adde916514c6f8305a16
+FILES   : 2
 ```
 
-Cause : `SecurityController` pilotait encore preview/commit procéduralement ; la FSM de navigation ne porte que `open_security`.
+Correction :
 
-Solution : FSM dédiée `security.mutation.fsm.json`, persistée dans la session front entre preview et commit.
-
-Workflow :
-
-`idle -> requested -> authenticated -> authorized -> validated -> previewed -> confirmed -> committed`
-
-Branches : `rejected`, `rolled_back`.
-
-Binding de workflow : site + hash mutation/reason + vue. Aucun mot de passe ni preuve fresh-auth en mémoire FSM.
+1. ajouter le script public manquant dans `composer.json` ;
+2. smoke global : chaque `composer_script` de `backend.operations.json` doit exister dans `composer.json` ;
+3. exercer `ComposerCommandRegistry::publicOperations()` pour reproduire la même frontière que le runtime ;
+4. vérifier alias/provider fresh-auth dans `composer.commands.json`.
 
 ## Gate immédiat
 
-1. appliquer R45D2A18 ;
-2. smoke FSM + lint + autoload ;
-3. démarrer back puis front ;
-4. admin : mutation Sécurité -> preview -> nouvelle fresh-auth -> commit ;
-5. vérifier Profiler FSM + REST distribué + Composer ;
-6. developer : même workflow ;
-7. viewer : lecture seule, aucun contrôle de mutation ;
-8. inspecter logs/profiler : aucun mot de passe ni preuve complète.
+1. appliquer R45D2A18B ;
+2. applicateur + smoke ;
+3. dump-autoload ;
+4. redémarrer back puis front ;
+5. admin : Security Preview ;
+6. fresh-auth doit passer REST -> Composer ;
+7. preview doit aboutir ;
+8. nouvelle fresh-auth ;
+9. commit doit aboutir ;
+10. vérifier Profiler FSM + REST distribué + Composer ;
+11. developer : même workflow ;
+12. viewer : lecture seule, aucun contrôle mutation ;
+13. aucun mot de passe ni preuve complète dans logs/profiler.
 
 NO SITE-SPECIFIC PATCH.
 NO SILENT FALLBACK.
