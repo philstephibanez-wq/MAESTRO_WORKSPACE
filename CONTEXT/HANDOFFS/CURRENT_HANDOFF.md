@@ -11,8 +11,9 @@ Date : 2026-08-11
 5. `CONTEXT/SPECIFICATIONS/OWASYS_ROLE_CAPABILITY_MATRIX_2026-08-11.md`
 6. `CONTEXT/SPECIFICATIONS/OPUS_P117W_R45D2A18D_SECURITY_WORKFLOW_ATOMIC_CONTRACT_2026-08-11.md`
 7. `CONTEXT/SPECIFICATIONS/OPUS_P117W_R45D2A19_LOCAL_PASSWORD_BREAK_GLASS_RECOVERY_2026-08-11.md`
-8. `CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OPUS_P117W_R45D2A19_LOCAL_PASSWORD_BREAK_GLASS_RECOVERY_2026-08-11.md`
-9. `CONTEXT/PROJECTS/OPUS_CURRENT_STATE.md`
+8. `CONTEXT/SPECIFICATIONS/OPUS_P117W_R45D2A19B_ACCOUNT_I18N_COMPLETENESS_2026-08-11.md`
+9. `CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OPUS_P117W_R45D2A19B_ACCOUNT_I18N_COMPLETENESS_2026-08-11.md`
+10. `CONTEXT/PROJECTS/OPUS_CURRENT_STATE.md`
 
 ## OPUS GitHub courant
 
@@ -26,7 +27,6 @@ d7226d4e0696319876b1bde69dbcfa9aa3feff3e  opus_p117w_r45d2a18c_fresh_auth_runtim
 ## États acquis
 
 - login local-password acquis ;
-- reset local-password historique pour sites générés acquis ;
 - Profiler intégré/repliable et corrélation login acquise ;
 - logout généré acquis ;
 - matrice ACL admin/developer/viewer acquise ;
@@ -35,57 +35,63 @@ d7226d4e0696319876b1bde69dbcfa9aa3feff3e  opus_p117w_r45d2a18c_fresh_auth_runtim
 - intégrité REST -> Composer acquise ;
 - secret fresh-auth dérivé automatiquement en dev acquis ;
 - Security Mutation FSM atomiquement raccordée ;
-- `security.snapshot` passe front -> REST -> back -> Composer en HTTP 200 ;
 - R45D2A18D publié ;
-- admin Security Preview acquis : l'aperçu de mutation est visible, aucune écriture n'a encore été effectuée.
+- admin Security Preview acquis ;
+- admin Security Commit observé dans logs : `security.mutation commit.succeeded` avec REST/Composer 200 ;
+- R45D2A19 break-glass : reset local-password vers mot de passe temporaire et `must_change_password=true` ;
+- reconnexion avec temporaire acquise : redirection vers `/account/password` effectivement déclenchée.
 
-## Question traitée
+## Incident actif
 
-Si le mot de passe OWASYS `local-password` est oublié, la fresh-auth ne doit jamais être contournée. Il n'existe pas de canal browser recovery vérifié dans le contrat actuel.
-
-Décision :
-
-- `local-password` : récupération break-glass opérateur via console serveur ;
-- mot de passe temporaire uniquement par STDIN ;
-- `must_change_password=true` ;
-- prochaine connexion -> FSM `password_change_required` -> `/account/password` ;
-- remplacement obligatoire du temporaire ;
-- `auth0-proxy` : récupération chez l'IdP/Auth0.
-
-## Livrable actif — R45D2A19
+`/fr-FR/account/password` échoue au rendu avec :
 
 ```text
-ZIP     : opus_p117w_r45d2a19_local_password_break_glass_recovery.zip
-SHA-256 : 59614da089f0b8736823dc1159c3f793424538de0b866c231a06168b6333ecab
-BASE    : 6f82ea0ad46eadd11435e02bc2dd1ff703034c02
-FILES   : 4
+OPUS_I18N_MESSAGE_MISSING
 ```
 
-R45D2A19 généralise `opus:local-password-reset` aux applications OPUS standard à provider local-password et ajoute `--must-change`, tout en conservant la compatibilité avec les sites générés.
+Le log front confirme `Opus\I18n\TranslationException` sur la route account/password.
+
+Cause vérifiée : `application/account/templates/index.score` exige des clés absentes des catalogues base, notamment :
+
+- `menu.account`
+- `auth.password.show`
+- `auth.password.hide`
+
+Les overlays régionaux comme `fr-FR.json` sont volontairement vides et héritent du catalogue base ; aucun fallback silencieux ne doit être ajouté.
+
+## Livrable actif — R45D2A19B
+
+```text
+ZIP     : opus_p117w_r45d2a19b_account_i18n_completeness.zip
+SHA-256 : 972ad4c38ebc22dfd5fa51c745c18db1d9452006377cb6f87ecb92046a221e67
+FILES   : 2
+```
+
+R45D2A19B complète les catalogues account des 25 langues base et son smoke extrait toutes les directives I18n du SCORE account pour bloquer toute publication incomplète.
 
 ## Gate immédiat
 
-1. appliquer R45D2A19 ;
-2. lints + smoke obligatoire ;
-3. dump-autoload/status ;
-4. test recovery uniquement si souhaité ;
-5. revenir à l'aperçu R45D2A18D ;
-6. saisir de nouveau le mot de passe OWASYS ;
-7. `Confirmer et écrire` doit effectuer Commit ;
-8. contrôler FSM + REST + Composer corrélés sans secret ;
-9. developer : même workflow ;
+1. appliquer R45D2A19B ;
+2. smoke obligatoire ;
+3. redémarrer owasys-front ;
+4. se reconnecter avec le mot de passe temporaire ;
+5. `/account/password` doit rendre sans `OPUS_I18N_MESSAGE_MISSING` ;
+6. saisir temporaire + nouveau mot de passe + confirmation ;
+7. changement réussi -> `/applications` ;
+8. vérifier que l'ancien temporaire ne permet plus la connexion ;
+9. reprendre Security admin si nécessaire puis developer ;
 10. viewer : lecture seule, aucune mutation, aucun Profiler.
 
 ## Matrice ACL cible obligatoire
 
 Permissions effectives uniquement. Admin + developer peuvent muter Sécurité. Viewer lecture seule et sans Profiler. Aucun `primary_role` comme autorité.
 
+NO SILENT I18N FALLBACK.
 NO BROWSER LOCAL-PASSWORD RESET WITHOUT VERIFIED RECOVERY CHANNEL.
 NO PASSWORD IN ARGV/LOG/PROFILER.
 NO FRESH-AUTH BYPASS.
 NO PARTIAL CONTRACT PUBLICATION.
 NO SITE-SPECIFIC HACK.
-NO SILENT FALLBACK.
 NO ACL BYPASS.
 NO VIEWER MUTATION.
 NO CROSS-PHASE PROOF.
