@@ -36,35 +36,48 @@ Voir `CONTEXT/SPECIFICATIONS/OWASYS_ROLE_CAPABILITY_MATRIX_2026-08-11.md`.
 
 Règle : capacités fondées sur permissions ACL effectives, jamais sur `primary_role` seul. Backend décisif, UI alignée, deny-by-default.
 
-## Livrable actif — R45D2A15
+## R45D2A15 — état
+
+Fresh-auth backend non forgeable introduit localement : preuve `OWASYS_FRESH_AUTH_PROOF_V1`, HMAC SHA-256, TTL court, liée acteur + site + mutation.
+
+Régression détectée lors du premier redémarrage : `OPUS_REST_API_CATALOG_MISMATCH` sur tout appel REST, y compris `GET /api/v1/applications`.
+
+Cause : R45D2A15 a ajouté `security.fresh-auth-proof.issue` aux ressources inline de `sites/owasys-back/config/backend.rest.json` sans synchroniser :
+
+- `sites/owasys-back/config/backend.resources.json`
+- `sites/owasys-front/config/rest.resources.json`
+
+Les logs owner confirment la même erreur corrélée front/back dans `Opus/Api/Rest/RestResourceCatalog.php:174`.
+
+## Livrable actif — R45D2A15B
 
 ```text
-ZIP     : opus_p117w_r45d2a15_backend_fresh_auth_proof.zip
-SHA-256 : 49a1ca5d8a629a25ea8aa17c46f613f6fde8789b21b1b8d2208082271aa2cc15
-BASE    : a3f5b2257628d5b6ea0c98ba92178b4fe51030b2
-FILES   : 4
+ZIP     : opus_p117w_r45d2a15b_rest_catalog_atomic_sync.zip
+SHA-256 : 27e83c7c4480ce1ee25414184604353493a434760baa0b2fb48d84b98d5247c4
+BASE    : a3f5b2257628d5b6ea0c98ba92178b4fe51030b2 + R45D2A15 local
+FILES   : 2
 ```
 
-Cause traitée : le simple `reauthenticated_at` déclaratif n'est pas une preuve backend. R45D2A15 remplace ce timestamp par une preuve `OWASYS_FRESH_AUTH_PROOF_V1` émise par `owasys-back`, HMAC SHA-256, TTL 120 s, nonce, liée à l'acteur, au site et au hash exact de `mutation_json`.
+Correction :
 
-Secret runtime backend requis : `OPUS_OWASYS_FRESH_AUTH_PROOF_SECRET` (minimum 32 octets, jamais versionné).
+- `backend.rest.json` reste la liste serveur autoritative ;
+- synchronisation atomique vers les deux catalogues `OPUS_REST_RESOURCE_CATALOG_V1` ;
+- validation de la ressource fresh-auth ;
+- smoke comparant les trois fingerprints ;
+- smoke vérifiant `registry.sync` et la nouvelle route fresh-auth.
 
 ## Gate immédiat
 
-1. extraire R45D2A15 dans `H:\OPUS` ;
-2. exécuter l'applicateur ;
-3. exécuter le smoke ;
-4. lint des nouveaux services + front/back modifiés ;
-5. `composer dump-autoload -o` ;
-6. définir le secret fresh-auth dans l'environnement du backend ;
-7. relancer owasys-back et owasys-front ;
-8. tester preview Sécurité admin avec réauthentification ;
-9. tester commit ;
-10. vérifier refus : mot de passe erroné, preuve altérée, acteur/site/mutation différents ;
-11. préserver intégralement la matrice admin/developer/viewer.
+1. appliquer R45D2A15B sur l'arbre contenant R45D2A15 ;
+2. exécuter applicateur + smoke ;
+3. redémarrer owasys-back puis owasys-front ;
+4. vérifier disparition de `OPUS_REST_API_CATALOG_MISMATCH` ;
+5. vérifier `/fr-FR/applications` ;
+6. reprendre ensuite le test fresh-auth preview/commit ;
+7. préserver la matrice admin/developer/viewer.
 
 NO SITE-SPECIFIC PATCH.
-NO SILENT FALLBACK.
+NO CATALOG FALLBACK.
 NO TIMESTAMP-ONLY FRESH-AUTH.
 NO PASSWORD IN LOG/PROFILER/ARGV.
 NO SSO/ACL RELAXATION.
