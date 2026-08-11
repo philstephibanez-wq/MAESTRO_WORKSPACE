@@ -9,8 +9,8 @@ Date : 2026-08-11
 3. `CONTEXT/PROJECTS/OPUS/OPUS_SITE_STANDARD_CONTRACT.md`
 4. `CONTEXT/SPECIFICATIONS/OPUS_OWASYS_APPLICATION_CREATION_AND_RESOURCE_SECURITY_CONTRACT_2026-07-31.md`
 5. `CONTEXT/SPECIFICATIONS/OWASYS_ROLE_CAPABILITY_MATRIX_2026-08-11.md`
-6. `CONTEXT/SPECIFICATIONS/OPUS_P117W_R45D2A14B_LOGOUT_ATOMIC_MIGRATION_2026-08-11.md`
-7. `CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OPUS_P117W_R45D2A14B_LOGOUT_ATOMIC_MIGRATION_2026-08-11.md`
+6. `CONTEXT/SPECIFICATIONS/OPUS_P117W_R45D2A15_BACKEND_FRESH_AUTH_PROOF_2026-08-11.md`
+7. `CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OPUS_P117W_R45D2A15_BACKEND_FRESH_AUTH_PROOF_2026-08-11.md`
 8. `CONTEXT/PROJECTS/OPUS_CURRENT_STATE.md`
 
 ## OPUS GitHub courant
@@ -28,58 +28,45 @@ f195471557727d23d0be036b80382f3ba3ad9787  opus_p117w_r45d2a14_generated_logout
 - message login I18n : acquis ;
 - Profiler intégré/repliable + corrélation login : acquis ;
 - R45D2A12 : UI Sources/Git alignée sur ACL `source/write` et publiée ;
-- R45D2A14B : `/fr` authentifié fonctionne et `Déconnexion` est visible ;
-- capture owner du 2026-08-11 valide le rendu sain après migration logout atomique.
+- R45D2A14B : `/fr` authentifié fonctionne et `Déconnexion` est visible.
 
 ## Matrice ACL cible obligatoire
 
-La progression suivante est désormais contractuelle et doit être validée à chaque évolution ACL/UI :
-
-| Page / action | admin | developer | viewer |
-| --- | ---: | ---: | ---: |
-| Applications : ouvrir | ✅ | ✅ | ✅ |
-| Sélectionner une application | ✅ | ✅ | ✅ |
-| Changer d'application | ✅ | ✅ | ✅ |
-| Créer une application | ✅ | ✅ | ❌ bouton absent |
-| Supprimer une application générée | ✅ | ✅ | ❌ bouton absent |
-| Structure | ✅ | ✅ | ✅ lecture |
-| Sources de données | ✅ | ✅ | ✅ lecture |
-| Workflows | ✅ | ✅ | ✅ lecture |
-| Sécurité | ✅ | ✅ | ✅ lecture |
-| Sources et Git : ouvrir/lire fichiers | ✅ | ✅ | ✅ |
-| Modifier une source | ✅ | ✅ | ❌ |
-| Preview source | ✅ | ✅ | ❌ |
-| Stage fichier | ✅ | ✅ | ❌ |
-| Stage all | ✅ | ✅ | ❌ |
-| Unstage | ✅ | ✅ | ❌ |
-| Commit | ✅ | ✅ | ❌ |
-| Restore | ✅ | ✅ | ❌ |
-| Construction / validation | ✅ | ✅ | ✅ lecture |
-| Compte : changer son mot de passe local | ✅ | ✅ | ✅ |
-| Profiler | ✅ | ✅ | ❌ |
+Voir `CONTEXT/SPECIFICATIONS/OWASYS_ROLE_CAPABILITY_MATRIX_2026-08-11.md`.
 
 Règle : capacités fondées sur permissions ACL effectives, jamais sur `primary_role` seul. Backend décisif, UI alignée, deny-by-default.
 
-## Prochain bloc actif
+## Livrable actif — R45D2A15
 
-Reprendre le workflow Sécurité OWASYS :
+```text
+ZIP     : opus_p117w_r45d2a15_backend_fresh_auth_proof.zip
+SHA-256 : 49a1ca5d8a629a25ea8aa17c46f613f6fde8789b21b1b8d2208082271aa2cc15
+BASE    : a3f5b2257628d5b6ea0c98ba92178b4fe51030b2
+FILES   : 4
+```
 
-`requested -> authenticated -> authorized -> validated -> previewed -> confirmed -> committed|rejected|rolled_back`
+Cause traitée : le simple `reauthenticated_at` déclaratif n'est pas une preuve backend. R45D2A15 remplace ce timestamp par une preuve `OWASYS_FRESH_AUTH_PROOF_V1` émise par `owasys-back`, HMAC SHA-256, TTL 120 s, nonce, liée à l'acteur, au site et au hash exact de `mutation_json`.
 
-Défaut de fond à traiter : la preuve `fresh-auth` doit être non forgeable et corrélée au backend. Le frontend ne doit pas pouvoir faire foi avec un simple timestamp déclaratif. Toute mutation sensible doit conserver : ACL, CSRF, réauthentification réelle, aperçu, confirmation, ETag/version, transaction/rollback et audit Logger/Profiler corrélé.
+Secret runtime backend requis : `OPUS_OWASYS_FRESH_AUTH_PROOF_SECRET` (minimum 32 octets, jamais versionné).
 
-## Gate immédiat suivant
+## Gate immédiat
 
-1. auditer le flux `owasys-front -> REST -> owasys-back` de preview/commit sécurité ;
-2. vérifier l'autorité effective de la preuve fresh-auth côté backend ;
-3. introduire une preuve courte durée émise/validée côté backend, liée à l'acteur et à l'opération ;
-4. ne jamais transporter ni journaliser le mot de passe de réauthentification ;
-5. ajouter tests de refus : preuve absente, expirée, altérée, acteur différent, opération différente ;
-6. préserver la matrice ACL ci-dessus.
+1. extraire R45D2A15 dans `H:\OPUS` ;
+2. exécuter l'applicateur ;
+3. exécuter le smoke ;
+4. lint des nouveaux services + front/back modifiés ;
+5. `composer dump-autoload -o` ;
+6. définir le secret fresh-auth dans l'environnement du backend ;
+7. relancer owasys-back et owasys-front ;
+8. tester preview Sécurité admin avec réauthentification ;
+9. tester commit ;
+10. vérifier refus : mot de passe erroné, preuve altérée, acteur/site/mutation différents ;
+11. préserver intégralement la matrice admin/developer/viewer.
 
 NO SITE-SPECIFIC PATCH.
 NO SILENT FALLBACK.
-NO GET LOGOUT.
+NO TIMESTAMP-ONLY FRESH-AUTH.
+NO PASSWORD IN LOG/PROFILER/ARGV.
 NO SSO/ACL RELAXATION.
 NO PRIMARY_ROLE AUTHORIZATION.
 NO PUSH OPUS/OWASYS BY ASSISTANT.
