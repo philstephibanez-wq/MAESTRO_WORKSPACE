@@ -27,7 +27,7 @@ Corrige l'ownership du credential :
 
 ```text
 ZIP     : opus_p117w_r45d2a19c_local_password_credential_ownership.zip
-SHA-256 : 4a10ea20368e259b6a70548893c806a476aa0dde79a07455b9c6cf780180970d
+SHA-256 : 3437dab7d86e76cbace4d041b5d46e74a00a8e274f1996ebaf2212dd1f4037ba
 BASE    : ddd71ee3b0554b685156cfbc22994aba5d35989d + R45D2A19B local
 FILES   : 2
 ```
