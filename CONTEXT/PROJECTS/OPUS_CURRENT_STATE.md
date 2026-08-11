@@ -7,8 +7,8 @@ Dernière mise à jour : 2026-08-11.
 ```text
 OPUS : philstephibanez-wq/OPUS
 Branche : master
-origin/master : d7226d4e0696319876b1bde69dbcfa9aa3feff3e
-Commit : opus_p117w_r45d2a18c_fresh_auth_runtime_secret_policy
+origin/master : 1908e9ae4e28d599855b5e8d1e424a6c335d0507
+Commit : opus_p117w_r45d2a19c_local_password_credential_ownership
 ```
 
 ## États acquis
@@ -18,67 +18,65 @@ Commit : opus_p117w_r45d2a18c_fresh_auth_runtime_secret_policy
 - R45D2A15B : catalogues REST synchronisés.
 - R45D2A16 : matrice Sécurité admin/developer/viewer.
 - R45D2A16B : dev-server single-owner binding acquis.
-- R45D2A18B : intégrité REST -> Composer acquise ; script fresh-auth résolu.
-- R45D2A18C : secret fresh-auth dérivé automatiquement par OPUS en dev ; aucun secret versionné.
-- `GET /fr-FR/security` et `security.snapshot` fonctionnent avec corrélation front -> REST -> back -> Composer.
+- R45D2A18B/C/D : intégrité REST->Composer, secret fresh-auth dev et Security Mutation FSM atomique acquis.
+- admin Security Preview + Commit acquis.
+- R45D2A19 : break-glass local-password acquis.
+- R45D2A19B : page account/password I18n acquise.
+- R45D2A19C : changement de mot de passe local exécuté par le SSO front ; parcours fonctionnel owner acquis.
 
-## Publication partielle détectée
+## Publication partielle R45D2A19C
 
-Les intitulés R45D2A17/R45D2A18 ne correspondent pas encore à un contrat complet dans le master :
+La comparaison `ddd71ee3... -> 1908e9ae...` montre uniquement les 25 catalogues account et `RuntimeSecurity.php`.
 
-- commit R45D2A17 `8f0d6ba5...` ne contient que les trois fichiers back du service fresh-auth ;
-- `RuntimeSecurity.php` courant n'envoie pas `phase` ;
-- `OwasysSecurityMutationService.php` courant valide encore la preuve sans phase ;
-- commit R45D2A18 `98b0233...` ne contient que `security.mutation.fsm.json` ;
-- `SecurityController.php` courant ne pilote pas encore cette FSM.
+Le master contient encore des éléments obsolètes de l'ancien flux backend password : script Composer, commande interne, opération REST, route REST, handler back et permission explicite account côté back.
 
-Ces états ne doivent plus être marqués « acquis » individuellement tant que R45D2A18D n'a pas matérialisé toutes les frontières et passé son smoke atomique.
+Le fonctionnement navigateur ne suffit donc pas à déclarer le contrat atomiquement fermé.
 
-## Incident courant
-
-Preview Sécurité :
+## Livrable actif — R45D2A19D
 
 ```text
-OWASYS_FRESH_AUTH_PROOF_BINDING_INVALID
+ZIP     : opus_p117w_r45d2a19d_credential_ownership_atomic_cleanup.zip
+SHA-256 : 783a9474375d93ef1e2fe2ac336e2b63eec0c528b98a41df257687fee65e26ca
+BASE    : 1908e9ae4e28d599855b5e8d1e424a6c335d0507
+FILES   : 2
 ```
 
-Le script fresh-auth est exécuté et le secret est disponible. Le binding échoue parce que le front courant n'envoie pas `phase`, alors que le service back exige `preview|commit`.
+R45D2A19D :
 
-## Livrable actif — R45D2A18D
-
-```text
-ZIP     : opus_p117w_r45d2a18d_security_workflow_atomic_contract.zip
-SHA-256 : cc46c530413d2915dab62ade329bf939b11997d9c5343179d2f82f959f1e33ca
-BASE    : d7226d4e0696319876b1bde69dbcfa9aa3feff3e
-FILES   : 3
-```
-
-R45D2A18D synchronise atomiquement :
-
-- RuntimeSecurity phase transport ;
-- SecurityController + FsmSessionStore ;
-- Security Mutation FSM ;
-- OwasysSecurityMutationService phase preview/commit ;
-- backend.operations fresh-auth ;
-- Composer script/alias/provider ;
-- REST route + trois catalogues ;
-- secret runtime policy.
+- supprime `owasys:admin-password-change` ;
+- supprime `owasys:security:admin-password:change` ;
+- supprime `security.admin-password.change` ;
+- supprime `/api/v1/security/admin-password` ;
+- supprime `OwasysCommandProvider::changePassword()` et imports associés ;
+- retire `account:change` explicite du backend developer/viewer ;
+- resynchronise backend.rest / backend.resources / front rest.resources ;
+- vérifie l'intégrité de toutes les opérations REST Composer restantes.
 
 ## Gate owner
 
-Le smoke `OPUS_R45D2A18D_SMOKE_OK` est obligatoire avant navigateur. Ensuite admin : Preview -> aperçu -> nouvelle réauthentification -> Commit. Puis developer. Viewer reste lecture seule et sans Profiler.
+```text
+OPUS_R45D2A19D_APPLIED
+OPUS_R45D2A19D_SMOKE_OK fingerprint=... operations=...
+```
 
-## Matrice ACL à préserver
+Le `git status --short` doit montrer les fichiers back/config attendus avant commit. Après push, revérifier le master GitHub.
 
-Voir `CONTEXT/SPECIFICATIONS/OWASYS_ROLE_CAPABILITY_MATRIX_2026-08-11.md`.
+## Suite planifiée
 
-Admin + developer mutation Sécurité ; viewer lecture seule ; viewer sans Profiler ; permissions effectives uniquement, jamais `primary_role`.
+Matrice ACL contractuelle :
+
+1. developer : Security Preview + Commit ;
+2. viewer : Security lecture seule ;
+3. viewer : Profiler refusé ;
+4. smoke exécutable de toute la matrice admin/developer/viewer.
+
+Si nécessaire pour les essais navigateur, généraliser `LocalPasswordCredentialProvisioner` aux applications OPUS standard en développement uniquement, sans compte codé en dur et sans versionner le store runtime.
 
 NO PARTIAL PUBLICATION.
-NO MANUAL DEV SECRET.
+NO BACKEND ACCESS TO FRONT CREDENTIAL STORE.
+NO PASSWORD OVER REST.
+NO MANUAL STORE EDIT.
 NO ACL BYPASS.
 NO VIEWER MUTATION.
-NO PASSWORD/PROOF LOGGING.
-NO CROSS-PHASE PROOF.
-NO REST REPLAY STORE.
+NO PRIMARY_ROLE AUTHORIZATION.
 NO PUSH OPUS/OWASYS BY ASSISTANT.
