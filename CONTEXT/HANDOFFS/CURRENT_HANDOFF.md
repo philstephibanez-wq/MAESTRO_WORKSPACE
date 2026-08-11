@@ -11,14 +11,15 @@ Date : 2026-08-11
 5. `CONTEXT/SPECIFICATIONS/OWASYS_ROLE_CAPABILITY_MATRIX_2026-08-11.md`
 6. `CONTEXT/SPECIFICATIONS/OPUS_P117W_R45D2A15_BACKEND_FRESH_AUTH_PROOF_2026-08-11.md`
 7. `CONTEXT/SPECIFICATIONS/OPUS_P117W_R45D2A16_SECURITY_ACL_MATRIX_ALIGNMENT_2026-08-11.md`
-8. `CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OPUS_P117W_R45D2A16_SECURITY_ACL_MATRIX_ALIGNMENT_2026-08-11.md`
-9. `CONTEXT/PROJECTS/OPUS_CURRENT_STATE.md`
+8. `CONTEXT/SPECIFICATIONS/OPUS_P117W_R45D2A16B_DEV_SERVER_SINGLE_OWNER_BINDING_2026-08-11.md`
+9. `CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OPUS_P117W_R45D2A16B_DEV_SERVER_SINGLE_OWNER_BINDING_2026-08-11.md`
+10. `CONTEXT/PROJECTS/OPUS_CURRENT_STATE.md`
 
 ## OPUS GitHub courant
 
 ```text
+9330511436d2e3c40728d1d1bbc93ce15598aa8f  opus_p117w_r45d2a16_security_acl_matrix_alignment
 8b70be74bb83da3f528a0d0e3e2bf74663205fa0  opus_p117w_r45d2a15b_rest_catalog_atomic_sync
-a3f5b2257628d5b6ea0c98ba92178b4fe51030b2  opus_p117w_r45d2a14b_logout_atomic_migration
 ```
 
 ## États owner acquis
@@ -28,56 +29,46 @@ a3f5b2257628d5b6ea0c98ba92178b4fe51030b2  opus_p117w_r45d2a14b_logout_atomic_mig
 - message login I18n : acquis ;
 - Profiler intégré/repliable + corrélation login : acquis ;
 - R45D2A12 : UI Sources/Git alignée sur ACL `source/write` et publiée ;
-- R45D2A14B : `/fr` authentifié fonctionne et `Déconnexion` est visible ;
+- R45D2A14B : logout généré acquis ;
 - R45D2A15 : fresh-auth backend non forgeable publié ;
-- R45D2A15B : catalogues REST atomiquement synchronisés, `OPUS_REST_API_CATALOG_MISMATCH` disparu, `/fr-FR/applications` validé owner.
+- R45D2A15B : catalogues REST atomiquement synchronisés, mismatch disparu ;
+- R45D2A16 : matrice Sécurité admin/developer/viewer publiée ;
+- diagnostic dev-server : front 8000 répond HTTP 200 ; backend 8080 a présenté deux listeners simultanés et un timeout avant `request.received` ; owner a supprimé les processus dupliqués avec Task Manager.
 
 ## Matrice ACL cible obligatoire
 
 Voir `CONTEXT/SPECIFICATIONS/OWASYS_ROLE_CAPABILITY_MATRIX_2026-08-11.md`.
 
-Règle : capacités fondées sur permissions ACL effectives, jamais sur `primary_role` seul. Backend décisif, UI alignée, deny-by-default.
+Règle : permissions ACL effectives uniquement, backend décisif, UI alignée, deny-by-default. Admin + developer peuvent gérer Sécurité ; viewer lecture seule ; viewer sans Profiler.
 
-## Défaut courant
-
-Le master publié n'est pas encore aligné sur la matrice pour Sécurité :
-
-- front : developer = `security:open` seulement ;
-- back : developer = `security:read` seulement ;
-- allow-list REST fresh-auth / preview / commit = admin seulement.
-
-La cible contractuelle est : admin + developer peuvent gérer Sécurité ; viewer reste lecture seule.
-
-## Livrable actif — R45D2A16
+## Livrable actif — R45D2A16B
 
 ```text
-ZIP     : opus_p117w_r45d2a16_security_acl_matrix_alignment.zip
-SHA-256 : e60f750bc8e744a3f027240a37c5344cf563c6455e13de0b8d6ee2e094e9817f
-BASE    : 8b70be74bb83da3f528a0d0e3e2bf74663205fa0
+ZIP     : opus_p117w_r45d2a16b_dev_server_single_owner_binding.zip
+SHA-256 : 83f58506c632e901ff927bd1936ce639f6d6e36821bd0ccf9918f2ff27469717
+BASE    : 9330511436d2e3c40728d1d1bbc93ce15598aa8f
 FILES   : 2
 ```
 
-Correction :
+Correction générique OPUS : après résolution finale host/port, `SiteCommandService::devServer()` refuse tout endpoint déjà occupé avant RAZ diagnostics, `development_server.starting` et `proc_open()`.
 
-- front developer -> `security:*` ;
-- back developer -> `security:*` ;
-- fresh-auth / preview / commit REST -> `[admin, developer]` ;
-- viewer inchangé : open/read uniquement ;
-- smoke prouve viewer sans manage et sans Profiler.
+Erreur : `OPUS_DEV_SERVER_PORT_ALREADY_IN_USE:<host>:<port>`.
 
 ## Gate immédiat
 
-1. appliquer R45D2A16 ;
-2. smoke ACL matrix ;
-3. redémarrer back puis front ;
-4. admin : Sécurité mutable ;
-5. developer : Sécurité mutable ;
-6. viewer : Sécurité lecture seule, contrôles mutation absents/inactifs ;
-7. viewer : Profiler inaccessible ;
-8. reprendre fresh-auth -> preview -> commit ;
-9. conserver CSRF + proof backend + confirmation + state hash + rollback + audit.
+1. appliquer R45D2A16B ;
+2. smoke OK ;
+3. démarrer `owasys-back` sur 8080 ;
+4. tenter immédiatement un second démarrage `owasys-back` ;
+5. le second doit être refusé avec `OPUS_DEV_SERVER_PORT_ALREADY_IN_USE:127.0.0.1:8080` ;
+6. le premier backend doit continuer à répondre ;
+7. démarrer front ;
+8. reprendre Sécurité `fresh-auth -> preview -> commit` ;
+9. valider ensuite admin, developer, viewer contre la matrice.
 
 NO SITE-SPECIFIC PATCH.
+NO SILENT FALLBACK.
+NO AUTO-KILL EXISTING PROCESS.
 NO ACL BYPASS.
 NO VIEWER MUTATION.
 NO PROFILER FOR VIEWER.
