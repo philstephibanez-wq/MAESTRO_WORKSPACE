@@ -10,15 +10,15 @@ Date : 2026-08-11
 4. `CONTEXT/SPECIFICATIONS/OPUS_OWASYS_APPLICATION_CREATION_AND_RESOURCE_SECURITY_CONTRACT_2026-07-31.md`
 5. `CONTEXT/SPECIFICATIONS/OWASYS_ROLE_CAPABILITY_MATRIX_2026-08-11.md`
 6. `CONTEXT/SPECIFICATIONS/OPUS_P117W_R45D2A15_BACKEND_FRESH_AUTH_PROOF_2026-08-11.md`
-7. `CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OPUS_P117W_R45D2A15_BACKEND_FRESH_AUTH_PROOF_2026-08-11.md`
-8. `CONTEXT/PROJECTS/OPUS_CURRENT_STATE.md`
+7. `CONTEXT/SPECIFICATIONS/OPUS_P117W_R45D2A16_SECURITY_ACL_MATRIX_ALIGNMENT_2026-08-11.md`
+8. `CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OPUS_P117W_R45D2A16_SECURITY_ACL_MATRIX_ALIGNMENT_2026-08-11.md`
+9. `CONTEXT/PROJECTS/OPUS_CURRENT_STATE.md`
 
 ## OPUS GitHub courant
 
 ```text
+8b70be74bb83da3f528a0d0e3e2bf74663205fa0  opus_p117w_r45d2a15b_rest_catalog_atomic_sync
 a3f5b2257628d5b6ea0c98ba92178b4fe51030b2  opus_p117w_r45d2a14b_logout_atomic_migration
-f195471557727d23d0be036b80382f3ba3ad9787  opus_p117w_r45d2a14_generated_logout
-186517fd37c14047e33308500d0699b8ac36ab44  opus_p117w_r45d2a12_source_acl_ui_truth
 ```
 
 ## États owner acquis
@@ -28,7 +28,9 @@ f195471557727d23d0be036b80382f3ba3ad9787  opus_p117w_r45d2a14_generated_logout
 - message login I18n : acquis ;
 - Profiler intégré/repliable + corrélation login : acquis ;
 - R45D2A12 : UI Sources/Git alignée sur ACL `source/write` et publiée ;
-- R45D2A14B : `/fr` authentifié fonctionne et `Déconnexion` est visible.
+- R45D2A14B : `/fr` authentifié fonctionne et `Déconnexion` est visible ;
+- R45D2A15 : fresh-auth backend non forgeable publié ;
+- R45D2A15B : catalogues REST atomiquement synchronisés, `OPUS_REST_API_CATALOG_MISMATCH` disparu, `/fr-FR/applications` validé owner.
 
 ## Matrice ACL cible obligatoire
 
@@ -36,50 +38,50 @@ Voir `CONTEXT/SPECIFICATIONS/OWASYS_ROLE_CAPABILITY_MATRIX_2026-08-11.md`.
 
 Règle : capacités fondées sur permissions ACL effectives, jamais sur `primary_role` seul. Backend décisif, UI alignée, deny-by-default.
 
-## R45D2A15 — état
+## Défaut courant
 
-Fresh-auth backend non forgeable introduit localement : preuve `OWASYS_FRESH_AUTH_PROOF_V1`, HMAC SHA-256, TTL court, liée acteur + site + mutation.
+Le master publié n'est pas encore aligné sur la matrice pour Sécurité :
 
-Régression détectée lors du premier redémarrage : `OPUS_REST_API_CATALOG_MISMATCH` sur tout appel REST, y compris `GET /api/v1/applications`.
+- front : developer = `security:open` seulement ;
+- back : developer = `security:read` seulement ;
+- allow-list REST fresh-auth / preview / commit = admin seulement.
 
-Cause : R45D2A15 a ajouté `security.fresh-auth-proof.issue` aux ressources inline de `sites/owasys-back/config/backend.rest.json` sans synchroniser :
+La cible contractuelle est : admin + developer peuvent gérer Sécurité ; viewer reste lecture seule.
 
-- `sites/owasys-back/config/backend.resources.json`
-- `sites/owasys-front/config/rest.resources.json`
-
-Les logs owner confirment la même erreur corrélée front/back dans `Opus/Api/Rest/RestResourceCatalog.php:174`.
-
-## Livrable actif — R45D2A15B
+## Livrable actif — R45D2A16
 
 ```text
-ZIP     : opus_p117w_r45d2a15b_rest_catalog_atomic_sync.zip
-SHA-256 : 27e83c7c4480ce1ee25414184604353493a434760baa0b2fb48d84b98d5247c4
-BASE    : a3f5b2257628d5b6ea0c98ba92178b4fe51030b2 + R45D2A15 local
+ZIP     : opus_p117w_r45d2a16_security_acl_matrix_alignment.zip
+SHA-256 : e60f750bc8e744a3f027240a37c5344cf563c6455e13de0b8d6ee2e094e9817f
+BASE    : 8b70be74bb83da3f528a0d0e3e2bf74663205fa0
 FILES   : 2
 ```
 
 Correction :
 
-- `backend.rest.json` reste la liste serveur autoritative ;
-- synchronisation atomique vers les deux catalogues `OPUS_REST_RESOURCE_CATALOG_V1` ;
-- validation de la ressource fresh-auth ;
-- smoke comparant les trois fingerprints ;
-- smoke vérifiant `registry.sync` et la nouvelle route fresh-auth.
+- front developer -> `security:*` ;
+- back developer -> `security:*` ;
+- fresh-auth / preview / commit REST -> `[admin, developer]` ;
+- viewer inchangé : open/read uniquement ;
+- smoke prouve viewer sans manage et sans Profiler.
 
 ## Gate immédiat
 
-1. appliquer R45D2A15B sur l'arbre contenant R45D2A15 ;
-2. exécuter applicateur + smoke ;
-3. redémarrer owasys-back puis owasys-front ;
-4. vérifier disparition de `OPUS_REST_API_CATALOG_MISMATCH` ;
-5. vérifier `/fr-FR/applications` ;
-6. reprendre ensuite le test fresh-auth preview/commit ;
-7. préserver la matrice admin/developer/viewer.
+1. appliquer R45D2A16 ;
+2. smoke ACL matrix ;
+3. redémarrer back puis front ;
+4. admin : Sécurité mutable ;
+5. developer : Sécurité mutable ;
+6. viewer : Sécurité lecture seule, contrôles mutation absents/inactifs ;
+7. viewer : Profiler inaccessible ;
+8. reprendre fresh-auth -> preview -> commit ;
+9. conserver CSRF + proof backend + confirmation + state hash + rollback + audit.
 
 NO SITE-SPECIFIC PATCH.
-NO CATALOG FALLBACK.
+NO ACL BYPASS.
+NO VIEWER MUTATION.
+NO PROFILER FOR VIEWER.
 NO TIMESTAMP-ONLY FRESH-AUTH.
 NO PASSWORD IN LOG/PROFILER/ARGV.
-NO SSO/ACL RELAXATION.
 NO PRIMARY_ROLE AUTHORIZATION.
 NO PUSH OPUS/OWASYS BY ASSISTANT.
