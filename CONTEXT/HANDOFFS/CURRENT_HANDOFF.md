@@ -15,16 +15,17 @@ Date : 2026-08-11
 9. `CONTEXT/SPECIFICATIONS/OPUS_P117W_R45D2A17_FRESH_AUTH_PHASE_BINDING_2026-08-11.md`
 10. `CONTEXT/SPECIFICATIONS/OPUS_P117W_R45D2A18_SECURITY_MUTATION_FSM_2026-08-11.md`
 11. `CONTEXT/SPECIFICATIONS/OPUS_P117W_R45D2A18B_REST_COMPOSER_CATALOG_INTEGRITY_2026-08-11.md`
-12. `CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OPUS_P117W_R45D2A18B_REST_COMPOSER_CATALOG_INTEGRITY_2026-08-11.md`
-13. `CONTEXT/PROJECTS/OPUS_CURRENT_STATE.md`
+12. `CONTEXT/SPECIFICATIONS/OPUS_P117W_R45D2A18C_FRESH_AUTH_RUNTIME_SECRET_POLICY_2026-08-11.md`
+13. `CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OPUS_P117W_R45D2A18C_FRESH_AUTH_RUNTIME_SECRET_POLICY_2026-08-11.md`
+14. `CONTEXT/PROJECTS/OPUS_CURRENT_STATE.md`
 
 ## OPUS GitHub courant
 
 ```text
+9d3c4d5463483cc520d381f7f8de83cfd5e352c4  opus_p117w_r45d2a18b_rest_composer_catalog_integrity
 98b0233bf85f33037f45adde916514c6f8305a16  opus_p117w_r45d2a18_security_mutation_fsm
 8f0d6ba5a009fbd5c4348d1f4f6cc789ce813ee6  opus_p117w_r45d2a17_fresh_auth_phase_binding
 af4016a642c5595304fadbbdab5990bd7e6f3ea9  opus_p117w_r45d2a16b_dev_server_single_owner_binding
-9330511436d2e3c40728d1d1bbc93ce15598aa8f  opus_p117w_r45d2a16_security_acl_matrix_alignment
 ```
 
 ## États owner acquis
@@ -41,30 +42,9 @@ af4016a642c5595304fadbbdab5990bd7e6f3ea9  opus_p117w_r45d2a16b_dev_server_single
 - R45D2A16B : single-owner dev-server publié et validé ;
 - R45D2A17 : fresh-auth lié à la phase preview|commit publié ;
 - R45D2A18 : Security Mutation FSM publié ;
+- R45D2A18B : intégrité REST -> Composer publiée ; le script fresh-auth est maintenant déclaré et effectivement lancé ;
 - `GET /fr-FR/security` sain ;
 - `security.snapshot` passe front -> REST -> back -> Composer en 200 avec trace corrélée.
-
-## Incident actif
-
-Le premier POST Preview atteint bien le back :
-
-```text
-POST /api/v1/applications/essai2/security/fresh-auth-proofs
-operation=security.fresh-auth-proof.issue
-```
-
-mais échoue avec :
-
-```text
-OPUS_REST_API_COMPOSER_SCRIPT_UNDECLARED
-```
-
-Cause confirmée :
-
-- `backend.operations.json` référence `owasys:security-fresh-auth-proof` ;
-- `composer.commands.json` déclare alias + provider interne ;
-- `composer.json` racine ne contient pas le script public `owasys:security-fresh-auth-proof` ;
-- `ComposerCommandRegistry` valide directement contre `composer.json` et refuse.
 
 ## Matrice ACL cible obligatoire
 
@@ -72,41 +52,61 @@ Voir `CONTEXT/SPECIFICATIONS/OWASYS_ROLE_CAPABILITY_MATRIX_2026-08-11.md`.
 
 Permissions ACL effectives uniquement. Backend décisif, UI alignée, deny-by-default. Admin + developer mutation ; viewer lecture seule ; viewer sans Profiler.
 
-## Livrable actif — R45D2A18B
+## Incident actif
+
+Le POST Preview atteint le back et lance maintenant :
 
 ```text
-ZIP     : opus_p117w_r45d2a18b_rest_composer_catalog_integrity.zip
-SHA-256 : a4dc4e13778f96037c5f9e9470e6c673e1f58857572e99757c01304458642a27
-BASE    : 98b0233bf85f33037f45adde916514c6f8305a16
+script=owasys:security-fresh-auth-proof
+```
+
+mais le service renvoie :
+
+```text
+OWASYS_FRESH_AUTH_PROOF_SECRET_INVALID
+```
+
+Cause confirmée : `OwasysFreshAuthProofService` attend `OPUS_OWASYS_FRESH_AUTH_PROOF_SECRET`, tandis que `sites/owasys-back/config/site.json` ne déclare pas encore ce secret dans `OPUS_APPLICATION_ENVIRONMENTS_V1`.
+
+OPUS possède déjà le mécanisme canonique `OPUS_DEVELOPMENT_DERIVED_SECRET_V1` utilisé par les secrets REST de `owasys-back`. Le secret fresh-auth doit être raccordé à ce mécanisme au lieu de dépendre d'un `set` manuel.
+
+## Livrable actif — R45D2A18C
+
+```text
+ZIP     : opus_p117w_r45d2a18c_fresh_auth_runtime_secret_policy.zip
+SHA-256 : 253b0aba17d839c728ac1a3f602baf2e8b471f27b64314105cef47647c71ec85
+BASE    : 9d3c4d5463483cc520d381f7f8de83cfd5e352c4
 FILES   : 2
 ```
 
 Correction :
 
-1. ajouter le script public manquant dans `composer.json` ;
-2. smoke global : chaque `composer_script` de `backend.operations.json` doit exister dans `composer.json` ;
-3. exercer `ComposerCommandRegistry::publicOperations()` pour reproduire la même frontière que le runtime ;
-4. vérifier alias/provider fresh-auth dans `composer.commands.json`.
+- dev : `OPUS_OWASYS_FRESH_AUTH_PROOF_SECRET` dérivé automatiquement par OPUS avec channel `owasys-security-fresh-auth` ;
+- test : variable externe `OPUS_TEST_OWASYS_FRESH_AUTH_PROOF_SECRET` ;
+- prod : variable externe `OPUS_OWASYS_FRESH_AUTH_PROOF_SECRET` ;
+- `secret: true` partout ;
+- aucun secret versionné.
 
 ## Gate immédiat
 
-1. appliquer R45D2A18B ;
+1. appliquer R45D2A18C ;
 2. applicateur + smoke ;
-3. dump-autoload ;
-4. redémarrer back puis front ;
-5. admin : Security Preview ;
-6. fresh-auth doit passer REST -> Composer ;
-7. preview doit aboutir ;
-8. nouvelle fresh-auth ;
-9. commit doit aboutir ;
-10. vérifier Profiler FSM + REST distribué + Composer ;
-11. developer : même workflow ;
-12. viewer : lecture seule, aucun contrôle mutation ;
-13. aucun mot de passe ni preuve complète dans logs/profiler.
+3. valider `site.json` ;
+4. redémarrer `owasys-back` SANS `set OPUS_OWASYS_FRESH_AUTH_PROOF_SECRET` ;
+5. redémarrer `owasys-front` ;
+6. admin : Security Preview ;
+7. fresh-auth doit passer REST -> Composer ;
+8. Preview doit aboutir ;
+9. nouvelle fresh-auth ;
+10. Commit doit aboutir ;
+11. vérifier FSM + REST + Composer dans Profiler/Logger sans secret ;
+12. developer : même workflow ;
+13. viewer : lecture seule, aucune action mutation.
 
-NO SITE-SPECIFIC PATCH.
+NO SITE-SPECIFIC HACK.
+NO MANUAL DEV SECRET.
+NO SECRET IN GIT.
 NO SILENT FALLBACK.
-NO AUTO-KILL EXISTING PROCESS.
 NO ACL BYPASS.
 NO VIEWER MUTATION.
 NO PROFILER FOR VIEWER.
