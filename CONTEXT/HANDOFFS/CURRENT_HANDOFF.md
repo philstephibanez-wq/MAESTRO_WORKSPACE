@@ -13,8 +13,9 @@ Date : 2026-08-11
 7. `CONTEXT/SPECIFICATIONS/OPUS_P117W_R45D2A16_SECURITY_ACL_MATRIX_ALIGNMENT_2026-08-11.md`
 8. `CONTEXT/SPECIFICATIONS/OPUS_P117W_R45D2A16B_DEV_SERVER_SINGLE_OWNER_BINDING_2026-08-11.md`
 9. `CONTEXT/SPECIFICATIONS/OPUS_P117W_R45D2A17_FRESH_AUTH_PHASE_BINDING_2026-08-11.md`
-10. `CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OPUS_P117W_R45D2A17_FRESH_AUTH_PHASE_BINDING_2026-08-11.md`
-11. `CONTEXT/PROJECTS/OPUS_CURRENT_STATE.md`
+10. `CONTEXT/SPECIFICATIONS/OPUS_P117W_R45D2A18_SECURITY_MUTATION_FSM_2026-08-11.md`
+11. `CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OPUS_P117W_R45D2A18_SECURITY_MUTATION_FSM_2026-08-11.md`
+12. `CONTEXT/PROJECTS/OPUS_CURRENT_STATE.md`
 
 ## OPUS GitHub courant
 
@@ -23,7 +24,7 @@ Date : 2026-08-11
 8b70be74bb83da3f528a0d0e3e2bf74663205fa0  opus_p117w_r45d2a15b_rest_catalog_atomic_sync
 ```
 
-R45D2A16B est appliqué et validé localement par l'owner mais pas encore visible sur GitHub au moment de ce handoff.
+R45D2A16B est validé localement par l'owner ; sa protection refuse un second bind dev-server sur le même port. R45D2A17 est dans la progression locale owner mais n'est pas encore confirmé comme commit GitHub dans ce handoff.
 
 ## États owner acquis
 
@@ -31,40 +32,51 @@ R45D2A16B est appliqué et validé localement par l'owner mais pas encore visibl
 - reset local-password : acquis ;
 - message login I18n : acquis ;
 - Profiler intégré/repliable + corrélation login : acquis ;
-- R45D2A12 : UI Sources/Git alignée sur ACL `source/write` et publiée ;
+- R45D2A12 : UI Sources/Git alignée sur ACL `source/write` ;
 - R45D2A14B : logout généré acquis ;
-- R45D2A15 : fresh-auth backend non forgeable publié ;
-- R45D2A15B : catalogues REST atomiquement synchronisés, mismatch disparu ;
+- R45D2A15 : fresh-auth backend non forgeable ;
+- R45D2A15B : catalogues REST atomiquement synchronisés ;
 - R45D2A16 : matrice Sécurité admin/developer/viewer publiée ;
-- R45D2A16B : second démarrage `owasys-back` refusé par `OPUS_DEV_SERVER_PORT_ALREADY_IN_USE`; single-owner binding validé localement.
+- R45D2A16B : single-owner dev-server validé localement ;
+- logs owner 2026-08-11 07:49Z : `/fr-FR/security` fonctionne ; backend `security.snapshot` passe REST -> Composer en 200 avec trace corrélée.
 
 ## Matrice ACL cible obligatoire
 
 Voir `CONTEXT/SPECIFICATIONS/OWASYS_ROLE_CAPABILITY_MATRIX_2026-08-11.md`.
 
-Règle : permissions ACL effectives uniquement, backend décisif, UI alignée, deny-by-default. Admin + developer peuvent gérer Sécurité ; viewer lecture seule ; viewer sans Profiler.
+Permissions ACL effectives uniquement. Backend décisif, UI alignée, deny-by-default. Admin + developer mutation ; viewer lecture seule ; viewer sans Profiler.
 
-## Livrable actif — R45D2A17
+## Livrable actif — R45D2A18
 
 ```text
-ZIP     : opus_p117w_r45d2a17_fresh_auth_phase_binding.zip
-SHA-256 : a216a0619d69eab274aaca54bc21ea7a4ff7a92b35fc891c2e6fecf590abbcb7
-BASE    : 9330511436d2e3c40728d1d1bbc93ce15598aa8f + R45D2A16B local validé
-FILES   : 2
+ZIP     : opus_p117w_r45d2a18_security_mutation_fsm.zip
+SHA-256 : 4b54105a5836dfe4fb0136eee1a74b8c7bd6a71a2afc1b4ee1bf44ff59be4afd
+BASE    : R45D2A17 local + R45D2A16B local validé
+FILES   : 3
 ```
 
-Correction : la preuve fresh-auth est désormais liée cryptographiquement à la phase `preview|commit`. Claims signés : acteur, provider, site, hash mutation, `operation=security.mutation.<phase>`, `phase`, TTL, nonce.
+Cause : `SecurityController` pilotait encore preview/commit procéduralement ; la FSM de navigation ne porte que `open_security`.
+
+Solution : FSM dédiée `security.mutation.fsm.json`, persistée dans la session front entre preview et commit.
+
+Workflow :
+
+`idle -> requested -> authenticated -> authorized -> validated -> previewed -> confirmed -> committed`
+
+Branches : `rejected`, `rolled_back`.
+
+Binding de workflow : site + hash mutation/reason + vue. Aucun mot de passe ni preuve fresh-auth en mémoire FSM.
 
 ## Gate immédiat
 
-1. appliquer R45D2A17 ;
-2. smoke : preuve preview acceptée en preview et refusée en commit ;
-3. lint + autoload ;
-4. démarrer owasys-back puis owasys-front ;
-5. admin : `fresh-auth -> preview -> nouvelle fresh-auth -> commit` ;
+1. appliquer R45D2A18 ;
+2. smoke FSM + lint + autoload ;
+3. démarrer back puis front ;
+4. admin : mutation Sécurité -> preview -> nouvelle fresh-auth -> commit ;
+5. vérifier Profiler FSM + REST distribué + Composer ;
 6. developer : même workflow ;
-7. viewer : lecture Sécurité seulement, aucune action de mutation ;
-8. inspecter Logger/Profiler : aucun mot de passe ni preuve complète sensible journalisée.
+7. viewer : lecture seule, aucun contrôle de mutation ;
+8. inspecter logs/profiler : aucun mot de passe ni preuve complète.
 
 NO SITE-SPECIFIC PATCH.
 NO SILENT FALLBACK.
@@ -74,7 +86,7 @@ NO VIEWER MUTATION.
 NO PROFILER FOR VIEWER.
 NO TIMESTAMP-ONLY FRESH-AUTH.
 NO CROSS-PHASE FRESH-AUTH PROOF.
-NO PASSWORD IN LOG/PROFILER/ARGV.
+NO PASSWORD/PROOF IN FSM MEMORY OR LOGS.
 NO REST REPLAY STORE.
 NO PRIMARY_ROLE AUTHORIZATION.
 NO PUSH OPUS/OWASYS BY ASSISTANT.
