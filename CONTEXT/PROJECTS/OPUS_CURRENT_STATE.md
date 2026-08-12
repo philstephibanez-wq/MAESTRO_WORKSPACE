@@ -1,14 +1,14 @@
 # OPUS CURRENT STATE
 
-Dernière mise à jour : 2026-08-11.
+Dernière mise à jour : 2026-08-12.
 
 ## Dépôt canonique
 
 ```text
 OPUS : philstephibanez-wq/OPUS
 Branche : master
-origin/master : 38a053d585bfd0b154183a5ad7b043504634c043
-Commit : opus_p117w_r45d2a19d_credential_ownership_atomic_cleanup
+origin/master : 50d68b724a1f32201bd068e0cb23c9f925780093
+Commit : opus_p117w_r45d2a20_standard_local_password_role_provisioning
 ```
 
 ## États acquis
@@ -22,53 +22,72 @@ Commit : opus_p117w_r45d2a19d_credential_ownership_atomic_cleanup
 - admin Security Preview + Commit acquis.
 - R45D2A19 : break-glass local-password acquis.
 - R45D2A19B : page account/password I18n acquise.
-- R45D2A19C : changement de mot de passe local exécuté par le SSO front.
-- R45D2A19D : ancien flux backend admin-password supprimé ; aucun mot de passe local ne traverse REST.
+- R45D2A19C/D : changement de mot de passe local possédé par le front et ancien flux backend supprimé.
+- R45D2A20 : provisioning local-password par rôle pour `standard-opus-application` publié.
+- compte runtime developer opérationnel.
+- developer Security Preview + Commit acquis.
 
 ## Matrice ACL cible
 
-La matrice admin/developer/viewer reste contractuelle. L'ACL front courante donne :
+La matrice admin/developer/viewer reste contractuelle :
 
-- admin : `*:*` ;
+- admin : toutes capacités ;
 - developer : mutations registry/creation/structure/data/workflows/source/git/build/account/security + `profiler:view` ;
 - viewer : lecture registry/structure/data/workflows/security/source/git/build, `account:open` + `account:change`, sans Profiler et sans mutation.
 
 La décision est fondée sur les permissions ACL effectives, jamais `primary_role` seul.
 
-## Livrable actif — R45D2A20
+## Contrat UX Sécurité
+
+Le vocabulaire visible doit être compréhensible :
+
+- Ajouter un utilisateur ou un agent ;
+- Modifier un utilisateur ou un agent ;
+- Supprimer un utilisateur ou un agent.
+
+Le modèle interne reste `identity`, unique par `provider + subject`.
+
+Les droits portent sur des ressources selon :
+
+`identité -> attribution de rôle/scope -> rôle -> permission resource:action -> ressource -> ACL -> décision`.
+
+OWASYS doit privilégier une présentation graphique : cartes, badges, arbres, accordéons SCORE natifs et schémas de relations. Mermaid est réservé à la documentation Workspace ; aucune dépendance Mermaid/Node n’est chargée au runtime OWASYS.
+
+## Livrable actif — R45D2A21
 
 ```text
-ZIP     : opus_p117w_r45d2a20_standard_local_password_role_provisioning.zip
-SHA-256 : c74fb241be1b53237e9271ef5302f0e3ded1d0ae60451c4c34d157ff908e8b0c
-BASE    : 38a053d585bfd0b154183a5ad7b043504634c043
-FILES   : 4
+ZIP     : opus_p117w_r45d2a21_security_visual_workspace.zip
+SHA-256 : 86ad0e9f9815d0af56d416bf6939b944656f344dc62227fb7e2bb513567a426a
+BASE    : 50d68b724a1f32201bd068e0cb23c9f925780093
+FILES   : 3
 ```
 
-R45D2A20 généralise `LocalPasswordCredentialProvisioner` aux `standard-opus-application` :
+R45D2A21 :
 
-- rôle explicite via `--role=<role>` ;
-- rôle validé contre `config/acl.json` ;
-- password uniquement via STDIN ;
-- store runtime non versionné ;
-- aucun compte hardcodé ;
-- compatibilité generated/onboarding maintenue ;
-- override de rôle generated interdit.
+- ajoute `identity_type=user|agent` aux nouvelles identités ;
+- conserve les identités legacy en `unknown` plutôt que de les deviner ;
+- rend un schéma relationnel visuel SCORE/CSS ;
+- affiche les blocs Sécurité en accordéons ;
+- sépare Utilisateurs / Agents / À classifier ;
+- remplace le libellé technique « Référencer une identité » par « Ajouter un utilisateur ou un agent » ;
+- maintient les mutations backend et la fresh-auth comme autorité ;
+- I18n UE + ukrainien ;
+- aucun JS/Mermaid runtime.
 
 ## Gate owner
 
 ```text
-OPUS_R45D2A20_SMOKE_OK
+OPUS_R45D2A21_APPLIED locales=25
+OPUS_R45D2A21_SMOKE_OK locales=25
 ```
 
-Puis provisionner deux identités runtime dans `owasys-front` : developer et viewer, sans édition manuelle du store.
+Puis test navigateur developer : carte graphique, accordéons, ajout d’une identité typée, Preview, Commit, classement dans le bon accordéon.
 
 ## Suite planifiée
 
-1. browser developer : Security Preview + Commit et autres mutations ;
-2. browser viewer : lecture seule ;
-3. viewer : Profiler refusé ;
-4. backend : refus réel des mutations viewer ;
-5. smoke exécutable de toute la matrice admin/developer/viewer.
+1. gate viewer de la matrice ACL ;
+2. smoke exécutable admin/developer/viewer front+back ;
+3. implémenter les mutations backend Modifier/Supprimer utilisateur ou agent avant d’exposer ces boutons.
 
 NO HARDCODED ACCOUNT.
 NO MANUAL STORE EDIT.
@@ -76,4 +95,6 @@ NO PASSWORD IN ARGV/GIT/LOG/PROFILER.
 NO ACL BYPASS.
 NO VIEWER MUTATION.
 NO PRIMARY_ROLE AUTHORIZATION.
+NO IDENTITY TYPE INFERENCE.
+NO MERMAID/JS RUNTIME IN OWASYS.
 NO PUSH OPUS/OWASYS BY ASSISTANT.
