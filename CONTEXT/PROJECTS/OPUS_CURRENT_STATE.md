@@ -1,6 +1,6 @@
 # OPUS CURRENT STATE
 
-Dernière mise à jour : 2026-08-12.
+Dernière mise à jour : 2026-08-13.
 
 ## Dépôt canonique
 
@@ -26,68 +26,66 @@ Commit : opus_p117w_r45d2a20_standard_local_password_role_provisioning
 - R45D2A20 : provisioning local-password par rôle pour `standard-opus-application` publié.
 - compte runtime developer opérationnel.
 - developer Security Preview + Commit acquis.
+- R45D2A21 appliqué localement : `identity_type=user|agent`, anciennes identités `unknown`, accordéons fonctionnels.
 
-## Matrice ACL cible
+## Retour visuel owner
 
-La matrice admin/developer/viewer reste contractuelle :
+R45D2A21 n’est pas accepté visuellement.
 
-- admin : toutes capacités ;
-- developer : mutations registry/creation/structure/data/workflows/source/git/build/account/security + `profiler:view` ;
-- viewer : lecture registry/structure/data/workflows/security/source/git/build, `account:open` + `account:change`, sans Profiler et sans mutation.
+La page reste trop proche d’un formulaire technique : cadres imbriqués, trop d’espace vide, bloc legacy surdimensionné, action principale trop basse, détails techniques trop visibles et message FSM trop dominant.
 
-La décision est fondée sur les permissions ACL effectives, jamais `primary_role` seul.
-
-## Contrat UX Sécurité
-
-Le vocabulaire visible doit être compréhensible :
-
-- Ajouter un utilisateur ou un agent ;
-- Modifier un utilisateur ou un agent ;
-- Supprimer un utilisateur ou un agent.
-
-Le modèle interne reste `identity`, unique par `provider + subject`.
-
-Les droits portent sur des ressources selon :
+Aucune remise en cause du modèle :
 
 `identité -> attribution de rôle/scope -> rôle -> permission resource:action -> ressource -> ACL -> décision`.
 
-OWASYS doit privilégier une présentation graphique : cartes, badges, arbres, accordéons SCORE natifs et schémas de relations. Mermaid est réservé à la documentation Workspace ; aucune dépendance Mermaid/Node n’est chargée au runtime OWASYS.
+## Contrat UX Sécurité
 
-## Livrable actif — R45D2A21
+Vocabulaire visible :
+
+- Ajouter un utilisateur ou un agent ;
+- à terme Modifier un utilisateur ou un agent ;
+- à terme Supprimer un utilisateur ou un agent.
+
+OWASYS doit viser un cockpit graphique : dashboard, compteurs, cartes, badges, schéma de relations et accordéons compacts. SCORE/CSS uniquement au runtime.
+
+## Livrable actif — R45D2A21B
 
 ```text
-ZIP     : opus_p117w_r45d2a21_security_visual_workspace.zip
-SHA-256 : 86ad0e9f9815d0af56d416bf6939b944656f344dc62227fb7e2bb513567a426a
-BASE    : 50d68b724a1f32201bd068e0cb23c9f925780093
+ZIP     : opus_p117w_r45d2a21b_security_visual_dashboard.zip
+SHA-256 : 0ccf2e5d71260dc3917bbc79aab39f817cb4a4bbd5266d3a02707b2de616cca6
+PREREQ  : R45D2A21 appliqué
 FILES   : 3
 ```
 
-R45D2A21 :
+R45D2A21B :
 
-- ajoute `identity_type=user|agent` aux nouvelles identités ;
-- conserve les identités legacy en `unknown` plutôt que de les deviner ;
-- rend un schéma relationnel visuel SCORE/CSS ;
-- affiche les blocs Sécurité en accordéons ;
-- sépare Utilisateurs / Agents / À classifier ;
-- remplace le libellé technique « Référencer une identité » par « Ajouter un utilisateur ou un agent » ;
-- maintient les mutations backend et la fresh-auth comme autorité ;
-- I18n UE + ukrainien ;
-- aucun JS/Mermaid runtime.
+- dashboard sécurité compact ;
+- métriques Utilisateurs / Agents / Rôles / Ressources ;
+- flow graphique compact ;
+- CTA Ajouter remonté ;
+- sélecteur graphique user/agent sans JS ;
+- panneaux Utilisateurs/Agents ;
+- détails techniques repliés ;
+- legacy « À classifier » compact ;
+- compteurs techniques ;
+- message humain pour workflow-state invalid, sans bypass FSM ;
+- I18n UE + ukrainien.
 
 ## Gate owner
 
 ```text
-OPUS_R45D2A21_APPLIED locales=25
-OPUS_R45D2A21_SMOKE_OK locales=25
+OPUS_R45D2A21B_APPLIED locales=25
+OPUS_R45D2A21B_SMOKE_OK locales=25
 ```
 
-Puis test navigateur developer : carte graphique, accordéons, ajout d’une identité typée, Preview, Commit, classement dans le bon accordéon.
+Puis jugement visuel owner dans le navigateur avant toute nouvelle fonction.
 
-## Suite planifiée
+## Suite planifiée après validation visuelle
 
-1. gate viewer de la matrice ACL ;
-2. smoke exécutable admin/developer/viewer front+back ;
-3. implémenter les mutations backend Modifier/Supprimer utilisateur ou agent avant d’exposer ces boutons.
+1. gate viewer ACL ;
+2. smoke complet admin/developer/viewer front+back ;
+3. backend atomique Modifier/Supprimer utilisateur ou agent ;
+4. exposition UI de ces actions seulement après backend.
 
 NO HARDCODED ACCOUNT.
 NO MANUAL STORE EDIT.
@@ -97,4 +95,5 @@ NO VIEWER MUTATION.
 NO PRIMARY_ROLE AUTHORIZATION.
 NO IDENTITY TYPE INFERENCE.
 NO MERMAID/JS RUNTIME IN OWASYS.
+NO FAKE MODIFY/DELETE BUTTON.
 NO PUSH OPUS/OWASYS BY ASSISTANT.
