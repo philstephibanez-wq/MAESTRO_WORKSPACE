@@ -14,8 +14,9 @@ Date : 2026-08-13
 8. `CONTEXT/SPECIFICATIONS/OPUS_P117W_R45D2A20_STANDARD_LOCAL_PASSWORD_ROLE_PROVISIONING_2026-08-11.md`
 9. `CONTEXT/SPECIFICATIONS/OPUS_P117W_R45D2A21_SECURITY_VISUAL_WORKSPACE_2026-08-12.md`
 10. `CONTEXT/SPECIFICATIONS/OPUS_P117W_R45D2A21B_SECURITY_VISUAL_DASHBOARD_2026-08-13.md`
-11. `CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OPUS_P117W_R45D2A21B_SECURITY_VISUAL_DASHBOARD_2026-08-13.md`
-12. `CONTEXT/PROJECTS/OPUS_CURRENT_STATE.md`
+11. `CONTEXT/SPECIFICATIONS/OPUS_P117W_R45D2A21C_SECURITY_COMPACT_COCKPIT_2026-08-13.md`
+12. `CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OPUS_P117W_R45D2A21C_SECURITY_COMPACT_COCKPIT_2026-08-13.md`
+13. `CONTEXT/PROJECTS/OPUS_CURRENT_STATE.md`
 
 ## OPUS GitHub courant
 
@@ -25,82 +26,67 @@ Date : 2026-08-13
 1908e9ae4e28d599855b5e8d1e424a6c335d0507  opus_p117w_r45d2a19c_local_password_credential_ownership
 ```
 
+R45D2A21 et R45D2A21B sont appliqués localement mais pas déclarés publiés tant que l’owner ne les a pas commit/push.
+
 ## États owner acquis
 
 - login local-password acquis ;
 - Profiler intégré/repliable et corrélé ;
 - logout généré acquis ;
 - matrice ACL admin/developer/viewer contractuelle ;
-- dev-server single-owner acquis ;
-- catalogues REST/fresh-auth/Security Mutation FSM acquis ;
-- admin Security Preview + Commit acquis ;
-- break-glass local-password et changement forcé de mot de passe acquis ;
+- Security Preview + Commit admin et developer acquis ;
+- break-glass local-password acquis ;
 - aucun mot de passe local ne traverse REST ;
-- R45D2A19D publié : ancien flux backend password supprimé atomiquement ;
 - R45D2A20 publié : provisioning local-password par rôle pour application OPUS standard ;
-- compte `developer` opérationnel ;
-- developer Security Preview + Commit acquis ;
-- R45D2A21 appliqué localement : typage explicite `user|agent` et accordéons fonctionnels.
+- R45D2A21 appliqué localement : `identity_type=user|agent`, legacy `unknown` ;
+- R45D2A21B appliqué localement : dashboard graphique fonctionnel.
 
-## Retour owner R45D2A21
+## Retour owner R45D2A21B
 
-Le résultat visuel R45D2A21 est **refusé comme insuffisant** (« pas terrible »).
+Retour : **« C'est un peu mieux »**.
 
-Défauts observés :
+La direction graphique est conservée, mais le formulaire d’ajout ouvert prend encore presque tout le premier viewport. Les panneaux Utilisateurs / Agents sont repoussés sous la ligne de flottaison et les métriques `0 / 0` ne rendent pas visible la présence des identités legacy.
 
-- trop de cadres/accordéons imbriqués ;
-- trop d’espace vide ;
-- `À classifier` trop dominant ;
-- action Ajouter trop basse ;
-- détails provider/status/source trop présents ;
-- message FSM technique trop dominant ;
-- manque de vraie hiérarchie de cockpit graphique.
-
-Le modèle sécurité reste valide. Ne pas revenir sur `identity_type` ni sur le flow ressource.
-
-## Livrable actif — R45D2A21B
+## Livrable actif — R45D2A21C
 
 ```text
-ZIP     : opus_p117w_r45d2a21b_security_visual_dashboard.zip
-SHA-256 : 0ccf2e5d71260dc3917bbc79aab39f817cb4a4bbd5266d3a02707b2de616cca6
-PREREQ  : R45D2A21 appliqué
-FILES   : 3
+ZIP     : opus_p117w_r45d2a21c_security_compact_cockpit.zip
+SHA-256 : 5072d4f5b0e9f2b6ffdbda00f6a16c07df225747ac2b7cc6a3c08bbbc4bd3cd2
+PREREQ  : R45D2A21B appliqué
+FILES   : 2 scripts PHP
 ```
 
-R45D2A21B apporte :
+R45D2A21C :
 
-- dashboard compact de sécurité ;
-- compteurs Utilisateurs / Agents / Rôles / Ressources ;
-- schéma compact `Utilisateur/Agent -> Attribution -> Rôle -> Permission -> Ressource/ACL` ;
-- CTA « Ajouter un utilisateur ou un agent » en premier niveau ;
-- sélecteur visuel Utilisateur/Agent sans JS ;
-- panneaux Utilisateurs et Agents séparés ;
-- détails techniques repliés ;
-- `À classifier` compact et secondaire ;
-- compteurs sur accordéons techniques ;
-- explication utilisateur de `OWASYS_SECURITY_MUTATION_WORKFLOW_STATE_INVALID` sans supprimer la garde FSM ;
-- I18n UE + ukrainien.
+- compacte encore le dashboard ;
+- ajoute la métrique `À classifier` si nécessaire ;
+- remplace le grand formulaire ouvert par deux quick-actions repliées Utilisateur / Agent ;
+- fixe explicitement `identity_type=user|agent` dans chaque action ;
+- met provider sous Détails techniques, prérempli et modifiable ;
+- rend Utilisateurs / Agents toujours visibles en panneaux ;
+- conserve `À classifier` secondaire et compact ;
+- ne change ni backend, ni FSM, ni fresh-auth, ni ACL ;
+- SCORE/CSS uniquement, aucun JS/Mermaid runtime.
 
 ## Gate immédiat
 
-1. extraire R45D2A21B après R45D2A21 ;
+1. extraire R45D2A21C après R45D2A21B ;
 2. lancer l’applicator ;
-3. exiger `OPUS_R45D2A21B_APPLIED locales=25` ;
+3. exiger `OPUS_R45D2A21C_APPLIED` ;
 4. lancer le smoke ;
-5. exiger `OPUS_R45D2A21B_SMOKE_OK locales=25` ;
-6. linter `SecurityController.php` ;
-7. `composer dump-autoload -o` ;
-8. vérifier `git status --short` ;
-9. redémarrer front/back ;
-10. ouvrir Sécurité comme developer ;
-11. juger d’abord la qualité visuelle avant toute nouvelle fonction.
+5. exiger `OPUS_R45D2A21C_SMOKE_OK` ;
+6. `composer dump-autoload -o` ;
+7. `git status --short` ;
+8. redémarrer front/back ;
+9. ouvrir Sécurité comme developer ;
+10. juger le premier viewport avant toute nouvelle fonction.
 
 ## Suite seulement après validation visuelle
 
-1. gate viewer de la matrice ACL ;
-2. smoke exécutable admin/developer/viewer front+back ;
-3. mutations backend Modifier/Supprimer utilisateur ou agent ;
-4. seulement ensuite exposer les boutons correspondants.
+1. gate viewer ACL ;
+2. smoke complet admin/developer/viewer front+back ;
+3. mutations backend atomiques Modifier/Supprimer utilisateur ou agent ;
+4. exposition UI seulement après support backend réel.
 
 NO HARDCODED ACCOUNT.
 NO MANUAL STORE EDIT.
@@ -109,6 +95,6 @@ NO ACL BYPASS.
 NO VIEWER MUTATION.
 NO PRIMARY_ROLE AUTHORIZATION.
 NO IDENTITY TYPE INFERENCE.
-NO MERMAID/JS RUNTIME IN OWASYS.
+NO JS/MERMAID RUNTIME IN OWASYS.
 NO FAKE MODIFY/DELETE BUTTON.
 NO PUSH OPUS/OWASYS BY ASSISTANT.
