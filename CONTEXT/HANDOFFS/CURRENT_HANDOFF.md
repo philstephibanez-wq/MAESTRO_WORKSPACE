@@ -27,7 +27,7 @@ Date : 2026-08-13
 1908e9ae4e28d599855b5e8d1e424a6c335d0507  opus_p117w_r45d2a19c_local_password_credential_ownership
 ```
 
-R45D2A21/B/C et R45D2A22 sont appliqués localement par l’owner mais non considérés publiés tant que l’owner ne les a pas commit/push.
+R45D2A21/B/C, R45D2A22, R45D2A22B/C sont locaux tant que l’owner ne les a pas commit/push.
 
 ## États owner acquis
 
@@ -41,42 +41,54 @@ R45D2A21/B/C et R45D2A22 sont appliqués localement par l’owner mais non consi
 - compte runtime `viewer` provisionné avec rôle `viewer` ;
 - viewer / Sécurité validé en lecture seule ;
 - viewer / Sources et Git validé en lecture seule ;
-- viewer / Construction et validation : lecture OK, mais **divergence** : lien global `OPUS Profiler` visible alors que `viewer` doit être refusé.
+- viewer / Construction et validation : lecture OK ;
+- R45D2A22B : accès direct `/fr-FR/build?profiler=1` correctement refusé par ACL ;
+- retour owner : la présentation brute `OPUS_ACL_DENIED` doit être améliorée avant fermeture du gate Profiler viewer.
 
-## Cause confirmée
+## Cause R45D2A22C
 
-Le template Build ne contient pas ce lien. La cause est partagée :
+La sécurité est correcte mais la surface d’erreur est insuffisante :
 
-- `default/layouts/layout.score` affiche le lien Profiler sans garde ACL ;
-- `OwasysScorePageRenderer` calcule la visibilité depuis `?profiler=1` sans capacité `profiler:view` ;
-- le endpoint de trace possède déjà une garde ACL ;
-- un refus ACL remontant au composition root doit être rendu en HTTP 403, pas 500.
+- `default/templates/runtime-error.score` ne contient qu’un titre avec le code et la trace ;
+- le refus ACL sûr perd actuellement le détail `resource:action` dans `safeErrorCode()` car les segments sont en minuscules ;
+- le rendu d’erreur force `fr-FR` au lieu de conserver la locale de la requête ;
+- la page d’erreur ne charge pas le langage visuel OWASYS.
 
-## Livrable actif — R45D2A22B
+## Livrable actif — R45D2A22C
 
 ```text
-ZIP     : opus_p117w_r45d2a22b_profiler_acl_presentation_guard.zip
-SHA-256 : 7baa608c1a5c305d6d69cb8e7973de8b3f44e3f1d2c037a68e71def010db79b8
-PREREQ  : R45D2A22 appliqué ; R45D2A21C local
-FILES   : 2
+ZIP     : opus_p117w_r45d2a22c_acl_denied_visual_error.zip
+SHA-256 : 706caeb6345b29eb63a8db0828b98e2acc86e982441aca247ba9492ded3f1de0
+PREREQ  : R45D2A22B appliqué
+FILES   : 3
 ```
 
-R45D2A22B traite la cause au niveau partagé : session + RuntimeSecurity injectés dans le renderer, `profiler.allowed` dérivé de l’ACL, lien/iframe SCORE conditionnés, query directe refusée, erreurs ACL de composition mappées HTTP 403.
+R45D2A22C :
+
+- conserve `OPUS_ACL_DENIED:resource:action` comme code public sûr ;
+- mappe la locale depuis l’URL courante ;
+- rend une page SCORE autonome et graphique, sans JavaScript ;
+- affiche HTTP 403, message utilisateur, ressource/action, retour à la page ;
+- replie code technique et trace dans `Détails techniques` ;
+- ajoute les traductions sur les 25 langues de base ;
+- ne change aucune décision ACL.
 
 ## Gate immédiat
 
-1. appliquer R45D2A22B ;
+1. appliquer R45D2A22C ;
 2. exiger :
 
 ```text
-OPUS_R45D2A22B_APPLIED
+OPUS_R45D2A22C_APPLIED locales=25
+OPUS_R45D2A22C_ACL_DENIED_VISUAL_ERROR_OK locales=25
 OPUS_R45D2A22B_PROFILER_ACL_PRESENTATION_GUARD_OK
 OPUS_R45D2A22_ROLE_CAPABILITY_MATRIX_OK front_cases=66 back_cases=42
 ```
 
-3. viewer : recharger Build, le lien `OPUS Profiler` doit être absent ;
-4. viewer : tester `/fr-FR/build?profiler=1`, exiger HTTP 403 sans Profiler ;
-5. viewer : vérifier ensuite Compte / changement de son propre mot de passe.
+3. viewer : retester `/fr-FR/build?profiler=1` ;
+4. exiger page OWASYS graphique `Accès refusé`, ressource `profiler`, action `view`, HTTP 403, détails techniques repliés ;
+5. revenir sur Build et vérifier que le lien Profiler reste absent ;
+6. poursuivre ensuite viewer / Compte.
 
 ## Suite seulement après gate viewer complet
 
