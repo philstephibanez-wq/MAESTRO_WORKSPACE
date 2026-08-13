@@ -11,7 +11,7 @@ origin/master : 50d68b724a1f32201bd068e0cb23c9f925780093
 Commit : opus_p117w_r45d2a20_standard_local_password_role_provisioning
 ```
 
-R45D2A21/B/C et R45D2A22 sont appliqués localement par l’owner mais ne sont pas considérés publiés tant que l’owner ne les a pas commit/push.
+R45D2A21/B/C et R45D2A22 sont appliqués localement par l’owner mais non considérés publiés tant que l’owner ne les a pas commit/push.
 
 ## États acquis
 
@@ -27,38 +27,45 @@ R45D2A21/B/C et R45D2A22 sont appliqués localement par l’owner mais ne sont p
 - R45D2A20 : provisioning local-password par rôle pour application OPUS standard publié.
 - R45D2A21 local : `identity_type=user|agent`, legacy `unknown`.
 - R45D2A21B local : dashboard graphique.
-- R45D2A21C local : cockpit compact.
-- R45D2A21C : gate visuel accepté.
-- **R45D2A22 : contrat exécutable de matrice validé owner** : `OPUS_R45D2A22_ROLE_CAPABILITY_MATRIX_OK front_cases=66 back_cases=42`.
-- `git status --short` vide après le smoke R45D2A22.
+- R45D2A21C local : cockpit compact ; gate visuel accepté.
+- R45D2A22 validé owner : `OPUS_R45D2A22_ROLE_CAPABILITY_MATRIX_OK front_cases=66 back_cases=42`.
+- viewer runtime provisionné et authentifié `viewer · viewer`.
+- viewer Sécurité : lecture seule validée.
+- viewer Sources/Git : lecture seule validée.
+- viewer Build : lecture validée, mais lien global `OPUS Profiler` visible => gate non conforme.
 
-## Contrat UX Sécurité
+## Divergence active — Profiler viewer
 
-Le modèle reste :
+La matrice exige : `Profiler = admin ✅ / developer ✅ / viewer ❌`, y compris par URL directe.
 
-`identité -> attribution de rôle/scope -> rôle -> permission resource:action -> ressource -> ACL -> décision`.
+Cause confirmée :
 
-Vocabulaire visible :
+- Build n’est pas la source du lien ;
+- le layout SCORE partagé affiche le Profiler sans garde ACL ;
+- le renderer partagé ne connaît pas la capacité `profiler:view` et utilise seulement la query `profiler=1` ;
+- le endpoint de trace est déjà gardé par ACL ;
+- les refus ACL du composition root doivent être convertis en HTTP 403.
 
-- Ajouter un utilisateur ou un agent ;
-- à terme Modifier un utilisateur ou un agent ;
-- à terme Supprimer un utilisateur ou un agent.
+## Livrable actif — R45D2A22B
 
-OWASYS privilégie cockpit, métriques, cartes, badges, flow graphique et accordéons compacts. SCORE/CSS uniquement au runtime.
+```text
+ZIP     : opus_p117w_r45d2a22b_profiler_acl_presentation_guard.zip
+SHA-256 : 7baa608c1a5c305d6d69cb8e7973de8b3f44e3f1d2c037a68e71def010db79b8
+PREREQ  : R45D2A22 appliqué ; R45D2A21C local
+FILES   : 2
+```
 
-## Gate actif — viewer navigateur
+Le correctif central utilise exclusivement la décision ACL effective : aucun test de `primary_role`, aucun hardcode viewer, aucun masquage CSS.
 
-La matrice statique et structurelle étant acquise, le prochain gate est fonctionnel dans le navigateur :
+## Gate owner
 
-- session `viewer · viewer` ;
-- Applications/Structure/Data/Workflows/Sécurité/Sources-Git/Build accessibles en lecture selon contrat ;
-- création/suppression application absentes ;
-- mutations Sécurité absentes/refusées ;
-- Source preview/write et Git stage/unstage/commit/restore absents/refusés ;
-- changement de son propre mot de passe disponible ;
-- Profiler absent et `?profiler=1` refusé.
+```text
+OPUS_R45D2A22B_APPLIED
+OPUS_R45D2A22B_PROFILER_ACL_PRESENTATION_GUARD_OK
+OPUS_R45D2A22_ROLE_CAPABILITY_MATRIX_OK front_cases=66 back_cases=42
+```
 
-Aucun nouveau patch avant résultat de ce gate.
+Puis : viewer Build sans lien Profiler, `/fr-FR/build?profiler=1` refusé HTTP 403, puis Compte/password disponible.
 
 ## Suite après gate viewer
 
@@ -69,8 +76,10 @@ NO MANUAL STORE EDIT.
 NO PASSWORD IN ARGV/GIT/LOG/PROFILER.
 NO ACL BYPASS.
 NO VIEWER MUTATION.
+NO VIEWER PROFILER.
 NO PRIMARY_ROLE AUTHORIZATION.
 NO IDENTITY TYPE INFERENCE.
 NO JS/MERMAID RUNTIME IN OWASYS.
+NO CSS-ONLY HIDING.
 NO FAKE MODIFY/DELETE BUTTON.
 NO PUSH OPUS/OWASYS BY ASSISTANT.
