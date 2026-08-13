@@ -11,7 +11,7 @@ origin/master : 50d68b724a1f32201bd068e0cb23c9f925780093
 Commit : opus_p117w_r45d2a20_standard_local_password_role_provisioning
 ```
 
-R45D2A21/B/C et R45D2A22 sont appliqués localement par l’owner mais non considérés publiés tant que l’owner ne les a pas commit/push.
+R45D2A21/B/C, R45D2A22, R45D2A22B et R45D2A22C1 sont locaux tant que l’owner ne les a pas commit/push.
 
 ## États acquis
 
@@ -32,40 +32,52 @@ R45D2A21/B/C et R45D2A22 sont appliqués localement par l’owner mais non consi
 - viewer runtime provisionné et authentifié `viewer · viewer`.
 - viewer Sécurité : lecture seule validée.
 - viewer Sources/Git : lecture seule validée.
-- viewer Build : lecture validée, mais lien global `OPUS Profiler` visible => gate non conforme.
+- viewer Build : lecture validée.
+- R45D2A22B : le lien Profiler est ACL-driven et l’URL directe `/fr-FR/build?profiler=1` est refusée au viewer.
 
-## Divergence active — Profiler viewer
+## Présentation ACL Denied
 
-La matrice exige : `Profiler = admin ✅ / developer ✅ / viewer ❌`, y compris par URL directe.
+Le refus ACL fonctionne, mais la page brute `OPUS_ACL_DENIED` doit être remplacée par une surface SCORE graphique.
 
-Cause confirmée :
-
-- Build n’est pas la source du lien ;
-- le layout SCORE partagé affiche le Profiler sans garde ACL ;
-- le renderer partagé ne connaît pas la capacité `profiler:view` et utilise seulement la query `profiler=1` ;
-- le endpoint de trace est déjà gardé par ACL ;
-- les refus ACL du composition root doivent être convertis en HTTP 403.
-
-## Livrable actif — R45D2A22B
+La première tentative R45D2A22C n’a modifié aucun fichier OPUS : l’applicateur et son smoke avaient un défaut d’interpolation de chaînes PHP (`$message`, `$current`, `$parts`). L’owner a confirmé après échec :
 
 ```text
-ZIP     : opus_p117w_r45d2a22b_profiler_acl_presentation_guard.zip
-SHA-256 : 7baa608c1a5c305d6d69cb8e7973de8b3f44e3f1d2c037a68e71def010db79b8
-PREREQ  : R45D2A22 appliqué ; R45D2A21C local
-FILES   : 2
+OPUS_R45D2A22B_PROFILER_ACL_PRESENTATION_GUARD_OK
+OPUS_R45D2A22_ROLE_CAPABILITY_MATRIX_OK front_cases=66 back_cases=42
+git status --short = vide
 ```
 
-Le correctif central utilise exclusivement la décision ACL effective : aucun test de `primary_role`, aucun hardcode viewer, aucun masquage CSS.
+## Livrable actif — R45D2A22C1
+
+```text
+ZIP     : opus_p117w_r45d2a22c1_acl_denied_visual_error_installer_fix.zip
+SHA-256 : 50bec2004a29e5fdaa71f12664bea8be542cbfe734f7800e6ca2c948a634e7b6
+PREREQ  : R45D2A22B appliqué ; R45D2A22C non appliqué
+FILES   : 3
+```
+
+C1 corrige le livrable, pas la logique ACL :
+
+- chaînes de recherche littérales ;
+- smoke sans interpolation ;
+- préflight complet avant écriture ;
+- page SCORE graphique 403 ;
+- détail `resource:action` préservé ;
+- locale de la requête conservée ;
+- 25 langues de base ;
+- aucun JavaScript ;
+- aucun hardcode viewer.
 
 ## Gate owner
 
 ```text
-OPUS_R45D2A22B_APPLIED
+OPUS_R45D2A22C1_APPLIED locales=25
+OPUS_R45D2A22C1_ACL_DENIED_VISUAL_ERROR_OK locales=25
 OPUS_R45D2A22B_PROFILER_ACL_PRESENTATION_GUARD_OK
 OPUS_R45D2A22_ROLE_CAPABILITY_MATRIX_OK front_cases=66 back_cases=42
 ```
 
-Puis : viewer Build sans lien Profiler, `/fr-FR/build?profiler=1` refusé HTTP 403, puis Compte/password disponible.
+Puis : viewer `/fr-FR/build?profiler=1` => page graphique HTTP 403 avec `profiler:view`, Build normal sans lien Profiler, puis Compte/password disponible.
 
 ## Suite après gate viewer
 
