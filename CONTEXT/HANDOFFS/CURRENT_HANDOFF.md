@@ -43,28 +43,31 @@ R45D2A21/B/C et R45D2A22 sont appliqués localement par l’owner mais ne sont p
 - R45D2A21B local : dashboard graphique ;
 - R45D2A21C local : cockpit compact ;
 - gate visuel R45D2A21C accepté ;
-- **R45D2A22 exécuté avec succès** : `OPUS_R45D2A22_ROLE_CAPABILITY_MATRIX_OK front_cases=66 back_cases=42` ;
-- `git status --short` vide après extraction et smoke R45D2A22.
+- R45D2A22 exécuté avec succès : `OPUS_R45D2A22_ROLE_CAPABILITY_MATRIX_OK front_cases=66 back_cases=42` ;
+- `git status --short` vide après extraction et smoke R45D2A22 ;
+- compte runtime `viewer` provisionné avec rôle `viewer` ;
+- **sous-gate navigateur viewer / Sécurité validé** : session `viewer · viewer`, cockpit en lecture, aucune action Ajouter Utilisateur/Agent, aucun formulaire Preview/Commit, accordéons de lecture disponibles.
 
-## Gate actif — provisioning runtime viewer puis navigateur viewer
+## Gate actif — navigateur viewer Sources et Git
 
-Le test navigateur a révélé que le compte runtime `viewer` n’existe pas encore dans le store local-password de `owasys-front`.
+Aucun nouveau patch avant la fin du gate viewer.
 
-Ce n’est pas un défaut à patcher : R45D2A20 fournit déjà la commande canonique `opus:local-password-provision`, avec mot de passe exclusivement via STDIN et rôle explicite `--role=viewer`.
+1. rester connecté comme `viewer` ;
+2. ouvrir `Sources et Git` ;
+3. vérifier que la liste des fichiers et leur lecture sont accessibles ;
+4. sélectionner un fichier ;
+5. vérifier que le contenu est readonly ;
+6. vérifier que Preview / Enregistrer sont indisponibles ;
+7. vérifier que Stage / Stage all / Unstage / Commit / Restore sont absents ou refusés ;
+8. envoyer une capture de la vue Source et Git avec un fichier sélectionné.
 
-Aucun nouveau patch avant ce gate.
+Ensuite :
 
-1. provisionner `viewer` dans `owasys-front` avec `--role=viewer` ;
-2. se connecter comme `viewer` et vérifier `viewer · viewer` ;
-3. Applications : ouvrir/sélectionner/changer autorisés, création et suppression absentes ;
-4. Structure / Sources de données / Workflows / Sécurité : lecture autorisée ;
-5. Sécurité : aucun formulaire/bouton de mutation ;
-6. Sources et Git : lecture fichiers autorisée, preview/write/stage/stage-all/unstage/commit/restore absents ou refusés ;
-7. Construction / validation : lecture autorisée ;
-8. Compte : changement de son propre mot de passe disponible ;
-9. Profiler : absent et accès direct `?profiler=1` refusé.
+- Construction / validation : lecture autorisée ;
+- Compte : changement de son propre mot de passe disponible ;
+- Profiler : absent et accès direct `?profiler=1` refusé.
 
-## Suite seulement après gate viewer
+## Suite seulement après gate viewer complet
 
 Si divergence : corriger la cause avant toute autre fonction.
 
