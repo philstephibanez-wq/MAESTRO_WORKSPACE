@@ -11,7 +11,7 @@ origin/master : 50d68b724a1f32201bd068e0cb23c9f925780093
 Commit : opus_p117w_r45d2a20_standard_local_password_role_provisioning
 ```
 
-R45D2A21/B/C sont appliqués localement par l’owner mais ne sont pas considérés publiés tant que l’owner ne les a pas commit/push.
+R45D2A21/B/C et R45D2A22 sont appliqués localement par l’owner mais ne sont pas considérés publiés tant que l’owner ne les a pas commit/push.
 
 ## États acquis
 
@@ -28,7 +28,9 @@ R45D2A21/B/C sont appliqués localement par l’owner mais ne sont pas considér
 - R45D2A21 local : `identity_type=user|agent`, legacy `unknown`.
 - R45D2A21B local : dashboard graphique.
 - R45D2A21C local : cockpit compact.
-- **R45D2A21C : gate visuel accepté** sur capture owner du 2026-08-13.
+- R45D2A21C : gate visuel accepté.
+- **R45D2A22 : contrat exécutable de matrice validé owner** : `OPUS_R45D2A22_ROLE_CAPABILITY_MATRIX_OK front_cases=66 back_cases=42`.
+- `git status --short` vide après le smoke R45D2A22.
 
 ## Contrat UX Sécurité
 
@@ -44,31 +46,19 @@ Vocabulaire visible :
 
 OWASYS privilégie cockpit, métriques, cartes, badges, flow graphique et accordéons compacts. SCORE/CSS uniquement au runtime.
 
-## Livrable actif — R45D2A22
+## Gate actif — viewer navigateur
 
-```text
-ZIP     : opus_p117w_r45d2a22_role_capability_matrix_contract.zip
-SHA-256 : e3f127d709b860a359fd8982806f4097fad5c9d22ed8f33ace3b7ffe1a729793
-PREREQ  : R45D2A21C appliqué
-FILES   : 1
-```
+La matrice statique et structurelle étant acquise, le prochain gate est fonctionnel dans le navigateur :
 
-R45D2A22 ajoute un contrat exécutable de la matrice admin/developer/viewer :
+- session `viewer · viewer` ;
+- Applications/Structure/Data/Workflows/Sécurité/Sources-Git/Build accessibles en lecture selon contrat ;
+- création/suppression application absentes ;
+- mutations Sécurité absentes/refusées ;
+- Source preview/write et Git stage/unstage/commit/restore absents/refusés ;
+- changement de son propre mot de passe disponible ;
+- Profiler absent et `?profiler=1` refusé.
 
-- 66 décisions front ;
-- 42 décisions back ;
-- default deny rôle inconnu ;
-- contrôles UI SCORE reliés aux capacités ACL ;
-- contrôles serveur correspondants ;
-- refus direct du Profiler pour viewer.
-
-## Gate owner
-
-```text
-OPUS_R45D2A22_ROLE_CAPABILITY_MATRIX_OK front_cases=66 back_cases=42
-```
-
-Puis gate navigateur viewer : lecture autorisée, mutations absentes/refusées, compte/password disponible, Profiler absent/refusé.
+Aucun nouveau patch avant résultat de ce gate.
 
 ## Suite après gate viewer
 
