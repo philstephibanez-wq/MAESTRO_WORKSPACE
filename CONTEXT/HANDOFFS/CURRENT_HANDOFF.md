@@ -47,7 +47,9 @@ R45D2A21/B/C, R45D2A22, R45D2A22B/C1 sont locaux tant que l’owner ne les a pas
 - première tentative R45D2A22C non appliquée : défaut dans les scripts du livrable, pas dans OPUS ;
 - après échec C : `git status --short` vide, smoke B et matrice A22 toujours OK ;
 - R45D2A22C1 appliqué : page ACL Denied graphique validée visuellement par l’owner ;
-- rendu validé : `Sécurité · 403`, `Accès refusé`, ressource `profiler`, action `view`, bouton retour, détails techniques repliés.
+- rendu validé : `Sécurité · 403`, `Accès refusé`, ressource `profiler`, action `view`, bouton retour, détails techniques repliés ;
+- viewer / Build normal validé : le lien `OPUS Profiler` est absent ;
+- gate Profiler viewer complet : présentation masquée par ACL + accès direct refusé en 403 graphique.
 
 ## R45D2A22C1 — état
 
@@ -56,7 +58,7 @@ ZIP     : opus_p117w_r45d2a22c1_acl_denied_visual_error_installer_fix.zip
 SHA-256 : 50bec2004a29e5fdaa71f12664bea8be542cbfe734f7800e6ca2c948a634e7b6
 PREREQ  : R45D2A22B appliqué ; R45D2A22C non appliqué
 FILES   : 3
-STATUS  : gate visuel ACL Denied validé owner
+STATUS  : gate visuel ACL Denied + gate Profiler viewer validés owner
 ```
 
 C1 :
@@ -68,12 +70,12 @@ C1 :
 - rendu ACL Denied graphique SCORE, HTTP 403, ressource/action, locale et I18n 25 langues ;
 - aucune décision ACL modifiée.
 
-## Gate immédiat restant — viewer
+## Gate immédiat restant — viewer / Compte
 
-1. revenir sur `/fr-FR/build` sans `?profiler=1` ;
-2. confirmer que le lien `OPUS Profiler` est absent pour `viewer` ;
-3. ouvrir `Compte` ;
-4. confirmer que `viewer` peut changer son propre mot de passe local-password ;
+1. ouvrir `Compte` connecté en `viewer` ;
+2. confirmer que la page est accessible ;
+3. confirmer que `viewer` peut changer son propre mot de passe local-password ;
+4. vérifier qu’aucune fonction d’administration d’un autre compte n’est exposée ;
 5. si conforme, fermer le gate navigateur `viewer` complet.
 
 ## Suite seulement après gate viewer complet
