@@ -46,20 +46,23 @@ R45D2A21/B/C et R45D2A22 sont appliqués localement par l’owner mais ne sont p
 - **R45D2A22 exécuté avec succès** : `OPUS_R45D2A22_ROLE_CAPABILITY_MATRIX_OK front_cases=66 back_cases=42` ;
 - `git status --short` vide après extraction et smoke R45D2A22.
 
-## Gate actif — navigateur viewer
+## Gate actif — provisioning runtime viewer puis navigateur viewer
+
+Le test navigateur a révélé que le compte runtime `viewer` n’existe pas encore dans le store local-password de `owasys-front`.
+
+Ce n’est pas un défaut à patcher : R45D2A20 fournit déjà la commande canonique `opus:local-password-provision`, avec mot de passe exclusivement via STDIN et rôle explicite `--role=viewer`.
 
 Aucun nouveau patch avant ce gate.
 
-1. se déconnecter de `developer` ;
-2. se connecter comme `viewer` ;
-3. vérifier en haut à droite `viewer · viewer` ;
-4. Applications : ouvrir/sélectionner/changer autorisés, création et suppression absentes ;
-5. Structure / Sources de données / Workflows / Sécurité : lecture autorisée ;
-6. Sécurité : aucun formulaire/bouton de mutation ;
-7. Sources et Git : lecture fichiers autorisée, preview/write/stage/stage-all/unstage/commit/restore absents ou refusés ;
-8. Construction / validation : lecture autorisée ;
-9. Compte : changement de son propre mot de passe disponible ;
-10. Profiler : absent et accès direct `?profiler=1` refusé.
+1. provisionner `viewer` dans `owasys-front` avec `--role=viewer` ;
+2. se connecter comme `viewer` et vérifier `viewer · viewer` ;
+3. Applications : ouvrir/sélectionner/changer autorisés, création et suppression absentes ;
+4. Structure / Sources de données / Workflows / Sécurité : lecture autorisée ;
+5. Sécurité : aucun formulaire/bouton de mutation ;
+6. Sources et Git : lecture fichiers autorisée, preview/write/stage/stage-all/unstage/commit/restore absents ou refusés ;
+7. Construction / validation : lecture autorisée ;
+8. Compte : changement de son propre mot de passe disponible ;
+9. Profiler : absent et accès direct `?profiler=1` refusé.
 
 ## Suite seulement après gate viewer
 
