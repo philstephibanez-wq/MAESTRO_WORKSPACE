@@ -23,6 +23,14 @@ R45D2A25E corrige uniquement le layout SCORE/CSS :
 
 `9ce171a56412d4b1142cdbed89b11f99ea0b9709` — `opus_p117w_r45d2a25d_security_mutation_conflict_messages`.
 
+## Livrable
+
+`opus_p117w_r45d2a25e_security_identity_actions_compact_alignment.zip`
+
+SHA-256 : `c876a1b47de8a666e220bff8c822b2d7ffdd749e40326e1d62c785b387b5af9e`
+
+Fichiers : 2.
+
 ## Gate
 
 - applicateur : `OPUS_R45D2A25E_APPLIED` ;
