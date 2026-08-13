@@ -15,9 +15,9 @@ Date : 2026-08-13
 
 ## Base OPUS publiée
 
-`bde15d01e7e357fe83c257e87de04b3de35065d3` — `opus_p117w_r45d2a25b_securitycontroller_source_canonicalization`.
+`05c0075027ac5818fb6960680e390721fa028b3f` — `opus_p117w_r45d2a25c_unclassified_metric_navigation`.
 
-R45D2A25B est publié et son diff est limité à la canonisation d'indentation de `SecurityController.php`, sans changement fonctionnel.
+R45D2A25C est publié. La métrique `À classifier` est un lien SCORE vers `#ow-security-unclassified` et le panneau correspondant est ouvert lorsqu'il existe.
 
 ## Gates acquis
 
@@ -29,41 +29,24 @@ R45D2A25B est publié et son diff est limité à la canonisation d'indentation d
 - routes frontend localisées avec accents ;
 - backend `identity.update` / `identity.delete` avec Preview/Commit, rollback, pertes d'accès et protection de la dernière identité administrative ;
 - exposition SCORE lifecycle publiée par R45D2A25A ;
-- canonisation source publiée par R45D2A25B.
-
-## Incident navigateur confirmé
-
-Capture owner en admin sur `essai2` : le clic sur la tuile métrique `3 — À classifier` ne produit aucune ouverture.
-
-Cause vérifiée dans `index.score` publié : la métrique est un simple `<article>` statique. Le vrai panneau est un `<details>` distinct plus bas. L'apparence suggère une interaction qui n'existe pas.
+- canonisation source publiée par R45D2A25B ;
+- navigation `À classifier` publiée et validée par R45D2A25C ;
+- suppression réelle d'une identité legacy validée de bout en bout : Preview puis Commit, compteur `À classifier` réduit de 3 à 2 ;
+- classification réelle `unknown -> user` validée sur `steve` : Preview sans accès gagné/perdu, puis Commit ; le rôle `admin` est conservé ;
+- état navigateur après classification : 1 Utilisateur (`steve`), 0 Agent, 1 identité restante `À classifier` (`home`).
 
 ## Gate actif
 
-R45D2A25C — navigation SCORE de la métrique `À classifier` vers le panneau réel.
+Validation finale lifecycle Security :
 
-Contrat :
-
-- métrique `À classifier` = lien vers `#ow-security-unclassified` ;
-- panneau legacy identifié et rendu ouvert lorsqu'il existe ;
-- aucun JavaScript ;
-- aucune modification backend/REST/ACL/FSM ;
-- les contrôles lifecycle restent protégés par les capacités Security, donc aucun contrôle de mutation pour viewer.
-
-## Livrable actif
-
-```text
-ZIP     : opus_p117w_r45d2a25c_unclassified_metric_navigation.zip
-SHA-256 : 83c19ae44dacd128beae6660afccdf41a03777ee1123412fd8bcb42154d1c3c6
-BASE    : bde15d01e7e357fe83c257e87de04b3de35065d3
-FILES   : 2
-```
-
-Gate CLI attendu :
-- `OPUS_R45D2A25C_APPLIED`
-- `OPUS_R45D2A25C_UNCLASSIFIED_METRIC_NAVIGATION_OK`
-
-Gate navigateur : clic sur `À classifier` atteint immédiatement le panneau ouvert ; admin/developer voit Classifier/Supprimer ; viewer n'a aucun contrôle lifecycle.
+1. tenter uniquement la Preview de suppression de `steve` pour vérifier la protection de la dernière identité administrative ; aucun Commit ;
+2. vérifier le message utilisateur de refus ;
+3. reconnecter `viewer` et confirmer l'absence totale de contrôles Classifier / Modifier / Supprimer ;
+4. une fois ces deux preuves acquises, fermer le gate navigateur lifecycle et ouvrir le prochain incrément.
 
 NO VIEWER MUTATION.
+NO DIRECT DELETE.
+NO IDENTITY KEY RENAME.
+NO ROLE MUTATION INSIDE IDENTITY UPDATE.
 NO JAVASCRIPT.
 NO PUSH OPUS/OWASYS BY ASSISTANT.
