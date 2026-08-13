@@ -1,6 +1,6 @@
 # CURRENT HANDOFF — MAESTRO WORKSPACE
 
-Date : 2026-08-13
+Date : 2026-08-14
 
 ## Lecture obligatoire
 
@@ -11,11 +11,12 @@ Date : 2026-08-13
 5. `CONTEXT/SPECIFICATIONS/OPUS_P117W_R45D2A25_IDENTITY_LIFECYCLE_UI_2026-08-13.md`
 6. `CONTEXT/SPECIFICATIONS/OPUS_P117W_R45D2A25C_UNCLASSIFIED_METRIC_NAVIGATION_2026-08-13.md`
 7. `CONTEXT/SPECIFICATIONS/OPUS_P117W_R45D2A25D_SECURITY_MUTATION_CONFLICT_MESSAGES_2026-08-13.md`
-8. `CONTEXT/PROJECTS/OPUS_CURRENT_STATE.md`
+8. `CONTEXT/SPECIFICATIONS/OPUS_P117W_R45D2A25E_SECURITY_IDENTITY_ACTIONS_COMPACT_ALIGNMENT_2026-08-14.md`
+9. `CONTEXT/PROJECTS/OPUS_CURRENT_STATE.md`
 
 ## Base OPUS publiée
 
-`05c0075027ac5818fb6960680e390721fa028b3f` — `opus_p117w_r45d2a25c_unclassified_metric_navigation`.
+`bf2d62fd3f3d7f7eea66d0bb0369d232e15c0474` — `opus_p117w_r45d2a25e_security_identity_actions_compact_alignment`.
 
 ## Gates acquis
 
@@ -25,28 +26,23 @@ Date : 2026-08-13
 - navigation métrique `À classifier` ;
 - suppression réelle d'une identité legacy validée ;
 - classification réelle `unknown -> user` validée sur `steve`, rôle `admin` conservé ;
-- refus de doublon confirmé côté backend lors d'une tentative de recréation de `steve`.
+- conflits métier Security localisés explicitement ;
+- layout des actions `Modifier` / `Supprimer` corrigé : aucune action sœur ne s'étire quand l'autre est ouverte.
 
-## Incident UX actif
+## État navigateur courant
 
-Le refus de doublon est correct mais l'interface n'affiche que `Mutation de sécurité refusée`. Le backend fournit pourtant le code précis `OWASYS_SECURITY_IDENTITY_ALREADY_REFERENCED`.
+- 1 Utilisateur : `steve`, état `active`, rôle `admin` ;
+- 0 Agent ;
+- 1 identité legacy restante : `home` ;
+- en admin, `Modifier` et `Supprimer` sont visibles sur la carte de `steve` ;
+- R45D2A25E validé visuellement puis publié.
 
 ## Gate actif
 
-R45D2A25D — messages explicites pour les conflits métier Security.
+Validation finale lifecycle Security :
 
-Livrable :
-
-```text
-ZIP     : opus_p117w_r45d2a25d_security_mutation_conflict_messages.zip
-SHA-256 : 77a30e0fa65ef7460aa3c60056c6eace391008175b521e2109b6ed4a4be808a7
-BASE    : 05c0075027ac5818fb6960680e390721fa028b3f
-FILES   : 3
-```
-
-Gate navigateur français attendu pour doublon `steve` : `Cette identité existe déjà dans l’application.`
-
-Après R45D2A25D, reprendre la validation finale lifecycle : protection dernière identité administrative puis recontrôle viewer sans contrôles de mutation.
+1. Preview de suppression de `steve` pour vérifier la protection de la dernière identité administrative, sans Commit ;
+2. recontrôle `viewer` : aucun contrôle Classifier / Modifier / Supprimer / Ajouter ne doit être visible.
 
 NO VIEWER MUTATION.
 NO JAVASCRIPT.
