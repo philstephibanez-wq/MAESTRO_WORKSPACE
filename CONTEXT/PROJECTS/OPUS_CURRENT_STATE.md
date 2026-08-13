@@ -34,54 +34,38 @@ R45D2A21/B/C, R45D2A22, R45D2A22B et R45D2A22C1 sont locaux tant que l’owner n
 - viewer Sources/Git : lecture seule validée.
 - viewer Build : lecture validée.
 - R45D2A22B : le lien Profiler est ACL-driven et l’URL directe `/fr-FR/build?profiler=1` est refusée au viewer.
+- R45D2A22C1 : page `OPUS_ACL_DENIED` remplacée par une surface SCORE graphique ; gate visuel owner validé.
 
-## Présentation ACL Denied
+## R45D2A22C1 — ACL Denied visuel
 
-Le refus ACL fonctionne, mais la page brute `OPUS_ACL_DENIED` doit être remplacée par une surface SCORE graphique.
+La page validée affiche :
 
-La première tentative R45D2A22C n’a modifié aucun fichier OPUS : l’applicateur et son smoke avaient un défaut d’interpolation de chaînes PHP (`$message`, `$current`, `$parts`). L’owner a confirmé après échec :
+- `Sécurité · 403` ;
+- `Accès refusé` ;
+- message utilisateur compréhensible ;
+- ressource `profiler` ;
+- action `view` ;
+- bouton de retour ;
+- détails techniques repliés ;
+- code et trace conservés sans dominer l’interface.
 
-```text
-OPUS_R45D2A22B_PROFILER_ACL_PRESENTATION_GUARD_OK
-OPUS_R45D2A22_ROLE_CAPABILITY_MATRIX_OK front_cases=66 back_cases=42
-git status --short = vide
-```
-
-## Livrable actif — R45D2A22C1
+Le refus ACL reste la même décision de sécurité : aucune permission n’est modifiée.
 
 ```text
 ZIP     : opus_p117w_r45d2a22c1_acl_denied_visual_error_installer_fix.zip
 SHA-256 : 50bec2004a29e5fdaa71f12664bea8be542cbfe734f7800e6ca2c948a634e7b6
-PREREQ  : R45D2A22B appliqué ; R45D2A22C non appliqué
-FILES   : 3
+STATUS  : gate visuel validé owner
 ```
 
-C1 corrige le livrable, pas la logique ACL :
+## Gate viewer restant
 
-- chaînes de recherche littérales ;
-- smoke sans interpolation ;
-- préflight complet avant écriture ;
-- page SCORE graphique 403 ;
-- détail `resource:action` préservé ;
-- locale de la requête conservée ;
-- 25 langues de base ;
-- aucun JavaScript ;
-- aucun hardcode viewer.
-
-## Gate owner
-
-```text
-OPUS_R45D2A22C1_APPLIED locales=25
-OPUS_R45D2A22C1_ACL_DENIED_VISUAL_ERROR_OK locales=25
-OPUS_R45D2A22B_PROFILER_ACL_PRESENTATION_GUARD_OK
-OPUS_R45D2A22_ROLE_CAPABILITY_MATRIX_OK front_cases=66 back_cases=42
-```
-
-Puis : viewer `/fr-FR/build?profiler=1` => page graphique HTTP 403 avec `profiler:view`, Build normal sans lien Profiler, puis Compte/password disponible.
+1. `/fr-FR/build` normal : confirmer absence totale du lien Profiler pour viewer ;
+2. `Compte` : confirmer que viewer peut changer son propre mot de passe local-password ;
+3. si conforme, gate navigateur viewer complet fermé.
 
 ## Suite après gate viewer
 
-Si conforme : backend atomique Modifier/Supprimer utilisateur ou agent, avec preview/fresh-auth/commit/rollback/protection du dernier administrateur, puis exposition UI seulement après support réel.
+Backend atomique Modifier/Supprimer utilisateur ou agent, avec preview/fresh-auth/commit/rollback/protection du dernier administrateur, puis exposition UI seulement après support réel.
 
 NO HARDCODED ACCOUNT.
 NO MANUAL STORE EDIT.
