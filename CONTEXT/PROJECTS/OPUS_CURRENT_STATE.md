@@ -7,75 +7,46 @@ Dernière mise à jour : 2026-08-13.
 ```text
 OPUS : philstephibanez-wq/OPUS
 Branche : master
-origin/master : 50d68b724a1f32201bd068e0cb23c9f925780093
-Commit : opus_p117w_r45d2a20_standard_local_password_role_provisioning
+origin/master : 2e17008ad0cf23e70195ee2c0f6c947ecb5333be
+Commit : opus_p117w_r45d2a22d_account_canonical_route_alias
 ```
 
-R45D2A21/B/C, R45D2A22, R45D2A22B et R45D2A22C1 sont locaux tant que l’owner ne les a pas commit/push.
+## États acquis récents
 
-## États acquis
+- R45D2A21C : cockpit Sécurité compact validé ;
+- R45D2A22 : matrice de capacités admin/developer/viewer validée ;
+- rôle viewer validé en navigateur sur Sécurité, Sources/Git, Build, Profiler et Compte ;
+- R45D2A22B : Profiler piloté par ACL ;
+- R45D2A22C1 : page 403 ACL graphique validée ;
+- R45D2A22D : alias Compte canonique publié.
 
-- R45D2A12 : UI Sources/Git alignée sur ACL `source/write`.
-- R45D2A14B : logout généré acquis.
-- R45D2A15B : catalogues REST synchronisés.
-- R45D2A16 : matrice Sécurité admin/developer/viewer.
-- R45D2A16B : dev-server single-owner binding acquis.
-- R45D2A18B/C/D : intégrité REST->Composer, fresh-auth et Security Mutation FSM atomique acquis.
-- admin et developer Security Preview + Commit acquis.
-- R45D2A19 : break-glass local-password acquis.
-- R45D2A19C/D : changement de mot de passe local possédé par le front ; aucun password local via REST.
-- R45D2A20 : provisioning local-password par rôle pour application OPUS standard publié.
-- R45D2A21 local : `identity_type=user|agent`, legacy `unknown`.
-- R45D2A21B local : dashboard graphique.
-- R45D2A21C local : cockpit compact ; gate visuel accepté.
-- R45D2A22 validé owner : `OPUS_R45D2A22_ROLE_CAPABILITY_MATRIX_OK front_cases=66 back_cases=42`.
-- viewer runtime provisionné et authentifié `viewer · viewer`.
-- viewer Sécurité : lecture seule validée.
-- viewer Sources/Git : lecture seule validée.
-- viewer Build : lecture validée.
-- R45D2A22B : le lien Profiler est ACL-driven et l’URL directe `/fr-FR/build?profiler=1` est refusée au viewer.
-- R45D2A22C1 : page `OPUS_ACL_DENIED` remplacée par une surface SCORE graphique ; gate visuel owner validé.
+## Gate actif — R45D2A23
 
-## R45D2A22C1 — ACL Denied visuel
+Localiser les routes publiques owasys-front sans traduire les routes internes.
 
-La page validée affiche :
+Évolution générique : `Opus\Http\LocalizedRouteResolver` et interface homonyme.
 
-- `Sécurité · 403` ;
-- `Accès refusé` ;
-- message utilisateur compréhensible ;
-- ressource `profiler` ;
-- action `view` ;
-- bouton de retour ;
-- détails techniques repliés ;
-- code et trace conservés sans dominer l’interface.
+Le catalogue couvre les 25 langues de base. Les variantes régionales héritent de leur langue de base. Les accents, diacritiques, grec et cyrillique sont conservés.
 
-Le refus ACL reste la même décision de sécurité : aucune permission n’est modifiée.
+Exemples français :
 
 ```text
-ZIP     : opus_p117w_r45d2a22c1_acl_denied_visual_error_installer_fix.zip
-SHA-256 : 50bec2004a29e5fdaa71f12664bea8be542cbfe734f7800e6ca2c948a634e7b6
-STATUS  : gate visuel validé owner
+/fr-FR/sécurité
+/fr-FR/compte/mot-de-passe
+/fr-FR/sources-de-données
+/fr-FR/sources-et-git/...
+/fr-FR/construction-et-validation
 ```
 
-## Gate viewer restant
+Le préfixe Sources/Git est localisé mais le chemin réel du fichier reste opaque. La navigation et le changement de langue génèrent le slug de la langue cible. Les anciennes routes techniques restent compatibles en entrée. Le backend n'est pas concerné par cette localisation.
 
-1. `/fr-FR/build` normal : confirmer absence totale du lien Profiler pour viewer ;
-2. `Compte` : confirmer que viewer peut changer son propre mot de passe local-password ;
-3. si conforme, gate navigateur viewer complet fermé.
+## Livrable actif
 
-## Suite après gate viewer
+```text
+ZIP     : opus_p117w_r45d2a23_localized_public_routes.zip
+SHA-256 : f1b6cd0ef27512e425dcfda61254f253559b4b606d0b69ed1a7951687eda3e99
+BASE    : 2e17008ad0cf23e70195ee2c0f6c947ecb5333be
+FILES   : 4
+```
 
-Backend atomique Modifier/Supprimer utilisateur ou agent, avec preview/fresh-auth/commit/rollback/protection du dernier administrateur, puis exposition UI seulement après support réel.
-
-NO HARDCODED ACCOUNT.
-NO MANUAL STORE EDIT.
-NO PASSWORD IN ARGV/GIT/LOG/PROFILER.
-NO ACL BYPASS.
-NO VIEWER MUTATION.
-NO VIEWER PROFILER.
-NO PRIMARY_ROLE AUTHORIZATION.
-NO IDENTITY TYPE INFERENCE.
-NO JS/MERMAID RUNTIME IN OWASYS.
-NO CSS-ONLY HIDING.
-NO FAKE MODIFY/DELETE BUTTON.
-NO PUSH OPUS/OWASYS BY ASSISTANT.
+Après validation owner de R45D2A23, reprendre la prochaine évolution fonctionnelle Sécurité prévue au handoff.
