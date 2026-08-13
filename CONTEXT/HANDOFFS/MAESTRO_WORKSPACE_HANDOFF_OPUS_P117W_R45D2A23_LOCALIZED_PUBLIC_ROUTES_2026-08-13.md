@@ -21,7 +21,7 @@ Les accents ne sont jamais supprimés. Les chemins de fichiers restent opaques. 
 
 `opus_p117w_r45d2a23_localized_public_routes.zip`
 
-SHA-256 : `f1b6cd0ef27512e425dcfda61254f253559b4b606d0b69ed1a7951687eda3e99`
+SHA-256 : `4be14a8bc7879f7427d59a57dfe7bca5f3232a131d72503cb112fdc14f7632e7`
 
 Contenu : résolveur OPUS + interface, catalogue de routes localisées, applicateur différentiel temporaire.
 
