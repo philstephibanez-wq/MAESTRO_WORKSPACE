@@ -11,7 +11,7 @@ origin/master : 50d68b724a1f32201bd068e0cb23c9f925780093
 Commit : opus_p117w_r45d2a20_standard_local_password_role_provisioning
 ```
 
-R45D2A21 et R45D2A21B sont appliqués localement par l’owner mais ne sont pas considérés publiés tant que l’owner ne les a pas commit/push.
+R45D2A21/B/C sont appliqués localement par l’owner mais ne sont pas considérés publiés tant que l’owner ne les a pas commit/push.
 
 ## États acquis
 
@@ -26,15 +26,9 @@ R45D2A21 et R45D2A21B sont appliqués localement par l’owner mais ne sont pas 
 - R45D2A19C/D : changement de mot de passe local possédé par le front ; aucun password local via REST.
 - R45D2A20 : provisioning local-password par rôle pour application OPUS standard publié.
 - R45D2A21 local : `identity_type=user|agent`, legacy `unknown`.
-- R45D2A21B local : dashboard graphique fonctionnel.
-
-## Retour visuel owner
-
-R45D2A21 : « pas terrible ».
-
-R45D2A21B : **« C'est un peu mieux »**.
-
-Le modèle sécurité n’est pas remis en cause. Le défaut restant est la densité du premier viewport : le formulaire d’ajout ouvert domine encore l’écran et masque les panneaux Utilisateurs / Agents.
+- R45D2A21B local : dashboard graphique.
+- R45D2A21C local : cockpit compact.
+- **R45D2A21C : gate visuel accepté** sur capture owner du 2026-08-13.
 
 ## Contrat UX Sécurité
 
@@ -48,45 +42,37 @@ Vocabulaire visible :
 - à terme Modifier un utilisateur ou un agent ;
 - à terme Supprimer un utilisateur ou un agent.
 
-OWASYS doit privilégier cockpit, métriques, cartes, badges, flow graphique et accordéons compacts. SCORE/CSS uniquement au runtime.
+OWASYS privilégie cockpit, métriques, cartes, badges, flow graphique et accordéons compacts. SCORE/CSS uniquement au runtime.
 
-## Livrable actif — R45D2A21C
+## Livrable actif — R45D2A22
 
 ```text
-ZIP     : opus_p117w_r45d2a21c_security_compact_cockpit.zip
-SHA-256 : 5072d4f5b0e9f2b6ffdbda00f6a16c07df225747ac2b7cc6a3c08bbbc4bd3cd2
-PREREQ  : R45D2A21B appliqué
-FILES   : 2 scripts PHP
+ZIP     : opus_p117w_r45d2a22_role_capability_matrix_contract.zip
+SHA-256 : e3f127d709b860a359fd8982806f4097fad5c9d22ed8f33ace3b7ffe1a729793
+PREREQ  : R45D2A21C appliqué
+FILES   : 1
 ```
 
-R45D2A21C :
+R45D2A22 ajoute un contrat exécutable de la matrice admin/developer/viewer :
 
-- dashboard encore compacté ;
-- métrique `À classifier` si legacy présent ;
-- deux quick-actions Utilisateur / Agent fermées par défaut ;
-- formulaire affiché seulement à la demande ;
-- provider déplacé dans Détails techniques, prérempli et modifiable ;
-- panneaux Utilisateurs / Agents visibles directement ;
-- empty states compacts ;
-- état des identités distinguable visuellement ;
-- aucune modification backend/FSM/fresh-auth/ACL ;
-- aucun JS/Mermaid runtime.
+- 66 décisions front ;
+- 42 décisions back ;
+- default deny rôle inconnu ;
+- contrôles UI SCORE reliés aux capacités ACL ;
+- contrôles serveur correspondants ;
+- refus direct du Profiler pour viewer.
 
 ## Gate owner
 
 ```text
-OPUS_R45D2A21C_APPLIED
-OPUS_R45D2A21C_SMOKE_OK
+OPUS_R45D2A22_ROLE_CAPABILITY_MATRIX_OK front_cases=66 back_cases=42
 ```
 
-Puis capture navigateur developer. La qualité du premier viewport reste le gate avant toute nouvelle fonction.
+Puis gate navigateur viewer : lecture autorisée, mutations absentes/refusées, compte/password disponible, Profiler absent/refusé.
 
-## Suite après validation visuelle
+## Suite après gate viewer
 
-1. gate viewer ACL ;
-2. smoke complet admin/developer/viewer front+back ;
-3. backend atomique Modifier/Supprimer utilisateur ou agent ;
-4. exposition des boutons seulement après support backend.
+Si conforme : backend atomique Modifier/Supprimer utilisateur ou agent, avec preview/fresh-auth/commit/rollback/protection du dernier administrateur, puis exposition UI seulement après support réel.
 
 NO HARDCODED ACCOUNT.
 NO MANUAL STORE EDIT.
