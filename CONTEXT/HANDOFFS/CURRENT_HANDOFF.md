@@ -46,26 +46,18 @@ R45D2A21/B/C et R45D2A22 sont appliqués localement par l’owner mais ne sont p
 - R45D2A22 exécuté avec succès : `OPUS_R45D2A22_ROLE_CAPABILITY_MATRIX_OK front_cases=66 back_cases=42` ;
 - `git status --short` vide après extraction et smoke R45D2A22 ;
 - compte runtime `viewer` provisionné avec rôle `viewer` ;
-- **sous-gate navigateur viewer / Sécurité validé** : session `viewer · viewer`, cockpit en lecture, aucune action Ajouter Utilisateur/Agent, aucun formulaire Preview/Commit, accordéons de lecture disponibles.
+- sous-gate navigateur viewer / Sécurité validé ;
+- **sous-gate navigateur viewer / Sources et Git validé** : lecture de fichier disponible, éditeur readonly, Prévisualiser/Enregistrer désactivés, Git explicitement lecture seule, aucune action Stage/Stage all/Unstage/Commit/Restore visible.
 
-## Gate actif — navigateur viewer Sources et Git
+## Gate actif — fin navigateur viewer
 
 Aucun nouveau patch avant la fin du gate viewer.
 
 1. rester connecté comme `viewer` ;
-2. ouvrir `Sources et Git` ;
-3. vérifier que la liste des fichiers et leur lecture sont accessibles ;
-4. sélectionner un fichier ;
-5. vérifier que le contenu est readonly ;
-6. vérifier que Preview / Enregistrer sont indisponibles ;
-7. vérifier que Stage / Stage all / Unstage / Commit / Restore sont absents ou refusés ;
-8. envoyer une capture de la vue Source et Git avec un fichier sélectionné.
-
-Ensuite :
-
-- Construction / validation : lecture autorisée ;
-- Compte : changement de son propre mot de passe disponible ;
-- Profiler : absent et accès direct `?profiler=1` refusé.
+2. ouvrir `Construction et validation` et vérifier lecture autorisée sans action de mutation ;
+3. ouvrir `Compte` et vérifier que le changement de son propre mot de passe est disponible ;
+4. vérifier que le Profiler n’est pas proposé au viewer ;
+5. tester un accès direct à une page source avec `?profiler=1` et exiger un refus ACL / HTTP 403, sans ouverture du Profiler.
 
 ## Suite seulement après gate viewer complet
 
