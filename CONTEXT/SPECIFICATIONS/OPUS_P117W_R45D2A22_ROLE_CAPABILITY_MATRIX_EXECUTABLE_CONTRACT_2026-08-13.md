@@ -11,96 +11,78 @@ La capture owner R45D2A21C valide la direction cockpit : dashboard, métriques, 
 
 La suite contractuelle est la preuve exécutable de la matrice `admin / developer / viewer` avant toute implémentation de Modifier/Supprimer utilisateur ou agent.
 
-## Objectif
+## Objectif R45D2A22
 
-R45D2A22 ajoute un smoke non destructif qui vérifie :
+R45D2A22 ajoute un smoke non destructif qui vérifie les décisions ACL front/back admin/developer/viewer, le deny-by-default, la liaison SCORE/contrôleurs et le refus viewer des mutations et du Profiler.
 
-1. les décisions ACL front pour admin/developer/viewer ;
-2. les décisions ACL back pour admin/developer/viewer ;
-3. le `deny-by-default` pour un rôle inconnu ;
-4. la liaison entre capacités SCORE et contrôles ACL côté contrôleurs ;
-5. le refus direct du Profiler pour viewer ;
-6. la présence du cockpit R45D2A21C comme prérequis.
-
-## Matrice front couverte
-
-Le smoke couvre notamment :
-
-- registry open/select ;
-- creation open ;
-- registry delete ;
-- structure/data/workflows/security open ;
-- security manage ;
-- source open/preview/write ;
-- git read/stage/unstage/commit/restore ;
-- build open/preview ;
-- account open/change ;
-- profiler view.
-
-Viewer doit pouvoir lire les zones contractuelles et changer son propre mot de passe, mais doit être refusé pour toutes les mutations et pour le Profiler.
-
-## Matrice back couverte
-
-Le smoke vérifie :
-
-- registry open/select ;
-- creation execute ;
-- security read/manage ;
-- source read/write ;
-- git read/stage/unstage/commit/restore ;
-- site validate/routes:list.
-
-Viewer est accepté en lecture et refusé en mutation.
-
-## Contrôles UI / backend
-
-Le smoke vérifie structurellement que :
-
-- création/suppression d’application sont pilotées par `registry.can_create` / `registry.can_delete` et gardées côté contrôleur ;
-- preview/write source sont pilotés par capacités ACL et gardés côté contrôleur ;
-- stage/unstage/commit/restore Git sont pilotés par capacités ACL et gardés côté contrôleur ;
-- `profiler=1` exige réellement `profiler:view` ;
-- toutes les mutations Sécurité sont sous capacités `security:*_supported` et `security:manage`.
-
-Aucun contrôle ne dépend de `primary_role` seul.
-
-## Livrable
-
-```text
-ZIP     : opus_p117w_r45d2a22_role_capability_matrix_contract.zip
-SHA-256 : e3f127d709b860a359fd8982806f4097fad5c9d22ed8f33ace3b7ffe1a729793
-PREREQ  : R45D2A21C appliqué
-FILES   : 1
-```
-
-Fichier :
-
-```text
-tools/smoke_r45d2a22_role_capability_matrix.php
-```
-
-## Gate owner
-
-Exiger :
+Le gate owner est acquis :
 
 ```text
 OPUS_R45D2A22_ROLE_CAPABILITY_MATRIX_OK front_cases=66 back_cases=42
 ```
 
-Puis browser gate viewer :
+## Divergence navigateur révélée
 
-- login `viewer · viewer` ;
-- Applications lisibles, aucun bouton création/suppression ;
-- Sécurité lisible, aucune mutation ;
-- Sources/Git lisibles, aucun write/preview/stage/unstage/commit/restore effectif ;
-- Build en lecture ;
-- Compte/password disponible ;
-- Profiler absent et refusé en URL directe.
+Le gate viewer a validé Sécurité et Sources/Git. La capture Build du 2026-08-13 a cependant révélé une divergence : `viewer · viewer` voit encore le lien global `OPUS Profiler`.
 
-Aucun patch métier supplémentaire avant résultat de ce gate.
+L’audit de la cause montre :
+
+- `application/build/templates/index.score` ne rend pas le lien ;
+- `application/default/layouts/layout.score` rend le lien Profiler dans le `else` de `profiler.visible` sans garde ACL ;
+- `application/default/services/ScorePageRenderer.php` détermine `profiler.visible` uniquement depuis `?profiler=1` ;
+- le endpoint de trace possède déjà une garde `profiler:view`, mais les refus qui remontent au composition root sont rendus en 500 au lieu d’un 403 explicite.
+
+## R45D2A22B — Profiler ACL Presentation Guard
+
+R45D2A22B traite la cause au niveau partagé :
+
+1. le composition root injecte `OwasysAuthSession` et `OwasysRuntimeSecurity` dans `OwasysScorePageRenderer` ;
+2. le renderer calcule `profiler.allowed` uniquement via `RuntimeSecurity::isAllowed(identity, 'profiler', 'view')` ;
+3. le layout SCORE n’affiche lien ou iframe que sous `[[ if: profiler.allowed ]]` ;
+4. une requête directe `?profiler=1` non autorisée déclenche `OPUS_ACL_DENIED:profiler:view` ;
+5. le composition root mappe toute erreur ACL de ce niveau sur HTTP 403 ;
+6. aucun nom de rôle n’est codé dans le renderer ou le layout ;
+7. admin/developer restent autorisés par ACL, viewer et rôle inconnu restent refusés.
+
+## Livrable R45D2A22B
+
+```text
+ZIP     : opus_p117w_r45d2a22b_profiler_acl_presentation_guard.zip
+SHA-256 : 7baa608c1a5c305d6d69cb8e7973de8b3f44e3f1d2c037a68e71def010db79b8
+PREREQ  : R45D2A22 appliqué, R45D2A21C cockpit local
+FILES   : 2
+```
+
+Fichiers du ZIP :
+
+```text
+tools/r45d2a22b_apply_profiler_acl_presentation_guard.php
+tools/smoke_r45d2a22b_profiler_acl_presentation_guard.php
+```
+
+## Gate owner R45D2A22B
+
+Exiger :
+
+```text
+OPUS_R45D2A22B_APPLIED
+OPUS_R45D2A22B_PROFILER_ACL_PRESENTATION_GUARD_OK
+OPUS_R45D2A22_ROLE_CAPABILITY_MATRIX_OK front_cases=66 back_cases=42
+```
+
+Puis navigateur `viewer` :
+
+- Build reste lisible ;
+- aucun lien `OPUS Profiler` ;
+- `?profiler=1` retourne HTTP 403 et n’ouvre aucun panneau ;
+- endpoint `/_opus/profiler/trace/<trace>` reste ACL-gardé ;
+- reconnecter developer ensuite uniquement si nécessaire pour confirmer que le lien Profiler reste disponible.
+
+Aucun passage à Modifier/Supprimer utilisateur ou agent avant fermeture complète du gate viewer.
 
 NO ACL BYPASS.  
-NO VIEWER MUTATION.  
+NO VIEWER PROFILER.  
 NO PRIMARY_ROLE AUTHORIZATION.  
+NO CSS-ONLY HIDING.  
 NO FAKE UI-ONLY SECURITY.  
 NO PUSH OPUS/OWASYS BY ASSISTANT.
