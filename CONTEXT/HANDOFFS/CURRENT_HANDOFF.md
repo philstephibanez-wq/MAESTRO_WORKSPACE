@@ -9,13 +9,14 @@ Date : 2026-08-13
 3. `CONTEXT/PROJECTS/OPUS/OPUS_SITE_STANDARD_CONTRACT.md`
 4. `CONTEXT/SPECIFICATIONS/OPUS_P117W_R45D2A24_IDENTITY_LIFECYCLE_BACKEND_2026-08-13.md`
 5. `CONTEXT/SPECIFICATIONS/OPUS_P117W_R45D2A25_IDENTITY_LIFECYCLE_UI_2026-08-13.md`
-6. `CONTEXT/PROJECTS/OPUS_CURRENT_STATE.md`
+6. `CONTEXT/SPECIFICATIONS/OPUS_P117W_R45D2A25B_SECURITYCONTROLLER_SOURCE_CANONICALIZATION_2026-08-13.md`
+7. `CONTEXT/PROJECTS/OPUS_CURRENT_STATE.md`
 
 ## Base OPUS publiée
 
-`89a3004ab44f78b565b0229cd554658670696ff1` — `opus_p117w_r45d2a24_identity_lifecycle_backend`.
+`230dd10deb0f2abbc76388c6516f694a3b72ee12` — `opus_p117w_r45d2a25a_identity_lifecycle_ui_installer_fix`.
 
-R45D2A24 est publié. Le backend atomique du cycle de vie Utilisateur/Agent est acquis.
+R45D2A25A est publié. Le front Security contient désormais le lifecycle Utilisateur/Agent : classification des identités legacy, `identity.update`, `identity.delete`, Preview des pertes d'accès et message utilisateur de protection de la dernière identité administrative.
 
 ## Gates acquis
 
@@ -25,43 +26,38 @@ R45D2A24 est publié. Le backend atomique du cycle de vie Utilisateur/Agent est 
 - page 403 ACL graphique ;
 - Compte viewer ;
 - routes frontend localisées avec accents ;
-- backend `identity.update` / `identity.delete` avec Preview/Commit, rollback, pertes d'accès et protection de la dernière identité administrative.
+- backend `identity.update` / `identity.delete` avec Preview/Commit, rollback, pertes d'accès et protection de la dernière identité administrative ;
+- exposition SCORE lifecycle publiée par R45D2A25A.
 
-La capture owner courante de `/fr-FR/sécurité?view=identities` confirme en `viewer · viewer` : lecture seule, aucun contrôle de mutation, 3 identités legacy `À classifier`.
+## Observation post-publication R45D2A25A
 
-## Incident R45D2A25 applicateur
+Le diff GitHub publié montre une dégradation d'indentation dans le bloc de capacités de `sites/owasys-front/application/security/controllers/SecurityController.php` : certaines lignes ont perdu leur niveau d'indentation lors de la réinsertion par l'installateur tolérant aux espaces.
 
-Le premier applicateur `r45d2a25_apply_identity_lifecycle_ui.php` s'est arrêté en préflight avec `OPUS_R45D2A25_CONTROLLER_CAPABILITY_TARGET_INVALID`.
-
-Cause : ancre source trop stricte sur l'indentation du bloc `identity_reference_supported` dans `SecurityController.php`. Le contenu métier publié est conforme ; seule la comparaison textuelle de l'installateur était fragile.
-
-Aucune écriture R45D2A25 n'a été effectuée avant l'échec. Le smoke a donc échoué normalement avec `controller-update-capability` absent. Le working tree métier reste sur R45D2A24.
-
-Un chemin non suivi `cd` est apparu localement dans `H:\OPUS` suite à une commande CMD mal interprétée ; il est indépendant du livrable et doit être inspecté/nettoyé avant commit.
+La sémantique métier reste présente et le PHP reste valide, mais la source n'est pas laissée dans cet état avant le chantier suivant.
 
 ## Gate actif
 
-R45D2A25A — correctif d'installateur pour l'exposition SCORE graphique du lifecycle Utilisateur/Agent.
+R45D2A25B — canonisation de la source `SecurityController.php` sans changement de comportement.
 
-Le contenu fonctionnel R45D2A25 reste inchangé : Modifier Utilisateur↔Agent, classifier une identité `unknown`, Supprimer avec Preview obligatoire, affichage des accès perdus et message explicite de protection de la dernière identité administrative, uniquement pour `security:manage` et capacités backend acquises.
-
-R45D2A25A rend les ancres d'installation tolérantes aux seules différences d'indentation en restant strictes sur le contenu. Préflight complet avant toute écriture.
+Le correctif remet uniquement en forme le bloc `identity_reference_supported` / `identity_update_supported` / `identity_delete_supported` / capacités associées et conserve intégralement les expressions ACL et lifecycle.
 
 ## Livrable actif
 
 ```text
-ZIP     : opus_p117w_r45d2a25a_identity_lifecycle_ui_installer_fix.zip
-SHA-256 : 35a6370e4e6561358fac3fcdf32f7cc17d05c778a2ab4c8aee106ef0ad10abbb
-BASE    : 89a3004ab44f78b565b0229cd554658670696ff1
-FILES   : 3
+ZIP     : opus_p117w_r45d2a25b_securitycontroller_source_canonicalization.zip
+SHA-256 : f61c7cea1bb7ff37e866b1805c4b0e24aa264007dffdf42ebd8fe031fe4bb96c
+BASE    : 230dd10deb0f2abbc76388c6516f694a3b72ee12
+FILES   : 2
 ```
 
-Gate CLI attendu :
-- `OPUS_R45D2A25A_APPLIED locales=25`
-- `OPUS_R45D2A25A_IDENTITY_LIFECYCLE_UI_OK locales=25`
+Gates CLI attendus :
 
-Gate navigateur : developer/admin voit les actions ; Preview suppression montre les pertes ; dernière identité administrative refusée ; viewer ne voit aucune action lifecycle.
+- `OPUS_R45D2A25B_APPLIED`
+- `OPUS_R45D2A25B_SECURITYCONTROLLER_SOURCE_CANONICAL_OK`
 
+Après publication owner : reprendre le gate navigateur developer/admin puis recontrôler viewer.
+
+NO BEHAVIOR CHANGE.
 NO VIEWER MUTATION.
 NO DIRECT DELETE.
 NO IDENTITY KEY RENAME.
