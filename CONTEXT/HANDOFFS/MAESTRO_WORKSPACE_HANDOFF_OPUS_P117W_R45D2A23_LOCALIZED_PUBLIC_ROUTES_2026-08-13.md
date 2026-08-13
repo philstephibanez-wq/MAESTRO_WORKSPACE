@@ -3,26 +3,22 @@
 Date : 2026-08-13
 Base OPUS : `2e17008ad0cf23e70195ee2c0f6c947ecb5333be`.
 
-## État acquis
-
-R45D2A22D est publié. Le gate navigateur du rôle viewer est fermé : lecture Sécurité, Sources/Git et Build conforme ; Profiler masqué/refusé ; Compte en auto-service conforme.
+R45D2A22D est publié et le gate navigateur viewer est fermé.
 
 ## Gate actif
 
 R45D2A23 — routes publiques localisées avec accents.
 
-Le besoin est traité par une évolution générique OPUS `LocalizedRouteResolver` puis intégration dans owasys-front. Les routes internes restent stables ; les chemins publics sont localisés. Les 25 langues de base sont couvertes et les variantes régionales héritent de leur langue de base.
+Le besoin est traité par l'évolution générique OPUS `LocalizedRouteResolver` puis intégration dans owasys-front. Les routes internes restent stables. Les 25 langues de base sont couvertes et les variantes régionales héritent de leur langue de base.
 
-Exemples français attendus : `/fr-FR/sécurité`, `/fr-FR/compte/mot-de-passe`, `/fr-FR/sources-de-données`, `/fr-FR/sources-et-git/...`, `/fr-FR/construction-et-validation`.
+Exemples français : `/fr-FR/sécurité`, `/fr-FR/compte/mot-de-passe`, `/fr-FR/sources-de-données`, `/fr-FR/sources-et-git/...`, `/fr-FR/construction-et-validation`.
 
-Les accents ne sont jamais supprimés. Les chemins de fichiers restent opaques. Les routes REST backend ne sont jamais localisées. Aucun routeur JavaScript.
+Les accents sont conservés. Le préfixe Sources/Git est localisé mais le chemin réel du fichier reste opaque, y compris pour la normalisation Unicode. Les routes REST backend restent non localisées. Aucun routeur JavaScript.
 
 ## Livrable
 
 `opus_p117w_r45d2a23_localized_public_routes.zip`
 
-SHA-256 : `4be14a8bc7879f7427d59a57dfe7bca5f3232a131d72503cb112fdc14f7632e7`
-
-Contenu : résolveur OPUS + interface, catalogue de routes localisées, applicateur différentiel temporaire.
+SHA-256 : `f0a69450a9673e9f222a9d53512c0a53adcae5d08286bc625bff320d75826dea`
 
 Après validation owner, reprendre le backend atomique Modifier/Supprimer utilisateur ou agent.
