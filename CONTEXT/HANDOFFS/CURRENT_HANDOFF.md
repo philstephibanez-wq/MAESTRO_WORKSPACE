@@ -29,6 +29,18 @@ R45D2A25A est publié. Le front Security contient désormais le lifecycle Utilis
 - backend `identity.update` / `identity.delete` avec Preview/Commit, rollback, pertes d'accès et protection de la dernière identité administrative ;
 - exposition SCORE lifecycle publiée par R45D2A25A.
 
+## Preuve navigateur admin R45D2A25A
+
+Capture owner sur `/fr-FR/sécurité` avec `admin · admin`, application `essai2` :
+
+- route publique localisée avec accent confirmée ;
+- cockpit Security chargé ;
+- mutations disponibles pour admin : création Utilisateur et Agent visible ;
+- compteurs : 0 Utilisateurs, 0 Agents, 3 `À classifier`, 1 Rôle, 3 Ressources/ACL ;
+- le panneau `À classifier` est replié sur la capture ; le template publié place bien `Classifier l’identité` et `Supprimer` à l'intérieur de ce `<details>`.
+
+Le gate navigateur lifecycle n'est donc pas encore totalement fermé : il reste à ouvrir le panneau et tester Preview/Commit puis recontrôler viewer.
+
 ## Observation post-publication R45D2A25A
 
 Le diff GitHub publié montre une dégradation d'indentation dans le bloc de capacités de `sites/owasys-front/application/security/controllers/SecurityController.php` : certaines lignes ont perdu leur niveau d'indentation lors de la réinsertion par l'installateur tolérant aux espaces.
