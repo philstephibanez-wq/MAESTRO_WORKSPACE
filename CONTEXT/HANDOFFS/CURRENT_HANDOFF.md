@@ -15,8 +15,9 @@ Date : 2026-08-13
 9. `CONTEXT/SPECIFICATIONS/OPUS_P117W_R45D2A21_SECURITY_VISUAL_WORKSPACE_2026-08-12.md`
 10. `CONTEXT/SPECIFICATIONS/OPUS_P117W_R45D2A21B_SECURITY_VISUAL_DASHBOARD_2026-08-13.md`
 11. `CONTEXT/SPECIFICATIONS/OPUS_P117W_R45D2A21C_SECURITY_COMPACT_COCKPIT_2026-08-13.md`
-12. `CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OPUS_P117W_R45D2A21C_SECURITY_COMPACT_COCKPIT_2026-08-13.md`
-13. `CONTEXT/PROJECTS/OPUS_CURRENT_STATE.md`
+12. `CONTEXT/SPECIFICATIONS/OPUS_P117W_R45D2A22_ROLE_CAPABILITY_MATRIX_EXECUTABLE_CONTRACT_2026-08-13.md`
+13. `CONTEXT/HANDOFFS/MAESTRO_WORKSPACE_HANDOFF_OPUS_P117W_R45D2A22_ROLE_CAPABILITY_MATRIX_2026-08-13.md`
+14. `CONTEXT/PROJECTS/OPUS_CURRENT_STATE.md`
 
 ## OPUS GitHub courant
 
@@ -26,7 +27,7 @@ Date : 2026-08-13
 1908e9ae4e28d599855b5e8d1e424a6c335d0507  opus_p117w_r45d2a19c_local_password_credential_ownership
 ```
 
-R45D2A21 et R45D2A21B sont appliqués localement mais pas déclarés publiés tant que l’owner ne les a pas commit/push.
+R45D2A21/B/C sont appliqués localement par l’owner mais ne sont pas considérés publiés tant que l’owner ne les a pas commit/push.
 
 ## États owner acquis
 
@@ -38,55 +39,54 @@ R45D2A21 et R45D2A21B sont appliqués localement mais pas déclarés publiés ta
 - break-glass local-password acquis ;
 - aucun mot de passe local ne traverse REST ;
 - R45D2A20 publié : provisioning local-password par rôle pour application OPUS standard ;
-- R45D2A21 appliqué localement : `identity_type=user|agent`, legacy `unknown` ;
-- R45D2A21B appliqué localement : dashboard graphique fonctionnel.
+- R45D2A21 local : `identity_type=user|agent`, legacy `unknown` ;
+- R45D2A21B local : dashboard graphique ;
+- R45D2A21C local : cockpit compact ;
+- **gate visuel R45D2A21C accepté** sur capture owner du 2026-08-13.
 
-## Retour owner R45D2A21B
-
-Retour : **« C'est un peu mieux »**.
-
-La direction graphique est conservée, mais le formulaire d’ajout ouvert prend encore presque tout le premier viewport. Les panneaux Utilisateurs / Agents sont repoussés sous la ligne de flottaison et les métriques `0 / 0` ne rendent pas visible la présence des identités legacy.
-
-## Livrable actif — R45D2A21C
+## Livrable actif — R45D2A22
 
 ```text
-ZIP     : opus_p117w_r45d2a21c_security_compact_cockpit.zip
-SHA-256 : 5072d4f5b0e9f2b6ffdbda00f6a16c07df225747ac2b7cc6a3c08bbbc4bd3cd2
-PREREQ  : R45D2A21B appliqué
-FILES   : 2 scripts PHP
+ZIP     : opus_p117w_r45d2a22_role_capability_matrix_contract.zip
+SHA-256 : e3f127d709b860a359fd8982806f4097fad5c9d22ed8f33ace3b7ffe1a729793
+PREREQ  : R45D2A21C appliqué
+FILES   : 1
 ```
 
-R45D2A21C :
+R45D2A22 ajoute un smoke non destructif qui prouve :
 
-- compacte encore le dashboard ;
-- ajoute la métrique `À classifier` si nécessaire ;
-- remplace le grand formulaire ouvert par deux quick-actions repliées Utilisateur / Agent ;
-- fixe explicitement `identity_type=user|agent` dans chaque action ;
-- met provider sous Détails techniques, prérempli et modifiable ;
-- rend Utilisateurs / Agents toujours visibles en panneaux ;
-- conserve `À classifier` secondaire et compact ;
-- ne change ni backend, ni FSM, ni fresh-auth, ni ACL ;
-- SCORE/CSS uniquement, aucun JS/Mermaid runtime.
+- décisions ACL front admin/developer/viewer ;
+- décisions ACL back admin/developer/viewer ;
+- default deny rôle inconnu ;
+- garde création/suppression application ;
+- garde source preview/write ;
+- garde Git stage/unstage/commit/restore ;
+- garde Sécurité manage ;
+- refus direct Profiler viewer ;
+- liaison entre capacités SCORE et contrôles serveur.
 
 ## Gate immédiat
 
-1. extraire R45D2A21C après R45D2A21B ;
-2. lancer l’applicator ;
-3. exiger `OPUS_R45D2A21C_APPLIED` ;
-4. lancer le smoke ;
-5. exiger `OPUS_R45D2A21C_SMOKE_OK` ;
-6. `composer dump-autoload -o` ;
-7. `git status --short` ;
-8. redémarrer front/back ;
-9. ouvrir Sécurité comme developer ;
-10. juger le premier viewport avant toute nouvelle fonction.
+1. extraire R45D2A22 ;
+2. `php -l tools\smoke_r45d2a22_role_capability_matrix.php` ;
+3. lancer le smoke ;
+4. exiger :
 
-## Suite seulement après validation visuelle
+```text
+OPUS_R45D2A22_ROLE_CAPABILITY_MATRIX_OK front_cases=66 back_cases=42
+```
 
-1. gate viewer ACL ;
-2. smoke complet admin/developer/viewer front+back ;
-3. mutations backend atomiques Modifier/Supprimer utilisateur ou agent ;
-4. exposition UI seulement après support backend réel.
+5. login browser `viewer` ;
+6. vérifier lecture Applications/Structure/Data/Workflows/Sécurité/Sources-Git/Build ;
+7. vérifier absence/refus création, suppression, sécurité manage, source preview/write, Git mutation ;
+8. vérifier compte/password disponible ;
+9. vérifier Profiler absent et refusé en URL directe.
+
+## Suite seulement après gate viewer
+
+Si divergence : corriger la cause avant toute autre fonction.
+
+Si conforme : implémenter backend atomique **Modifier/Supprimer utilisateur ou agent**, puis seulement exposer les boutons correspondants.
 
 NO HARDCODED ACCOUNT.
 NO MANUAL STORE EDIT.
