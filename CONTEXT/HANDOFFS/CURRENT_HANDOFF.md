@@ -27,7 +27,7 @@ Date : 2026-08-13
 1908e9ae4e28d599855b5e8d1e424a6c335d0507  opus_p117w_r45d2a19c_local_password_credential_ownership
 ```
 
-R45D2A21/B/C sont appliqués localement par l’owner mais ne sont pas considérés publiés tant que l’owner ne les a pas commit/push.
+R45D2A21/B/C et R45D2A22 sont appliqués localement par l’owner mais ne sont pas considérés publiés tant que l’owner ne les a pas commit/push.
 
 ## États owner acquis
 
@@ -42,45 +42,24 @@ R45D2A21/B/C sont appliqués localement par l’owner mais ne sont pas considér
 - R45D2A21 local : `identity_type=user|agent`, legacy `unknown` ;
 - R45D2A21B local : dashboard graphique ;
 - R45D2A21C local : cockpit compact ;
-- **gate visuel R45D2A21C accepté** sur capture owner du 2026-08-13.
+- gate visuel R45D2A21C accepté ;
+- **R45D2A22 exécuté avec succès** : `OPUS_R45D2A22_ROLE_CAPABILITY_MATRIX_OK front_cases=66 back_cases=42` ;
+- `git status --short` vide après extraction et smoke R45D2A22.
 
-## Livrable actif — R45D2A22
+## Gate actif — navigateur viewer
 
-```text
-ZIP     : opus_p117w_r45d2a22_role_capability_matrix_contract.zip
-SHA-256 : e3f127d709b860a359fd8982806f4097fad5c9d22ed8f33ace3b7ffe1a729793
-PREREQ  : R45D2A21C appliqué
-FILES   : 1
-```
+Aucun nouveau patch avant ce gate.
 
-R45D2A22 ajoute un smoke non destructif qui prouve :
-
-- décisions ACL front admin/developer/viewer ;
-- décisions ACL back admin/developer/viewer ;
-- default deny rôle inconnu ;
-- garde création/suppression application ;
-- garde source preview/write ;
-- garde Git stage/unstage/commit/restore ;
-- garde Sécurité manage ;
-- refus direct Profiler viewer ;
-- liaison entre capacités SCORE et contrôles serveur.
-
-## Gate immédiat
-
-1. extraire R45D2A22 ;
-2. `php -l tools\smoke_r45d2a22_role_capability_matrix.php` ;
-3. lancer le smoke ;
-4. exiger :
-
-```text
-OPUS_R45D2A22_ROLE_CAPABILITY_MATRIX_OK front_cases=66 back_cases=42
-```
-
-5. login browser `viewer` ;
-6. vérifier lecture Applications/Structure/Data/Workflows/Sécurité/Sources-Git/Build ;
-7. vérifier absence/refus création, suppression, sécurité manage, source preview/write, Git mutation ;
-8. vérifier compte/password disponible ;
-9. vérifier Profiler absent et refusé en URL directe.
+1. se déconnecter de `developer` ;
+2. se connecter comme `viewer` ;
+3. vérifier en haut à droite `viewer · viewer` ;
+4. Applications : ouvrir/sélectionner/changer autorisés, création et suppression absentes ;
+5. Structure / Sources de données / Workflows / Sécurité : lecture autorisée ;
+6. Sécurité : aucun formulaire/bouton de mutation ;
+7. Sources et Git : lecture fichiers autorisée, preview/write/stage/stage-all/unstage/commit/restore absents ou refusés ;
+8. Construction / validation : lecture autorisée ;
+9. Compte : changement de son propre mot de passe disponible ;
+10. Profiler : absent et accès direct `?profiler=1` refusé.
 
 ## Suite seulement après gate viewer
 
