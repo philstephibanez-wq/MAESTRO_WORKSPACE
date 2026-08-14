@@ -2,40 +2,39 @@
 
 Date : 2026-08-14
 
-## Base OPUS publiée
+## Publication OPUS
 
-`bf2d62fd3f3d7f7eea66d0bb0369d232e15c0474` — `opus_p117w_r45d2a25e_security_identity_actions_compact_alignment`.
+`de6c8e74985f690f18e77ea701555712aa598c24` — `opus_p117w_r45d2a25f_principal_column_consolidation`.
 
-## Observation navigateur
+## Cause traitée
 
-La vue Security / Identités présente un cadre supérieur de création `Utilisateur` / `Agent`, puis un second cadre `Utilisateurs` / `Agents` pour la liste. Il ne s’agit pas d’un doublon de données mais d’un doublon de présentation.
+La vue Security / Identités rendait les formulaires `identity.reference` dans un bloc extérieur `.ow-security-quick-actions`, puis rendait séparément les colonnes Utilisateurs/Agents. Cela produisait deux cadres pour une même catégorie.
 
-## Cause source
+## Résultat validé
 
-Les formulaires `identity.reference` sont rendus dans un bloc extérieur `.ow-security-quick-actions` avant `.ow-security-principal-grid-visible`. Les listes sont ensuite rendues dans deux colonnes principales séparées.
-
-## Gate actif
-
-R45D2A25F déplace chaque formulaire de création dans la colonne correspondante et supprime le conteneur/CSS extérieur devenu inutile.
-
-Contrat :
 - un seul cadre Utilisateurs ;
 - un seul cadre Agents ;
-- création visible uniquement si `security.identity_reference_supported` ;
-- viewer sans Ajouter / Classifier / Modifier / Supprimer ;
-- backend, REST, FSM, ACL inchangés ;
-- SCORE/CSS uniquement.
+- création intégrée dans la colonne correspondante ;
+- liste conservée dans la même colonne ;
+- backend, REST, FSM et ACL inchangés ;
+- SCORE/CSS uniquement ;
+- les gardes `identity_reference_supported`, `identity_update_supported` et `identity_delete_supported` restent dérivées de `$canMutate`.
 
-## Livrable
+## État Security courant
 
-```text
-ZIP     : opus_p117w_r45d2a25f_principal_column_consolidation.zip
-SHA-256 : 3038c9ec4a2d69b4b6d1d475291ffcdcf66a51d70242fc2c55e78bd441270e67
-BASE    : bf2d62fd3f3d7f7eea66d0bb0369d232e15c0474
-FILES   : 2
-```
+- 1 Utilisateur : `steve`, actif, rôle `admin` ;
+- 0 Agent ;
+- 1 identité legacy restante : `home` ;
+- protection de la dernière identité administrative validée : suppression de `steve` refusée avant écriture avec message localisé ;
+- suppression réelle d’une identité legacy validée ;
+- classification réelle `unknown -> user` validée ;
+- conflits métier Security localisés ;
+- actions Modifier/Supprimer compactes ;
+- colonnes Utilisateurs/Agents fusionnées.
 
-Après validation navigateur et publication : recontrôle viewer final, puis clôture lifecycle Security.
+## Suite
+
+Le lifecycle Identités est considéré acquis. Le prochain travail doit auditer les autres objets Security (Attributions, Rôles, Permissions, Ressources/ACL) afin d’identifier les mutations manquantes avant toute nouvelle UI.
 
 NO VIEWER MUTATION.
 NO JAVASCRIPT.
