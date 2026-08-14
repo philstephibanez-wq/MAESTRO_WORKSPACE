@@ -1,25 +1,46 @@
 # OPUS CURRENT STATE
 
-Dernière mise à jour : 2026-08-13.
+Dernière mise à jour : 2026-08-14.
 
 ## Dépôt canonique
 
-OPUS master : `05c0075027ac5818fb6960680e390721fa028b3f` — `opus_p117w_r45d2a25c_unclassified_metric_navigation`.
+OPUS master : `de6c8e74985f690f18e77ea701555712aa598c24` — `opus_p117w_r45d2a25f_principal_column_consolidation`.
 
-## Acquis récents
-
-R45D2A25A expose le lifecycle Utilisateur/Agent dans le front Security. R45D2A25B remet `SecurityController.php` en forme canonique sans changer le comportement. R45D2A25C rend la métrique `À classifier` navigable vers le panneau réel et ouvre ce panneau en SCORE/CSS uniquement.
-
-## Validation navigateur lifecycle
+## Acquis lifecycle Identités
 
 - navigation `À classifier` validée ;
-- actions Classifier/Supprimer visibles en admin ;
+- actions Classifier/Modifier/Supprimer visibles en admin/developer ;
 - suppression d'une identité legacy validée via Preview puis Commit ;
 - classification `unknown -> user` validée sur `steve` ;
-- la Preview de classification n'a montré aucun accès gagné ni perdu ;
-- le rôle `admin` de `steve` est conservé après classification ;
-- état courant observé : 1 Utilisateur (`steve`), 0 Agent, 1 identité legacy restante (`home`).
+- rôle `admin` conservé après classification ;
+- suppression du dernier administrateur refusée avant écriture ;
+- messages métier Security localisés ;
+- actions Modifier/Supprimer compactes ;
+- un seul cadre Utilisateurs et un seul cadre Agents, avec création intégrée à la colonne ;
+- gardes de mutation toujours dérivées de `$canMutate`, aucun contrôle de mutation en viewer.
+
+## État courant observé
+
+- 1 Utilisateur : `steve`, actif, rôle `admin` ;
+- 0 Agent ;
+- 1 identité legacy restante : `home`.
+
+## Audit des autres vues Security
+
+Le backend actuel est encore additif pour les autres objets :
+
+- `role.create` ;
+- `permission.grant` ;
+- `assignment.grant` ;
+- `resource.allow`.
+
+Le contrat Security exige notamment la révocation d'une attribution de rôle, la suppression d'un rôle seulement lorsqu'il n'est plus attribué, et la suppression/retrait de permissions sans perte du dernier administrateur.
 
 ## Gate actif
 
-Validation finale : Preview de suppression de `steve` pour vérifier le refus de supprimer la dernière identité administrative, sans Commit, puis contrôle viewer sans aucun bouton lifecycle.
+R45D2A26 — Assignment Revoke Backend.
+
+Livrable : `opus_p117w_r45d2a26_assignment_revoke_backend.zip`.
+SHA-256 : `96b896192ee40bb6f198a63f1ff47e5c50cfb3417fbb9c18b012745930530555`.
+
+Objectifs : `assignment.revoke`, perte d'accès explicite en Preview, commit atomique, refus de retirer le dernier administrateur effectif. Aucune UI dans cet incrément.
