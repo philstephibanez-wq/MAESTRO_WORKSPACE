@@ -14,13 +14,16 @@ Date : 2026-08-14
 8. `CONTEXT/SPECIFICATIONS/OPUS_P117W_R45D2A27_ASSIGNMENT_REVOKE_UI_2026-08-14.md`
 9. `CONTEXT/SPECIFICATIONS/OPUS_P117W_R45D2A28_SECURITY_LOCALIZED_VIEW_ROUTES_2026-08-14.md`
 10. `CONTEXT/SPECIFICATIONS/OPUS_P117W_R45D2A28B_SECURITY_GRAPHICAL_PRIMARY_NAVIGATION_2026-08-14.md`
-11. `CONTEXT/PROJECTS/OPUS_CURRENT_STATE.md`
+11. `CONTEXT/SPECIFICATIONS/OPUS_P117W_R45D2A29_FSM_DIAGRAM_SEMANTIC_CONFORMANCE_2026-08-14.md`
+12. `CONTEXT/PROJECTS/OPUS_CURRENT_STATE.md`
 
 ## Base OPUS publiée
 
 `f61382ea8e8c2e590176e25ef98208a7ff8ceaee` — `opus_p117w_r45d2a28a_security_view_isolation_fragment_elimination`.
 
 R45D2A28 et R45D2A28A sont publiés et validés navigateur.
+
+R45D2A28B a été appliqué localement par l'owner et le premier retour navigateur est positif (« nettement mieux »), mais il n'est pas encore visible dans le HEAD GitHub publié au moment de ce handoff.
 
 ## Gates acquis — Security
 
@@ -35,31 +38,50 @@ R45D2A28 et R45D2A28A sont publiés et validés navigateur.
 - UI mutation strictement sous `$canMutate`, viewer lecture seule ;
 - zéro JavaScript Security pour le routage/navigation métier.
 
-## Défaut UX observé
+## Retour UX R45D2A28B
 
-La chaîne graphique Security existe, mais elle ressemble encore à une rangée de liens secondaires. En particulier, la présence et le rôle de `Rôles` ne sont pas suffisamment évidents depuis `/sécurité`.
+La navigation graphique Security est nettement améliorée. Le prochain alignement visuel devra utiliser le même vocabulaire rectangulaire que les diagrammes FSM OPUS, sans présenter la chaîne Security comme une machine à états.
 
-De plus, les rubriques `Rôles`, `Permissions`, `Attributions` et `Ressources & ACL` sont des `<details>` fermés : un clic sur le maillon change la route mais ne déplie pas immédiatement la rubrique attendue.
+L'audit du renderer FSM a toutefois révélé que le diagramme FSM lui-même n'est pas sémantiquement fidèle à une vraie machine à états :
+
+- fusion de transitions distinctes partageant le même couple `from -> to` ;
+- signaux concaténés ;
+- actions détachées des transitions ;
+- guards absents du diagramme ;
+- pas de self-loop dédié ;
+- wildcards OPUS insuffisamment représentés ;
+- initial/final traités comme rectangles tagués ;
+- placement des états selon l'ordre du tableau plutôt que la topologie.
+
+Le `FsmProcessor` moderne supporte déjà correctement plusieurs signaux par state, guards/actions par transition, `__any__`, source globale `*` et `__default__`. Le défaut est donc dans la représentation graphique, pas dans le moteur de transition.
 
 ## Gate actif
 
-R45D2A28B — Security Graphical Primary Navigation :
+R45D2A29 — FSM Diagram Semantic Conformance :
 
-- `/sécurité` devient une vraie vue d'ensemble graphique ;
-- chaîne métier visible : Utilisateur/Agent -> Identité -> Attribution -> Rôle -> Permission -> Ressource/Action -> ACL ;
-- navigation persistante : Identités, Attributions, Rôles, Permissions, Ressources & ACL ;
-- chaque maillon possède icône, libellé, compteur et lien localisé ;
-- maillon courant marqué visuellement + `aria-current="page"` ;
-- clic sur un maillon -> route localisée -> rubrique correspondante rendue immédiatement ouverte (`open`) ;
-- une seule rubrique métier détaillée rendue à la fois ;
-- retour graphique Vue d'ensemble ;
-- métriques Utilisateurs/Agents/Rôles/Ressources navigables ;
-- aucune query anglaise ni fragment URL ;
-- changement de langue conserve la sous-vue ;
-- SCORE + CSS + rendu serveur uniquement ;
-- aucune modification REST/backend/ACL/FSM ;
-- aucune mutation supplémentaire viewer.
+- correction générique `Opus/Fsm/Diagram.class.php` avant tout hack local OWASYS ;
+- une arête graphique par transition réelle ;
+- libellé `signal [guard] / effect` ;
+- plusieurs transitions entrantes/sortantes par state ;
+- transitions parallèles non fusionnées ;
+- self-loops dédiés ;
+- retours/cycles visibles ;
+- initial marker dédié ;
+- final marker dédié lorsque le contrat le déclare ;
+- état courant seulement surligné ;
+- `__any__`, source `*` et `__default__` explicitement représentés comme extensions OPUS ;
+- layout déterministe dérivé de la topologie à partir de l'état initial ;
+- compatibilité de l'API historique `OPUS_FSM_Diagram` ;
+- ajout d'une entrée pour définition canonique `FsmProcessor` ;
+- SVG serveur autonome, zéro GraphViz, zéro exec, zéro JavaScript.
+
+Livrable : `opus_p117w_r45d2a29_fsm_diagram_semantic_conformance.zip`.
+SHA-256 : `4c6676e316a591c0c5c006dc54112b51fc6fbf20dcb0d819c4fe26a88328f22c`.
+
+Après validation R45D2A29, aligner le style de la chaîne Security sur les rectangles/connecteurs FSM sans copier la sémantique FSM.
 
 NO VIEWER MUTATION.
 NO JAVASCRIPT.
+NO GRAPHVIZ.
+NO EXEC.
 NO PUSH OPUS/OWASYS BY ASSISTANT.
