@@ -11,11 +11,12 @@ Date : 2026-08-14
 5. `CONTEXT/SPECIFICATIONS/OPUS_P117W_R45D2A24_IDENTITY_LIFECYCLE_BACKEND_2026-08-13.md`
 6. `CONTEXT/SPECIFICATIONS/OPUS_P117W_R45D2A25_IDENTITY_LIFECYCLE_UI_2026-08-13.md`
 7. `CONTEXT/SPECIFICATIONS/OPUS_P117W_R45D2A25F_PRINCIPAL_COLUMN_CONSOLIDATION_2026-08-14.md`
-8. `CONTEXT/PROJECTS/OPUS_CURRENT_STATE.md`
+8. `CONTEXT/SPECIFICATIONS/OPUS_P117W_R45D2A27_ASSIGNMENT_REVOKE_UI_2026-08-14.md`
+9. `CONTEXT/PROJECTS/OPUS_CURRENT_STATE.md`
 
 ## Base OPUS publiée
 
-`de6c8e74985f690f18e77ea701555712aa598c24` — `opus_p117w_r45d2a25f_principal_column_consolidation`.
+`9256f6dd4837a5465f801018368113fa0a740499` — `opus_p117w_r45d2a26_assignment_revoke_backend`.
 
 ## Gates acquis — lifecycle Identités
 
@@ -29,7 +30,17 @@ Date : 2026-08-14
 - protection de la dernière identité administrative validée : suppression de `steve` refusée avant écriture ;
 - actions Modifier/Supprimer compactes ;
 - un seul cadre Utilisateurs et un seul cadre Agents, création intégrée à la liste ;
-- les contrôles restent sous capacités dérivées de `$canMutate`, donc aucun contrôle de mutation en viewer.
+- contrôles de mutation dérivés de `$canMutate`, donc aucun contrôle de mutation en viewer.
+
+## Gates acquis — Attributions backend
+
+R45D2A26 est publié. Le backend supporte maintenant :
+
+- `assignment.grant` ;
+- `assignment.revoke` ;
+- Preview `access_delta.lost` ;
+- commit atomique sur le store local ;
+- refus de révoquer la dernière attribution administrative effective.
 
 ## État navigateur courant
 
@@ -37,27 +48,23 @@ Date : 2026-08-14
 - 0 Agent ;
 - 1 identité legacy restante : `home`.
 
-## Audit des autres objets Security
-
-Le backend courant ne supporte que les mutations additives :
-
-- `role.create` ;
-- `permission.grant` ;
-- `assignment.grant` ;
-- `resource.allow`.
-
-Le contrat Security exige notamment la révocation d'une attribution de rôle et interdit toute opération supprimant le dernier administrateur actif.
-
 ## Gate actif
 
-R45D2A26 — Assignment Revoke Backend :
+R45D2A27 — Assignment Revoke UI :
 
-- ajouter `assignment.revoke` au backend Security ;
-- Preview avec `access_delta.lost` ;
-- Commit atomique sur le store local ;
-- refus si la révocation supprimerait le dernier administrateur effectif ;
-- aucune UI dans cet incrément ;
-- aucun changement REST/FSM de surface : réutilisation du pipeline mutation existant.
+- exposer `assignment_revoke_supported` côté front uniquement sous `$canMutate` ;
+- action SCORE `Révoquer` sur les attributions locales réellement modifiables ;
+- motif + réauthentification ;
+- Preview puis confirmation/Commit via pipeline existant ;
+- affichage explicite des accès perdus ;
+- messages localisés pour attribution absente, identité absente et protection de la dernière attribution administrative ;
+- 25 locales : langues de l’Union européenne + ukrainien ;
+- aucun bouton Révoquer en viewer ;
+- aucun changement REST/FSM ;
+- zéro JavaScript.
+
+Livrable : `opus_p117w_r45d2a27_assignment_revoke_ui.zip`.
+SHA-256 : `828836dea799d75296463fa676dcf52a80b37c816f22bfb4cab883e42f662611`.
 
 NO VIEWER MUTATION.
 NO JAVASCRIPT.
