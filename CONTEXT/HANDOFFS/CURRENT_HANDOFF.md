@@ -13,61 +13,52 @@ Date : 2026-08-14
 7. `CONTEXT/SPECIFICATIONS/OPUS_P117W_R45D2A25F_PRINCIPAL_COLUMN_CONSOLIDATION_2026-08-14.md`
 8. `CONTEXT/SPECIFICATIONS/OPUS_P117W_R45D2A27_ASSIGNMENT_REVOKE_UI_2026-08-14.md`
 9. `CONTEXT/SPECIFICATIONS/OPUS_P117W_R45D2A28_SECURITY_LOCALIZED_VIEW_ROUTES_2026-08-14.md`
-10. `CONTEXT/PROJECTS/OPUS_CURRENT_STATE.md`
+10. `CONTEXT/SPECIFICATIONS/OPUS_P117W_R45D2A28B_SECURITY_GRAPHICAL_PRIMARY_NAVIGATION_2026-08-14.md`
+11. `CONTEXT/PROJECTS/OPUS_CURRENT_STATE.md`
 
 ## Base OPUS publiée
 
-`3d4b0cb06e8a825326809ce9173b6fefb36827e9` — `opus_p117w_r45d2a27_assignment_revoke_ui`.
+`f61382ea8e8c2e590176e25ef98208a7ff8ceaee` — `opus_p117w_r45d2a28a_security_view_isolation_fragment_elimination`.
 
-## Gates acquis — lifecycle Identités
+R45D2A28 et R45D2A28A sont publiés et validés navigateur.
 
-- routes principales frontend localisées avec accents ;
-- backend `identity.update` / `identity.delete` avec Preview/Commit ;
-- exposition SCORE lifecycle admin/developer ;
-- navigation métrique `À classifier` ;
-- suppression réelle d'une identité legacy validée ;
-- classification réelle `unknown -> user` validée sur `steve`, rôle `admin` conservé ;
-- conflits métier Security localisés explicitement ;
-- protection de la dernière identité administrative validée ;
-- actions Modifier/Supprimer compactes ;
-- un seul cadre Utilisateurs et un seul cadre Agents, création intégrée à la liste ;
-- contrôles de mutation dérivés de `$canMutate`, donc aucun contrôle de mutation en viewer.
+## Gates acquis — Security
 
-## Gates acquis — Attributions
+- routes principales et sous-vues Security localisées ;
+- français : `/sécurité/identités`, `/sécurité/rôles`, `/sécurité/permissions`, `/sécurité/attributions`, `/sécurité/ressources-et-acl` ;
+- aucune query technique `?view=...` générée en navigation normale ;
+- suppression du fragment historique `#ow-security-unclassified` ;
+- une seule sous-vue métier rendue à la fois ;
+- lifecycle Identités Preview/Commit ;
+- assignment grant/revoke Preview/Commit ;
+- protections dernière identité administrative et dernière attribution administrative ;
+- UI mutation strictement sous `$canMutate`, viewer lecture seule ;
+- zéro JavaScript Security pour le routage/navigation métier.
 
-R45D2A26 et R45D2A27 sont publiés :
+## Défaut UX observé
 
-- backend `assignment.grant` / `assignment.revoke` ;
-- Preview `access_delta.lost` ;
-- commit atomique ;
-- protection de la dernière attribution administrative ;
-- action SCORE `Révoquer` sous capacité `assignment_revoke_supported` ;
-- messages localisés ;
-- aucune mutation viewer.
+La chaîne graphique Security existe, mais elle ressemble encore à une rangée de liens secondaires. En particulier, la présence et le rôle de `Rôles` ne sont pas suffisamment évidents depuis `/sécurité`.
 
-## Défaut observé
-
-Les sous-vues Security restent exposées avec une query technique anglaise :
-
-`/fr-FR/sécurité?view=assignments`
-
-Le code courant `securityUrl()` construit `?view=<clé interne>` au lieu d'utiliser le routeur localisé OPUS.
+De plus, les rubriques `Rôles`, `Permissions`, `Attributions` et `Ressources & ACL` sont des `<details>` fermés : un clic sur le maillon change la route mais ne déplie pas immédiatement la rubrique attendue.
 
 ## Gate actif
 
-R45D2A28 — Security Localized View Routes :
+R45D2A28B — Security Graphical Primary Navigation :
 
-- remplacer les query `?view=...` générées par des routes localisées ;
-- français canonique : `/fr-FR/sécurité/identités`, `/rôles`, `/permissions`, `/attributions`, `/ressources-et-acl` sous le préfixe `/fr-FR/sécurité/` ;
-- 25 langues de base, variantes régionales héritées ;
-- les clés internes anglaises restent internes ;
-- ancien `?view=...` accepté en compatibilité et redirigé en GET ;
+- `/sécurité` devient une vraie vue d'ensemble graphique ;
+- chaîne métier visible : Utilisateur/Agent -> Identité -> Attribution -> Rôle -> Permission -> Ressource/Action -> ACL ;
+- navigation persistante : Identités, Attributions, Rôles, Permissions, Ressources & ACL ;
+- chaque maillon possède icône, libellé, compteur et lien localisé ;
+- maillon courant marqué visuellement + `aria-current="page"` ;
+- clic sur un maillon -> route localisée -> rubrique correspondante rendue immédiatement ouverte (`open`) ;
+- une seule rubrique métier détaillée rendue à la fois ;
+- retour graphique Vue d'ensemble ;
+- métriques Utilisateurs/Agents/Rôles/Ressources navigables ;
+- aucune query anglaise ni fragment URL ;
 - changement de langue conserve la sous-vue ;
-- aucun changement métier Security, REST, ACL ou FSM ;
-- zéro JavaScript.
-
-Livrable : `opus_p117w_r45d2a28_security_localized_view_routes.zip`.
-SHA-256 : `814030ed1095172fc860805af861dbe9ed8c10f1fd735465d6001de9a75faba6`.
+- SCORE + CSS + rendu serveur uniquement ;
+- aucune modification REST/backend/ACL/FSM ;
+- aucune mutation supplémentaire viewer.
 
 NO VIEWER MUTATION.
 NO JAVASCRIPT.
