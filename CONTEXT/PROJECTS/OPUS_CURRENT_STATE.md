@@ -4,7 +4,7 @@ Dernière mise à jour : 2026-08-14.
 
 ## Dépôt canonique
 
-OPUS master : `9256f6dd4837a5465f801018368113fa0a740499` — `opus_p117w_r45d2a26_assignment_revoke_backend`.
+OPUS master : `3d4b0cb06e8a825326809ce9173b6fefb36827e9` — `opus_p117w_r45d2a27_assignment_revoke_ui`.
 
 ## Acquis lifecycle Identités
 
@@ -19,15 +19,18 @@ OPUS master : `9256f6dd4837a5465f801018368113fa0a740499` — `opus_p117w_r45d2a2
 - un seul cadre Utilisateurs et un seul cadre Agents, avec création intégrée à la colonne ;
 - gardes de mutation dérivées de `$canMutate`, aucun contrôle de mutation en viewer.
 
-## Acquis Attributions backend
+## Acquis Attributions
 
-R45D2A26 est publié et ajoute :
+R45D2A26 et R45D2A27 sont publiés :
 
 - `assignment.revoke` ;
 - capacité `assignment_revoke` ;
 - Preview avec `access_delta.lost` ;
 - commit atomique sur le store local ;
-- refus si la révocation supprimerait la dernière attribution administrative effective.
+- protection de la dernière attribution administrative ;
+- action SCORE `Révoquer` uniquement sur les attributions locales modifiables ;
+- messages métier localisés ;
+- aucune action de révocation en viewer.
 
 ## État courant observé
 
@@ -35,16 +38,20 @@ R45D2A26 est publié et ajoute :
 - 0 Agent ;
 - 1 identité legacy restante : `home`.
 
-## Audit des autres vues Security
+## Défaut de routage Security
 
-Identités dispose maintenant du lifecycle attendu. Attributions possède le backend grant/revoke, mais la révocation doit encore être exposée dans le front. Rôles, Permissions et Ressources restent à compléter ensuite pour atteindre le workflow contractuel complet de modification/suppression.
+La route principale est correctement localisée (`/fr-FR/sécurité`), mais les sous-vues sont encore générées sous forme de query technique anglaise, par exemple :
+
+`/fr-FR/sécurité?view=assignments`
+
+La cause est `OwasysSecurityController::securityUrl()`, qui expose directement la clé interne au lieu d'utiliser `LocalizedRouteResolverInterface` pour chaque sous-vue.
 
 ## Gate actif
 
-R45D2A27 — Assignment Revoke UI.
+R45D2A28 — Security Localized View Routes.
 
-Livrable : `opus_p117w_r45d2a27_assignment_revoke_ui.zip`.
-SHA-256 : `828836dea799d75296463fa676dcf52a80b37c816f22bfb4cab883e42f662611`.
-Base : `9256f6dd4837a5465f801018368113fa0a740499`.
+Livrable : `opus_p117w_r45d2a28_security_localized_view_routes.zip`.
+SHA-256 : `814030ed1095172fc860805af861dbe9ed8c10f1fd735465d6001de9a75faba6`.
+Base : `3d4b0cb06e8a825326809ce9173b6fefb36827e9`.
 
-Objectifs : action SCORE `Révoquer` uniquement sur une attribution locale réellement modifiable, motif + réauthentification, Preview/Commit existants, accès perdus explicites, messages métier localisés et zéro action de mutation en viewer.
+Objectifs : cinq sous-routes Security localisées sur les 25 langues de base, URLs françaises avec accents (`identités`, `rôles`, `attributions`), aucune query `?view=` générée, compatibilité legacy avec redirection GET vers le chemin canonique, conservation de la sous-vue lors du changement de langue, aucun changement métier Security/REST/ACL/FSM et zéro JavaScript.
