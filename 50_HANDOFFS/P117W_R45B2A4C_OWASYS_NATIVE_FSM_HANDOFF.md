@@ -13,9 +13,9 @@ The audit also found that R45B2A4B itself was only partially applied: its patch-
 
 `opus_p117w_r45b2a4c_owasys_native_fsm.zip`
 
-SHA-256: `599cf01e4f3649cc1397298e7e60d81579c190085150496def6778e3635d91de`
+SHA-256: `3ba836a4121fffe2486e0bb23bf1cbabb6427f0047277f3885ae36568c2adbdd`
 
-This delivery repairs the native framework renderer first, then changes OWASYS to consume it directly from the canonical FSM and removes the Mermaid-only OWASYS FSM projection.
+This delivery repairs the native framework renderer first, then changes OWASYS to consume it directly from the canonical FSM, removes the Mermaid-only OWASYS FSM projection, and deletes the obsolete duplicate `config/owasys-navigation.fsm.json` so `config/fsm.json` remains the single configured FSM source.
 
 ## Owner sequence
 
@@ -25,7 +25,7 @@ From `H:\OPUS`:
 2. run `php tools\apply_p117w_r45b2a4c_native_fsm.php`;
 3. run `composer dump-autoload -o`;
 4. lint the repaired framework/runtime and the new OWASYS builder;
-5. verify the obsolete Mermaid FSM files are gone;
+5. verify the obsolete Mermaid FSM files and duplicate FSM config are gone;
 6. restart `owasys-front`;
 7. validate the native semantic FSM surface, real wildcard transitions, current-state highlight, ACL filtering and localized state links;
 8. delete the one-shot apply script before owner commit;
