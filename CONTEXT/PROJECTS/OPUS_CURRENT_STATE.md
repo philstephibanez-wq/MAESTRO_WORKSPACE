@@ -4,7 +4,7 @@ Dernière mise à jour : 2026-08-14.
 
 ## Dépôt canonique
 
-OPUS master : `de6c8e74985f690f18e77ea701555712aa598c24` — `opus_p117w_r45d2a25f_principal_column_consolidation`.
+OPUS master : `9256f6dd4837a5465f801018368113fa0a740499` — `opus_p117w_r45d2a26_assignment_revoke_backend`.
 
 ## Acquis lifecycle Identités
 
@@ -17,7 +17,17 @@ OPUS master : `de6c8e74985f690f18e77ea701555712aa598c24` — `opus_p117w_r45d2a2
 - messages métier Security localisés ;
 - actions Modifier/Supprimer compactes ;
 - un seul cadre Utilisateurs et un seul cadre Agents, avec création intégrée à la colonne ;
-- gardes de mutation toujours dérivées de `$canMutate`, aucun contrôle de mutation en viewer.
+- gardes de mutation dérivées de `$canMutate`, aucun contrôle de mutation en viewer.
+
+## Acquis Attributions backend
+
+R45D2A26 est publié et ajoute :
+
+- `assignment.revoke` ;
+- capacité `assignment_revoke` ;
+- Preview avec `access_delta.lost` ;
+- commit atomique sur le store local ;
+- refus si la révocation supprimerait la dernière attribution administrative effective.
 
 ## État courant observé
 
@@ -27,20 +37,14 @@ OPUS master : `de6c8e74985f690f18e77ea701555712aa598c24` — `opus_p117w_r45d2a2
 
 ## Audit des autres vues Security
 
-Le backend actuel est encore additif pour les autres objets :
-
-- `role.create` ;
-- `permission.grant` ;
-- `assignment.grant` ;
-- `resource.allow`.
-
-Le contrat Security exige notamment la révocation d'une attribution de rôle, la suppression d'un rôle seulement lorsqu'il n'est plus attribué, et la suppression/retrait de permissions sans perte du dernier administrateur.
+Identités dispose maintenant du lifecycle attendu. Attributions possède le backend grant/revoke, mais la révocation doit encore être exposée dans le front. Rôles, Permissions et Ressources restent à compléter ensuite pour atteindre le workflow contractuel complet de modification/suppression.
 
 ## Gate actif
 
-R45D2A26 — Assignment Revoke Backend.
+R45D2A27 — Assignment Revoke UI.
 
-Livrable : `opus_p117w_r45d2a26_assignment_revoke_backend.zip`.
-SHA-256 : `96b896192ee40bb6f198a63f1ff47e5c50cfb3417fbb9c18b012745930530555`.
+Livrable : `opus_p117w_r45d2a27_assignment_revoke_ui.zip`.
+SHA-256 : `828836dea799d75296463fa676dcf52a80b37c816f22bfb4cab883e42f662611`.
+Base : `9256f6dd4837a5465f801018368113fa0a740499`.
 
-Objectifs : `assignment.revoke`, perte d'accès explicite en Preview, commit atomique, refus de retirer le dernier administrateur effectif. Aucune UI dans cet incrément.
+Objectifs : action SCORE `Révoquer` uniquement sur une attribution locale réellement modifiable, motif + réauthentification, Preview/Commit existants, accès perdus explicites, messages métier localisés et zéro action de mutation en viewer.
