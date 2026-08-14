@@ -8,7 +8,7 @@ Date : 2026-08-14
 
 ## Cause
 
-Dans la vue Security / Identités, les formulaires de création Utilisateur et Agent sont rendus dans un bloc `ow-security-quick-actions` extérieur aux colonnes qui listent les Utilisateurs et Agents. L’interface présente donc deux cadres visuellement concurrents pour une même catégorie : créer puis lister.
+Dans la vue Security / Identités, les formulaires de création Utilisateur et Agent étaient rendus dans un bloc `ow-security-quick-actions` extérieur aux colonnes qui listent les Utilisateurs et Agents. L’interface présentait donc deux cadres visuellement concurrents pour une même catégorie : créer puis lister.
 
 ## Contrat cible
 
@@ -29,9 +29,20 @@ BASE    : bf2d62fd3f3d7f7eea66d0bb0369d232e15c0474
 FILES   : 2
 ```
 
-## Gate attendu
+## Publication
 
-En admin/developer : un seul cadre Utilisateurs et un seul cadre Agents ; le contrôle de création est interne à la colonne correspondante. En viewer : mêmes listes en lecture seule mais aucun Ajouter / Classifier / Modifier / Supprimer.
+`de6c8e74985f690f18e77ea701555712aa598c24` — `opus_p117w_r45d2a25f_principal_column_consolidation`.
+
+## Gate navigateur
+
+Validé le 2026-08-14 :
+- un seul cadre Utilisateurs ;
+- un seul cadre Agents ;
+- le formulaire de création est intégré dans la colonne correspondante ;
+- la liste est conservée sous le formulaire dans la même colonne ;
+- `steve` reste visible comme Utilisateur actif avec rôle `admin`.
+
+Le refactor ne modifie ni les capacités ACL ni les gardes de présentation ; le smoke R45D2A25F conserve les contrôles de mutation sous les capacités dérivées de `$canMutate`.
 
 NO VIEWER MUTATION.
 NO JAVASCRIPT.
