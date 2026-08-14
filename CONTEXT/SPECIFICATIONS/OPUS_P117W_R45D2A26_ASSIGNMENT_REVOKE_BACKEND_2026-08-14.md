@@ -30,7 +30,16 @@ Ajouter au pipeline Security existant :
 
 ## Protection administrative
 
-La protection doit être dérivée de l’ACL existante, sans rôle `admin` hardcodé. Le calcul réutilise les rôles administratifs déduits par le backend et simule l’état après retrait du rôle pour le sujet local ciblé avant d’autoriser le plan.
+La protection est dérivée de l’ACL existante, sans rôle `admin` hardcodé. Le calcul réutilise les rôles administratifs déduits par le backend et simule l’état après retrait du rôle pour le sujet local ciblé avant d’autoriser le plan.
+
+## Livrable
+
+```text
+ZIP     : opus_p117w_r45d2a26_assignment_revoke_backend.zip
+SHA-256 : 96b896192ee40bb6f198a63f1ff47e5c50cfb3417fbb9c18b012745930530555
+BASE    : de6c8e74985f690f18e77ea701555712aa598c24
+FILES   : 2
+```
 
 ## Gate
 
