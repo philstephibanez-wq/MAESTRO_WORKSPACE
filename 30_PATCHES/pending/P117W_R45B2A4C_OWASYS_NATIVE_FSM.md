@@ -20,7 +20,7 @@ Two independent blockers were found.
 
 Artifact: `opus_p117w_r45b2a4c_owasys_native_fsm.zip`
 
-SHA-256: `599cf01e4f3649cc1397298e7e60d81579c190085150496def6778e3635d91de`
+SHA-256: `3ba836a4121fffe2486e0bb23bf1cbabb6427f0047277f3885ae36568c2adbdd`
 
 The delivery:
 
@@ -29,6 +29,7 @@ The delivery:
 - introduces `OwasysFsmDiagramBuilder`, which loads the one canonical FSM through `StructuredFileLoader`, filters states by the same deny-by-default OWASYS security perspective, preserves real transitions/wildcards/runtime operations, and feeds them directly to `OPUS_FSM_Diagram`;
 - uses existing localized OWASYS navigation URLs as optional SVG state links;
 - removes the Mermaid-only `visual`/`visual_from` projection metadata from canonical `config/fsm.json`;
+- removes the obsolete duplicate `config/owasys-navigation.fsm.json`, leaving `config/fsm.json` as the single configured FSM source;
 - replaces the Mermaid SCORE partial with a native FSM SCORE partial;
 - removes Mermaid FSM JavaScript and the obsolete OWASYS Mermaid FSM CSS/JS/builder/partial;
 - keeps SCORE as the only OWASYS UI composition surface.
@@ -42,7 +43,7 @@ No `visual_from` rewrite is allowed in the native schema: the graph represents t
 - `sites/owasys-front/www/asset/css/fsm-native.css`
 - `tools/apply_p117w_r45b2a4c_native_fsm.php`
 
-The apply script patches the current OPUS/OWASYS files fail-closed, lints every PHP result before replacement, rewrites the FSM configuration only after contract validation, uses the OPUS `File` atomic boundary for writes, and removes the four obsolete Mermaid projection files only after successful replacement.
+The apply script patches the current OPUS/OWASYS files fail-closed, lints every PHP result before replacement, rewrites the FSM configuration only after contract validation, uses the OPUS `File` atomic boundary for writes, and removes the five obsolete duplicate/Mermaid projection files only after successful replacement.
 
 ## Acceptance
 
@@ -56,6 +57,7 @@ After application and restart:
 - unauthorized states must be absent;
 - real wildcard `from: "*"` transitions must remain wildcard transitions and must not be rewritten through `visual_from`;
 - `config/fsm.json` must contain neither `diagram.contract=OWASYS_FSM_MERMAID_V1` nor `visual`/`visual_from` transition projection metadata;
+- `config/owasys-navigation.fsm.json` must no longer exist;
 - the generated OPUS runtime must receive `$acl` at the `renderPage()` call;
 - `Diagram.class.php` must no longer contain the patcher sentinel `diagram.state_link_css` or patch-program source inside `svgDefinitions()`.
 
