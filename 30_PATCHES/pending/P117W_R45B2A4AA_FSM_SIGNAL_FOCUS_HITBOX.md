@@ -1,6 +1,6 @@
 # P117W R45B2A4AA — FSM signal focus hitbox
 
-State: OWNER VALIDATION REQUIRED
+State: OWNER APPLIED — PRESENTATION KEPT; ACTION ROUTING COMPLETED BY A4AB
 
 ## Baseline
 
@@ -15,36 +15,41 @@ A4Z is owner-validated and remains unchanged in topology, fixed geometry, initia
 For the fixed classic FSM diagram:
 
 - the signal label must be clickable when and only when the corresponding transition is permitted/actionable;
-- actionable labels must remain cyan under the OWASYS graphical charter;
+- actionable labels remain cyan under the OWASYS graphical charter;
 - the full signal label box is the pointer hitbox, not text glyphs only;
-- keyboard focus must be obvious;
-- hover/focus must produce a clear cyan highlight;
-- passive/non-permitted transitions must not advertise clickability;
+- keyboard focus is obvious;
+- hover/focus produces a clear cyan highlight;
+- passive/non-permitted transitions do not advertise clickability;
 - no JavaScript is introduced.
 
-## Root cause
-
-The generic OPUS renderer already wraps a transition label in `<a class="fsm-signal-link">` when a transition URL is provided. `OwasysFsmDiagramBuilder` only provides such URLs for Menu=FSM signals whose projection has `actionable === true`.
-
-Therefore FSM/actionability is already correct. The remaining defect is the OWASYS presentation layer: `fsm-native.css` only forces cyan text and does not provide a strong box-level hover/focus affordance.
-
-## A4AA correction
+## A4AA presentation correction
 
 A4AA changes only:
 
 `sites/owasys-front/www/asset/css/fsm-native.css`
 
-It preserves A4Z and adds:
+It adds:
 
 - pointer cursor only on `.fsm-signal-link`;
 - bounding-box pointer hitbox for the wrapped SVG label group;
-- cyan border around actionable signal labels;
-- cyan label text at rest;
+- cyan border/text for actionable signal labels;
 - cyan filled box + cyan drop-shadow on hover/focus/focus-visible;
 - contrasting dark label text during hover/focus;
 - no interactive styling for passive labels.
 
-No FSM, route, ACL, SCORE template, renderer PHP, REST or backend change is introduced.
+## Owner application evidence — 2026-08-16
+
+Owner applied the direct ZIP. Git status showed exactly:
+
+`M sites/owasys-front/www/asset/css/fsm-native.css`
+
+The accepted A4Z graph remained visually intact.
+
+A subsequent runtime screenshot exposed a separate functional gap: `logout` was not clickable from `registry` although the canonical FSM contains `registry --logout--> login` and OPUS_SIGNAL_ROUTES_V2 maps `logout` to the `logout` signal.
+
+This does not invalidate the A4AA visual hitbox. The missing clickability is caused by A4Z `FsmDiagramBuilder`: it associates a displayed label only with the exact displayed transition ID. Because the fixed graph displays one representative `build --logout--> login` edge, that label is passive whenever the runtime current state is not `build`.
+
+A4AB completes the functional action routing while retaining A4AA CSS unchanged.
 
 ## Direct artifact
 
@@ -62,23 +67,8 @@ File SHA-256:
 
 `3c373c863b9be86612d58a0d08f076131c528d8848d310ec867239cfa498af54`
 
-## Pre-delivery validation
+## Continuation
 
-- ZIP contains exactly the single expected final-path CSS file;
-- A4AA revision marker present;
-- `:focus-visible` styling present;
-- cyan `var(--ow-accent)` stroke/fill rules present;
-- SVG `pointer-events: bounding-box` hitbox present;
-- no JavaScript introduced.
-
-## Owner acceptance
-
-1. A4Z graph geometry/topology remains identical.
-2. A4Z menu autocollapse remains identical.
-3. On the current state, each permitted transition label appears cyan and is clickable across the whole label box.
-4. Mouse hover visibly highlights the full label box in cyan.
-5. Keyboard Tab can focus permitted signal links; focus visibly highlights the full label box.
-6. Non-permitted/passive transition labels are not clickable and do not show pointer/focus affordance.
-7. Activating a permitted label executes the same canonical Menu=FSM transition URL as before.
+A4AA remains part of the accepted direction. Do not remove its CSS. A4AB must be applied on top of A4Z + owner-applied A4AA before final owner commit/push.
 
 Owner alone commits/pushes OPUS/OWASYS. Assistant updates MAESTRO_WORKSPACE only.
