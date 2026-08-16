@@ -1,6 +1,6 @@
 # P117W R45B2A4AA — Handoff
 
-State: OWNER VALIDATION REQUIRED
+State: OWNER APPLIED — KEEP CSS; CONTINUE WITH A4AB
 
 ## Baseline
 
@@ -8,56 +8,40 @@ OPUS:
 
 `0ce2dfa9a1c7175ac39f93b2ee017ed6e40643ac` — A4Z classic fixed FSM + autocollapse.
 
-A4Z is accepted and must not be reworked in this step.
+A4Z is accepted and must not be reworked.
 
-## Scope
+## A4AA scope
 
 A4AA is presentation-only and changes exactly one OWASYS front asset:
 
 `sites/owasys-front/www/asset/css/fsm-native.css`
 
-The generic renderer already creates `<a class="fsm-signal-link">` only when a transition link exists. A4Z's diagram builder creates a transition link only when the corresponding Menu=FSM signal is `actionable === true`.
+It provides the cyan full-box hitbox and hover/focus affordance for renderer-generated `.fsm-signal-link` anchors.
 
-A4AA therefore does not alter transition permission logic. It makes the existing permitted transition link visually and ergonomically explicit.
+## Owner application
 
-## Required behavior
+Owner extracted A4AA successfully. Git showed only the expected CSS modification.
 
-- permitted signal label: cyan and pointer cursor;
-- entire SVG label rectangle is clickable;
-- hover: cyan filled highlight + halo;
-- keyboard focus/focus-visible: same strong cyan highlight;
-- passive/non-permitted label: no link affordance;
-- no JavaScript;
-- A4Z topology, fixed layout, current-state highlight and autocollapse unchanged.
+The CSS remains required and is not rejected.
 
-## Artifact
+## Functional gap discovered after application
 
-`opus_p117w_r45b2a4aa_fsm_signal_focus_hitbox.zip`
+The fixed A4Z graph displays representative transitions independent from the runtime current state. `FsmDiagramBuilder` currently assigns an anchor URL only when the exact displayed transition ID is actionable in Menu=FSM.
 
-SHA-256:
+Example confirmed by owner screenshot:
 
-`fff5b2daf522065dfc61250ed863c10360e3d4da24fd11a90b0cf1eec5cd116a`
+- displayed representative: `build --logout--> login`;
+- runtime state: `registry` / Applications;
+- canonical runtime transition: `registry --logout--> login` exists and is actionable;
+- route registry maps `logout` to the `logout` signal;
+- displayed `logout` label nevertheless has no anchor because `t_logout__from__build` is not the current-state transition.
 
-Single complete final-path file:
+This is a diagram interaction mapping defect, not a CSS defect.
 
-- `sites/owasys-front/www/asset/css/fsm-native.css`
+## Required continuation — A4AB
 
-CSS SHA-256:
+Keep A4AA CSS unchanged. A4AB changes `FsmDiagramBuilder` so a fixed displayed label becomes interactive when the same semantic `signal + target` is actionable from the runtime current state.
 
-`3c373c863b9be86612d58a0d08f076131c528d8848d310ec867239cfa498af54`
-
-## Owner validation
-
-Extract the ZIP over `H:\OPUS`, inspect Git status/diff, restart owasys-front if needed, and hard-refresh the browser if the previous CSS asset is cached.
-
-Acceptance:
-
-1. graph is visually identical to accepted A4Z except signal affordance;
-2. permitted/current-state transition labels are cyan and clickable;
-3. the complete label box responds to the mouse;
-4. hover visibly highlights the box cyan;
-5. Tab focus reaches permitted SVG links and visibly highlights them;
-6. passive labels remain non-interactive;
-7. activation follows the canonical transition URL and FSM semantics.
+The selected URL must always come from the current Menu=FSM projection. No ACL, route or FSM bypass is permitted.
 
 Owner alone commits/pushes OPUS/OWASYS. Assistant updates MAESTRO_WORKSPACE only.
