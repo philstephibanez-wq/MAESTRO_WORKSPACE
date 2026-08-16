@@ -1,58 +1,30 @@
 # P117W R45B2A4T — Handoff
 
-State: OWNER VALIDATION REQUIRED
+State: OWNER VALIDATED — CLOSED AS BASELINE
 
-## Current proven failure
+## Validation result
 
-Owner-provided correlated logs prove that OWASYS backend is not the blocker for `/fr-FR/applications`: the back `registry.sync` request succeeds with HTTP 200, while the correlated front trace ends with `OPUS_I18N_MESSAGE_MISSING`.
+Owner validation on 2026-08-16 confirms that A4T removes the blocking `OPUS_I18N_MESSAGE_MISSING` failure and restores the OWASYS front runtime on `/fr-FR/applications`.
 
-The supplied front profiler places the failure before normal page SCORE rendering. Route resolution, FSM transition, REST synchronization and ACL evaluation have already succeeded.
+The validated UI shows the intended `Menu = FSM` model:
 
-## Why A4T replaces A4S
+- each FSM state appears as a menu state/context;
+- each state's outgoing signals appear in its submenu;
+- signal-driven navigation is active;
+- the native FSM diagram is displayed;
+- cross-module state and target labels resolve in French.
 
-A4S runtime validation did not clear the I18n failure. A4T changes the delivery mode for this target to remove any uncertainty about a patch runner or anchor application.
+OPUS owner commit:
 
-The artifact contains exactly one complete final-path tracked source:
+`0313e5892abcf9788c5b2e083b98cdb224a1e453` — `opus_p117w_r45b2a4t_direct_fsm_menu_i18n`
 
-`sites/owasys-front/application/default/services/ScorePageRenderer.php`
+## Follow-up moved to A4U
 
-No patch script is present.
+Two defects remain after successful A4T validation:
 
-## Artifact
+1. the diagram's outgoing signals are too tightly grouped and overlap visually;
+2. `change_app` on the Applications/registry state has no observable effect because the canonical self-transition contains no action.
 
-- `opus_p117w_r45b2a4t_direct_fsm_menu_i18n.zip`
-- ZIP SHA-256 `d4d0ae057b3b2366563bb701c98c3edd6f696bac0ea69362f5be364ae45ba7e6`
-- `ScorePageRenderer.php` SHA-256 `310d210e309c3eb2dc7525a23ea1cf0afcf8d4264def2d1ab0ab8debbaadf259`
-
-The complete file was validated with `php -l` before ZIP creation.
-
-## Behavior
-
-- active state title and summary: active state module I18n runtime;
-- menu state label: state module I18n runtime;
-- signal destination label: target state module I18n runtime;
-- page body/layout SCORE renderer: active page module runtime;
-- cached module runtimes per request;
-- no duplicated global strings;
-- no silent translation fallback;
-- exact contextual error on unresolved FSM text;
-- success response header `X-Owasys-Fsm-I18n-Revision: P117W_R45B2A4T`.
-
-The functional FSM contract remains unchanged: Menu = FSM; states are contexts/menu entries; outgoing signals are submenu commands; diagram is the same FSM projection.
-
-## Owner sequence
-
-1. Extract A4T directly into `H:\OPUS`.
-2. Run `git status --short`; `sites/owasys-front/application/default/services/ScorePageRenderer.php` must be modified immediately.
-3. Lint that file.
-4. Run `composer dump-autoload -o`.
-5. Restart `composer opus:dev-server -- owasys-front`.
-6. Validate `/fr-FR/applications`.
-7. Verify `X-Owasys-Fsm-I18n-Revision: P117W_R45B2A4T` on a successful response.
-8. Validate another selectable locale.
-9. Validate menu signal submenus and diagram signal links still represent the same FSM.
-10. Owner commits/pushes OPUS only after runtime validation.
-
-If A4T still fails, use the newly contextual error code directly; do not add fallback strings or duplicate catalog entries.
+A4U must preserve the validated Menu=FSM/I18n model and address only those root causes.
 
 The assistant does not commit or push OPUS/OWASYS.
