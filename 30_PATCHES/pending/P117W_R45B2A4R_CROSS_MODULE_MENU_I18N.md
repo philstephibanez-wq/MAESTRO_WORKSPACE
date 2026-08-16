@@ -1,44 +1,35 @@
 # P117W R45B2A4R — Cross-module FSM menu I18n
 
-State: OWNER VALIDATION REQUIRED
+State: INVALID ARTIFACT — SUPERSEDED BY R45B2A4S
 
-## Root cause
+## Root cause targeted
 
 After R45B2A4M/R45B2A4N, `Menu = FSM` projects every FSM state into the principal menu. `OwasysScorePageRenderer::normalizeI18nViewData()` still translated every state label and every signal target label through the active page module runtime only.
 
-On `/applications`, the active module is `registry`. The `creation` state uses `navigation.label = creation.title`; `creation.title` belongs to the `creation` module catalog, not `default + registry`. The first cross-module state therefore raises `OPUS_I18N_MESSAGE_MISSING`.
+On `/applications`, the active module is `registry`. The `creation` state uses `navigation.label = creation.title`; `creation.title` belongs to the `creation` module catalog, not `default + registry`. The same architectural defect applies to `login/auth.sign_in`, `account/auth.change_password`, and future cross-module state labels.
 
-The same architectural defect also applies to `login/auth.sign_in`, `account/auth.change_password`, and any future state whose label belongs to its own module.
+## Artifact failure
 
-## Correction contract
+Artifact `opus_p117w_r45b2a4r_cross_module_menu_i18n.zip` with SHA-256 `4359ae62234abfa43f4429b49966a889ea94455882cdd75a59791cfea2c59bfe` is INVALID and MUST NOT be reapplied.
 
-- Keep active page title/summary on the active module I18n runtime.
-- Translate each menu state label using `ApplicationTranslationRuntime` for that state module.
-- Translate each signal target label using `ApplicationTranslationRuntime` for the target state module.
-- Cache module runtimes for the request.
-- Do not duplicate module-local strings into the global catalog as a workaround.
-- Do not alter `Menu = FSM`, signal routing, FSM transitions, ACL, SCORE composition or NMI semantics.
+Owner execution proved a PHP parse error before any tracked write:
 
-## Validation gate
+`PHP Parse error: Unclosed '(' on line 173 ... on line 348`
 
-The patch runner validates every FSM state label through its own module runtime for every selectable locale from `site.json`. Application is refused if any state/module/locale label cannot resolve.
+Audit of the delivered runner found the exact packaging defect: the second replacement nowdoc opened with `<<<'NEW'` was closed with `OLD,` instead of `NEW,`. This is a delivery-script syntax defect; no OPUS/OWASYS tracked source was modified by R45B2A4R.
 
-Expected proof:
+## Supersession
 
-- `ROOT_CAUSE=CROSS_MODULE_MENU_LABELS_USED_ACTIVE_MODULE_I18N`
-- `MENU_STATE_I18N=STATE_MODULE_RUNTIME`
-- `SIGNAL_TARGET_I18N=TARGET_STATE_MODULE_RUNTIME`
-- `I18N_STATE_LABEL_PROOFS=<N>/<N>`
-- `A4Q_CALLSITES=4/4`
+R45B2A4S reissues the same architectural correction against OPUS HEAD `c5122e03b40f6f483e325e7f0192984dd089c093`, while accepting R45B2A4Q already applied but not committed.
 
-## Artifact
+R45B2A4S runner requirements:
 
-`opus_p117w_r45b2a4r_cross_module_menu_i18n.zip`
-
-SHA-256: `4359ae62234abfa43f4429b49966a889ea94455882cdd75a59791cfea2c59bfe`
-
-Target tracked file:
-
-- `sites/owasys-front/application/default/services/ScorePageRenderer.php`
+- runner itself must pass `php -l` before ZIP creation;
+- all nowdoc/heredoc open/close markers must be balanced;
+- patched `ScorePageRenderer.php` must be linted before tracked write;
+- A4Q constructor migration must prove 4/4 valid call sites;
+- all FSM state labels must resolve through their own module runtime for every selectable locale;
+- no duplication of module-local translations into `default`;
+- `Menu = FSM`, signal routing, ACL, SCORE and NMI semantics remain unchanged.
 
 The assistant does not commit or push OPUS/OWASYS.
