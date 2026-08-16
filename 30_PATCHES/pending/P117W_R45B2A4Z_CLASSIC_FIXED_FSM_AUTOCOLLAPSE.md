@@ -1,14 +1,14 @@
 # P117W R45B2A4Z — Classic fixed FSM + native menu autocollapse
 
-State: OWNER VALIDATION REQUIRED
+State: OWNER VALIDATED — OPUS COMMITTED/PUSHED
 
 ## Baseline
 
-Required OPUS HEAD:
+Applied from OPUS HEAD:
 
 `fcffa3c16c75126208a480382f9efb36be170110` — A4W.
 
-A4X and A4Y are owner-rejected and must not be used as baselines.
+A4X and A4Y were owner-rejected and are not baselines.
 
 ## Owner visual contract
 
@@ -89,16 +89,24 @@ File SHA-256:
 - native menu autocollapse marker present;
 - A4Z revision marker present.
 
-## Owner acceptance
+## Owner runtime validation — 2026-08-16
 
-After extraction/restart:
+Owner screenshot on `/fr-FR/applications` validates the requested visual contract:
 
-1. Connexion/login is always the logical beginning;
-2. node geometry remains identical across pages;
-3. current state changes highlight only;
-4. the diagram visibly reads as a classic FSM, with loops/returns/branches, not as a linear workflow or org-chart;
-5. signal labels remain readable under the OPUS theme;
-6. menus autocollapse;
-7. A4W `change_app -> clear_current_app`, A4T I18n and Menu = FSM remain intact.
+- classic branched FSM rendering accepted (`Enfin :)`);
+- Connexion is the fixed logical beginning;
+- Applications is highlighted as current state without becoming layout root;
+- branches, loops and backward returns are visible;
+- geometry is no longer linearized/current-state-centered;
+- native menu autocollapse explicitly confirmed `ok`;
+- current application can be absent while the FSM remains stable.
+
+## OPUS commit/push
+
+Owner committed and pushed:
+
+`0ce2dfa9a1c7175ac39f93b2ee017ed6e40643ac` — `opus_p117w_r45b2a4z_classic_fixed_fsm_autocollapse`.
+
+A4Z is therefore the new accepted OPUS baseline for subsequent FSM/UI work.
 
 Owner alone commits/pushes OPUS/OWASYS. Assistant updates MAESTRO_WORKSPACE only.
