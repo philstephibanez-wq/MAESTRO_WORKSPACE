@@ -1,6 +1,6 @@
 # P117W R45B2A4V — FSM fan-out readability + functional change_app, corrected baseline gate
 
-State: INVALID — SUPERSEDED BY R45B2A4W
+State: INVALID — SUPERSEDED BY R45B2A4W DIRECT FILE DELIVERY
 
 ## Validation failure
 
@@ -14,7 +14,7 @@ The baseline HEAD/EOL/semantic gates had passed. The failure is therefore in the
 
 A4V still used exact text-body replacement anchors inside `Opus/Fsm/Diagram.class.php`. The `transitionSvg()` anchor embedded representation escaping that was not present in the actual A4T PHP source, so the expected block count was zero.
 
-Exact body-text anchoring is now forbidden for this continuation. A4W supersedes A4V with PHP-token structural method replacement using `token_get_all()` and method identity, not serialized body text.
+Exact body-text anchoring and one-shot source mutation are removed from this continuation. Per `README-FIRST.md`, A4W is delivered as the two complete final files at their final repository paths. There is no apply script and no textual/token replacement stage on the owner checkout.
 
 ## Retained functional intent
 
