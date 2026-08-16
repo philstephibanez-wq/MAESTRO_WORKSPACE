@@ -1,6 +1,6 @@
 # P117W R45B2A4V — Handoff
 
-State: INVALID — SUPERSEDED BY R45B2A4W
+State: INVALID — SUPERSEDED BY R45B2A4W DIRECT FILE DELIVERY
 
 A4V failed before tracked writes with:
 
@@ -12,7 +12,12 @@ The A4T baseline checks had already passed. No OPUS tracked file was changed by 
 
 A4V still depended on an exact serialized text body for `transitionSvg()`. The embedded representation escaping did not match the actual PHP source, so the replacement anchor could never match.
 
-A4W removes body-text anchoring entirely. It locates the four renderer methods structurally with `token_get_all()` and replaces methods by identity and balanced PHP braces.
+A4W removes the mutation layer entirely. The differential ZIP contains only the two complete final files at their final paths:
+
+- `Opus/Fsm/Diagram.class.php`
+- `sites/owasys-front/config/fsm.json`
+
+There is no apply script, no `str_replace`, no text anchor and no token replacement on the owner checkout.
 
 ## Functional intent moved to A4W
 
