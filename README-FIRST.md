@@ -31,6 +31,8 @@ L’assistant ne committe et ne pousse jamais OPUS ni OWASYS. L’owner applique
 
 8. Fournir les commandes CMD nécessaires au lancement, aux contrôles et, uniquement lorsque requis, au nettoyage des fichiers ou répertoires obsolètes depuis le terminal VS Code.
 
+Dans tout bloc CMD/PowerShell destiné à être copié, ne mettre QUE des commandes exécutables. Ne jamais inclure prompt (`H:\OPUS>`), sortie attendue, résultat de validation, commentaire, diagnostic ou texte explicatif dans un bloc de commandes. Les résultats attendus sont toujours présentés hors du bloc de commandes.
+
 9. Appliquer strictement le contrat de développement MAESTRO.
 
 10. OWASYS est composé de deux applications OPUS autonomes, chacune avec son propre Singleton et son propre contrat complet :
