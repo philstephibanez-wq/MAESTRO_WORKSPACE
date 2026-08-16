@@ -1,6 +1,6 @@
 # P117W R45B2A4AB — Handoff
 
-State: OWNER VALIDATION REQUIRED
+State: OWNER FUNCTIONAL VALIDATION PASSED — CONTINUE WITH A4AC
 
 ## Baseline
 
@@ -8,11 +8,7 @@ Accepted OPUS baseline:
 
 `0ce2dfa9a1c7175ac39f93b2ee017ed6e40643ac` — A4Z.
 
-Owner working tree additionally contains A4AA:
-
-`M sites/owasys-front/www/asset/css/fsm-native.css`
-
-Keep that CSS modification. A4AB adds one PHP modification and does not replace the CSS.
+Owner working tree additionally contains A4AA CSS and A4AB `FsmDiagramBuilder.php` changes.
 
 ## Root correction
 
@@ -27,43 +23,23 @@ Selection rule:
 - action URL always comes from the current state's `NavigationBuilder` projection;
 - passive current-state signals never receive a link.
 
-This makes `logout` global wherever the FSM actually allows it without making the diagram dynamic.
+## Owner runtime validation — 2026-08-16
 
-## Artifact
+Validated:
 
-`opus_p117w_r45b2a4ab_current_state_signal_actions.zip`
+- `change_app` works;
+- `logout` works from Applications/registry;
+- fixed A4Z topology remains stable.
 
-SHA-256:
+Remaining visual defects reported by owner:
 
-`c6fbbc154e2234aa34097c55e36aa6655fec93148aaf61fcd5fddd8d8aad0fae`
+- cyan is ambiguous because passive return edges also use the accent cyan token;
+- transition labels/paths still overlap in the classic non-compact renderer.
 
-Complete final-path file:
+These defects are now the A4AC target. Do not regress A4AB semantic action mapping.
 
-- `sites/owasys-front/application/default/services/FsmDiagramBuilder.php`
+## Continuation
 
-File SHA-256:
-
-`42da48932c583192c35c16b38053d29f952cfd7151711119c4a96a4f8347460d`
-
-## Validation already executed
-
-PHP lint succeeds.
-
-Synthetic semantic-routing smoke succeeds:
-
-`A4AB_SMOKE_OK logout=global change_app=global exact-source-preferred duplicate-links=0`
-
-## Owner validation target
-
-After extraction, the working tree should contain the existing A4AA CSS modification plus the new A4AB `FsmDiagramBuilder.php` modification.
-
-Restart `owasys-front` and verify on `/fr-FR/applications`:
-
-- fixed A4Z geometry unchanged;
-- menu autocollapse unchanged;
-- A4AA cyan/focus hitbox unchanged;
-- `logout` label clickable from Applications and routes through normal FSM logout handling;
-- `change_app` and displayed `open_*` labels clickable only when their equivalent current-state transition is actionable;
-- passive actions remain passive.
+Apply A4AC as the next direct differential. A4AC incorporates the complete A4AB builder plus the A4AA CSS behavior, then updates the generic OPUS renderer/theme to reserve cyan for actionable transitions and remove label/node overlaps.
 
 Owner alone commits/pushes OPUS/OWASYS. Assistant updates MAESTRO_WORKSPACE only.
