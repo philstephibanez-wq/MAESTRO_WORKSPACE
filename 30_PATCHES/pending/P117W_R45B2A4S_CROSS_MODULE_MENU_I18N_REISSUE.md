@@ -1,56 +1,35 @@
 # P117W R45B2A4S — Cross-module FSM menu I18n reissue
 
-State: OWNER VALIDATION REQUIRED
+State: OWNER RUNTIME VALIDATION FAILED — SUPERSEDED BY R45B2A4T
 
-## Context
+## Outcome
 
-R45B2A4R targeted the correct root cause but its one-shot runner was syntactically invalid because a `<<<'NEW'` nowdoc was closed with `OLD,`. It failed before any tracked OPUS/OWASYS write.
+The owner runtime validation after the A4S attempt still produced HTTP 500 on `/fr-FR/applications` with `OPUS_I18N_MESSAGE_MISSING`.
 
-R45B2A4S reissues the same architectural correction against OPUS HEAD `c5122e03b40f6f483e325e7f0192984dd089c093` and explicitly accepts R45B2A4Q already applied but not committed.
+Owner-provided correlated logs dated 2026-08-16 establish that, for the same front/back trace, `owasys-back` completes `registry.sync` successfully with HTTP 200 and `owasys-front` then fails on I18n. The failure therefore remains in the front rendering/I18n path, not in REST, Composer or registry synchronization.
 
-## Root cause
+The owner-provided profiler trace also shows the failure before the first normal SCORE page render. The error occurs after route/FSM/REST/ACL work has succeeded and before the page body/layout SCORE render.
 
-`Menu = FSM` projects states from several OWASYS modules into one menu. `OwasysScorePageRenderer::normalizeI18nViewData()` translated all state labels and signal target labels through the active page module runtime.
+A4S is therefore not accepted as the runtime correction and must not be marked complete.
 
-Example on `/applications`:
+## Historical intent
 
-- active page module: `registry`;
-- FSM state `creation`: label key `creation.title`;
-- `creation.title` belongs to the `creation` catalog, not `default + registry`;
-- translating it with the registry runtime raises `OPUS_I18N_MESSAGE_MISSING`.
+A4S attempted to correct the architectural defect introduced when `Menu = FSM` began projecting states from several modules into one principal menu while `OwasysScorePageRenderer::normalizeI18nViewData()` still translated cross-module labels through the active page module runtime.
 
-## Correction contract
+Its intended rules were:
 
-Tracked target:
+- state label -> state module I18n runtime;
+- signal destination label -> target state module I18n runtime;
+- active page body -> active module I18n runtime;
+- no global translation duplication;
+- no silent fallback.
 
-- `sites/owasys-front/application/default/services/ScorePageRenderer.php`
-
-Required behavior:
-
-- active page title/summary remain on the active module runtime;
-- each menu state label is translated with `ApplicationTranslationRuntime` for that state's own module;
-- each signal target label is translated with the target state's module runtime;
-- module runtimes are cached for the request;
-- no module-local strings are copied into `default`;
-- no change to `Menu = FSM`, routes/signals, ACL, SCORE composition or NMI semantics.
-
-## Validation gates
-
-Before tracked write the runner must:
-
-1. prove R45B2A4Q constructor migration: 4/4 `OwasysNavigationBuilder` call sites, zero stale one-argument call;
-2. verify the exact `ScorePageRenderer.php` base blob;
-3. lint the patched candidate;
-4. load `site.json` and `fsm.json` through `StructuredFileLoader`;
-5. resolve every FSM state label through its own module runtime for every selectable locale;
-6. refuse application if any state/module/locale translation is missing.
-
-The runner itself was validated before ZIP creation with `php -l`, and all nowdoc/heredoc markers were checked balanced.
-
-## Artifact
+## Historical artifact
 
 `opus_p117w_r45b2a4s_cross_module_menu_i18n.zip`
 
 SHA-256: `6d77de97478795bf8c835fbd9b18aa8e5569d8b34c04cd9f23633839e7927f07`
+
+Do not reuse A4S for further validation. R45B2A4T replaces the complete tracked `ScorePageRenderer.php` directly, avoiding one-shot patcher ambiguity.
 
 The assistant does not commit or push OPUS/OWASYS.
