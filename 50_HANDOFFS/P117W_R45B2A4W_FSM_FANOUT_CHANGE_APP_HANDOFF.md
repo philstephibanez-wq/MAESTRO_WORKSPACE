@@ -2,107 +2,72 @@
 
 State: OWNER VALIDATION REQUIRED
 
-## Previous delivery status
+## Baseline
 
-A4V is invalid and superseded. It failed before any tracked OPUS write on:
+OPUS basis: `0313e5892abcf9788c5b2e083b98cdb224a1e453` (`opus_p117w_r45b2a4t_direct_fsm_menu_i18n`).
 
-`OPUS_P117W_R45B2A4V_ANCHOR_INVALID:transition-label-box:0`
+A4V remains invalid/superseded; it failed before tracked writes.
 
-The failure was caused by exact body-text anchoring, not by OPUS runtime state.
+## A4W direct artifact
 
-## Required baseline
-
-OPUS HEAD must remain exactly:
-
-`0313e5892abcf9788c5b2e083b98cdb224a1e453`
-
-Tracked worktree must be clean. Untracked one-shot tools do not block the gate.
-
-## A4W artifact
-
-`opus_p117w_r45b2a4w_fsm_fanout_change_app.zip`
+`opus_p117w_r45b2a4w_direct_fsm_fanout_change_app.zip`
 
 SHA-256:
 
-`dacca7fee45b4fd2247a507de6222f4c5153962aa0db2851762cbf18fcb193da`
+`265c0d29e8d26d1520319ddeb63f7c27806cc9a20d3c638274db68dbe2adabc2`
 
-Contained tool:
-
-`tools/apply_p117w_r45b2a4w_fsm_fanout_change_app.php`
-
-Tool SHA-256:
-
-`af82f064e2716d0c09bcb9c0396a64a43185a03e80f8adb10faba9595f984bbb`
-
-## What changed in delivery mechanics
-
-A4W does not search for serialized method bodies. It tokenizes the exact local HEAD source with PHP `token_get_all()`, finds four private/public methods by method name and balanced braces, then replaces complete method implementations structurally:
-
-- `renderSvg`
-- `layout`
-- `renderTransition`
-- `transitionSvg`
-
-Therefore representation escaping and whitespace inside old method bodies cannot produce another A4V-style anchor failure.
-
-## Functional outputs
-
-Only two tracked files change:
+The ZIP contains exactly two complete tracked files at final paths:
 
 - `Opus/Fsm/Diagram.class.php`
 - `sites/owasys-front/config/fsm.json`
 
+There is no A4W patcher or apply script.
+
+## Functional content
+
 Renderer:
 
-- bounded compact fan-out grid;
-- max three target rows per column;
-- source/target edge lanes;
-- distinct high-outdegree signal label lanes;
+- compact fan-out grid for high-outdegree current states;
+- maximum three target rows per visual column;
+- lane-aware source/target ports;
+- separated signal labels;
 - bounded clickable signal hitboxes;
 - native SVG only;
-- attestation `lane-aware-fanout-v2`.
+- `lane-aware-fanout-v2` attestation.
 
 FSM:
 
-- 10/10 `change_app` transitions execute existing `clear_current_app` action;
-- next state remains registry;
-- no side-effect outside FSM.
+- 10/10 `change_app` transitions use existing action `clear_current_app`;
+- next state remains `registry`;
+- no side effect outside FSM;
+- Menu = FSM unchanged.
 
-## Required owner sequence
+## Verified artifact facts
 
-```cmd
-cd /d H:\OPUS
-tar -xf "%USERPROFILE%\Downloads\opus_p117w_r45b2a4w_fsm_fanout_change_app.zip"
-php tools\apply_p117w_r45b2a4w_fsm_fanout_change_app.php
-composer dump-autoload -o
-php -l Opus\Fsm\Diagram.class.php
-composer opus:dev-server -- owasys-front
-```
+- extracted renderer PHP lint: success;
+- extracted FSM JSON decode: success;
+- `change_app` action proof: 10/10;
+- ZIP contents: 2/2.
 
-Successful apply must contain:
+These are validation RESULTS, not terminal commands.
 
-- `OPUS_P117W_R45B2A4W_APPLY_OK`
-- `BASELINE_DIAGRAM=HEAD_TEXT_NORMALIZED_MATCH`
-- `BASELINE_FSM=HEAD_SEMANTIC_MATCH`
-- `PATCH_ENGINE=PHP_TOKEN_METHOD_REPLACEMENT`
-- `TEXT_BODY_ANCHORS=0`
-- `DIAGRAM_LAYOUT=COMPACT_FANOUT_GRID`
-- `DIAGRAM_EDGE_ROUTING=LANE_AWARE_FANOUT_V2`
-- `CHANGE_APP_TRANSITIONS=10/10`
-- `TRACKED_DIFFS=2/2`
-- `A4W_SMOKE_OK:...:signal_lanes=9/9:links=9/9`
+## Mandatory CMD presentation rule
 
-## Runtime acceptance
+README-FIRST now explicitly states that any CMD/PowerShell block intended for copy/paste contains executable commands only. Never put prompt text, expected output, validation result, comments or diagnostics inside a command block.
 
-On `/fr-FR/applications` with a selected application:
+The owner previously copied non-command validation-result lines from an assistant block and CMD attempted to execute them. That incident does not invalidate the A4W ZIP; it invalidates the previous command presentation.
 
-1. open Applications state submenu;
-2. click `change_app`;
-3. current application context clears through the FSM dispatcher;
-4. state remains registry/Applications;
-5. diagram target states are wrapped into a bounded grid;
-6. outgoing signal labels are visibly separated, not concentrated in one corridor;
-7. actionable diagram signal hitboxes remain clickable;
-8. Menu = FSM and A4T I18n remain unchanged.
+## Owner sequence
 
-Delete the A4W one-shot tool before owner commit. Owner alone commits/pushes OPUS/OWASYS.
+Use only executable commands to extract A4W, inspect Git status, lint `Diagram.class.php`, validate the ten `change_app` transitions, run `git diff --check`, rebuild autoload and restart owasys-front.
+
+Runtime acceptance on `/fr-FR/applications`:
+
+1. page renders normally;
+2. `change_app` clears selected application while state remains Applications/registry;
+3. outgoing signal labels are visibly separated;
+4. signal hitboxes remain clickable;
+5. Menu = FSM remains state entry + corresponding signal submenu;
+6. A4T cross-module I18n remains valid.
+
+Owner alone commits/pushes OPUS/OWASYS. Assistant updates MAESTRO_WORKSPACE only.
