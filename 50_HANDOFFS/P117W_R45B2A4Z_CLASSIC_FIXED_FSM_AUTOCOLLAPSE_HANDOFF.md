@@ -1,16 +1,18 @@
 # P117W R45B2A4Z — Handoff
 
-State: OWNER VALIDATION REQUIRED
+State: OWNER VALIDATED — OPUS COMMITTED/PUSHED
 
-## Baseline
+## Accepted baseline
 
-OPUS HEAD must remain:
+A4Z is now the accepted FSM/UI baseline.
 
-`fcffa3c16c75126208a480382f9efb36be170110` — A4W.
+Owner commit/push:
 
-A4X and A4Y are rejected and must not be committed.
+`0ce2dfa9a1c7175ac39f93b2ee017ed6e40643ac` — `opus_p117w_r45b2a4z_classic_fixed_fsm_autocollapse`.
 
-## What A4Z changes
+A4X and A4Y remain rejected and must not be resurrected.
+
+## What A4Z established
 
 A4Z keeps the A4W native OPUS SVG renderer but changes the OWASYS projection so it reads as a classic state-machine diagram rather than a ranked workflow.
 
@@ -48,17 +50,33 @@ Files:
 
 No patcher. Complete final-path files only.
 
-## Owner command sequence
+## Owner runtime validation — 2026-08-16
 
-Extract the direct ZIP at `H:\OPUS`, inspect Git status, lint `FsmDiagramBuilder.php`, run `git diff --check`, rebuild optimized autoload and restart `owasys-front`.
+Owner explicitly validates:
 
-## Runtime acceptance
+- classic FSM appearance: accepted (`Enfin :)`);
+- fixed logical start at Connexion/login;
+- current state highlight only;
+- visible branches/loops/backward returns;
+- native menu autocollapse: `ok`.
 
-- Connexion/login remains the fixed beginning on every page.
-- Graph positions never change with navigation.
-- Current state is highlight only.
-- The graph contains visible branches, loops and backward returns like a conventional FSM.
-- Menu remains autocollapsed/exclusive.
-- A4W generic renderer and `change_app -> clear_current_app` behavior remain baseline.
+Screenshot validation was performed on `/fr-FR/applications`, with Applications highlighted and no application selected.
 
-Owner alone commits/pushes OPUS/OWASYS.
+## Continuation contract
+
+Subsequent FSM/UI deliveries must preserve all A4Z invariants:
+
+1. fixed topology and geometry across runtime states;
+2. canonical initial state as visual beginning;
+3. current state changes highlight only;
+4. no linearization;
+5. no current-state-centered fan-out;
+6. classic readable FSM grammar with branches/returns/self-loops;
+7. Menu = FSM;
+8. native menu autocollapse;
+9. no invented transitions;
+10. A4W `change_app -> clear_current_app` remains functional.
+
+Any future visual refinement must be incremental and must not regress the accepted A4Z topology.
+
+Owner alone commits/pushes OPUS/OWASYS. Assistant updates MAESTRO_WORKSPACE only.
