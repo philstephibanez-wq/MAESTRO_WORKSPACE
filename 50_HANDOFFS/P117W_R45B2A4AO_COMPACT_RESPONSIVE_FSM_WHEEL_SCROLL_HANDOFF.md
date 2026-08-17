@@ -1,33 +1,44 @@
 # P117W R45B2A4AO — Handoff
 
-State: CODE DELIVERY PRODUCED — OWNER VALIDATION REQUIRED
+State: OWNER COMMITTED — FOLLOW-UP A4AP REQUIRED FOR SHARED LOGOUT ACTIONABILITY
 
-## Accepted baseline
+## Committed baseline
 
-A4AN is owner-validated and committed in OPUS:
+A4AO is committed by the owner in OPUS:
 
-`5e8e5d2287e6c9720d61bf7cab7ae604c4811dee`
+`f23d1912cfb2163c409143d9915f6952d66f8379`
 
-The bounded orthogonal routing and shared logout rails are retained.
+A4AN bounded orthogonal routing remains underneath it and the shared logout rails are retained.
 
-## Owner follow-up
+## Owner validation retained
 
-The owner requests:
+The owner accepts the compact/responsive direction and continues from A4AO. Retained behavior:
 
-- less vertical height;
-- preferably no horizontal diagram scrollbar at the desktop viewport;
+- materially reduced vertical footprint;
+- responsive width at the tested desktop viewport;
 - regular-weight signal labels;
-- normal mouse-wheel page scrolling while the pointer is over the FSM.
+- normal OWASYS page wheel scrolling while the pointer is over the FSM;
+- no regression of fixed canonical state order/current-state highlight;
+- A4AN shared logout rail geometry retained.
 
-## Diagnosed wheel defect
+## Remaining defect
 
-A4AN leaves the diagram canvas as a vertical scroll container:
+The visible shared `logout` label is not always clickable.
 
-`overflow-y:auto` + `overscroll-behavior:contain`.
+Root cause is now confirmed as presentation ownership, not FSM/route/security:
 
-This can trap wheel chaining while the pointer is over the large FSM surface. A4AO removes local vertical scroll ownership; the document owns vertical wheel scrolling again.
+1. `config/fsm.json` declares `logout` as a global navigation signal from all 16 states to `login`.
+2. `config/routes.json` maps route `logout` to signal `logout`.
+3. `NavigationBuilder` correctly marks that global action actionable for the current state when target availability and route mapping permit it.
+4. `FsmDiagramBuilder` expands logout into state-specific visual clones and attaches the current action URL to the clone matching the current state.
+5. `FsmDiagramGeometryNormalizer` merges only long `outer-*` clones into shared visual rail labels.
+6. If the current-state clone is a short/non-outer transition, its `<a>` remains on that local clone while the visible merged outer rail label is owned by a passive clone.
 
-## Delivery
+Therefore the visual bus can say `logout` while lacking the exact current logout URL.
+
+This is corrected by A4AP through generic semantic actionability propagation in the OPUS geometry normalizer.
+
+## A4AO delivery record
 
 Artifact:
 
@@ -37,71 +48,6 @@ SHA-256:
 
 `9d8a1f93b3edac62f311003e415763cab70432a092149a29abea63d950a64c36`
 
-Complete files:
-
-1. `Opus/Fsm/FsmDiagramGeometryNormalizer.php`
-2. `sites/owasys-front/application/default/services/FsmDiagramBuilder.php`
-3. `sites/owasys-front/application/default/services/ScorePageRenderer.php`
-4. `sites/owasys-front/www/asset/css/fsm-native.css`
-
-No patcher and no deletion.
-
-## A4AO changes
-
-### Generic OPUS normalizer
-
-- external rail/node gaps are tightened;
-- after A4AN routing, visible vertical bounds are derived from state rectangles, all FSM edge paths and signal label backgrounds;
-- unused vertical viewBox space is cropped with a 22-unit safety margin;
-- canonical x coordinates and semantic width are unchanged;
-- routing identity becomes `bounded-orthogonal-v6-responsive`.
-
-Synthetic A4AI/A4AN smoke:
-
-- prior viewBox: `0 0 3856 1256`;
-- A4AO viewBox: `0 34 3856 1016`;
-- edge geometry: Y `80..1028`;
-- new viewBox bottom: `1050`;
-- intrinsic physical SVG: `2313.6 x 609.6` versus A4AN `2313.6 x 753.6`;
-- approximately 19% less intrinsic height before responsive fitting.
-
-### OWASYS responsive surface
-
-The SVG keeps its intrinsic physical size when it fits, but uses `max-width:100%` and `height:auto` when the panel is narrower. The card is width-contained and the canvas no longer exposes a local horizontal scrollbar.
-
-The canvas uses `overflow:clip` and `overscroll-behavior:auto`; it is not a scroll container. Mouse-wheel vertical input over the diagram should therefore continue scrolling the OWASYS document.
-
-### Typography/cache
-
-- diagram signal labels: `font-weight:400`;
-- actionable signal labels: `font-weight:400`;
-- menu signal code: `font-weight:400`;
-- signal size remains enlarged for readability;
-- SVG visible title is hidden to avoid owning otherwise-unused top viewport space; semantic `<title>` accessibility remains;
-- `OwasysFsmDiagramBuilder::REVISION = P117W_R45B2A4AO`;
-- stylesheet cache id: `p117w-r45b2a4ao`.
-
-## Pre-delivery checks
-
-- PHP lint passes for all three delivered PHP files;
-- no trailing whitespace in the four delivered files;
-- generic normalizer runtime smoke passes;
-- compact viewBox contains all smoke edge geometry;
-- ZIP contains exactly the four complete final-path files listed above.
-
-## Owner browser validation
-
-Apply over committed A4AN, restart owasys-front, hard-refresh, then verify:
-
-1. wheel over the FSM scrolls the page vertically;
-2. no horizontal FSM scrollbar at the current desktop viewport;
-3. full diagram remains visible inside the panel;
-4. height is materially lower than A4AN;
-5. signal labels are regular, not bold;
-6. logout shared rails remain correct;
-7. current-state highlight, signal colors and actionable cyan focus/click remain intact;
-8. no menu/FSM/REST/ACL behavior regression.
-
-Do not mark A4AO accepted before owner browser validation.
+No further A4AO modification is required; use committed A4AO as the baseline for A4AP.
 
 Owner alone commits/pushes OPUS/OWASYS. Assistant writes MAESTRO_WORKSPACE only.
