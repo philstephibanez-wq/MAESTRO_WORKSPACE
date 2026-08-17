@@ -1,6 +1,6 @@
 # P117W R45B2A4AF — Menu projection + typed FSM signals
 
-State: OWNER VALIDATION REQUIRED
+State: RUNTIME REGRESSION — SUPERSEDED BY R45B2A4AG
 
 ## Baseline
 
@@ -21,11 +21,11 @@ The owner also requests different visual colors for signal types.
 
 ## Root cause
 
-`OwasysNavigationBuilder` currently iterates every concrete FSM transition and appends every signal to the source-state submenu, even when that signal has no GET route and is a business command, outcome or system event.
+`OwasysNavigationBuilder` iterated every concrete FSM transition and appended every signal to the source-state submenu, even when that signal had no GET route and was a business command, outcome or system event.
 
-This violates the builder's own user-navigation contract: GET navigation URLs are sourced from `OPUS_SIGNAL_ROUTES_V2`, but non-routed transitions were still projected as passive menu items.
+This violated the builder's user-navigation contract: GET navigation URLs are sourced from `OPUS_SIGNAL_ROUTES_V2`, but non-routed transitions were still projected as passive menu items.
 
-The duplicate targets are therefore not duplicate FSM transitions. They are distinct semantic transitions incorrectly mixed into the same user-navigation projection.
+The duplicate targets were therefore not duplicate FSM transitions. They were distinct semantic transitions incorrectly mixed into the same user-navigation projection.
 
 Examples:
 
@@ -80,8 +80,6 @@ Resource-local navigation (`open_source_file`, locale/profiler controls, initial
 - preserves current-state-only actionability and ACL/availability checks;
 - emits `signal_type` metadata for SCORE.
 
-This removes menu duplicates without deduplicating or deleting real FSM transitions.
-
 ### SCORE menu
 
 `navigation.score` keeps native `<details name="owasys-fsm-navigation">` autocollapse and adds only signal-type class/data metadata. No JavaScript is introduced.
@@ -104,9 +102,7 @@ This removes menu duplicates without deduplicating or deleting real FSM transiti
 - outcome: violet;
 - system: rose.
 
-Passive transitions retain reduced opacity. Actionable user-navigation transitions retain full-strength cyan, hitbox, hover/focus fill and halo, so type and actionability remain distinct visual dimensions.
-
-`ScorePageRenderer.php` cache-busts `fsm-native.css` to `p117w-r45b2a4af`.
+Passive transitions retain reduced opacity. Actionable user-navigation transitions retain full-strength cyan, hitbox, hover/focus fill and halo.
 
 ## Direct artifact
 
@@ -125,27 +121,26 @@ Contains exactly six complete final-path files:
 - `sites/owasys-front/config/fsm.json`
 - `sites/owasys-front/www/asset/css/fsm-native.css`
 
-## Pre-delivery validation actually executed
+## Pre-delivery validation executed
 
-- `Diagram.class.php`: PHP lint success;
-- `NavigationBuilder.php`: PHP lint success;
-- `ScorePageRenderer.php`: PHP lint success;
-- `fsm.json`: JSON decode success;
-- all 45 canonical signals have exactly one supported type;
+- PHP lint success: `Diagram.class.php`;
+- PHP lint success: `NavigationBuilder.php`;
+- PHP lint success: `ScorePageRenderer.php`;
+- `fsm.json` JSON decode success;
+- all 45 canonical signals classified;
 - all 11 global menu signals are type `navigation`;
 - every global menu signal has a route;
-- simulated menu projections for `registry`, `creation`, `account`, and `password`: 11 entries each, zero duplicate target states;
-- business commands/outcomes such as `create_new_app`, `select_app`, `cancel_creation`, `application_created`, `application_deleted`, `registry_action_failed`, `application_creation_failed` are absent from the menu projection while remaining in the FSM.
+- simulated menu projections for `registry`, `creation`, `account`, and `password`: zero duplicate target states;
+- business commands/outcomes absent from menu projection while remaining in FSM.
 
-## Owner acceptance
+## Runtime regression discovered after owner extraction
 
-1. Applications submenu no longer shows `create_new_app`, `select_app`, `application_deleted`, `registry_action_failed` or other technical outcomes.
-2. Creation submenu no longer shows both `cancel_creation` and `change_app`, nor both `application_created` and `open_data`.
-3. Existing user-navigation signals remain available and current-state actionability remains unchanged.
-4. Account/Password split from A4AD remains intact.
-5. A4AE diagram geometry/traceability remains intact.
-6. Diagram signal types are visually distinct: navigation cyan, command amber, outcome violet, system rose.
-7. Actionable navigation remains keyboard-focusable with strong cyan focus/halo.
-8. Menu autocollapse remains native and functional.
+Opening `/fr-FR/applications` fails with HTTP 500:
+
+`OWASYS_FSM_WORKFLOW_MENU_DIVERGENCE`
+
+Root cause: A4AF correctly narrows `NavigationBuilder` to `menu=true`, but A4AE `FsmDiagramBuilder` still assumes that every transition displayed in the full FSM diagram must also have an entry in the user menu projection. Technical commands/outcomes are intentionally absent from the A4AF menu, so this assertion is invalid.
+
+The A4AF menu/type model remains correct. Do not roll it back. The compatibility defect is corrected by R45B2A4AG, which separates full FSM diagram validation from menu-only action validation.
 
 Owner alone commits/pushes OPUS/OWASYS. Assistant updates MAESTRO_WORKSPACE only.
