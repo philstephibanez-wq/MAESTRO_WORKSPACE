@@ -1,10 +1,14 @@
 # P117W R45B2A4AP — Handoff
 
-State: CODE DELIVERY PRODUCED — OWNER VALIDATION REQUIRED
+State: OWNER COMMITTED IN OPUS — PERFORMANCE FOLLOW-UP A4AQ
+
+Owner OPUS commit:
+
+`ce7348c87c8b2bf9e7ef6643a1df4d4fd313ad9e`
 
 ## Baseline
 
-Owner-committed OPUS baseline:
+Owner-committed OPUS baseline before A4AP:
 
 `f23d1912cfb2163c409143d9915f6952d66f8379`
 
@@ -85,16 +89,8 @@ Second smoke passes when an actionable outer owner already exists:
 - original href retained;
 - passive duplicate hidden.
 
-## Browser acceptance
+## Follow-up after owner commit
 
-After applying A4AP over committed A4AO and hard-refreshing:
-
-1. click the visible merged `logout` label from the current page;
-2. it must show the same cyan actionable hover/focus treatment as other actionable signals;
-3. keyboard focus must reach it;
-4. activation must execute the canonical logout route and return to Connection/login;
-5. merged logout rails must remain merged;
-6. A4AO compact height, width fit, mouse-wheel page scrolling and regular-weight signal labels must remain unchanged;
-7. no menu, REST, ACL, session or backend regression.
+After committing A4AP, the owner reports that OWASYS has again become extremely slow, with several seconds of lag. The supplied front/back logs and profiler journals establish a separate profiler persistence/distributed-trace performance regression. That issue is owned by A4AQ and does not reopen the A4AP FSM rendering scope.
 
 Owner alone commits/pushes OPUS/OWASYS. Assistant writes MAESTRO_WORKSPACE only.
