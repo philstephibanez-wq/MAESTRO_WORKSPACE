@@ -1,6 +1,6 @@
 # P117W R45B2A4AF — Handoff
 
-State: OWNER VALIDATION REQUIRED
+State: RUNTIME REGRESSION — SUPERSEDED BY R45B2A4AG
 
 ## Purpose
 
@@ -10,7 +10,7 @@ Restore the coherent OWASYS development menu without deleting or merging real FS
 
 The menu must not equal the full transition/event table. It is a user-navigation projection of the canonical FSM.
 
-A4AF therefore keeps every FSM command/outcome/system transition but projects into the global menu only signal-registry entries explicitly marked `menu=true` and `type=navigation`.
+A4AF keeps every FSM command/outcome/system transition but projects into the global menu only signal-registry entries explicitly marked `menu=true` and `type=navigation`.
 
 This removes the reported duplicates:
 
@@ -40,7 +40,7 @@ Files:
 
 ## Signal types
 
-Canonical FSM signal registry now carries explicit type metadata:
+Canonical FSM signal registry carries explicit type metadata:
 
 - navigation — cyan;
 - command — amber;
@@ -53,7 +53,7 @@ Global menu signals are only:
 
 `open_account`, `open_password_change`, `change_app`, `open_creation`, `open_structure`, `open_data`, `open_workflows`, `open_security`, `open_source`, `open_build`, `logout`.
 
-## Validation already executed
+## Validation executed before runtime
 
 - PHP lint success: `Diagram.class.php`;
 - PHP lint success: `NavigationBuilder.php`;
@@ -62,21 +62,16 @@ Global menu signals are only:
 - all 45 signals classified;
 - all menu signals are navigation signals;
 - simulated registry/creation/account/password menus have zero duplicate target states;
-- commands/outcomes remain present in the canonical FSM but are absent from the global menu projection.
+- commands/outcomes remain present in canonical FSM but are absent from global menu projection.
 
-## Owner validation sequence
+## Runtime regression discovered by owner
 
-1. Apply A4AF over the current A4AD+A4AE working tree.
-2. Lint the three PHP files.
-3. Run `git --no-pager diff --check`.
-4. Rebuild Composer autoload.
-5. Restart `owasys-front`.
-6. Open Applications submenu and verify technical rows (`application_deleted`, `registry_action_failed`, `create_new_app`, `select_app`, etc.) are gone.
-7. Open Création submenu and verify `cancel_creation`/`application_created`/`application_creation_failed` are not duplicated against user-navigation entries.
-8. Verify navigation actions still work from the current state.
-9. Verify native menu autocollapse remains functional.
-10. Verify FSM diagram colors: navigation cyan, command amber, outcome violet, system rose.
-11. Verify actionable navigation remains clickable and visibly focusable.
-12. Verify A4AD Account/Password semantics and A4AE diagram routing did not regress.
+After applying A4AF over A4AE, `/fr-FR/applications` returns HTTP 500 with:
+
+`OWASYS_FSM_WORKFLOW_MENU_DIVERGENCE`
+
+The A4AF menu filtering itself is intentional and remains the required design. The regression comes from A4AE `FsmDiagramBuilder`, which still requires every displayed FSM transition to exist in the now-filtered menu projection. That assumption became invalid as soon as technical signals were correctly removed from the menu.
+
+Proceed with R45B2A4AG. Do not revert A4AF menu filtering or signal-type metadata.
 
 Owner alone commits/pushes OPUS/OWASYS. Assistant updates MAESTRO_WORKSPACE only.
