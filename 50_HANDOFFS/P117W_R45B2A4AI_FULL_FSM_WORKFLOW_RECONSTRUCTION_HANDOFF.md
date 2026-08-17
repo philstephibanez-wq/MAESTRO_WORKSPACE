@@ -1,38 +1,30 @@
 # P117W R45B2A4AI — Handoff
 
-State: DESIGN LOCK / IMPLEMENTATION NEXT
+State: MERGED INTO CANONICAL A4AI CODE DELIVERY — OWNER VALIDATION REQUIRED
 
-## Owner requirement
+This earlier design handoff is superseded operationally by:
 
-Do not continue with A4AH.
+`50_HANDOFFS/P117W_R45B2A4AI_CANONICAL_WORKFLOW_FSM_REBUILD_HANDOFF.md`
 
-The owner requires a complete FSM, not a reduced page graph. Explicit example:
+Produced artifact:
 
-`Applications -> create_app -> Application created`
+`opus_p117w_r45b2a4ai_canonical_workflow_fsm_menu.zip`
 
-Universal actions such as `logout` must be connected to all applicable states.
+SHA-256:
 
-Submenus must remain part of the workflow UI.
+`38ad0d87a8e7a33a09fb413aad01d4df4d04dfd38290a7b7f831db638f311632`
 
-## Required implementation
+A4AI now provides:
 
-1. Add generic OPUS support for ordinary global transitions distinct from NMI.
-2. Exact state-local transition takes precedence over global transition.
-3. Replace duplicated OWASYS universal transition families with global transitions.
-4. Model `logout -> login` globally and render it as connected to every applicable state.
-5. Separate global top-level navigation from local state workflow submenu transitions.
-6. Audit current outcome/self-loop signals and promote observable workflow/result conditions to explicit states where required.
-7. Application lifecycle must include explicit creation result semantics, not collapse directly from creation to data.
-8. Source/Git outcome lifecycle must be audited similarly.
-9. Keep A4AG fixed readable diagram, typed colors, click/focus behavior and Account/Password split.
-10. Menu and diagram remain two projections of one canonical FSM; no parallel registry.
+1. finite ordinary `scope: global` transitions with explicit `from_states`, distinct from NMI;
+2. exact local transition precedence over a matching global transition;
+3. collapsed global navigation/logout families instead of per-state duplication;
+4. 16-state canonical OWASYS workflow including creation basics/security/review/creating/created/failed;
+5. one principal FSM for creation; the old `creation.wizard.fsm.json` must be deleted;
+6. state-specific local signal submenus with exclusive autocollapse;
+7. one global navigation rail rather than repeated global controls;
+8. canonical fixed diagram projection with initial root and highlight-only current state;
+9. 16 visible `logout -> login` source relations in the projection smoke;
+10. Source/Git/build lifecycle audit with synchronous external-state outcomes retained as signals rather than invented persistent states.
 
-## Do not do
-
-- do not remove submenus;
-- do not duplicate every global `open_*`/`logout` transition per state;
-- do not hide missing states by changing diagram presentation;
-- do not treat every business outcome as a self-loop by default;
-- do not patch NavigationBuilder independently from the FSM model.
-
-Owner alone commits/pushes OPUS/OWASYS. Assistant updates MAESTRO_WORKSPACE only.
+Owner validation on `H:\OPUS` remains the acceptance gate. Owner alone commits/pushes OPUS/OWASYS. Assistant updates MAESTRO_WORKSPACE only.
