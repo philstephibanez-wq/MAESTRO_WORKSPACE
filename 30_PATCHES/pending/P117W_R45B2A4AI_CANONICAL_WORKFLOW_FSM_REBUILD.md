@@ -1,138 +1,209 @@
 # P117W R45B2A4AI — Canonical workflow FSM rebuild
 
-Status: SPECIFIED — CODE DELIVERY REQUIRED
+Status: CODE DELIVERY PRODUCED — OWNER VALIDATION REQUIRED
 Date: 2026-08-17
 
 ## Owner correction
 
-A4AH is rejected. It removed submenus and exposed the deeper problem: the OWASYS canonical FSM is currently modeled mainly as a navigation router instead of the complete OWASYS workflow.
+A4AH is rejected. The direct reduced menu exposed the deeper defect: OWASYS was modeling a small page/module graph instead of the complete finite workflow required by the owner.
 
-Owner examples / mandatory semantics:
+Mandatory owner semantics remain:
 
-- `Applications -> create_app -> Application created` must be represented as workflow state progression, not flattened into a single navigation jump;
-- `logout` must be connected from every applicable authenticated state;
-- state-specific submenus must exist;
-- the fixed FSM diagram remains the preferred visual direction, but it must represent the real workflow completely enough to be useful.
+- `Applications -> create_app -> ...creation workflow... -> Application created` must be explicit;
+- `logout -> login` must apply from every applicable authenticated state;
+- state-specific submenus must remain;
+- diagram geometry remains fixed and the current state changes highlight only;
+- cyan remains reserved for a currently permitted actionable transition.
 
-## Audited current source
+## Audited delivery baseline
 
-Audited OPUS master commit: `e166474b5ab5ae7628a3b96bb382e19ccc03357a` (`opus_p117w_r45b2a4ag_diagram_menu_projection_separation`) plus owner-applied A4AH local menu projection.
+OPUS source baseline used for the direct differential ZIP:
 
-Current `sites/owasys-front/config/fsm.json` contains only 11 declared states but 45 signals and 165 transitions.
+`316769d4a04a986aacedf0540c878d35b716e719`
 
-The current model collapses business workflow milestones into transition signals. Example:
+Commit: `opus_p117w_r45b2a4ah_direct_fsm_state_menu_restore`
 
-- `application_created` is declared as an `outcome` signal;
-- `t_creation_created` is `creation --application_created--> data`;
-- therefore there is no canonical `application_created` state.
+The A4AH source still had the root defects identified in this specification:
 
-At the same time, real creation workflow states already exist in a separate FSM:
+- principal `fsm.json` modeled only 11 states while carrying many more workflow signals/transitions;
+- creation `basics`, `security`, `review` were owned by a separate `creation.wizard.fsm.json`;
+- `application_created` was an outcome signal collapsing directly to `data`;
+- ordinary global navigation/logout was duplicated across finite states;
+- the diagram depended on a hand-selected state/edge list;
+- A4AH had removed the state/signal submenu projection.
+
+## A4AI delivered canonical model
+
+The delivered principal OWASYS FSM contains 16 explicit states, 50 typed signals and 55 canonical transitions.
+
+State categories are explicit:
+
+- `system`: 1;
+- `screen`: 9;
+- `workflow`: 4;
+- `result`: 2.
+
+Canonical state inventory:
+
+1. `login`
+2. `registry`
+3. `creation_basics`
+4. `creation_security`
+5. `creation_review`
+6. `application_creating`
+7. `application_creation_failed`
+8. `application_created`
+9. `data`
+10. `structure`
+11. `security`
+12. `workflows`
+13. `source`
+14. `build`
+15. `account`
+16. `password`
+
+The creation branch is now one persisted principal FSM workflow:
+
+`registry --create_new_app--> creation_basics`
+
+`creation_basics --continue_security--> creation_security`
+
+`creation_security --continue_review--> creation_review`
+
+`creation_review --begin_application_creation--> application_creating`
+
+`application_creating --application_created--> application_created`
+
+or
+
+`application_creating --application_creation_failed--> application_creation_failed`
+
+Failure recovery is canonical:
+
+- retry: `application_creation_failed --begin_application_creation--> application_creating`;
+- edit security: `application_creation_failed --return_security--> creation_security`;
+- cancel: `application_creation_failed --cancel_creation--> registry`.
+
+`creation.wizard.fsm.json` therefore becomes obsolete and must be deleted when applying the ZIP. Keeping it would retain duplicate state ownership and violate A4AI.
+
+## Generic OPUS finite global-transition contract
+
+`Opus/Fsm/FsmProcessor.php` now supports ordinary finite global transitions with:
+
+- `scope: "global"`;
+- explicit finite `from_states`;
+- concrete runtime source-state profiling;
+- validation against unknown states and ambiguous overlap;
+- exact state-local transition precedence over a matching global transition;
+- NMI remaining distinct and preemptive.
+
+Resolution contract:
+
+1. NMI exact interrupt when applicable;
+2. exact current-state local transition;
+3. exact finite global transition;
+4. current-state `__any__` / `__default` fallback.
+
+No ordinary `from:"*"` navigation shortcut is introduced.
+
+OWASYS uses finite global transitions for the universal navigation families, including `change_app`, section navigation, Account/Password navigation and `logout`.
+
+## Menu contract delivered
+
+The menu is again a direct FSM projection:
+
+- all 16 canonical states are navigation items in canonical order;
+- each state owns its local signal submenu;
+- local workflow commands/outcomes remain visible as FSM relations even when they cannot safely be represented as GET links;
+- only real route-backed currently permitted navigation transitions become clickable/cyan;
+- global navigation is collected once on a global rail instead of repeated under every state;
+- native `<details name="owasys-fsm-navigation">` exclusive autocollapse is restored;
+- global and local actionability remains filtered through canonical transition applicability plus ACL/availability.
+
+The creation menu therefore no longer jumps conceptually from Applications straight to a final page. It exposes the actual canonical states and their local transitions.
+
+## Diagram contract delivered
+
+`OwasysFsmDiagramBuilder` no longer owns hardcoded `LOGICAL_STATE_ORDER`, `LOGICAL_EDGES` or a parallel semantic registry.
+
+It derives:
+
+- state order from the canonical FSM plus presentation-only `diagram.rank/order` metadata;
+- local workflow edges from canonical transitions;
+- finite global transition applicability from `from_states`;
+- current action links from the same navigation/FSM projection.
+
+The root is always canonical `initial_state`; current state changes highlight only.
+
+`logout` is expanded visibly from every one of the 16 finite states in the delivered projection smoke test, instead of displaying only one representative `build -> login` edge.
+
+Dense technical same-state loops may be reduced algorithmically for diagram readability, but their canonical signals remain in the FSM/menu/profiler; no business workflow state is removed to make the diagram look cleaner.
+
+## Source/Git/build lifecycle audit result
+
+The A4AI audit distinguishes persistent FSM phase from synchronous event/result feedback instead of blindly creating a state for every signal.
+
+Current Source/Git operations (`preview`, `write`, `stage`, `unstage`, `commit`, `restore`) execute synchronously inside one source request. Their next available operations are recalculated from the current source/Git repository state on each request; they do not create a separate persisted OWASYS front workflow phase. Their command/outcome transitions therefore remain typed local FSM signals/self-loops.
+
+`source_conflict` is request feedback derived from optimistic-content state and is re-evaluated from the source model; it is not a durable FSM phase after a fresh request.
+
+Build preview starts the development server synchronously and immediately redirects to the returned local preview URL. The running server lifecycle is not owned by the OWASYS front session FSM, so A4AI does not invent a persistent `preview_running` state.
+
+Application select/delete and registry failures were audited similarly:
+
+- successful selection already changes canonical phase to the target application screen after setting current app;
+- deletion returns to registry and does not establish a distinct set of valid next operations;
+- registry failures leave the same registry operation set.
+
+Creation is different: basics/security/review/creating/created/failed materially change valid next operations and are therefore explicit states.
+
+## Direct ZIP artifact
+
+Artifact:
+
+`opus_p117w_r45b2a4ai_canonical_workflow_fsm_menu.zip`
+
+SHA-256:
+
+`38ad0d87a8e7a33a09fb413aad01d4df4d04dfd38290a7b7f831db638f311632`
+
+The ZIP contains exactly six complete replacement files at final repository paths:
+
+- `Opus/Fsm/FsmProcessor.php`
+- `sites/owasys-front/config/fsm.json`
+- `sites/owasys-front/application/default/services/NavigationBuilder.php`
+- `sites/owasys-front/application/default/services/FsmDiagramBuilder.php`
+- `sites/owasys-front/application/default/templates/partials/navigation.score`
+- `sites/owasys-front/application/creation/controllers/CreationController.php`
+
+It is a direct differential ZIP, not a patcher.
+
+Required removal after extraction:
 
 `sites/owasys-front/config/creation.wizard.fsm.json`
 
-with states:
+## Pre-delivery evidence
 
-- `basics`
-- `security`
-- `review`
+Static checks:
 
-This split means the principal OWASYS FSM diagram can never show the complete application-creation workflow.
+- all four delivered PHP files: `php -l` OK;
+- `fsm.json`: JSON decode OK;
+- no trailing whitespace in payload;
+- no residual `creation.wizard.fsm.json` reference in payload.
 
-The source/Git controller similarly emits command/outcome pairs while remaining in state `source`, e.g. preview, write, stage, unstage, commit, restore and their outcomes. These are currently rendered as self-loops instead of workflow progression.
+Isolated functional smokes:
 
-Current `logout` semantics are also misrepresented by the diagram: `fsm.json` already contains explicit `logout -> login` transitions from the current declared states, but `OwasysFsmDiagramBuilder::LOGICAL_EDGES` hardcodes only one representative `build --logout--> login` edge.
+- success chain: `login -> registry -> creation_basics -> creation_security -> creation_review -> application_creating -> application_created -> data -> login`;
+- failure/retry chain: `application_creating -> application_creation_failed -> application_creating`;
+- finite globals resolve from `login` for `change_app`, `open_creation`, `open_account`, `logout`;
+- OPUS precedence smoke: local transition wins over matching global transition; NMI remains preemptive;
+- menu projection: 16 state items; globals emitted once; creation submenus contain the expected local workflow signals;
+- fixed diagram projection: 16 states; 16 visible logout-to-login source relations.
 
-## Root cause
+These are isolated source-level smokes. Browser/runtime integration on the owner's Windows checkout remains the owner validation gate.
 
-There are four coupled modeling defects:
+## Owner validation gate
 
-1. **module/page state conflation** — top-level page/module identifiers are treated as if they were the complete finite-state domain;
-2. **workflow fragmentation** — creation has its own hidden secondary FSM while the principal FSM owns navigation;
-3. **workflow outcomes flattened into signals/self-loops** — observable business milestones such as application creation completion are absent from `states[]`;
-4. **diagram curation overrides canonical topology** — `FsmDiagramBuilder` uses a fixed hand-selected edge list and therefore hides real canonical transitions such as most logout relations.
+A4AI is not owner-validated until the ZIP is extracted on `H:\OPUS`, the obsolete secondary wizard FSM is deleted, PHP/JSON/diff checks pass, OWASYS front is restarted, and the owner validates the actual menu/diagram behavior.
 
-Menu problems are an effect of this model. Menu repair alone is forbidden.
-
-## R45B2A4AI target contract
-
-### 1. One canonical finite-state workflow surface
-
-OWASYS front must have one canonical application FSM for principal navigation and business workflow state.
-
-The application-creation wizard states must no longer be invisible to the principal workflow model. They must be represented in the canonical state domain, either directly or through a generic OPUS hierarchical/compound-state mechanism whose expanded runtime state relation remains finite and deterministic.
-
-No duplicate state ownership is permitted.
-
-### 2. Observable workflow milestones are states
-
-A state is required when the milestone changes the set of valid next operations, is persisted/observable, or is needed for deterministic workflow/profiler inspection.
-
-Minimum creation workflow expected:
-
-`Applications -> creation/basics -> creation/security -> creation/review -> application creating -> application created | application creation failed`
-
-`application created` must therefore be a real canonical state, not merely an outcome label on `creation -> data`.
-
-The same audit rule must be applied to Source/Git and build/preview workflows. Do not blindly turn every signal into a state; use explicit lifecycle states for observable workflow phases and keep instantaneous events as signals.
-
-### 3. Global transitions are modeled once, expanded deterministically
-
-Universal transitions such as `logout` and `change_app` must not be manually duplicated in menu projection code.
-
-OPUS must provide a generic finite-state way to define global transition applicability (for example state groups/tags or an equivalent schema mechanism) while preserving the A4F rule that runtime normal transitions resolve to concrete finite source states.
-
-`logout` must resolve from every applicable authenticated state to `login` and the diagram must visibly attest this relation.
-
-NMI remains separate from normal global navigation.
-
-### 4. Menu = FSM, with coherent hierarchy
-
-The menu must again have submenus, but they are **state/workflow hierarchy**, not repeated copies of every global `open_*` transition.
-
-Required behavior:
-
-- top-level entries = principal workflow/module states;
-- submenu entries = local child workflow states/actions relevant to that branch;
-- global actions such as logout/change application/account remain global controls and are not duplicated under every menu branch;
-- menu link/actionability is derived from the exact canonical transition relation and ACL/availability;
-- disabled/unavailable workflow entries remain visually distinct and non-actionable.
-
-### 5. Diagram = canonical workflow, not a curated sample
-
-Remove the semantic dependence on hardcoded `LOGICAL_EDGES`.
-
-The renderer may retain fixed presentation hints, grouping and lanes, but every displayed state/edge must come from the canonical FSM definition. Layout metadata may reduce crossings but must never suppress canonical workflow semantics merely for readability.
-
-Global transitions may use a dedicated visual rail/bus if required for readability, provided every applicable source state is visibly connected.
-
-The current-state highlight remains presentation only.
-
-### 6. Typed signals retained
-
-Keep the existing visual distinction for navigation / command / outcome / system signals and the cyan focus/highlight for currently permitted actionable transitions.
-
-## Required source audit before code
-
-Before changing implementation, enumerate actual workflow transitions emitted by:
-
-- `RuntimeController.php`
-- `RegistryController.php`
-- `CreationController.php`
-- `SourceController.php`
-- build/preview runtime path
-- account/password/login runtime
-
-The canonical FSM must be derived from those real execution paths. No invented transition may be added solely to make the diagram look complete.
-
-## Acceptance
-
-1. Application creation visibly contains real states beyond a single `creation` box.
-2. `Application created` is a canonical state.
-3. Creation basics/security/review are visible in the principal workflow model.
-4. `logout` is visibly connected from every applicable authenticated state.
-5. Submenus are restored and branch-specific; no repeated global transition table appears under every top-level menu.
-6. Source/Git lifecycle is audited and represented with explicit workflow states where lifecycle phase changes are real.
-7. Diagram geometry stays fixed/readable and current state only changes highlight.
-8. Signal type colors and cyan actionable focus remain.
-9. No UI routing bypasses the canonical FSM.
-10. Owner alone applies/validates/commits/pushes OPUS/OWASYS.
+Owner alone commits/pushes OPUS/OWASYS. Assistant writes MAESTRO_WORKSPACE only.
