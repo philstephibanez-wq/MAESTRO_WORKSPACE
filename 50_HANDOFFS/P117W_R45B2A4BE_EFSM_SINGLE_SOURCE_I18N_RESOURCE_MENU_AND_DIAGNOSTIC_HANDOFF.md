@@ -1,14 +1,14 @@
 # P117W R45B2A4BE — Handoff
 
-State: CODE DELIVERY PRODUCED — OWNER VALIDATION REQUIRED
+State: OWNER RUNTIME PARTIALLY VALIDATED — SUPERSEDED BY A4BF RUNTIME PROJECTION FOLLOW-UP
 
 ## Owner baseline
 
-OPUS GitHub HEAD:
+OPUS GitHub HEAD remains:
 
 `0f1356ee479336202518b253836f5a48bdc098af` — `opus_p117w_r45b2a4bb_application_fsm_resource_surface`.
 
-A4BC and A4BD are not owner committed/pushed. A4BE is cumulative over A4BB and supersedes the local menu-projection direction from A4BC/A4BD.
+A4BE is applied locally by the owner but is not owner committed/pushed at the time of this handoff update.
 
 ## Owner-fixed architecture
 
@@ -25,50 +25,31 @@ The owner explicitly established the following invariants:
 - EFSM transitions visibly expose guards/conditions and actions/effects;
 - menu clicks and diagnostic signal clicks execute the same canonical EFSM signal and guards/actions.
 
-A4BE implements this contract.
+## A4BE runtime evidence
 
-## Main implementation
+Owner screenshot on `/fr-FR/application` with current app `essai2` confirms the main architecture is now visually close to an IDE:
 
-### Canonical EFSM
+- resource-oriented menu is present;
+- human I18n CRUD/domain wording is present in submenus;
+- technical `open_*` signals are not used as submenu wording;
+- technical EFSM diagram remains visible for diagnostic inspection;
+- EFSM transition labels expose technical signal/guard/effect semantics.
 
-`sites/owasys-front/config/fsm.json` now carries both resource navigation and resource-operation semantics. Menu command signals have canonical metadata including `label_key`, `menu_state`, `resource` and `operation`.
+Owner explicitly states that the remaining contract is runtime gating:
 
-ACL transition guards use canonical keys such as:
+> menus and submenus have the same constraints as the EFSM: transitions authorized from the current state and conditional signals validated.
 
-`acl:data:create`
+Owner also requests native auto-collapse because multiple resource submenus can currently remain open at once.
 
-and are evaluated by pure OWASYS EFSM guard handlers.
+## Residual A4BE defect
 
-### Human menu
+A4BE still projected failed command guards as passive/disabled submenu entries. This is not the required operational runtime projection.
 
-`NavigationBuilder` builds resource navigation and CRUD/domain operations only from enabled/applicable canonical EFSM signals/transitions.
+A4BE also reduced current-app context inside `NavigationBuilder` to a boolean presence fact and a synthetic `current_app = {present:true}` value. That is insufficient for future guards whose result depends on actual application identity/type/capability/context.
 
-`navigation.score` renders:
+Therefore A4BE is superseded for menu runtime projection by A4BF.
 
-- human I18n resource labels;
-- human I18n operation labels;
-- no technical `open_*` signal as submenu wording;
-- disabled operations when the canonical EFSM guard set refuses them.
-
-The 25 `application/menu/local/*.json` catalogs translate operation label keys.
-
-### Technical diagnostic diagram
-
-`FsmDiagramBuilder` uses technical state IDs and no longer replaces the generic OPUS semantic EFSM transition label with signal-only text.
-
-The generic renderer therefore exposes:
-
-`signal [guards] / actions/effects`.
-
-Executable user signals retain secured interactive test actions.
-
-### Same execution path
-
-`FsmMenuSignalGateway` is the secured POST gateway used for canonical EFSM command execution from menu and diagnostic projections. It validates CSRF and canonical signal metadata, restores the FSM session, evaluates the same guards, applies the same transition, dispatches declared actions and persists the FSM state.
-
-No second menu/workflow state machine exists.
-
-## Canonical resource operation intents
+## A4BE canonical resource operation intents
 
 Applications:
 `create_application`, `list_applications`, `update_application`, `delete_application`.
@@ -94,9 +75,9 @@ Sources:
 Build:
 `read_build`, `update_build`, `validate_build`, `run_build`, `export_build`.
 
-These signals establish the canonical developer/admin EFSM operation contract. A4BE does not claim that every domain persistence implementation is already complete; missing domain business CRUD remains subsequent implementation work through REST/back/Composer.
+These remain canonical EFSM operation intents. Missing real domain persistence is separate subsequent work through REST/back/Composer.
 
-## Artifact
+## A4BE artifact
 
 `opus_p117w_r45b2a4be_efsm_single_source_i18n_resource_menu_diagnostic.zip`
 
@@ -106,38 +87,16 @@ SHA-256:
 
 Exactly 68 complete files.
 
-No `owasys-back` file is changed.
+## A4BF follow-up contract
 
-## Validation completed before delivery
+A4BF must enforce:
 
-- changed PHP syntax: OK;
-- JSON parse: OK;
-- no trailing whitespace;
-- ZIP: 68 files;
-- `FINAL_STATIC_OK`;
-- `A4BE_SMOKE_OK`;
-- `A4BE_REAL_FSM_PROCESSOR_OK`;
-- `A4BE_GENERIC_DIAGRAM_EFSM_LABEL_OK`.
+`current EFSM state + canonical signal + actual runtime context + all guards true -> menu projection`.
 
-The generic diagram smoke specifically validates presence of technical signal, guards and runtime effect in the rendered EFSM label.
+If the exact transition is absent or any guard fails, the corresponding operational menu/submenu entry is not projected. The diagnostic EFSM still shows that transition and its conditions so the developer can understand why it is unavailable.
 
-## Owner runtime acceptance
+The same rule applies to top-level resource navigation and CRUD/domain operation submenus.
 
-1. Extract A4BE over the current local OPUS tree.
-2. Start back and front.
-3. Select an application.
-4. Confirm the top menu is resource-oriented and human-readable.
-5. Open `Sources de données` and confirm its submenu shows human CRUD operations (`Créer`, `Consulter`, `Modifier`, `Supprimer`) and never `open_structure`, `open_security`, `open_fsm`, etc.
-6. Confirm corresponding canonical technical signals are `create_data`, `read_data`, `update_data`, `delete_data`.
-7. Confirm the EFSM diagram shows those technical keys together with guards such as `current_app_required` and `acl:data:create`, plus declared effects/actions.
-8. Test a user signal from the diagram and from the menu and confirm both use the same canonical transition/guard execution path.
-9. With a read-only/viewer identity, confirm allowed read operations remain actionable while write operations are visible but guard-disabled.
-10. Confirm no regression in signal-origin colors, FSM fixed topology, Security, Sources/Git, profiler and selected-application FSM view.
-
-## Next delivery
-
-After owner validates the A4BE contract at runtime, continue by implementing the missing real business CRUD behind these canonical EFSM signals, one resource domain at a time, respecting:
-
-`owasys-front -> secured REST -> owasys-back -> Composer -> response -> owasys-front`.
+Resource submenu auto-collapse must use native UI semantics and must not introduce a second workflow/controller model.
 
 Owner alone applies, validates, commits and pushes OPUS/OWASYS. Assistant writes MAESTRO_WORKSPACE only.
