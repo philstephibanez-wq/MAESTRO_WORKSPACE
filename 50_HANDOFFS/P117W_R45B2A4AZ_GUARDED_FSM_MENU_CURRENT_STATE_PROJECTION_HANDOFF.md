@@ -1,94 +1,55 @@
 # P117W R45B2A4AZ — Handoff
 
-State: CODE DELIVERY PRODUCED — OWNER VALIDATION REQUIRED
+State: OWNER UI VALIDATION FAILED — MENU STRUCTURE STILL INCORRECT — A4BA FOLLOW-UP
 
 ## Owner baseline
 
-OPUS HEAD:
+OPUS HEAD before local A4AZ application:
 
 `726d48d417be5ef6d7248cb9f2cc7a59e8c147a9` — `opus_p117w_r45b2a4ay_guarded_fsm_transition_inspection`
 
-A4AY is owner committed/pushed.
+A4AY is owner committed/pushed. A4AZ was applied locally for runtime validation; no owner commit/push for A4AZ is recorded yet.
 
-## Owner observation
+## A4AZ intent
 
-After A4AY the owner reported no visible change. This is expected because A4AY changed only generic OPUS `FsmProcessor` inspection and no OWASYS consumer.
-
-## A4AZ change
-
-A4AZ modifies only:
+A4AZ changed only:
 
 `sites/owasys-front/application/default/services/NavigationBuilder.php`
 
-It now constructs the generic `FsmProcessor` from the canonical FSM and calls `inspectTransition(currentState, signal, context)` for currently applicable global/local transitions.
+It connected OWASYS menu actionability to generic `FsmProcessor::inspectTransition()` and moved the ordinary global rail from Applications to the current state. Pure navigation self-loops were made passive.
 
-Menu actionability therefore requires the generic FSM decision to be enabled in addition to the existing canonical route and target access/availability checks.
+## Owner runtime evidence — 2026-08-18
 
-The ordinary global rail is hosted once under the current state instead of under `registry`/Applications.
+The owner supplied screenshots while current state was `structure` and reported that the menu was still incoherent.
 
-Pure navigation self-loops with no transition actions/runtime operations remain visible but are menu-passive. This prevents `data -> open_data -> data` from being offered as a useful action without forbidding normal direct-route refresh semantics.
+Observed UI defects:
 
-A4AW invariants remain:
+- every visible FSM state was still rendered as a dropdown, even when it was not the current state;
+- non-current states with no local transition displayed an empty `Ø` dropdown;
+- non-current `application_creation_failed` exposed `cancel_creation`, `return_security`, and `begin_application_creation`, despite those transitions not belonging to the current `structure` state;
+- therefore A4AZ corrected transition actionability but not the menu projection structure.
 
-- color = signal origin user vs automatic only;
-- GET/POST is transport only;
-- actionability is independent from color;
-- diagram and menu derive from the same canonical FSM;
-- no invented transition.
+The supplied front profiler trace for `GET /fr-FR/structure` shows that the canonical FSM executed `structure --open_structure [current_app_required]--> structure` successfully and ACL allowed `structure:open`. The menu defect is therefore not caused by ACL, backend REST, or a failed FSM guard.
 
-## Expected owner-visible behavior
+The same trace records HTTP status `501`, because Structure currently renders the pending module. This is separate from the menu-structure defect.
 
-After selecting an application and arriving in `data`:
+## Root cause
 
-- the active Sources de données submenu hosts the applicable global FSM transitions;
-- `open_data -> Sources de données` is visible but passive/current-state;
-- `open_structure`, `open_security`, `open_workflows`, `open_source`, `open_build` are actionable when ACL/current-app availability and FSM guards allow them;
-- the diagram receives the same A4AW actionability projection and must not make `open_data` a useful current-state action.
+`application/default/templates/partials/navigation.score` still renders every allowed visible state as a `<details>` element. Consequently all states receive a dropdown affordance, passive historical local transitions remain exposed for inactive states, and empty states render `Ø`.
 
-## Source integrity
+A4AZ cannot solve that in `NavigationBuilder.php` alone.
 
-Base owner blob:
+## A4BA required correction
 
-`sites/owasys-front/application/default/services/NavigationBuilder.php` -> `412a51d7fca717b431d772333646e64bc668f984`
+The menu projection contract becomes:
 
-Delivered blob:
-
-`6995b099c7940e782441b7f9527cef2f8996c85d`
-
-## Delivery
-
-Artifact:
-
-`opus_p117w_r45b2a4az_guarded_fsm_menu_current_state_projection.zip`
-
-SHA-256:
-
-`566d1a8c7c3de9196aa8eb972d36e1d8764a69065258b1accd28495abe9f2c7f`
-
-Exactly one complete file at final path. No patcher, deletion or generated report.
-
-## Validation completed
-
-- `php -l` OK;
-- no trailing whitespace;
-- smoke `A4AZ_SMOKE_OK`;
-- current state owns global rail;
-- current-state pure navigation is passive while the FSM transition itself remains valid;
-- generic `current_app_required` guard controls projection through A4AY inspection;
-- allowed peer navigation remains actionable;
-- no backend/REST/ACL policy/FSM topology/SCORE/color/profiler lifecycle change.
-
-## Owner runtime acceptance
-
-1. Select an existing application.
-2. Confirm arrival in Sources de données (`data`).
-3. Open the active Sources de données FSM menu.
-4. Confirm `open_data -> Sources de données` is not actionable.
-5. Confirm the other allowed development destinations are present under the active state and actionable.
-6. Click `open_structure` and verify state changes to Structure.
-7. Verify the active-state submenu then moves with the state and does not offer `open_structure -> Structure` as a useful self-navigation.
-8. Confirm signal colors still distinguish only user vs automatic origin.
-9. Confirm Creation `cancel_creation` remains actionable through its exact POST binding.
-10. Confirm no diagram topology regression.
+- all allowed visible states may remain visible as FSM state references;
+- **only the current state is a dropdown**;
+- only the current state exposes outgoing signals;
+- inactive states have no arrow, no dropdown, no `Ø`, and no signals;
+- current-state outgoing signals remain derived from the canonical FSM and A4AY guarded inspection;
+- signal color remains origin user vs automatic only;
+- transport GET/POST remains orthogonal;
+- diagram topology remains independent and unchanged.
 
 Owner alone applies/validates/commits/pushes OPUS/OWASYS. Assistant writes MAESTRO_WORKSPACE only.
