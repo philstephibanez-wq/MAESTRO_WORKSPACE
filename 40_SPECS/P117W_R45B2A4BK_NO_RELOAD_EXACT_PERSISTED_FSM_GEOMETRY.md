@@ -2,7 +2,9 @@
 
 ## Status
 
-IMPLEMENTED — OWNER RUNTIME VALIDATION REQUIRED
+OWNER RUNTIME REJECTED — SUPERSEDED BY A4BL
+
+Runtime validation confirmed the no-reload objective but exposed stale/orphan local transition and label-leader geometry after state movement. A4BL supersedes A4BK with strict endpoint anchoring and self-healing persistence while preserving the no-reload contract.
 
 ## Baseline
 
