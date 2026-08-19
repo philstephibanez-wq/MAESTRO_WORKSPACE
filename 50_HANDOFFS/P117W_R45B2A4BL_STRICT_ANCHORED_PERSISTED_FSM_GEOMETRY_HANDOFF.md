@@ -1,6 +1,6 @@
 # P117W R45B2A4BL — Handoff
 
-State: CODE DELIVERY PRODUCED — OWNER RUNTIME VALIDATION REQUIRED
+State: CODE DELIVERY PRODUCED — OWNER APPLICATION/RUNTIME VALIDATION BLOCKED BY RECURRENT H: STORAGE LOSS
 
 ## Baseline
 
@@ -16,6 +16,10 @@ A4BK corrected the forced page reload, but owner runtime inspection exposed deta
 This is a presentation-geometry consistency defect, not an FSM semantic defect.
 
 A separate storage incident occurred during A4BK validation: the 4 TB H: SSD temporarily disappeared. Subsequent Windows evidence showed the volume healthy and repeated UASP/device reset warnings. No causal attribution to PHP/A4BK is made; the storage incident is not treated as the cause of the diagram defect.
+
+A second storage loss occurred immediately before A4BL application. The owner shell was already positioned at `H:\OPUS`; `cd /d H:\OPUS` failed with "Le lecteur spécifié est introuvable", and the following `tar -xf` failed because the current directory was invalid. PHP/Composer commands could not run afterwards. Therefore A4BL was not applied during this second incident, and this recurrence cannot be attributed to A4BL code execution.
+
+Runtime validation remains blocked until H: is stably present.
 
 ## Root cause treated
 
@@ -80,10 +84,10 @@ Exactly 2 complete files:
 - rendered-layout snapshot smoke: repaired geometry replaces orphan geometry in emitted snapshot;
 - ZIP contains exactly the 2 expected complete files.
 
-## Owner application
+## Owner application — BLOCKED
 
-Apply A4BL over the currently applied A4BK files.
+Do not retry A4BL application while H: is unstable.
 
-Then validate with the existing `sites/owasys-front/config/fsm.layout.json`; do not remove the companion layout before the first test because self-healing of stale A4BK geometry is part of acceptance.
+Once storage stability is restored, apply A4BL over the currently applied A4BK files, then validate with the existing `sites/owasys-front/config/fsm.layout.json`; do not remove the companion layout before the first test because self-healing of stale A4BK geometry is part of acceptance.
 
 Owner alone applies, validates, commits and pushes OPUS/OWASYS. Assistant writes MAESTRO_WORKSPACE only.
