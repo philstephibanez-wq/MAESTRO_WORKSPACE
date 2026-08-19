@@ -1,6 +1,14 @@
 # P117W R45B2A4BK — Handoff
 
-State: CODE DELIVERY PRODUCED — OWNER RUNTIME VALIDATION REQUIRED
+State: OWNER RUNTIME REJECTED — SUPERSEDED BY A4BL
+
+## Supersession evidence
+
+Owner runtime validation confirmed the A4BK no-reload behavior, but exposed detached transition geometry: persisted/local SVG paths and dashed label leaders can remain at stale coordinates after state movement. A4BK therefore does not satisfy the required invariant that local transition endpoints remain anchored to the current source/target state boxes.
+
+A4BL treats the cause generically in OPUS with strict persisted-path anchor validation, live DOM anchor repair, label-leader re-anchoring and self-healing replacement of stale persisted entries.
+
+A separate H: storage disappearance occurred during validation. Later Windows evidence showed the 4 TB volume healthy together with UASP/device reset warnings; no causal attribution to A4BK/PHP is made.
 
 ## Baseline
 
