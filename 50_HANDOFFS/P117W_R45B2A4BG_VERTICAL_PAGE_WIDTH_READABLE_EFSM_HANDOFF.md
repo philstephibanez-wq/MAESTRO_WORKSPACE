@@ -1,6 +1,6 @@
 # P117W R45B2A4BG — Handoff
 
-State: CODE DELIVERY PRODUCED — OWNER RUNTIME VALIDATION REQUIRED
+State: OWNER RUNTIME REJECTED — SUPERSEDED BY A4BH
 
 ## Baseline / dependency
 
@@ -8,76 +8,47 @@ Owner GitHub OPUS HEAD remains:
 
 `0f1356ee479336202518b253836f5a48bdc098af` — A4BB.
 
-Owner runtime evidence confirms A4BE and A4BF are applied locally. The owner has explicitly frozen menu work for now. A4BG is therefore diagram-only and is intended to be extracted over the current local A4BE/A4BF tree.
+Owner runtime evidence confirms A4BE, A4BF and A4BG are applied locally. Menu work remains explicitly frozen. A4BG is diagram-only.
 
-## Owner runtime direction
+## Owner runtime evidence
 
-The current EFSM diagram is functionally useful but too dense and horizontally compressed to serve as a readable diagnostic.
+A4BG correctly changed the diagnostic to a vertical EFSM and separated signal / guards / effects, but the runtime result is rejected on geometry/readability.
 
-Owner requires:
+Observed defects from owner screenshots:
 
-- vertical EFSM;
-- width equal to the page/component;
-- unrestricted practical height;
-- signal and guards visually separated;
-- guards not on the same line as the signal;
-- different colors for signal, guards and effects/actions;
-- canonical technical keys in the diagram;
+- extreme unused vertical space between ranked states;
+- forced page-width behavior even when the graph does not need the full width;
+- numerous very long vertical side rails dominating the page;
+- repeated `logout` rails from many source states;
+- global EFSM transitions visually projected from invented representative source states, producing misleading and noisy long edges;
+- useful local workflow relations become visually secondary to the global rails.
+
+Owner clarified the width rule:
+
+- page width is a maximum available width, not a mandatory diagram width;
+- the diagram should consume only the width it needs and shrink to the page maximum when necessary;
+- vertical height remains free, but must be compact and purposeful rather than padded.
+
+## Root cause
+
+The A4BG generic vertical renderer used deliberately large fixed values (`rankGap`, horizontal margins and outer-lane offsets). More importantly, `OwasysFsmDiagramBuilder` converted every finite `scope=global` transition to an arbitrary representative state-to-state edge; `logout` was expanded from every applicable source state. This projection is the main source of the side-rail explosion.
+
+A finite global EFSM transition is not semantically a transition from one arbitrary representative state. The visual projection therefore needs first-class global-scope treatment.
+
+## Supersession
+
+A4BH replaces the A4BG geometry policy while retaining:
+
+- vertical top-to-bottom state flow;
+- canonical technical keys;
+- distinct signal / guard / effect lines and colors;
+- signal-origin color semantics;
+- diagnostic clickability;
 - no menu changes.
 
-## A4BG correction
+A4BH groups each finite global transition once beside its target state and preserves its canonical `from_states` metadata instead of creating long representative rails.
 
-### Generic vertical renderer
-
-`OPUS_FSM_Diagram` gains an optional generic `vertical` layout direction. The default remains `horizontal`, so existing consumers remain compatible.
-
-Vertical ranks flow top-to-bottom. States within one rank are spread horizontally. Long forward jumps and returns use side corridors. Generous vertical rank spacing is deliberate: readability takes priority over compact height.
-
-### Width / height behavior
-
-The vertical SVG advertises `data-opus-fsm-layout="vertical"` and OWASYS renders it at `width: 100%`, `height: auto`.
-
-The diagram therefore follows page width rather than creating a wide horizontal canvas. The document owns vertical scrolling and the diagram may be several thousand SVG units high.
-
-### Readable EFSM transition semantics
-
-Vertical transition boxes are now stacked:
-
-```text
-signal
-[guard]
-[guard]
-/ effect
-```
-
-Each semantic level receives its own SVG class and visual color:
-
-- signal = existing origin color;
-- guard = dedicated condition color;
-- effect/action = dedicated effect color.
-
-Canonical technical IDs are preserved. No I18n is applied to the diagnostic EFSM labels.
-
-### Geometry collision policy
-
-Vertical label placement uses a much larger search area than horizontal mode because height is intentionally unconstrained. Label boxes are clamped inside the SVG viewBox.
-
-A full-definition stress render with 88 transition labels produced:
-
-- width approximately 1930;
-- height approximately 5227;
-- out-of-viewBox labels: 0;
-- overlapping transition label boxes: 0.
-
-### Horizontal compatibility
-
-Horizontal mode continues to use the previous one-line transition label renderer. This preserves compatibility with existing `FsmDiagramGeometryNormalizer` behavior and avoids changing unrelated OPUS diagrams.
-
-### OWASYS builder
-
-`OwasysFsmDiagramBuilder` requests generic vertical mode and no longer applies the horizontal physical geometry normalizer/0.60 scaler to this diagnostic projection.
-
-## Artifact
+## Historical A4BG artifact
 
 `opus_p117w_r45b2a4bg_vertical_page_width_readable_efsm.zip`
 
@@ -85,39 +56,6 @@ SHA-256:
 
 `c4b43c0d21856ccc02fec02cedf77b56ce68e19e5b026a2a168855fa6528e1e9`
 
-Exactly 3 complete files:
-
-- `Opus/Fsm/Diagram.class.php`
-- `sites/owasys-front/application/default/services/FsmDiagramBuilder.php`
-- `sites/owasys-front/www/asset/css/fsm-native.css`
-
-No menu file is included.
-
-## Validation performed
-
-- PHP lint 2/2: OK;
-- no trailing whitespace;
-- ZIP file count: 3;
-- `A4BG_VERTICAL_EFSM_OK`;
-- `A4BG_HORIZONTAL_COMPAT_OK`;
-- `A4BG_FULL_RENDER_OK` with 88 transitions;
-- `A4BG_GEOMETRY_STRESS_OK` with 0 transition-label overlaps and 0 out-of-bounds label boxes.
-
-## Owner acceptance sequence
-
-1. Extract A4BG over current local A4BE/A4BF tree.
-2. Restart only `owasys-front` if back is already running.
-3. Do not evaluate menu changes: none are part of A4BG.
-4. Inspect the main OWASYS EFSM diagnostic.
-5. Confirm flow is top-to-bottom and page-width.
-6. Scroll vertically through the diagram and confirm height is not compressed to fit one viewport.
-7. Confirm every shown transition box separates signal, guards and effects on distinct lines.
-8. Confirm guards are visually distinguishable from signal and effect.
-9. Confirm signal-origin semantics remain unchanged.
-10. Confirm existing clickable diagnostic transitions still execute through the existing EFSM path.
-
-## Next work
-
-After owner runtime feedback, continue refining only the EFSM diagnostic geometry/readability until accepted. Do not resume menu work unless the owner explicitly reopens that scope.
+Exactly 3 complete files.
 
 Owner alone applies, validates, commits and pushes OPUS/OWASYS. Assistant writes MAESTRO_WORKSPACE only.
