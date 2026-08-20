@@ -61,7 +61,7 @@ For canonical entry-state definitions, marker geometry is not part of the known 
 
 SHA-256:
 
-`c1d6b202f1585dfa8e55bfebf4963ef7bc472b896d6c41a991f62431ce604906`
+`bdd2563535f5886652da1bc2b7f5bfc0ad60205809cc1e380d9a61821d4282c5`
 
 Exactly 6 complete files:
 
