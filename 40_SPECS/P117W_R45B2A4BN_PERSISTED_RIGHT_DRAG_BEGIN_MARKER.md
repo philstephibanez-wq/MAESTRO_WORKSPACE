@@ -2,7 +2,13 @@
 
 ## Status
 
-CODE DELIVERY PRODUCED — OWNER RUNTIME VALIDATION REQUIRED
+OWNER APPLIED/PUSHED — SEMANTIC MODEL SUPERSEDED BY A4BO
+
+## Supersession
+
+Owner runtime validation established that the draggable white point is not the desired final model. The owner requires `begin` to be a real canonical FSM state and the default `initial_state`, not presentation-only marker geometry.
+
+A4BO (`P117W_R45B2A4BO_CANONICAL_REAL_BEGIN_FSM_STATE`) supersedes the A4BN pseudo-marker semantics for canonical entry-state FSMs. A4BN remains historical evidence for the layout/drag progression and legacy pseudo-marker compatibility.
 
 ## Baseline
 
@@ -25,17 +31,13 @@ It therefore has no DEV right-drag interaction, no dedicated save action and no 
 
 This is a generic OPUS diagram-layout omission, not OWASYS business logic.
 
-## Required invariant
+## Required invariant at A4BN time
 
-The canonical FSM field `initial_state` remains the sole semantic definition of the initial state.
-
-The begin point is presentation-only:
+The A4BN model treated the canonical FSM field `initial_state` as the sole semantic definition of the initial state and kept the begin point presentation-only:
 
 `initial_state semantics != begin marker x/y`
 
-Moving the begin marker must never mutate the FSM, menu projection, ACL, signal semantics, guards, actions or runtime state.
-
-The begin arrow must always terminate on the current boundary of the canonical `initial_state` node.
+That model is retained here as historical A4BN intent but is superseded for canonical entry-state FSMs by A4BO.
 
 ## A4BN correction
 
@@ -105,7 +107,7 @@ Changed framework files:
 
 No menu file and no `sites/owasys-back` file are changed. No new concrete framework class is introduced.
 
-## Acceptance
+## Historical acceptance
 
 1. Load the current OWASYS FSM using the existing V3 companion layout; do not delete it.
 2. Confirm the companion migrates to `OPUS_FSM_DIAGRAM_LAYOUT_V4`.
