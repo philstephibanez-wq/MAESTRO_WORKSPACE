@@ -42,22 +42,42 @@ Expected canonical blobs before A4BU:
 
 A4BS/A4BT are compatible because they touch other files. A4BR remains separately pending.
 
+## Delivery
+
+`opus_p117w_r45b2a4bu_owasys_creation_outcome_state_elimination.zip`
+
+ZIP SHA-256:
+
+`fdb968ab2aa0fbc2255cc03fe945a8c3c8d2ca97739b9f82fdc3ca7965850f50`
+
+The ZIP contains only the one-shot applicator `apply_a4bu.php`.
+
+Applicator SHA-256:
+
+`6bedea164020a0c15b19f154b952e89758bb23311d674f0d3fd72174ad3f8bff`
+
+The applicator was PHP-linted before packaging and runs from Downloads; it is not installed in `H:\OPUS`.
+
 ## Delivered behavior
 
 The A4BU applicator:
 
 - refuses unexpected target baselines before changing anything;
+- loads configuration through `StructuredFileLoader`;
 - removes both result states from `fsm.json`;
 - changes `t_creation_failed` to return to `creation_review`;
 - removes `t_creation_failure_security`, `t_creation_failure_retry`, `t_creation_failure_cancel`;
 - removes deleted states from global `from_states` lists;
 - retains `t_creation_created -> application` and `set_current_app`;
 - retains both outcome signals;
+- makes `confirm-creation` valid only from `creation_review`;
+- asserts the actual success target is `application`;
+- asserts the actual failure target is `creation_review`;
 - updates the controller so failure renders `creation_review` with the existing error payload;
 - updates profiler terminal-state metadata to `application` or `creation_review`;
-- reconciles persisted diagram geometry and updates its FSM definition hash.
-
-The applicator itself runs from Downloads and is not installed in the OPUS source root.
+- reconciles persisted diagram geometry and sets its `definition_sha256` to SHA-256 of the exact new FSM bytes;
+- computes all targets before writing and rolls back target files if a write/post-write verification fails;
+- leaves no delivery script, backup or temporary file in the OPUS repository after success.
 
 ## Runtime validation
 
