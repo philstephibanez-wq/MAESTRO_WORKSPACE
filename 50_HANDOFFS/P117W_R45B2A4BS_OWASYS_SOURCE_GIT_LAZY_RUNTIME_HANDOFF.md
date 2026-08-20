@@ -2,83 +2,64 @@
 
 ## Current status
 
-DELIVERABLE READY / OWNER APPLY + RUNTIME VALIDATION REQUIRED
+APPLIED / A4BS RUNTIME ACCEPTANCE BLOCKED BEFORE SOURCE
 
 ## Why this package exists
 
-Owner feedback identifies the latency as an OWASYS problem. The current Source/Git controller performs Git status, Git history and selected-file diff during every ordinary source render, even when Git information was not requested.
+A4BS removes mandatory Git status, Git history and selected-file diff work from ordinary Source renders and makes Git loading explicit.
 
-A4BS removes that mandatory work from the Source request path and makes Git loading explicit.
+The owner runtime attempt on 2026-08-20 did not reach that behavior. The first `GET /fr-FR/applications` after restart failed in the OWASYS frontend FSM before any Source route or backend REST business request.
 
 ## Baseline
 
-OPUS `master` observed before preparation:
+OPUS `master` observed before A4BS preparation:
 
 `7038d0264e90b4bb83f124fa752f834ae5ee792d`
 
-Canonical source blobs:
+Canonical A4BS source blobs:
 
 - SourceController: `8b0af1a1c01fc324d079ded5bfad3d85a766136f`
 - source SCORE template: `26b91eab1da0bec20b135276416dd63e116afc07`
 
-A4BR fresh-generation acceptance remains pending. A4BS is a requested blocker correction and does not close or supersede A4BR.
+A4BR fresh-generation acceptance remains pending. A4BS does not close or supersede A4BR.
 
-## Delivered files
+## Delivered A4BS files
 
 - `sites/owasys-front/application/source/controllers/SourceController.php`
 - `sites/owasys-front/application/source/templates/index.score`
 
 No backend, framework, JavaScript, FSM, REST contract, generated-site or translation-catalogue file changes.
 
-## Runtime contract after A4BS
+## Runtime evidence received
 
-### Ordinary Source page
+Frontend traces:
 
-Without `git=1`, OWASYS loads source data only. Git REST calls are not executed.
+- `8989b31e47d41c2a75f294c5b5491bb4`
+- `8f4ec4b2fa6fe50d9e47b6deb6332267`
 
-### Explicit Git load
+Both execute the same failing path:
 
-The SCORE page exposes a Git load action. It requests the same Source route with `git=1`, after which the existing Git status/history/diff calls execute through the canonical secured path.
+`GET /fr-FR/applications` → FSM state `begin` → signal `open_applications` → global transition `g_open_applications` → guard `acl:registry:open` → empty roles/default deny → `OPUS_FSM_GUARD_FAILED` → HTTP 409.
 
-### Git mutation
+The failure occurs before Source/Git and before a correlated owasys-back request. Therefore A4BS itself is not functionally rejected; its acceptance is blocked and unexecuted.
 
-Existing mutation semantics remain unchanged. Successful Git mutation redirects add both `git=1` and `git_status=<result>` so the Git workspace stays loaded after mutation.
+## Root cause selected for next blocker package
 
-### Invalid option
+`OwasysRuntimeController::resolveRequestSignal()` resolves a valid private GET route directly to its navigation signal even when no authenticated identity exists. From the canonical real entry state `begin`, `/applications` therefore dispatches `open_applications`; the registry ACL guard correctly denies it before the later target-state authentication check can convert the request to `auth_required`.
 
-Any supplied `git` value other than exactly `1` is rejected explicitly with `OWASYS_GIT_WORKSPACE_OPTION_INVALID` and HTTP 400.
+The FSM already contains the canonical `auth_required` NMI transition from `*` to `login`. The smallest correction is to route an unauthenticated valid non-login GET through that existing signal before private navigation dispatch. Invalid routes must still remain explicit 404.
 
-## Owner validation
+## Next package
 
-From `H:\OPUS`, after direct ZIP extraction:
+A4BT — OWASYS unauthenticated route auth interrupt.
 
-```cmd
-php -l sites\owasys-front\application\source\controllers\SourceController.php
-composer dump-autoload -o
-composer opus:validate-site -- owasys-front
-composer opus:validate-site -- owasys-back
-```
+After A4BT acceptance:
 
-Then run the normal OWASYS front/back development servers and validate in browser:
+1. verify unauthenticated `/fr-FR/applications` redirects to login rather than returning 409;
+2. authenticate and verify `/fr-FR/applications` succeeds normally;
+3. resume A4BS Source/Git acceptance and profiler timing checks;
+4. keep A4BR fresh-generation acceptance pending until separately executed.
 
-- Source page opens and files remain browseable/editable without loading Git;
-- profiler for that ordinary request contains no Git status/history/diff work;
-- Git action loads the Git workspace through `?git=1`;
-- status, history and selected-file diff remain functional after explicit load;
-- a Git mutation returns to a URL preserving `git=1`;
-- `?git=0` is explicitly rejected with HTTP 400.
+## Role boundary
 
-The performance acceptance criterion is profiler evidence that the ordinary Source request no longer includes the formerly mandatory Git work.
-
-## Do not do
-
-- Do not patch owasys-back for this latency issue.
-- Do not add client-side hiding to mask server latency.
-- Do not bypass REST or invoke Git directly from owasys-front.
-- Do not change timeouts as a substitute for removing unnecessary work.
-- Do not mix the separate application-deletion workflow correction into this package.
-- Do not commit/push OPUS from the assistant side.
-
-## Next decision
-
-If A4BS runtime evidence passes, preserve the evidence and return to the highest-priority gate. A4BR remains pending until its fresh-generation acceptance is actually executed. The deletion-menu issue remains a separate root-cause package if still reproducible and prioritized by the owner.
+The assistant prepares the A4BT differential ZIP and updates MAESTRO_WORKSPACE only. The owner applies, validates, commits and pushes OPUS/OWASYS.
