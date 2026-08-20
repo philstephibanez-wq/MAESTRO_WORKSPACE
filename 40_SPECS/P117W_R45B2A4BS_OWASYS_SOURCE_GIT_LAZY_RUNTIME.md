@@ -2,13 +2,15 @@
 
 ## Status
 
-DELIVERABLE PREPARED / OWNER RUNTIME ACCEPTANCE PENDING
+DELIVERABLE APPLIED / RUNTIME ACCEPTANCE BLOCKED BEFORE SOURCE
 
 ## Gate classification
 
 A4BR fresh-generation acceptance remains pending and is not closed by this milestone.
 
 A4BS is an explicit blocker correction interleaved before that acceptance because the owner reported latency inside OWASYS itself and requested the next deliverable. It does not advance the generated-application FSM propagation sequence.
+
+The owner runtime attempt on 2026-08-20 did not reach the Source/Git route. It failed earlier on `GET /fr-FR/applications` because the unauthenticated frontend FSM attempted `open_applications` from `begin` and the `acl:registry:open` guard correctly denied the empty-role identity. Therefore A4BS is neither accepted nor functionally rejected: its behavior remains untested until the independent authentication-entry blocker is corrected.
 
 ## Canonical baseline
 
@@ -70,7 +72,7 @@ ZIP differential direct:
 
 `opus_p117w_r45b2a4bs_owasys_source_git_lazy_runtime.zip`
 
-The ZIP contains only complete delivery files at their final repository paths plus its delivery README and manifest. The owner extracts it directly over `H:\OPUS`, validates, then alone commits/pushes OPUS.
+The owner applies the complete frontend delivery files over `H:\OPUS`, validates, then alone commits/pushes OPUS.
 
 ## Static integrity evidence
 
@@ -80,19 +82,25 @@ The prepared complete SCORE template, with only the A4BS lazy-load block reverse
 
 PHP lint of the delivered `SourceController.php` succeeds in the delivery build environment.
 
+## Runtime evidence — 2026-08-20
+
+The first browser request after restart was `GET /fr-FR/applications` while no authenticated identity was present. Frontend traces `8989b31e47d41c2a75f294c5b5491bb4` and `8f4ec4b2fa6fe50d9e47b6deb6332267` both failed with HTTP 409 `OWASYS_FSM_RUNTIME_REJECTED:OPUS_FSM_GUARD_FAILED` before any Source/Git route was reached.
+
+Detailed profiler/log evidence shows `begin --open_applications--> registry`, empty roles, the `acl:registry:open` guard denied by default, then `guard_refused`. The backend had only started and received no correlated business request for this failure. This establishes an independent frontend authentication-entry defect rather than an A4BS Source/Git failure.
+
+A4BT is inserted to correct that root cause. After A4BT acceptance, resume this A4BS acceptance from the Source/Git route.
+
 ## Acceptance
 
-1. Extract the ZIP directly over `H:\OPUS`.
-2. Lint the delivered controller and regenerate Composer optimized autoload.
-3. Start OWASYS through the normal front/back development path.
-4. Open Sources/Git without `git=1` and confirm source browsing/editing remains functional.
-5. Confirm the Git section exposes the explicit load action but does not contain loaded status/history before activation.
-6. Use the OPUS profiler and confirm the initial source request contains no Git status/history/diff backend work.
-7. Activate the Git control; confirm the URL carries `git=1` and status/history/diff are then populated from the existing secured REST chain.
-8. Exercise one Git mutation and confirm the redirect keeps `git=1` and the refreshed Git workspace remains visible.
-9. Request an invalid explicit Git option such as `git=0`; confirm explicit rejection `OWASYS_GIT_WORKSPACE_OPTION_INVALID` with HTTP 400.
-10. Compare profiler timings before/after. Acceptance is based on measured removal of mandatory Git work from the ordinary Source request, not on subjective UI impression.
+1. A4BT must first restore canonical unauthenticated routing to login.
+2. Open Sources/Git without `git=1` and confirm source browsing/editing remains functional.
+3. Confirm the Git section exposes the explicit load action but does not contain loaded status/history before activation.
+4. Use the OPUS profiler and confirm the initial source request contains no Git status/history/diff backend work.
+5. Activate the Git control; confirm the URL carries `git=1` and status/history/diff are then populated from the existing secured REST chain.
+6. Exercise one Git mutation and confirm the redirect keeps `git=1` and the refreshed Git workspace remains visible.
+7. Request an invalid explicit Git option such as `git=0`; confirm explicit rejection `OWASYS_GIT_WORKSPACE_OPTION_INVALID` with HTTP 400.
+8. Compare profiler timings before/after. Acceptance is based on measured removal of mandatory Git work from the ordinary Source request, not on subjective UI impression.
 
 ## Deferred separate concern
 
-The application-deletion menu/workflow issue is not mixed into A4BS. It remains a distinct OWASYS blocker to be corrected by its own smallest root-cause package after A4BS evidence, unless the owner changes priority.
+The application-deletion menu/workflow issue is not mixed into A4BS. It remains a distinct OWASYS blocker to be corrected by its own smallest root-cause package after the current authentication-entry blocker and A4BS evidence, unless the owner changes priority.
