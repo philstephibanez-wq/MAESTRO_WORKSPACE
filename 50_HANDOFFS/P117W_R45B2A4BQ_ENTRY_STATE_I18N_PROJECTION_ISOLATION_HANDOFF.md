@@ -1,24 +1,24 @@
 # P117W R45B2A4BQ — Handoff
 
-State: CODE DELIVERY PRODUCED — OWNER RUNTIME VALIDATION REQUIRED
+State: OWNER APPLIED/PUSHED — RUNTIME PASS — CONTINUED BY A4BR SCAFFOLD PROPAGATION
 
 ## Baseline
 
-- OPUS committed master: `7ded8369167fa6d75df7f0cf6b33b67a45a5d626` — A4BN.
-- Owner has A4BO locally applied for canonical real `begin` semantics.
-- Owner has A4BP locally applied to accept `entry` in OWASYS navigation projection.
-- A4BQ is a one-file differential over that local state.
-- Menu behavior remains frozen.
+- OPUS committed master before this sequence: `7ded8369167fa6d75df7f0cf6b33b67a45a5d626` — A4BN.
+- Owner applied A4BO locally for canonical real `begin` semantics.
+- Owner applied A4BP locally to accept `entry` in OWASYS navigation projection.
+- A4BQ was the I18n projection correction on top of that sequence.
+- Menu behavior remained frozen.
 
 ## New runtime KO after A4BP
 
-The attached owner logs show three consecutive failures for `GET /fr-FR/applications` with HTTP 500:
+The attached owner logs showed three consecutive failures for `GET /fr-FR/applications` with HTTP 500:
 
 `OWASYS_SCORE_FSM_I18N_MESSAGE_MISSING`
 
-All three originate from `ScorePageRenderer.php:458`.
+All three originated from `ScorePageRenderer.php:458`.
 
-This confirms A4BP moved execution past the previous unsupported `entry` taxonomy error and exposed the next integration defect in the SCORE/I18n consumer.
+This confirmed A4BP moved execution past the previous unsupported `entry` taxonomy error and exposed the next integration defect in the SCORE/I18n consumer.
 
 ## Root cause treated
 
@@ -51,11 +51,10 @@ Exactly one complete file:
 - ordinary state/menu/operation/target translations are unchanged;
 - genuine missing non-entry I18n messages still fail explicitly;
 - no menu source file changes;
-- no OPUS framework class changes;
-- no `owasys-back` changes;
-- no JavaScript added.
+- no `owasys-back` JavaScript or presentation code;
+- no JavaScript added by A4BQ.
 
-## Validation performed
+## Validation performed before owner application
 
 - PHP lint: OK;
 - committed ScorePageRenderer baseline blob verified: `dd63285db8e95f29608070c602882d562ad69a90`;
@@ -65,17 +64,23 @@ Exactly one complete file:
 - no trailing whitespace;
 - ZIP contains exactly one complete source file.
 
-## Owner validation sequence
+## Owner runtime acceptance
 
-Apply A4BQ over the current local A4BO+A4BP files.
+The owner applied the A4BO+A4BP+A4BQ sequence and pushed OPUS commit:
 
-1. restart `owasys-front`;
-2. request `/fr-FR/applications`;
-3. confirm the SCORE FSM I18n 500 is gone;
-4. confirm applications registry renders normally;
-5. confirm no `begin` item appears in the human menu;
-6. open FSM and confirm real `begin` state + `open_login` relation remain visible;
-7. validate login, application selection and ordinary translated menus;
-8. commit/push OPUS only after runtime validation.
+`5fa113426e44f1c9f8489f8317affa34b755fe6d`
 
-Owner alone applies, validates, commits and pushes OPUS/OWASYS. Assistant writes MAESTRO_WORKSPACE only.
+message:
+
+`opus_p117w_r45b2a4bq_entry_state_i18n_projection_isolation`
+
+Current owner screenshot confirms the OWASYS FSM page renders with:
+
+- real rectangular `begin` state;
+- no white pseudo initial marker;
+- ordinary `login`, `password`, `registry` and creation states rendered;
+- translated human menu intact;
+- `begin` absent from the human menu;
+- the previous entry-state navigation/I18n HTTP 500 failures no longer blocking rendering.
+
+This closes the OWASYS consumer-integration sequence. The remaining A4BO scope boundary is Composer scaffold propagation for newly generated applications, handled by A4BR.
