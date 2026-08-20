@@ -1,81 +1,73 @@
 # P117W R45B2A4BR — Handoff
 
-State: OWNER RUNTIME VALIDATION IN PROGRESS
+State: OWNER COMMITTED / FRESH-GENERATION ACCEPTANCE PENDING
 
-## Current committed baseline
+## Canonical OPUS baseline
 
-- OPUS committed `master`: `dc9095c108842931bbfad184d88f5ae1c2480ee2` — owner commit `fsm` dated 2026-08-20.
-- Its direct parent is `5fa113426e44f1c9f8489f8317affa34b755fe6d` — A4BQ.
-- `dc9095c...` changes only `sites/owasys-front/config/fsm.layout.json`.
-- `Opus/Scaffold/SiteScaffoldPlan.php` therefore remained on committed blob `bac0a8387fef34dbb2ea987b6fd6070b8ba357a1` before A4BR application.
-- Menu behavior remains frozen.
+- OPUS `master`: `3e5d9e18b19015807b6d1320b5d93c3bcd21f571` — `opus_p117w_r45b2a4br_generated_application_canonical_begin_scaffold_reissue_dc9095c`, owner commit dated 2026-08-20.
+- Direct parent: `dc9095c108842931bbfad184d88f5ae1c2480ee2` — owner persisted OWASYS FSM layout commit.
+- A4BR changes exactly `Opus/Scaffold/SiteScaffoldPlan.php`.
+- Owner commit is canonical reconciliation evidence for the delivered framework delta. It does not by itself prove fresh generated-site runtime acceptance.
 
-## Cause treated
+## A4BR result now committed
 
-A4BO deliberately left one propagation boundary for a subsequent milestone: `SiteScaffoldPlan` still generated new applications with `home` or `api` directly as `initial_state`.
+### Frontend/fullstack generation
 
-That would allow newly created applications to reintroduce the old semantic model. A4BR corrects generation itself; it does not synthesize or rewrite FSMs at runtime.
+New generated application FSMs contain a real entry state:
 
-## A4BR behavior
+`begin (type=entry, module=home) -> explicit open_<route> signal -> functional state`
 
-### Frontend/fullstack
+The source-state transition matrix includes `begin`, therefore `open_home`, optional `open_login`, and `open_profiler` can be dispatched from the entry state.
 
-Generated `config/application.fsm.json` starts with a real state:
+`initial_state` is `begin`.
 
-`begin (type=entry, module=home) -> explicit open_<route> signal -> requested functional state`
+No physical `application/begin` module is required; `begin` executes on the existing `home` module surface.
 
-The source-state matrix includes `begin`, so `open_home`, optional `open_login` and `open_profiler` are real transitions from the entry state.
+### Backend generation
 
-No `application/begin` directory is created; `begin` uses the existing `home` module as its execution surface.
-
-### Backend
-
-Generated backend application FSM contains:
+New generated backend application FSMs contain:
 
 `begin (type=entry, module=api) --dispatch_api--> api`
 
-The existing `api --dispatch_api--> api` relation is preserved. The REST internal request FSM is not altered.
+and preserve:
 
-### Contract compatibility
+`api --dispatch_api--> api`
 
-The application FSM contract stays `OPUS_APPLICATION_FSM_V1`. Legacy generated applications without a real entry state remain untouched/readable; newly generated applications are born with the canonical A4BO entry form.
+`initial_state` is `begin`. The separate REST request FSM remains unchanged.
 
-## Reissue application evidence — 2026-08-20
+## Runtime evidence received after owner commit
 
-Owner extracted:
+The supplied OWASYS runtime capture is healthy for the current OWASYS navigation path:
 
-`opus_p117w_r45b2a4br_generated_application_canonical_begin_scaffold_reissue_dc9095c.zip`
+- `/fr-FR/applications` completes successfully;
+- the canonical OWASYS FSM executes `open_applications` from current state `registry` and remains in `registry` through the global transition;
+- the correlated REST request `/api/v1/applications` returns HTTP 200;
+- registry synchronization succeeds;
+- profiler trace status contains no warning/error for that request.
 
-with `tar -xf` directly over `H:\OPUS`.
+This evidence validates the live OWASYS navigation/REST path, not A4BR scaffold generation.
 
-After extraction, `Opus/Scaffold/SiteScaffoldPlan.php` was already replaced by the delivered complete target file. Running the auxiliary `tools/p117w_r45b2a4br_apply.php` afterwards therefore reported:
+The selected generated application in the same capture is `essai2`, whose recorded selection/update evidence is dated 2026-08-19, before the A4BR owner commit on 2026-08-20. It cannot be used as fresh-generation acceptance for A4BR.
 
-`OPUS_A4BR_SOURCE_BASELINE_MISMATCH:c1832750c05642c8639f7ce8ed32676842cb7a79`
+## Remaining acceptance gate
 
-This is an application-order mismatch, not a framework patch failure: the applicator expected committed source blob `bac0a838...`, while the direct ZIP extraction had already transformed the file to working-tree blob `c1832750...`.
+Before opening the next OPUS behavior package, validate A4BR against sites generated after commit `3e5d9e18...`:
 
-Owner evidence after extraction:
+1. Generate one fresh frontend or fullstack application.
+2. Confirm its `config/application.fsm.json` has `initial_state=begin`.
+3. Confirm one real `begin` state has `type=entry`, maps to `home`, and has explicit transitions from `begin` to functional states.
+4. Start the fresh generated application and confirm first functional routing occurs through a real transition from `begin`.
+5. Open its DEV FSM diagram and confirm `begin` is a real ordinary draggable state.
+6. Generate one fresh backend application.
+7. Confirm backend `initial_state=begin`, `begin --dispatch_api--> api`, and preserved `api --dispatch_api--> api`.
+8. Confirm no generated `application/begin` directory exists.
+9. Validate both fresh sites with the canonical OPUS validation path.
 
-- `composer dump-autoload -o`: OK, 552 classes;
-- `php -l Opus\Scaffold\SiteScaffoldPlan.php`: no syntax errors;
-- `git status --short`: only `M Opus/Scaffold/SiteScaffoldPlan.php`;
-- visible diff confirms frontend/fullstack real `begin`, `begin` added to the transition source matrix, and `initial_state` changed from `home` to `begin`;
-- backend section is part of the same delivered complete target file and remains subject to runtime/generation acceptance below.
+## Continuation rule
 
-The canonical OPUS/OWASYS delivery rule remains: differential ZIPs contain complete files at final paths. A direct complete-file delivery does not require a second patch/applicator pass after extraction. Auxiliary application scripts must not be treated as an additional mandatory transformation once the target file has already been installed.
+No new OPUS/OWASYS source delta is authorized from the current evidence alone. The next milestone is selected only after the fresh-generation acceptance above either:
 
-## Acceptance still required
-
-Do not re-extract, reapply or restore `SiteScaffoldPlan.php` before acceptance.
-
-1. Confirm the working-tree diff contains no file other than `Opus/Scaffold/SiteScaffoldPlan.php` for A4BR.
-2. Generate a fresh frontend or fullstack application; do not modify an existing generated application.
-3. Inspect its `config/application.fsm.json` and confirm `initial_state=begin`, a real `type=entry` state mapped to `home`, and explicit transitions from `begin`.
-4. Start the fresh generated application and confirm its first functional page is reached through a real transition from `begin`.
-5. Inspect its DEV FSM diagram and confirm `begin` is a draggable ordinary state.
-6. Generate a fresh backend application and confirm `initial_state=begin`, real entry state mapped to `api`, `begin --dispatch_api--> api`, and preserved `api --dispatch_api--> api`.
-7. Confirm no generated `application/begin` directory exists.
-8. Validate the fresh generated sites through the normal OPUS validation path.
-9. Owner commits/pushes OPUS only after runtime acceptance.
+- passes, allowing A4BR closure and the next generic FSM propagation boundary to be selected; or
+- fails, in which case the next deliverable is the smallest root-cause correction in OPUS.
 
 Owner alone applies, validates, commits and pushes OPUS/OWASYS. Assistant writes MAESTRO_WORKSPACE only.
