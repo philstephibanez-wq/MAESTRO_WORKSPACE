@@ -2,7 +2,7 @@
 
 ## Status
 
-DELIVERABLE PREPARED / OWNER APPLY + RUNTIME ACCEPTANCE PENDING
+DELIVERABLE READY / OWNER APPLY + RUNTIME ACCEPTANCE PENDING
 
 ## Canonical baseline
 
@@ -74,9 +74,9 @@ Remove both deleted state ids from every global transition `from_states` array.
 
 - accept `confirm-creation` only from `creation_review`;
 - keep `application_created` as the success signal;
-- record successful terminal FSM state as `application`;
+- assert and record successful terminal FSM state as `application`;
 - keep `application_creation_failed` as the failure signal;
-- persist the failure transition to `creation_review`;
+- persist and assert the failure transition to `creation_review`;
 - record failed terminal FSM state as `creation_review`;
 - render `creation_review` with the existing error payload and SCORE alert.
 
@@ -84,13 +84,13 @@ No new template or translation key is needed: the current creation template alre
 
 ## Persisted diagram layout
 
-The persisted layout must be reconciled with the semantic FSM change:
+The persisted layout is reconciled with the semantic FSM change:
 
 - remove the two deleted state geometry entries;
 - remove geometry for the three deleted failure-only transitions;
 - discard the old `t_creation_failed` route geometry so OPUS recomputes that edge for the new `creation_review` target;
 - preserve all unrelated geometry;
-- update `definition_sha256` to the resulting `fsm.json` bytes.
+- update `definition_sha256` to SHA-256 of the exact resulting `fsm.json` bytes, matching `FsmDiagramLayoutStore` semantics.
 
 ## Scope
 
@@ -102,9 +102,34 @@ Exactly three existing OWASYS frontend source/config files are modified by the a
 
 No backend change. No REST change. No Composer business command change. No ACL weakening. No JavaScript. No generated application change.
 
-## Delivery format
+## Delivery
 
-The delivery is a strict one-shot applicator ZIP executed from Downloads against `H:\OPUS`. The applicator is not copied into the OPUS source root. It validates the three canonical Git blobs after LF normalization before any write, computes all three target contents in memory, then writes them with rollback-on-write-failure semantics.
+ZIP differential direct:
+
+`opus_p117w_r45b2a4bu_owasys_creation_outcome_state_elimination.zip`
+
+ZIP SHA-256:
+
+`fdb968ab2aa0fbc2255cc03fe945a8c3c8d2ca97739b9f82fdc3ca7965850f50`
+
+The ZIP contains only `apply_a4bu.php`. The one-shot applicator runs from Downloads against `H:\OPUS`; it is not copied into the OPUS repository.
+
+Applicator SHA-256:
+
+`6bedea164020a0c15b19f154b952e89758bb23311d674f0d3fd72174ad3f8bff`
+
+Before any write it:
+
+- loads both JSON configurations through `StructuredFileLoader`;
+- validates all three expected canonical Git blobs after LF normalization;
+- validates the expected semantic anchors;
+- computes all three target contents in memory;
+- lints the target `CreationController.php`;
+- uses target-local temporary files with rollback-on-write-failure semantics;
+- verifies exact post-write bytes;
+- removes all temporary/rollback files on success or rollback.
+
+The applicator itself was PHP-linted successfully before packaging.
 
 ## Acceptance
 
@@ -116,7 +141,7 @@ The delivery is a strict one-shot applicator ZIP executed from Downloads against
 6. Create an application successfully: transition reaches `application`, `set_current_app` executes, and the created application is current.
 7. Force/observe a creation failure: transition returns to `creation_review`; the creation page remains displayed with an error alert, trace id and error code; the draft remains available for correction/retry.
 8. Confirm no dedicated failure-state recovery transition remains.
-9. Confirm persisted layout continues to load for unrelated nodes/cards.
+9. Confirm persisted layout continues to load for unrelated nodes/cards and `t_creation_failed` geometry is recomputed for the new target.
 10. Owner alone commits/pushes OPUS after runtime acceptance.
 
 ## Separate blocker
