@@ -55,6 +55,24 @@ The applicator requires the exact A4BX GitHub blobs:
 - `FsmDiagramGeometryNormalizer.php`: `a5cec8b917276fb5bd210ab6a3558a3731277c04`
 - `FsmDiagramGeometryNormalizerInterface.php`: `8b410c5d5be263beb9d1d37e56385d0de1eec526`
 
+## Artifact
+
+`opus_p117w_r45b2a4by_dynamic_vertical_fsm_content_height.zip`
+
+SHA-256:
+
+`7d4f6eecfe722cc700b438f474375e7474af295ce09929aa5952bf1df8db13de`
+
+ZIP content:
+
+- `apply_a4by.php`
+
+Applicator SHA-256:
+
+`d2a2ce544109656b0f595e7dfdf05fab03ba0313077bb3e6191ff1c69dcd81bd`
+
+Applicator lint: OK.
+
 ## Owner commands
 
 ```cmd
@@ -73,6 +91,10 @@ Expected first applicator line:
 
 `P117W_R45B2A4BY_APPLIED`
 
+Expected second line:
+
+`dynamic_vertical_height=last_semantic_object_plus_22px`
+
 ## Browser acceptance
 
 1. Reload OWASYS after restarting the dev server.
@@ -88,9 +110,9 @@ Expected first applicator line:
 
 `40_SPECS/P117W_R45B2A4BY_DYNAMIC_VERTICAL_FSM_CONTENT_HEIGHT_SPEC.md`
 
-Specification commit:
+Current specification commit including artifact hashes:
 
-`c5780a25528fbc2d5f966cd3a3224b08b91dd075`
+`781943682599297b9db859fb278ebdf8a3e87b98`
 
 ## Next
 
