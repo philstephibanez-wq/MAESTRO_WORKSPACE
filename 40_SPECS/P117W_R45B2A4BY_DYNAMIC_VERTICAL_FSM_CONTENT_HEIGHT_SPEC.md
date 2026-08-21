@@ -88,6 +88,26 @@ The applicator refuses to write unless the local OPUS files are exactly the A4BX
 - `Opus/Fsm/FsmDiagramGeometryNormalizer.php` blob `a5cec8b917276fb5bd210ab6a3558a3731277c04`;
 - `Opus/Fsm/FsmDiagramGeometryNormalizerInterface.php` blob `8b410c5d5be263beb9d1d37e56385d0de1eec526`.
 
+## Delivery
+
+Artifact:
+
+`opus_p117w_r45b2a4by_dynamic_vertical_fsm_content_height.zip`
+
+ZIP SHA-256:
+
+`7d4f6eecfe722cc700b438f474375e7474af295ce09929aa5952bf1df8db13de`
+
+Contained one-shot applicator:
+
+`apply_a4by.php`
+
+Applicator SHA-256:
+
+`d2a2ce544109656b0f595e7dfdf05fab03ba0313077bb3e6191ff1c69dcd81bd`
+
+Applicator lint: OK.
+
 ## Runtime acceptance
 
 After apply:
