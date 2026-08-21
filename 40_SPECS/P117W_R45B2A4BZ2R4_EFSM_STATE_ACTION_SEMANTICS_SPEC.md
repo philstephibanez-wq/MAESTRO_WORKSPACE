@@ -1,112 +1,107 @@
-# P117W R45B2A4BZ2R4 — EFSM state action semantics
+# P117W R45B2A4BZ2R4 — EFSM developer-programmed transition semantics
 
-State: ARCHITECTURE CORRECTION — IMPLEMENTATION REQUIRED
+State: ARCHITECTURE CORRECTED — SUPERSEDES THE PREVIOUS R4 STATE-ACTION INTERPRETATION
 
-## User correction
+## Correction
 
-A state in the graphical EFSM designer must not be presented primarily through an OWASYS `module` concept. The semantic notion exposed by the FSM designer is **action**.
+OPUS is a framework whose execution engine is the EFSM. The EFSM model must stay EFSM-only.
 
-## Root cause
+A state is not a module, route, page, screen or action container. The previous R4 proposal introducing `entry_actions`, `do_actions` and `exit_actions` is rejected and must not be implemented.
 
-The current OWASYS `fsm.json` stores application dispatch metadata (`module`, `route`, template/auth/navigation metadata) directly on each state. The generic `FsmProcessor` itself does not require `module` to define a state; it validates state identity, initial/entry semantics and transition relations. `FsmSiteLoader`, however, currently derives application modules from state metadata, which couples application dispatch topology to FSM state semantics.
+## EFSM contract retained for OPUS
 
-This coupling must not define the graphical EFSM model.
+### State
 
-## Correct semantic model
-
-A state is represented by:
+A state carries EFSM state identity/role only:
 
 - `id`;
-- semantic type / role (`entry`, normal, final where applicable);
-- state actions;
-- incoming transitions;
-- outgoing transitions;
-- self transitions;
-- optional extended-state/memory semantics.
+- initial-state membership through the machine-level `initial_state` relation;
+- final-state membership only where the canonical contract supports it.
 
-### State action phases
+Incoming/outgoing/self-transition counts are derived diagnostics, not state semantics.
 
-State behavior uses explicit registered action identifiers:
+### Signal
 
-- `entry_actions`: executed when the state becomes active;
-- `do_actions`: state activity while active, when the runtime contract supports an explicit invocation point;
-- `exit_actions`: executed before leaving the state.
+A signal is an EFSM input/event. OWASYS distinguishes the origin:
 
-No arbitrary PHP is editable in the designer. Actions are selected from an allow-listed OPUS action registry/handler catalog.
+- `user`;
+- `automatic` (automate).
 
-Transition actions/effects remain distinct from state actions:
+Routes are consequences of signal/transition execution in the application runtime. A route is not a constitutive property of an EFSM state.
 
-`source.exit_actions -> transition guards -> transition actions/effects -> target.entry_actions`
+### Transition
 
-`do_actions` are not transition effects.
+A transition owns the executable EFSM relation:
 
-## Designer state inspector
+- source state;
+- signal;
+- ordered guard/condition references;
+- ordered developer action references;
+- native EFSM runtime operations where declared;
+- target state.
 
-Primary EFSM section:
+### Guards
 
-- State ID;
-- role/type;
-- Initial / Final flags where canonical contract allows them;
-- Entry actions;
-- Do actions;
-- Exit actions;
-- Incoming transition count/list;
-- Outgoing transition count/list;
-- self-loop count/list.
+Guards are real predicates programmed by the application developer and registered with the EFSM runtime. The generic OPUS engine must not invent application guard semantics.
 
-There is no `module` field in the semantic state editor.
+A referenced guard without a real registered handler is invalid at execution time and must be diagnosed before publish by the designer validation path.
 
-OWASYS routing/navigation implementation details, while still temporarily present in the existing source contract, must not be presented as FSM state semantics.
+### Actions
 
-## Generic OPUS evolution
+Actions are real application code programmed by the developer and registered with the action dispatcher. The EFSM references the action identifier; the dispatcher executes the developer handler.
 
-The next implementation must be generic OPUS-first:
+The action vocabulary is not a closed framework instruction set. Developers create new actions by writing real PHP handlers and registering them.
 
-1. extend the canonical FSM state contract to support state action lists;
-2. extend `FsmProcessor` validation for registered state action identifiers;
-3. define deterministic state-action execution order;
-4. expose action registry metadata to the designer through a generic OPUS service;
-5. decouple `FsmSiteLoader` module discovery from `states[].module` before removing that legacy field from canonical application FSMs.
+### Native EFSM operations
 
-Any new concrete OPUS framework class must implement its homonymous interface extending directly the four mandatory framework interfaces.
+`push`, `pop`, `poke`, `peek` are native EFSM runtime/memory primitives. They are not developer business actions and must remain distinct from the action-handler layer.
 
-## Compatibility migration
+## Designer contract
 
-Do not delete `module` immediately from existing OWASYS `fsm.json` while `FsmSiteLoader` still derives module directories from it.
+The graphical designer is a development tool/IDE for the OPUS EFSM. It must support both semantic graph editing and developer handler authoring.
 
-Migration is two-stage:
+It must therefore allow the developer to:
 
-### Stage 1
+- create/edit/rename/delete states, signals and transitions according to the canonical EFSM contract;
+- create/edit guards by programming real PHP guard handlers and registering them;
+- create/edit actions by programming real PHP action handlers and registering them;
+- attach ordered guards/actions to transitions;
+- configure native runtime operations separately;
+- validate that every referenced guard/action has a real handler before publish.
 
-- designer stops exposing `module` as state semantics;
-- state actions become first-class canonical semantics;
-- current application routing metadata remains compatibility-only and read-only/advanced until dispatch is decoupled.
+The designer must never create a dangling action/guard name and pretend that it is executable.
 
-### Stage 2
+## Current code truth
 
-- generic OPUS dispatch/module discovery is decoupled from state records;
-- OWASYS FSM source is migrated so state semantic records no longer carry module ownership;
-- application routing bindings move to an application binding/dispatch contract outside the FSM semantic state object.
+`Opus\Fsm\FsmProcessor` already accepts developer guard callables, but it also still contains hard-coded application-specific guard implementations (`app_exists`, `current_app_required`, `must_change_password`, etc.). Those application semantics must leave the generic engine and live in application developer handlers.
 
-## Runtime order
+`Opus\Fsm\FsmActionDispatcher` already requires explicit registered handlers and rejects missing actions. This is the correct action execution direction.
 
-For transition `S --signal--> T`:
+OWASYS already programs real action handlers in `application/default/services/FsmActionHandlers.php` and ACL guard handlers in `application/default/services/FsmGuardHandlers.php`.
 
-1. resolve transition;
-2. evaluate guards without mutation;
-3. if enabled, execute `S.exit_actions`;
-4. execute transition actions/effects/runtime operations;
-5. update current state to `T` according to processor atomicity contract;
-6. execute `T.entry_actions`;
-7. persist runtime snapshot only after successful completion.
+## State metadata contamination
 
-Failure semantics must be transactional or explicitly compensating; no half-transition state is acceptable.
+Current OWASYS `fsm.json` still carries `module`, `route`, template/auth/navigation and diagram metadata inside state records. That is legacy/application projection coupling, not the EFSM state semantic model.
+
+The graphical EFSM inspector must stop presenting these fields as state semantics. Their runtime decoupling is a separate migration and must not be confused with the EFSM core.
+
+## Immediate implementation direction
+
+1. remove application-specific hard-coded guards from generic `FsmProcessor` while preserving behavior by registering them explicitly in OWASYS developer guard handlers;
+2. expose the actual registered/programmable guard and action handler catalog to the designer;
+3. make the state inspector EFSM-only;
+4. make transition inspection distinguish signal, guards, developer actions and native runtime operations;
+5. add handler-authoring integration in a following slice so a developer can create/edit real PHP guard/action code from the designer workflow;
+6. keep all semantic mutations on the required distributed path front -> secured REST -> back -> allow-listed Composer -> response -> front.
+
+Any new concrete OPUS framework class must implement a homonymous interface extending directly the four mandatory framework interfaces.
 
 ## Acceptance
 
-- state designer contains no primary `module` editor;
-- state action semantics are visible and editable as registered action identifiers;
-- entry/do/exit are distinguishable from transition effects;
-- module/routing implementation metadata is not confused with EFSM semantics;
-- existing OWASYS remains deployable during migration;
-- final architecture removes the semantic dependency `state -> module`.
+- no `entry_actions`, `do_actions` or `exit_actions` are introduced;
+- no `module` or `route` is presented as EFSM state semantics;
+- guard semantics are developer code, not hard-coded application logic in the generic engine;
+- action semantics are developer code registered with the dispatcher;
+- native push/pop/poke/peek remain distinct;
+- a missing referenced guard/action is rejected/diagnosed;
+- the designer remains an EFSM development tool, not a JSON form or an application-page designer.
