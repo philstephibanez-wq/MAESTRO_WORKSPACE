@@ -182,7 +182,36 @@ The inspector is structured rather than free-form PHP.
 - existing signal selection or explicit creation;
 - signal type;
 - origin: `user` or `automatic`;
-- menu visibility/order/label metadata where valid.
+- explicit `Dans le menu utilisateur` boolean mapped to canonical `signals[].menu`;
+- menu order;
+- menu I18n label key;
+- menu host/state metadata where the signal type requires it.
+
+### User-menu projection contract
+
+The graphical designer must make menu membership an explicit semantic property of a signal, not an inferred UI side effect.
+
+The signal inspector exposes:
+
+- `Dans le menu utilisateur`: yes/no;
+- menu order when enabled;
+- I18n label key when enabled;
+- target/host information already required by the canonical navigation contract.
+
+This maps to the existing canonical signal metadata (`menu`, `menu_order`, `label_key`, and applicable menu host metadata). No second menu configuration is introduced.
+
+Validation rules follow the existing OWASYS navigation contract:
+
+- only `origin=user` signals may be exposed as human menu controls;
+- `type=navigation` + `menu=true` projects a top-level resource/navigation entry when its target is configured visible and the FSM/ACL permits it;
+- `type=command` + `menu=true` projects a resource-operation submenu/action when actionable;
+- `type=outcome` and `type=system` never become human menu controls;
+- automatic signals cannot be marked as user-menu entries;
+- a menu entry is visible/actionable only when the current FSM state, guards, ACL and target availability allow it.
+
+The designer should disable the menu checkbox for structurally ineligible signals and explain why, rather than allowing an invalid draft silently.
+
+Changing `Dans le menu utilisateur` is a semantic draft edit and participates in Validate / Undo / Redo / Publish.
 
 ### Guards / conditions
 
@@ -277,6 +306,7 @@ The editor API is semantic and entity-based, not text-patch based:
 - create/update/rename/delete signal where supported by canonical identity rules;
 - create/update/rename/delete transition;
 - create/update/rename/delete condition/guard catalog entries;
+- set signal user-menu projection and its metadata;
 - set initial state;
 - validate complete definition.
 
@@ -331,7 +361,7 @@ Suggested resource capabilities:
 
 - FSM state resource: CRUD + rename/refactor;
 - FSM transition resource: CRUD + rename/refactor;
-- FSM signal resource: CRUD + rename/refactor where enabled;
+- FSM signal resource: CRUD + rename/refactor + menu projection where enabled;
 - FSM condition resource: CRUD + rename/refactor;
 - FSM layout resource: update/reset Bézier/control geometry;
 - FSM publish capability separated from ordinary draft editing.
@@ -350,6 +380,7 @@ At minimum validate:
 - every referenced signal exists;
 - every referenced condition/guard exists and is registered;
 - signal origin/type contract;
+- menu=true only for eligible user-origin signals and valid navigation/command projection metadata;
 - registered guard/action handlers;
 - runtime-operation schema;
 - global scope/from_states consistency;
@@ -370,6 +401,7 @@ Designer activity must remain measurable and correlated:
 - designer open;
 - semantic draft command;
 - semantic rename/refactor command;
+- signal menu projection change;
 - Bézier/layout edit;
 - REST validation request;
 - backend validation;
@@ -387,6 +419,7 @@ No secret or fabricated event data.
 - select state/transition;
 - SCORE inspector read-only;
 - runtime signal execution disabled in design mode;
+- inspector shows signal origin/type/menu/menu order/label metadata read-only;
 - expose transition Bézier handles read-only/preview-ready metadata;
 - no semantic mutation yet.
 
@@ -403,6 +436,7 @@ No secret or fabricated event data.
 
 - graphical source->target creation;
 - signal inspector;
+- explicit `Dans le menu utilisateur` toggle with menu metadata;
 - condition/guard catalog and rename support;
 - guard/action/runtime-operation builders;
 - create/edit/rename/delete transition;
@@ -428,7 +462,7 @@ No secret or fabricated event data.
 
 ### A4BZ5 — UX completion
 
-- bounded undo/redo covering semantic refactors and layout edits;
+- bounded undo/redo covering semantic refactors, menu projection and layout edits;
 - keyboard shortcuts;
 - diagnostics overlay/drawer;
 - explicit orphan cleanup;
@@ -442,4 +476,4 @@ The graphical designer is an editor of the canonical EFSM, not a competing model
 
 must preserve every semantic field not explicitly modified by the user.
 
-A rename must be a dependency-safe semantic refactor. A Bézier edit must be presentation-only.
+A rename must be a dependency-safe semantic refactor. A Bézier edit must be presentation-only. User-menu membership must remain canonical signal metadata, never a parallel menu configuration.
