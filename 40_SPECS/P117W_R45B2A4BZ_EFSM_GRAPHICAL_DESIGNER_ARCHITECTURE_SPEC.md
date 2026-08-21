@@ -60,8 +60,9 @@ Clicks select semantic objects instead of firing application signals. This preve
 A sticky toolbar is projected above the existing diagram:
 
 - Selection;
-- State: Create / Edit / Delete;
-- Transition: Create / Edit / Delete;
+- State: Create / Edit / Rename / Delete;
+- Transition: Create / Edit / Rename / Delete;
+- Condition: Create / Edit / Rename / Delete when condition catalog support is available;
 - Undo / Redo;
 - Validate;
 - Publish;
@@ -117,6 +118,51 @@ Selecting a transition edge or signal card opens the transition inspector.
 
 Delete only the selected transition. If its referenced signal becomes orphaned, the designer reports that separately and offers explicit signal cleanup; it never silently removes shared signal semantics.
 
+## Semantic rename / refactor operations
+
+Rename is not implemented as delete + create and not as blind text replacement. It is an atomic semantic refactor command with dependency analysis and validation.
+
+### Rename state
+
+Renaming a state ID must update every canonical reference in the same draft transaction, including as applicable:
+
+- `states[].id`;
+- `initial_state`;
+- transition `from`;
+- transition `next_state` / target;
+- finite global `from_states`;
+- state-keyed semantic metadata owned by the canonical FSM contract.
+
+Presentation references in `fsm.layout.json` are migrated separately but atomically with the semantic rename so the visual placement is preserved.
+
+The rename is rejected if the target ID already exists or if any dependent reference cannot be migrated deterministically.
+
+### Rename transition
+
+Renaming a transition ID updates:
+
+- the canonical transition ID;
+- transition-keyed persisted geometry in `fsm.layout.json`;
+- any designer/runtime metadata whose identity contract is explicitly transition-ID based.
+
+It does not change signal identity, source, target, guards or actions.
+
+### Rename condition / guard
+
+The current canonical model represents transition conditions as guard references. To support reliable graphical CRUD/rename, conditions must have stable semantic identity rather than being edited as arbitrary PHP text.
+
+Preferred generic evolution: introduce/standardize a first-class condition/guard catalog whose entries have:
+
+- condition ID;
+- registered handler/binding;
+- optional description/schema metadata.
+
+Transitions reference condition IDs. `renameCondition(old,new)` then updates the catalog ID and every transition guard reference atomically.
+
+Until this catalog exists, a guard rename is permitted only when OPUS can prove that the guard token is a registered symbolic handler identifier and can migrate every reference safely. Arbitrary PHP/expression text remains forbidden.
+
+The same refactor principle may later be reused for signal/action renaming where their canonical identity warrants it.
+
 ## Transition inspector
 
 The inspector is structured rather than free-form PHP.
@@ -154,6 +200,63 @@ Ordered selection of registered/allowed action handlers. Arbitrary PHP code is f
 
 Structured editor for the canonical runtime-operation vocabulary, including the existing stack/memory operations (`push`, `pop`, `poke`, `peek`) and their schema-defined operands.
 
+## Editable Bézier transition geometry
+
+All normal transition arrows should use cubic Bézier presentation geometry in Design mode, while preserving the semantic source/target endpoints.
+
+### Geometry model
+
+A transition curve is represented as:
+
+`P0 -> C1 -> C2 -> P3`
+
+where:
+
+- `P0` is the source anchor/port;
+- `P3` is the target anchor/port;
+- `C1` and `C2` are draggable Bézier control points.
+
+The rendered SVG path uses a cubic `C` command.
+
+### Interactive editing
+
+When a transition is selected in Design mode:
+
+- show source/target anchors;
+- show two control handles;
+- draw light helper lines `P0-C1` and `C2-P3`;
+- dragging C1/C2 updates only presentation geometry;
+- dragging the signal card remains independent from curve editing;
+- a `Reset curve` command restores generic automatic routing.
+
+Self loops also use Bézier geometry with loop-specific control points.
+
+### Persistence
+
+Bézier control geometry belongs only to `fsm.layout.json`.
+
+Prefer storing control points as offsets relative to the attached source/target anchors rather than absolute coordinates. This allows a state to move while retaining the visual character of its connected curve.
+
+Suggested transition layout payload:
+
+```json
+{
+  "path_kind": "cubic_bezier",
+  "source_control": {"dx": 90, "dy": 0},
+  "target_control": {"dx": -90, "dy": 0},
+  "label_x": 0,
+  "label_y": 0
+}
+```
+
+Exact storage schema remains an OPUS generic layout contract decision. Semantics are never inferred from control-point geometry.
+
+### Automatic routing fallback
+
+If no manual Bézier control geometry is persisted, the generic OPUS renderer computes deterministic cubic Bézier control points from source/target ports and collision/routing rules.
+
+Manual geometry wins only for the selected transition's presentation. Delete/reset of manual geometry returns to automatic routing.
+
 ## Generic OPUS layer
 
 The semantic editing engine must be generic OPUS functionality before OWASYS-specific UI is added.
@@ -163,15 +266,17 @@ Proposed components:
 - `FsmDefinitionEditorInterface` / `FsmDefinitionEditor`;
 - `FsmDefinitionValidatorInterface` / `FsmDefinitionValidator`;
 - optional `FsmDefinitionDiffInterface` / `FsmDefinitionDiff` for diagnostics/preview;
-- extension of the native FSM diagram component with design-mode selection metadata and designer interaction hooks.
+- extension of the native FSM diagram component with design-mode selection metadata and designer interaction hooks;
+- generic Bézier transition-layout support in the renderer/layout persistence layer.
 
 Every new concrete OPUS class must implement a homonymous interface extending directly the four mandatory OPUS framework interfaces.
 
 The editor API is semantic and entity-based, not text-patch based:
 
-- create/update/delete state;
-- create/update/delete signal;
-- create/update/delete transition;
+- create/update/rename/delete state;
+- create/update/rename/delete signal where supported by canonical identity rules;
+- create/update/rename/delete transition;
+- create/update/rename/delete condition/guard catalog entries;
 - set initial state;
 - validate complete definition.
 
@@ -224,9 +329,11 @@ Deny-by-default.
 
 Suggested resource capabilities:
 
-- FSM state resource: CRUD;
-- FSM transition resource: CRUD;
-- FSM signal resource: CRUD;
+- FSM state resource: CRUD + rename/refactor;
+- FSM transition resource: CRUD + rename/refactor;
+- FSM signal resource: CRUD + rename/refactor where enabled;
+- FSM condition resource: CRUD + rename/refactor;
+- FSM layout resource: update/reset Bézier/control geometry;
 - FSM publish capability separated from ordinary draft editing.
 
 SSO identity, CSRF protection, REST authentication and existing OWASYS front/back correlation remain mandatory.
@@ -237,19 +344,22 @@ Publish is disabled on blocking diagnostics.
 
 At minimum validate:
 
-- unique state/signal/transition IDs;
+- unique state/signal/transition/condition IDs;
 - valid initial state;
 - every transition source/target exists;
 - every referenced signal exists;
+- every referenced condition/guard exists and is registered;
 - signal origin/type contract;
 - registered guard/action handlers;
 - runtime-operation schema;
 - global scope/from_states consistency;
 - navigation/module/route contract where applicable;
 - no illegal deletion dependencies;
-- layout semantics remain presentation-only.
+- semantic rename leaves no stale reference;
+- layout semantics remain presentation-only;
+- persisted Bézier geometry references existing transitions and finite numeric control points.
 
-Non-blocking diagnostics may include unreachable states or orphaned non-referenced signal definitions, according to the canonical contract.
+Non-blocking diagnostics may include unreachable states or orphaned non-referenced signal/condition definitions, according to the canonical contract.
 
 Invalid objects are highlighted directly in the graph and listed in a diagnostics drawer.
 
@@ -259,6 +369,8 @@ Designer activity must remain measurable and correlated:
 
 - designer open;
 - semantic draft command;
+- semantic rename/refactor command;
+- Bézier/layout edit;
 - REST validation request;
 - backend validation;
 - Composer publish;
@@ -275,23 +387,35 @@ No secret or fabricated event data.
 - select state/transition;
 - SCORE inspector read-only;
 - runtime signal execution disabled in design mode;
+- expose transition Bézier handles read-only/preview-ready metadata;
 - no semantic mutation yet.
 
-### A4BZ2 — State CRUD
+### A4BZ2 — State CRUD + rename
 
 - generic OPUS state editor/validator;
-- graphical create/edit/delete state;
+- graphical create/edit/rename/delete state;
+- atomic dependent-reference migration;
 - dependency diagnostics;
 - draft redraw;
 - no Publish yet.
 
-### A4BZ3 — Transition + signal CRUD
+### A4BZ3 — Transition + signal + condition CRUD/refactor
 
 - graphical source->target creation;
 - signal inspector;
+- condition/guard catalog and rename support;
 - guard/action/runtime-operation builders;
-- edit/delete transition;
+- create/edit/rename/delete transition;
 - draft redraw.
+
+### A4BZ3B — Bézier transition editor
+
+- generic cubic Bézier routing for normal transitions;
+- control-point handles in Design mode;
+- relative persisted control geometry;
+- self-loop Bézier support;
+- reset-to-automatic routing;
+- no semantic mutation from geometry edits.
 
 ### A4BZ4 — Secure publish
 
@@ -304,7 +428,7 @@ No secret or fabricated event data.
 
 ### A4BZ5 — UX completion
 
-- bounded undo/redo;
+- bounded undo/redo covering semantic refactors and layout edits;
 - keyboard shortcuts;
 - diagnostics overlay/drawer;
 - explicit orphan cleanup;
@@ -317,3 +441,5 @@ The graphical designer is an editor of the canonical EFSM, not a competing model
 `canonical fsm.json -> designer -> publish -> canonical fsm.json`
 
 must preserve every semantic field not explicitly modified by the user.
+
+A rename must be a dependency-safe semantic refactor. A Bézier edit must be presentation-only.
