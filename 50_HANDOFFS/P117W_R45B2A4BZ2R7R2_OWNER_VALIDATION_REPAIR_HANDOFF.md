@@ -1,10 +1,14 @@
 # P117W R45B2A4BZ2R7R2 — Owner validation repair handoff
 
-State: DELIVERY PREPARED — OWNER VALIDATION REQUIRED
+State: OWNER APPLIED — VISUAL MENU/DIAGRAM ACCEPTANCE OBSERVED; PERSISTENCE ACCEPTANCE NOT EXPLICITLY RECORDED
 
 ## Exact OPUS baseline
 
 `340d195907c7743154728578c255fe6ea46b7c14`
+
+## Owner commit after application
+
+`9fdf45ae0ec9d8ce90db0a204b9e3330f9037cae` (`opus_p117w_r45b2a4bz2r7r2_owner_validation_repair`).
 
 ## Artifact
 
@@ -24,7 +28,7 @@ The assistant does not commit/push OPUS/OWASYS.
 
 ## Why R7R2 exists
 
-R7R1 owner validation failed. The resulting current OPUS commit changed only `sites/owasys-front/config/fsm.layout.json` relative to R7, while the canonical EFSM/menu/routes source remained unchanged. The live logs then exposed additional generic OPUS defects in layout persistence and signal-origin normalization.
+R7R1 owner validation failed. The resulting OPUS commit changed only `sites/owasys-front/config/fsm.layout.json` relative to R7, while the canonical EFSM/menu/routes source remained unchanged. Live logs then exposed additional generic OPUS defects in layout persistence and signal-origin normalization.
 
 ## Corrected causes
 
@@ -53,39 +57,28 @@ Exactly nine:
 
 ## Pre-delivery verification performed
 
-Applicator:
-
-- `php -l`: OK;
-- ZIP extraction: exactly one applicator, lint OK.
-
-Transactional synthetic clean-Git fixture:
-
-- exact-baseline/hash variant of applicator applied end-to-end;
+- applicator `php -l`: OK;
+- transactional clean-Git fixture: full applicator execution OK;
 - exactly nine changed paths produced;
-- all four changed PHP sources linted after transformation;
+- changed PHP sources linted;
 - embedded layout JavaScript extracted and `node --check` passed;
-- `workflows` removed;
-- five false FSM menu signals removed;
-- all transition references to removed objects eliminated;
-- canonical and localized `fsm` routes removed;
-- layout remained vertical and `workflows` geometry removed;
-- second application refused with exit code 20;
-- forced post-write verification failure rolled all files back to a clean Git status.
-
-Behavioral tests on transformed fixture:
-
+- false `workflows` state and five false FSM menu signals removed;
+- transition references to removed objects eliminated;
+- canonical/localized `fsm` routes removed;
+- layout remained vertical and obsolete geometry pruned;
+- second application refused;
+- forced post-write verification failure rolled all files back;
 - `signalOrigin('unspecified')` accepted;
-- `persistLayout:false` prevented layout-store discovery while default `true` preserved canonical behavior;
-- invalid state coordinate with a valid CSRF token failed on coordinate validation but left the token usable;
-- retry of a valid payload with that same token succeeded;
-- reuse after successful save failed `OPUS_CSRF_TOKEN_INVALID`;
-- stale runtime snapshot error cleared/reset state and emitted `runtime.snapshot.reset`.
+- invalid geometry leaves one-use CSRF token reusable until a successful persistence consumes it;
+- stale removed-state snapshot reset path validated.
+
+## Owner observation after application
+
+The owner-provided 2026-08-22 screenshot shows the normal OWASYS navigation without the former top-level `FSM` item and shows the canonical vertical EFSM diagram without the deleted `workflows` state. This is recorded as visual acceptance of the menu/diagram correction only. A distinct explicit owner statement that drag/layout persistence survives refresh has not been recorded here, so persistence is not marked fully owner-accepted by this handoff.
 
 ## Expected applicator markers
 
 `P117W_R45B2A4BZ2R7R2_APPLIED`
-
-Additional markers:
 
 - `baseline=340d195907c7743154728578c255fe6ea46b7c14`
 - `menu_fsm=removed_structurally`
@@ -98,20 +91,6 @@ Additional markers:
 - `stale_removed_state_session=profiled_reset`
 - `changed_files=9`
 
-## Owner validation
-
-After application:
-
-1. lint changed PHP and JS-related sources;
-2. regenerate Composer autoload;
-3. validate both OWASYS applications;
-4. verify the top menu has no `FSM` entry;
-5. verify `/fr-FR/fsm` is no longer a public route;
-6. open the developer EFSM designer through its developer control/query and verify the same persisted vertical diagram is used;
-7. right-drag and persist several states/signals; refresh and verify geometry survives;
-8. verify no `OPUS_FSM_DIAGRAM_LAYOUT_COORDINATE_INVALID` or CSRF cascade appears in fresh logs;
-9. inspect `git status --short`: exactly nine changed paths before owner commit.
-
 ## Next slice
 
-Only after owner validation succeeds: resume real PHP GUARD/ACTION authoring from the EFSM designer through the mandatory `owasys-front -> secured REST -> owasys-back -> Composer -> response -> owasys-front` flow.
+R8A establishes the real developer-programmed GUARD/ACTION PHP source authority and secured write pipeline before enabling the graphical source editor in R8B.
