@@ -1,6 +1,6 @@
 # P117W R45B2A4BZ2R8A2 — Runtime boot ACL repair handoff
 
-State: DELIVERY PREPARED — OWNER VALIDATION REQUIRED
+State: OWNER VALIDATION INCOMPLETE — FRESH PROCESS REQUIRED
 
 ## Baseline
 
@@ -8,79 +8,30 @@ Owner OPUS HEAD remains:
 
 `9fdf45ae0ec9d8ce90db0a204b9e3330f9037cae`
 
-R8A is applied locally and not pushed. R8B is blocked. The latest owner runtime trace proves the front still executes the original R8A duplicate dynamic ACL collision branch at `FsmGuardHandlers.php:68`.
+R8A/R8A1R1/R8A2 are local and unpushed. R8B is blocked.
 
-## Artifact
+## Corrected interpretation of latest owner logs
 
-`opus_p117w_r45b2a4bz2r8a2_runtime_boot_acl_repair.zip`
+The front process was not restarted after the repair: the same log contains one `development_server.starting` at `2026-08-22T11:39:57Z` and later failures at `2026-08-22T21:59:21Z` through `21:59:34Z`, with no intervening start event.
 
-ZIP SHA-256:
+The later error still reports `FsmGuardHandlers.php:68`. In the original R8A source, line 68 is the duplicate ACL `throw`; in canonical R8A2, line 68 is not an exception line. Thus the uploaded runtime evidence is from the old source image and cannot validate or invalidate the canonical R8A2 file.
 
-`d0cbdaf4a8540009be2c3d147035f85f122413e8de5d4f9d1c05d0deeba15921`
-
-Applicator SHA-256:
-
-`0e9416f91b5ebb3441f2a781e17fbcb0a994555da8ece31b1df38f250d539e6e`
-
-The ZIP contains exactly one differential applicator: `apply_a4bz2r8a2.php`.
-
-The assistant does not commit/push OPUS/OWASYS.
-
-## Exact target
+## Canonical R8A2 target
 
 `sites/owasys-front/application/default/services/FsmGuardHandlers.php`
 
-Accepted known source states, after canonical EOL normalization:
+Expected SHA-256 after R8A2:
 
-- original R8A: SHA-256 `2532c0fe5bfa6397a70dcb8a29adba636fee60a4d3d8f751b6802ec0d3b7b4d8`;
-- previous R8A1R1: SHA-256 `e7c03e31c351f2d895222057bad57f92e8ba726b120517e55676f463991f69a4`.
+`6007cf1be5b627aa29a9252c2d1c9cc73a8c0375551e601c6956bf8a6244ccf9`
 
-Canonical result SHA-256:
+## Required owner gate
 
-`6007cf1be5b627aa29a9252c2d1c9cc73a8c0375551e601c6956bf8a6244ccf9`.
+1. verify the target SHA;
+2. stop the existing listeners on ports 8000 and 8080;
+3. start new `owasys-front` and `owasys-back` dev-server processes;
+4. verify the new logs contain fresh `development_server.starting` events;
+5. request `/fr-FR`;
+6. only if the error persists on the fresh process continue code diagnosis;
+7. no commit/push before successful boot.
 
-Any unknown target content is refused.
-
-## Corrected runtime semantics
-
-- developer handlers are kept in `$managedHandlers`;
-- `acl:*` reserved namespace is checked only against those developer handlers;
-- runtime `$handlers` starts as `$managedHandlers`;
-- first valid `acl:<resource>:<action>` reference synthesizes the security callable;
-- repeated references reuse the synthesized callable idempotently;
-- developer-owned `acl:*` remains forbidden.
-
-## Verification performed
-
-- final applicator `php -l`: OK;
-- test fixture with exact original R8A source hash: application success;
-- result target SHA verified `6007cf1b...`;
-- resulting target `php -l`: OK;
-- second application: `P117W_R45B2A4BZ2R8A2_ALREADY_FIXED` and no mutation;
-- fixture with exact previous R8A1R1 source also accepted and converted to the same canonical result;
-- behavioral PHP probe: repeated `acl:foo:read` reference idempotent, distinct `acl:bar:update` synthesized, actual security delegation executed, developer `acl:*` injection still rejected.
-
-## Expected markers
-
-`P117W_R45B2A4BZ2R8A2_APPLIED`
-
-- `cause=runtime_still_executed_r8a_duplicate_acl_collision_branch`
-- `managed_acl_namespace=checked_only_against_developer_handlers`
-- `dynamic_acl_reference=idempotent_reuse`
-- `target_sha256=6007cf1be5b627aa29a9252c2d1c9cc73a8c0375551e601c6956bf8a6244ccf9`
-- `changed_files=1`
-
-## Owner validation
-
-1. apply R8A2;
-2. verify target SHA `6007cf1b...`;
-3. lint target;
-4. regenerate optimized Composer autoload;
-5. validate both sites;
-6. fully restart front and back dev servers;
-7. open `/fr-FR` before the designer;
-8. confirm no `OWASYS_EFSM_ACL_GUARD_NAMESPACE_RESERVED` appears;
-9. inspect fresh front/back logs;
-10. do not commit/push until boot is successful.
-
-R8B stays blocked until this gate passes.
+A dedicated R8A2V runtime-refresh gate is delivered next so this restart cannot be skipped accidentally.
