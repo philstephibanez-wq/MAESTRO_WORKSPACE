@@ -1,76 +1,49 @@
 # P117W R45B2A4BZ2R7R1 — Single EFSM graphics authority
 
-State: DELIVERY PREPARED — OWNER VALIDATION REQUIRED
+State: OWNER VALIDATION FAILED — SUPERSEDED BY R7R2
 
 ## Baseline
 
-OPUS baseline: `72101e0cfb77f2933284371e142d30b3d30073ad` (`opus_p117w_r45b2a4bz2r7_authoritative_handler_binding`).
+Intended OPUS baseline: `72101e0cfb77f2933284371e142d30b3d30073ad` (`opus_p117w_r45b2a4bz2r7_authoritative_handler_binding`).
 
-## Root cause
+Owner commit after attempted validation: `340d195907c7743154728578c255fe6ea46b7c14` (`opus_p117w_r45b2a4bz2r7r1_single_graphics_authority`).
 
-OWASYS currently exposes two distinct FSM rendering paths for the same `owasys-front` canonical EFSM.
+## Intended correction
 
-1. The normal OWASYS EFSM surface is built by `OwasysFsmDiagramBuilder`, which renders the canonical `config/fsm.json` vertically and uses the portable `config/fsm.layout.json` presentation store.
-2. The user-visible `FSM` menu enters state `workflows`; `OwasysRuntimeController` then asks `OwasysApplicationFsmModel` to render the selected application's FSM. For `owasys-front`, that model reads the same canonical `config/fsm.json`, but calls `OPUS_FSM_Diagram::renderDefinition()` with its default horizontal direction.
-3. `FsmDiagramLayoutStore::discover()` binds that second render to the host `owasys-front/config/fsm.layout.json`. Because the stored direction is vertical while the second renderer requests horizontal, `loadPersisted()` rejects the existing layout and `resolve()` may persist the automatically generated horizontal layout in DEV.
-4. The normal vertical renderer can then regenerate/persist vertical geometry again. Therefore the same graphics file can be rewritten under two rendering contracts, producing visibly different diagrams.
+R7R1 intended to remove the false user-facing FSM destination, isolate read-only FSM projection from the host layout persistence, keep `sites/owasys-front/config/fsm.layout.json` as the single vertical graphics authority, and reset stale runtime snapshots after removal of the `workflows` state.
 
-This is the cause to remove. It is not a CSS issue and not two independent canonical graphics files.
+## Owner validation result
 
-## Invariants
+FAILED.
 
-- OPUS is a framework; the EFSM is its execution engine.
-- `FSM` is not a user navigation destination in OWASYS.
-- The EFSM designer is developer tooling, not a user-facing runtime state/module.
-- `sites/owasys-front/config/fsm.json` remains the canonical EFSM definition.
-- `sites/owasys-front/config/fsm.layout.json` is the single portable graphics authority for that definition.
-- A read-only projection of an arbitrary FSM definition must never auto-discover and mutate the host application's layout file.
+The real OPUS commit produced after validation differs from R7 in only one tracked path: `sites/owasys-front/config/fsm.layout.json`. The intended source/configuration changes were therefore not present in the owner baseline now on GitHub.
 
-## Generic OPUS correction
+Consequences observed on the real runtime:
 
-`OPUS_FSM_Diagram::renderDefinition()` gains an optional final boolean `persistLayout` parameter, default `true` for existing canonical runtime rendering.
+- `sites/owasys-front/config/fsm.json` still contains state `workflows` with `module=fsm`, `route=fsm` and visible navigation metadata;
+- signal `open_fsm` remains `menu=true`;
+- FSM CRUD menu signals remain;
+- transition `g_open_fsm` remains;
+- `config/routes.json` still maps `fsm -> open_fsm`;
+- localized route `fsm` remains;
+- the user-facing FSM entry therefore still exists;
+- a POST used for graphics persistence fails first with `OPUS_FSM_DIAGRAM_LAYOUT_COORDINATE_INVALID`, then later saves repeatedly fail with `OPUS_CSRF_TOKEN_INVALID`;
+- GET `/fr-FR/fsm` fails with `OPUS_FSM_DIAGRAM_SIGNAL_ORIGIN_INVALID`.
 
-When `persistLayout=false`, the renderer does not discover or write `FsmDiagramLayoutStore`.
+## Additional root causes found during failed owner validation
 
-`OwasysApplicationFsmModel` explicitly renders its read-only projection with `persistLayout:false` so a remotely/read-only sourced definition cannot mutate the OWASYS host layout.
+### 1. Single-use CSRF consumed before geometry validation
 
-No new concrete OPUS framework class is introduced.
+`FsmDiagramLayoutStore::applySaveRequest()` validates/consumes the layout CSRF token before validating state coordinates and presentation geometry. `CsrfTokenManager` is single-use. Therefore one malformed geometry request consumes the token and fails afterwards; the browser cannot rotate a token from the failed response and every retry reuses a stale token.
 
-## OWASYS navigation correction
+### 2. Client presentation geometry can emit invalid coordinates
 
-Remove the obsolete user-facing FSM destination from the canonical OWASYS runtime EFSM:
+The development drag script serializes derived state/signal/marker coordinates without a finite/canvas-bound validation step. The server correctly rejects negative/non-finite/out-of-range coordinates, but the client must not emit them.
 
-- remove state `workflows`;
-- remove signals `open_fsm`, `create_fsm`, `read_fsm`, `update_fsm`, `delete_fsm`;
-- remove transitions using those signals or the removed state;
-- remove `workflows` from remaining finite global `from_states` sets;
-- remove canonical route `fsm -> open_fsm`;
-- remove localized public route `fsm`.
+### 3. Signal-origin normalization is not idempotent
 
-The ACL resource `fsm` is retained because `fsm:update` remains the authorization capability for the developer designer.
+`Diagram::signalOrigin('')` returns `unspecified`, but the same normalizer rejects literal `unspecified`. Definitions whose signals omit `origin` can therefore fail when metadata is normalized a second time. This is visible when rendering the backend FSM, whose signals currently omit `origin`.
 
-## Graphics migration
+## Disposition
 
-`config/fsm.layout.json` remains `OPUS_FSM_DIAGRAM_LAYOUT_V4` and `layout_direction=vertical`.
-
-The migration removes presentation entries for the deleted `workflows` state and for transitions no longer present in the canonical EFSM, preserves all remaining persisted geometry, and updates `definition_sha256` to the new canonical `fsm.json` bytes.
-
-## Runtime snapshot compatibility
-
-Removing a canonical state can leave an existing PHP session with a stale EFSM runtime snapshot. `OwasysRuntimeController` must detect only `OPUS_FSM_RUNTIME_SNAPSHOT_STATE_UNKNOWN:*`, clear that obsolete snapshot, reset the processor to the canonical initial state, and emit a profiler event `fsm/runtime.snapshot.reset`. Other restore errors remain fatal.
-
-## UI revision
-
-The visible FSM partial no longer says `menu = FSM`; revision marker becomes `A4BZ2R7R1`.
-
-## Acceptance
-
-- no `FSM` top-level menu item is generated;
-- canonical `fsm.json` contains no `workflows`, `open_fsm`, or FSM CRUD menu signals;
-- public/localized route catalogs contain no `fsm` route;
-- canonical vertical `config/fsm.layout.json` remains the single graphics persistence authority;
-- read-only `OwasysApplicationFsmModel` cannot mutate any host layout file;
-- stale session state removed by the new definition resets safely and is profiled;
-- PHP lints pass;
-- `composer opus:validate-site -- owasys-front` and `-- owasys-back` remain owner acceptance checks;
-- no JavaScript is added to `sites/owasys-back`.
+R7R1 must not be considered validated or delivered. Its claims are superseded by P117W R45B2A4BZ2R7R2, which starts from the exact real owner baseline `340d195907c7743154728578c255fe6ea46b7c14` and treats all three runtime failures plus the still-present FSM menu at their causes.
