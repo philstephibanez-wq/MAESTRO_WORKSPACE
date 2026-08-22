@@ -1,28 +1,36 @@
 # P117W R45B2A4BZ2R8B — Graphical PHP GUARD/ACTION authoring handoff
 
-State: BLOCKED — DO NOT APPLY/VALIDATE UNTIL R8A2 BOOT ACCEPTANCE
+State: OWNER COMMITTED/PUSHED — RUNTIME FAILED — REPAIR REQUIRED
 
-## Owner runtime result
+## Actual OPUS baseline now on GitHub
 
-After the attempted continuation, `owasys-front` still fails on the first `/fr-FR` request with `OWASYS_EFSM_ACL_GUARD_NAMESPACE_RESERVED` in `FsmGuardHandlers.php:68`.
+Commit:
 
-That line is the exact original R8A duplicate-ACL collision throw. The backend receives no business request before the front fails.
+`8c7f254ad9080c46bb4da4af272a5c7cd2d4a129`
 
-R8B therefore has no valid runtime acceptance basis yet. Its graphical handler authoring work is not the current target.
+Message:
 
-## Required recovery first
+`opus_p117w_r45b2a4bz2r8b_graphical_php_handler_authoring`
 
-Apply and owner-validate:
+This supersedes the earlier assumption that R8A/R8B still existed only in an uncommitted working tree.
 
-`P117W_R45B2A4BZ2R8A2_RUNTIME_BOOT_ACL_REPAIR`
+## Runtime failure
 
-Acceptance gate before returning to R8B:
+`owasys-front` returns HTTP 500 with:
 
-- `/fr-FR` boots successfully after fresh dev-server restart;
-- no `OWASYS_EFSM_ACL_GUARD_NAMESPACE_RESERVED` from repeated dynamic ACL references;
-- both sites validate;
-- no push/commit of the R8A stack until runtime boot succeeds.
+`OWASYS_EFSM_ACL_GUARD_NAMESPACE_RESERVED`
 
-## Historical R8B artifact
+before any REST call reaches `owasys-back`.
 
-The previously prepared R8B artifact and checks remain historical only. Do not stack further designer changes while the front runtime is failing before REST dispatch.
+Inspection of this exact R8B commit confirms `sites/owasys-front/application/default/services/FsmGuardHandlers.php` still contains the original duplicate dynamic-ACL collision branch:
+
+- first `acl:<resource>:<action>` occurrence inserts a dynamic handler into the runtime map;
+- a later occurrence finds that handler and incorrectly throws the reserved-namespace exception.
+
+## Required repair
+
+P117W R45B2A4BZ2R8B1 is the only current recovery slice.
+
+It is bound to HEAD `8c7f254ad9080c46bb4da4af272a5c7cd2d4a129`, repairs or accepts the canonical fixed guard source idempotently, then forces a genuinely fresh front/back runtime before probing `/fr-FR`.
+
+Do not continue designer evolution until R8B1 owner runtime acceptance passes.
