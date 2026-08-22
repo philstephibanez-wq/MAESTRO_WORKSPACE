@@ -1,10 +1,14 @@
 # P117W R45B2A4BZ2R8A2 — Runtime boot ACL repair
 
-State: DELIVERY PREPARED — OWNER VALIDATION REQUIRED
+State: DELIVERY PREPARED — OWNER VALIDATION NOT YET EXECUTED ON A FRESH PROCESS
 
-## Runtime evidence
+## Corrected runtime evidence
 
-The restarted owner `owasys-front` runtime still fails on the first `/fr-FR` request with:
+The owner logs do **not** show a fresh restart after R8A2.
+
+`owasys-front` has a single `development_server.starting` event at `2026-08-22T11:39:57Z`, while the later failures occur at `2026-08-22T21:59:21Z` through `21:59:34Z`. There is no second `development_server.starting` event between them.
+
+The later requests still fail with:
 
 `OWASYS_EFSM_ACL_GUARD_NAMESPACE_RESERVED`
 
@@ -12,64 +16,30 @@ at:
 
 `sites/owasys-front/application/default/services/FsmGuardHandlers.php:68`.
 
-The backend only starts and receives no business request before this front-side failure.
+This line number is decisive:
 
-The original R8A generated `FsmGuardHandlers.php` has its duplicate dynamic ACL collision `throw new RuntimeException(...)` exactly at line 68. The previously intended R8A1R1 corrected source does not. Therefore the live evidence establishes that the runtime is still executing the original R8A collision branch.
+- original R8A source: line 68 is `throw new RuntimeException(...)` for the duplicate ACL collision;
+- canonical R8A2 result: line 68 is the continuation of `$guards = $transition['guards'] ?? ...` and cannot throw that exception.
 
-## Root cause semantics
+Therefore the uploaded trace proves only that the long-lived front process still executed the original R8A source image. It does **not** constitute a failed runtime validation of the canonical R8A2 file.
 
-R8A used one `$handlers` map for two ownership domains:
+The backend log likewise contains only its earlier start event and no business request.
 
-1. developer-managed guards from `FsmDeveloperHandlers.php`;
-2. dynamic `acl:<resource>:<action>` handlers synthesized while scanning transitions.
+## R8A2 correction
 
-The first reference to a dynamic ACL relation inserts its callable in `$handlers`. A later transition referencing the same ACL relation sees the entry and the original R8A branch throws `OWASYS_EFSM_ACL_GUARD_NAMESPACE_RESERVED`, incorrectly treating a valid dynamic reuse as developer namespace ownership.
-
-## Correction
-
-R8A2 makes ownership explicit:
+R8A2 makes ACL ownership explicit:
 
 - `$managedHandlers` contains developer-programmed guards only;
 - the reserved `acl:*` namespace invariant is checked only against `$managedHandlers`;
-- `$handlers = $managedHandlers` then becomes the runtime map;
-- the first `acl:*` transition reference validates and synthesizes the dynamic callable;
-- later references use `array_key_exists($guard, $handlers)` and `continue`, making reuse idempotent;
-- developer-programmed `acl:*` IDs remain blocking errors.
+- `$handlers = $managedHandlers` becomes the runtime map;
+- first `acl:*` transition reference synthesizes the dynamic callable;
+- later references reuse it idempotently;
+- developer-programmed `acl:*` IDs remain forbidden.
 
-No generic OPUS engine change is required. This remains the OWASYS application ACL adapter.
+Canonical target SHA-256:
 
-## Recovery robustness
-
-The applicator accepts either known local source state after EOL normalization:
-
-- original R8A source SHA-256 `2532c0fe5bfa6397a70dcb8a29adba636fee60a4d3d8f751b6802ec0d3b7b4d8`;
-- previous R8A1R1 source SHA-256 `e7c03e31c351f2d895222057bad57f92e8ba726b120517e55676f463991f69a4`.
-
-It writes one canonical result:
-
-`6007cf1be5b627aa29a9252c2d1c9cc73a8c0375551e601c6956bf8a6244ccf9`.
-
-Any other source content is refused.
-
-## Differential scope
-
-Exactly one OPUS/OWASYS path changes:
-
-`sites/owasys-front/application/default/services/FsmGuardHandlers.php`
-
-## Verification performed before delivery
-
-- applicator PHP lint: OK;
-- exact original R8A owner hash `2532c0fe...` reconstructed and accepted;
-- exact previous R8A1R1 hash `e7c03e31...` reconstructed and accepted;
-- resulting target hash verified as `6007cf1b...`;
-- resulting PHP lint: OK;
-- second application returns `ALREADY_FIXED` without changing the file;
-- behavioral probe: two transitions referencing `acl:foo:read` produce one reusable dynamic handler with no exception;
-- second distinct `acl:bar:update` handler is independently synthesized;
-- synthesized `acl:foo:read` delegates to `OwasysRuntimeSecurity::isAllowed(identity, foo, read)`;
-- injected developer guard `acl:foo:read` remains rejected by `OWASYS_EFSM_ACL_GUARD_NAMESPACE_RESERVED`.
+`6007cf1be5b627aa29a9252c2d1c9cc73a8c0375551e601c6956bf8a6244ccf9`
 
 ## Acceptance gate
 
-R8B remains blocked until owner runtime proves `/fr-FR` boots after a fresh restart and both sites validate. No OPUS/OWASYS push before that acceptance.
+Before any further code change, owner validation must occur against a freshly started front/back process after verifying the canonical target SHA. R8B remains blocked until that fresh-process gate succeeds. No OPUS/OWASYS push before acceptance.
