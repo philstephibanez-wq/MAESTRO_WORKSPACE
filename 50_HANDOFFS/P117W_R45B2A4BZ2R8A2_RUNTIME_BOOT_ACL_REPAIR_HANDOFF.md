@@ -1,37 +1,25 @@
 # P117W R45B2A4BZ2R8A2 — Runtime boot ACL repair handoff
 
-State: OWNER VALIDATION INCOMPLETE — FRESH PROCESS REQUIRED
+State: SUPERSEDED BY R8B1
 
-## Baseline
+## Historical purpose
 
-Owner OPUS HEAD remains:
+R8A2 repaired the duplicate dynamic ACL guard collision while assuming OPUS HEAD remained `9fdf45ae0ec9d8ce90db0a204b9e3330f9037cae` and R8A/R8B were uncommitted.
 
-`9fdf45ae0ec9d8ce90db0a204b9e3330f9037cae`
+## Current reality
 
-R8A/R8A1R1/R8A2 are local and unpushed. R8B is blocked.
+OPUS is now committed/pushed at:
 
-## Corrected interpretation of latest owner logs
+`8c7f254ad9080c46bb4da4af272a5c7cd2d4a129`
 
-The front process was not restarted after the repair: the same log contains one `development_server.starting` at `2026-08-22T11:39:57Z` and later failures at `2026-08-22T21:59:21Z` through `21:59:34Z`, with no intervening start event.
+`opus_p117w_r45b2a4bz2r8b_graphical_php_handler_authoring`
 
-The later error still reports `FsmGuardHandlers.php:68`. In the original R8A source, line 68 is the duplicate ACL `throw`; in canonical R8A2, line 68 is not an exception line. Thus the uploaded runtime evidence is from the old source image and cannot validate or invalidate the canonical R8A2 file.
+That exact commit contains the original duplicate ACL collision branch. The subsequent R8A2V validation artifact also failed immediately because it required the obsolete `9fdf45ae...` HEAD.
 
-## Canonical R8A2 target
+## Current recovery
 
-`sites/owasys-front/application/default/services/FsmGuardHandlers.php`
+Use only:
 
-Expected SHA-256 after R8A2:
+`P117W_R45B2A4BZ2R8B1_ACTUAL_R8B_BOOT_REPAIR`
 
-`6007cf1be5b627aa29a9252c2d1c9cc73a8c0375551e601c6956bf8a6244ccf9`
-
-## Required owner gate
-
-1. verify the target SHA;
-2. stop the existing listeners on ports 8000 and 8080;
-3. start new `owasys-front` and `owasys-back` dev-server processes;
-4. verify the new logs contain fresh `development_server.starting` events;
-5. request `/fr-FR`;
-6. only if the error persists on the fresh process continue code diagnosis;
-7. no commit/push before successful boot.
-
-A dedicated R8A2V runtime-refresh gate is delivered next so this restart cannot be skipped accidentally.
+R8B1 is bound to the actual pushed R8B baseline, applies or accepts the canonical guard repair idempotently, then forces a fresh-process runtime validation.
