@@ -1,36 +1,38 @@
 # P117W R45B2A4BZ2R8B — Graphical PHP GUARD/ACTION authoring handoff
 
-State: OWNER COMMITTED/PUSHED — RUNTIME FAILED — REPAIR REQUIRED
+State: PARTIALLY LANDED — BOOT REPAIRED BY R8B1 — UI AUTHORING STILL MISSING
 
-## Actual OPUS baseline now on GitHub
+## Actual landed commits
 
-Commit:
+R8B:
 
 `8c7f254ad9080c46bb4da4af272a5c7cd2d4a129`
 
-Message:
+R8B1 boot repair:
 
-`opus_p117w_r45b2a4bz2r8b_graphical_php_handler_authoring`
+`707b1acce1c05dda9751b4b04979b68dc5b2f1f0`
 
-This supersedes the earlier assumption that R8A/R8B still existed only in an uncommitted working tree.
+## Corrected landing audit
 
-## Runtime failure
+The original R8B intention and the actual Git landing differ.
 
-`owasys-front` returns HTTP 500 with:
+The R8B commit did land the source-authoring infrastructure: generic `FsmHandlerSourceEditor`, managed `FsmDeveloperHandlers.php`, front handler catalog/gateway transport, backend REST/Composer handler write and CSRF rotation.
 
-`OWASYS_EFSM_ACL_GUARD_NAMESPACE_RESERVED`
+However the intended graphical authoring surface did not land:
 
-before any REST call reaches `owasys-back`.
+- `application/default/templates/partials/fsm-diagram.score` is still the R7R2 template and keeps GUARD/ACTION Create/Edit buttons disabled;
+- `www/asset/css/fsm-native.css` is unchanged from the previous designer shell;
+- `www/asset/js/fsm-designer.js` received only the R8A catalog/CSRF additions and has no handler source editor/write UI;
+- three accidental zero-byte root files `certutil`, `findstr`, and `git` were committed in R8B.
 
-Inspection of this exact R8B commit confirms `sites/owasys-front/application/default/services/FsmGuardHandlers.php` still contains the original duplicate dynamic-ACL collision branch:
+Therefore R8B must not be described as completed graphical PHP handler authoring.
 
-- first `acl:<resource>:<action>` occurrence inserts a dynamic handler into the runtime map;
-- a later occurrence finds that handler and incorrectly throws the reserved-namespace exception.
+## Boot repair
 
-## Required repair
+R8B1 fixed the repeated dynamic ACL guard collision. The owner then supplied a rendered OWASYS applications page and pushed R8B1, so designer evolution can continue from `707b1acce1c05dda9751b4b04979b68dc5b2f1f0`.
 
-P117W R45B2A4BZ2R8B1 is the only current recovery slice.
+## Required completion
 
-It is bound to HEAD `8c7f254ad9080c46bb4da4af272a5c7cd2d4a129`, repairs or accepts the canonical fixed guard source idempotently, then forces a genuinely fresh front/back runtime before probing `/fr-FR`.
+P117W R45B2A4BZ2R8B2 must complete the missing graphical GUARD/ACTION source authoring against the already-landed secured front -> REST -> back -> Composer infrastructure and remove the three accidental root files.
 
-Do not continue designer evolution until R8B1 owner runtime acceptance passes.
+No further backend JavaScript or alternate direct-write path is permitted.
