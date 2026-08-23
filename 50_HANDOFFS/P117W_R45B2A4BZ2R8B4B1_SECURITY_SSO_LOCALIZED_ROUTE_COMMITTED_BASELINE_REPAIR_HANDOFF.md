@@ -1,10 +1,10 @@
 # P117W R45B2A4BZ2R8B4B1 — Security SSO localized route committed-baseline repair handoff
 
-State: COMMITTED/PUSHED — CLI PASS — SECURITY RUNTIME PASS — DESIGN PERSISTENCE PASS — DIRECT SSO SUBVIEW GATE PENDING
+State: FULLY ACCEPTED — R8B4 CLOSED — NEXT SLICE AUTHORIZED
 
 ## Current source of truth — 2026-08-24
 
-Current `README-FIRST.md` was re-read from GitHub immediately before this update.
+Current `README-FIRST.md` was re-read from GitHub immediately before this acceptance update.
 
 Blob:
 
@@ -24,6 +24,8 @@ The commit parent is `c5e7de78f70d14efc3b8c42f4ec53026b47253cf` and its only cha
 
 with the explicit localized `security/sso` route addition.
 
+This current GitHub HEAD is the required baseline for the next development slice.
+
 ## Artifact
 
 `opus_p117w_r45b2a4bz2r8b4b1_security_sso_localized_route_committed_baseline_repair.zip`
@@ -38,7 +40,7 @@ Applicator SHA-256:
 
 R8B4B1 was constructed against OPUS HEAD `c5e7de78...`, passed all owner applicator markers, and was subsequently committed/pushed by the owner as current OPUS HEAD `4043702...`.
 
-## Repository validation
+## Repository validation — PASS
 
 Owner applicator execution passed:
 
@@ -53,9 +55,7 @@ After application, the only local change was `sites/owasys-front/config/routes.l
 
 The owner later committed/pushed it; current OPUS master confirms only that route-catalog change.
 
-Repository gate: PASS.
-
-## CLI validation
+## CLI validation — PASS
 
 Owner supplied successful validation for:
 
@@ -63,15 +63,11 @@ Owner supplied successful validation for:
 - `owasys-back`: valid, 2 routes, 3 modules, Singleton, `fsm-module-first`;
 - `essai`: valid, 1 route, 1 module, generated frontend profile, FSM `config/application.fsm.json`.
 
-CLI gate: PASS.
-
-## Security runtime validation
+## Security runtime validation — PASS
 
 ### Localized Security route
 
 `/fr-FR/sécurité` renders normally. The previous `OPUS_LOCALIZED_ROUTE_CANONICAL_UNKNOWN` HTTP 500 is absent.
-
-Gate: PASS.
 
 ### Contextual Security micro-EFSM
 
@@ -95,8 +91,6 @@ Visible signals/transitions include:
 - `reauthentication_succeeded`;
 - `reauthentication_failed`.
 
-Contextual Security graph gate: PASS.
-
 ### Security data / SSO snapshot
 
 Rendered selected-application Security metadata includes:
@@ -116,31 +110,25 @@ Visible provider metadata:
 
 No secret material is visible in supplied evidence.
 
-Security snapshot/data gate: PASS.
-
 ## Security Conception STATE persistence — PASS
 
-Owner supplied direct graphical evidence for the missing persistence gate.
+Owner supplied direct graphical evidence for the persistence gate.
 
 ### Create + reload
 
-First supplied Conception capture shows selected authority:
+The Conception capture shows selected authority:
 
 - application `essai`;
 - EFSM `security`;
 - source `config/security.fsm.json`;
 
-and shows a fifth temporary STATE:
+and a fifth temporary STATE `test_temp` present alongside the four canonical Security states after reload.
 
-`test_temp`
-
-present alongside the four canonical Security states after reload.
-
-This directly proves the temporary STATE survived reload and was therefore persisted to the canonical selected-application Security EFSM rather than existing only in browser/UI memory.
+This proves the temporary STATE survived reload and was persisted to the canonical selected-application Security EFSM rather than existing only in browser/UI memory.
 
 ### Delete + reload
 
-Second supplied Conception capture shows the same selected authority after deletion and reload, with `test_temp` absent and only the four canonical Security states remaining.
+A second Conception capture shows the same selected authority after deletion and reload, with `test_temp` absent and only the four canonical Security states remaining.
 
 Owner also supplied after cleanup:
 
@@ -151,28 +139,55 @@ This proves the supported STATE CRUD is reversible and the source returned exact
 
 Security graphical STATE create -> persist -> reload -> delete -> persist -> reload gate: PASS.
 
-## Previously validated Structure / Sources evidence
+## Direct localized SSO subview — PASS
 
-Structure had already rendered selected application `essai`, EFSM `navigation`, source `config/application.fsm.json`.
-
-Sources + Git had already rendered and source REST reads/listing completed successfully in the same R8B4 series.
-
-## Remaining acceptance gate
-
-Only one explicit runtime check remains before declaring the whole R8B4 slice fully accepted:
-
-Open the dedicated localized SSO subview directly and require it to render without routing/runtime error:
+Owner supplied direct browser runtime evidence for:
 
 `/fr-FR/sécurité/sso`
 
-The route resolver and overview SSO data are already validated, but direct navigation into that dedicated subview has not yet been supplied as runtime evidence.
+The route renders successfully with no routing/runtime error and preserves the contextual authority:
 
-No patch is justified for the current evidence.
+- application `essai`;
+- EFSM `security`;
+- source `config/security.fsm.json`;
+- canonical Security graph visible.
 
-If the direct SSO subview passes, R8B4 is fully accepted and the next development slice starts from OPUS HEAD:
+Therefore the explicit localized `security/sso` route is validated end-to-end, not only at resolver/preflight level.
+
+## Previously validated Structure / Sources evidence — PASS
+
+Structure rendered selected application `essai`, EFSM `navigation`, source `config/application.fsm.json`.
+
+Sources + Git rendered and source REST reads/listing completed successfully in the same R8B4 series.
+
+## R8B4 final acceptance
+
+All normative R8B4 gates are now satisfied:
+
+- contextual selected-application Navigation micro-EFSM;
+- contextual selected-application Security micro-EFSM;
+- canonical authority badges/source identity;
+- Security data and provider snapshot;
+- direct localized SSO subview;
+- generated-application STATE create/delete persistence through the supported distributed path;
+- deterministic return to clean committed source state;
+- CLI site validation;
+- Sources + Git non-regression.
+
+R8B4 is FULLY ACCEPTED and CLOSED.
+
+No additional R8B4 repair is justified.
+
+## Next authorized slice
+
+Start only from current OPUS GitHub HEAD:
 
 `4043702f4bc6b190fd51f2acc1fe6d939e3c19c1`
 
-## Next slice after full R8B4 acceptance
+Target:
 
-SecurityContext ownership plus first Security/Navigation inter-EFSM COMMAND/EVENT cooperation, followed by generic generated-application PHP ACTION/GUARD source authoring.
+SecurityContext ownership plus first Security/Navigation inter-EFSM COMMAND/EVENT cooperation.
+
+A generic OPUS evolution must be preferred before any local OWASYS-only coordination mechanism if the current framework lacks the required cross-EFSM ownership/communication primitive.
+
+After that slice: generic generated-application PHP ACTION/GUARD source authoring.
