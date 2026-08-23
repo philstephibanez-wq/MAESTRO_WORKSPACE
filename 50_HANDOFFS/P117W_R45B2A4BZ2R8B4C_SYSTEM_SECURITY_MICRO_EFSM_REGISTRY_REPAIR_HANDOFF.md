@@ -1,27 +1,25 @@
 # P117W R45B2A4BZ2 R8B4C — System Security micro-EFSM registry repair handoff
 
-State: READY FOR OWNER APPLY — NOT YET APPLIED
+State: OWNER RUNTIME ACCEPTED — OPUS COMMIT/PUSH REQUIRED BEFORE NEXT DIFFERENTIAL
 
 ## Source-of-truth gate
 
-All source facts used for this delivery were re-read from GitHub in the same work cycle; no memorized source state was used.
+All source facts used for this delivery were re-read from GitHub in the delivery work cycle; no memorized source state was used.
 
-Current OPUS `master`:
+Delivery baseline OPUS `master`:
 
 `4043702f4bc6b190fd51f2acc1fe6d939e3c19c1`
 
 `opus_p117w_r45b2a4bz2r8b4b1_security_sso_localized_route_committed_baseline_repair`
 
-Current target blobs:
+Delivery target blobs:
 
 - `sites/owasys-front/config/site.json`: `0c705f40b05128ab0f7197b99310c5d14c6f79da`;
 - `sites/owasys-back/config/site.json`: `e5a67b2ee58158bc96e989fc079eaf90f620caa6`.
 
-The current repository listings confirm that neither system application contains `config/security.fsm.json` at this baseline.
-
 ## Runtime defect supplied by owner
 
-From the OWASYS-front UI on port 8000, selecting either system application and opening `/fr-FR/sécurité` fails with HTTP 500:
+From the OWASYS-front UI on port 8000, selecting either system application and opening `/fr-FR/sécurité` failed with HTTP 500:
 
 `OWASYS_APPLICATION_EFSM_SOURCE_UNRESOLVED`
 
@@ -30,19 +28,17 @@ Affected selected applications:
 - `owasys-front`;
 - `owasys-back`.
 
-The generated application `essai` remains valid and was previously fully accepted with its explicit `efsms.security` registry entry.
-
 ## Root cause
 
-Current `OwasysApplicationFsmModel::snapshot()` resolves named EFSM authority from selected `site.json.efsms`.
+`OwasysApplicationFsmModel::snapshot()` resolves named EFSM authority from selected `site.json.efsms`.
 
 It has a compatibility fallback only for `navigation`. It intentionally has no Security fallback.
 
-Both OWASYS system `site.json` files predate the R8B4 contextual registry migration and have no `efsms` map. Therefore `security` has no source authority and the model throws the exact owner-visible error.
+Both OWASYS system `site.json` files predated the R8B4 contextual registry migration and had no `efsms` map. Therefore `security` had no source authority.
 
 ## Repair
 
-R8B4C completes the migration rather than weakening source resolution.
+R8B4C completed the migration rather than weakening source resolution.
 
 Exact differential:
 
@@ -82,76 +78,24 @@ Applicator SHA-256:
 
 PHP lint: PASS.
 
-## Applicator construction validation
+## Owner acceptance
 
-The applicator uses structural JSON mutation only; there are no textual replacement anchors.
+Owner report on 2026-08-24 after application/runtime test:
 
-A complete deterministic mock Git-repository execution was performed before delivery. It exercised:
+`réglé`
 
-- exact HEAD gate;
-- clean-worktree gate;
-- exact blob gates;
-- File/StructuredFileLoader reads;
-- structural site registry mutation;
-- creation of both Security definitions;
-- definition/runtime validation;
-- repository-status verification;
-- exact four-path differential.
+This is recorded as runtime acceptance of the R8B4C defect repair.
 
-The first mock run exposed an applicator-only verification defect before delivery: `trim()` on `git status --porcelain` removed the leading worktree status space from the first line. The post-write failure path rolled back correctly. The applicator was corrected to preserve leading porcelain status whitespace and the full mock execution was repeated successfully.
+The GitHub OPUS source-of-truth was re-read immediately afterwards. At that time `master` still pointed to the delivery baseline `4043702f4bc6b190fd51f2acc1fe6d939e3c19c1`; therefore the accepted R8B4C differential had not yet been committed/pushed to OPUS GitHub.
 
-Successful construction-test markers:
+Per README-FIRST, the assistant never commits/pushes OPUS/OWASYS. The owner must now commit and push the accepted four-path differential before the next OPUS differential can be safely generated from a new exact GitHub baseline.
 
-- `P117W_R45B2A4BZ2R8B4C_PREFLIGHT_OK`;
-- `P117W_R45B2A4BZ2R8B4C_REPO_CHANGES_VERIFIED`;
-- `P117W_R45B2A4BZ2R8B4C_APPLIED`;
-- `changed_paths=4`.
+## Next slice gate
 
-The mock final Git status was exactly:
+Planned next architecture remains:
 
-- modified `sites/owasys-front/config/site.json`;
-- modified `sites/owasys-back/config/site.json`;
-- new `sites/owasys-front/config/security.fsm.json`;
-- new `sites/owasys-back/config/security.fsm.json`.
+1. explicit SecurityContext runtime ownership;
+2. first Security/Navigation inter-EFSM COMMAND/EVENT cooperation;
+3. only afterwards, generic generated-application PHP ACTION/GUARD source authoring.
 
-## Owner apply gate
-
-Apply only on exact OPUS HEAD `4043702f4bc6b190fd51f2acc1fe6d939e3c19c1` with a completely clean worktree/index.
-
-Required successful markers:
-
-- `P117W_R45B2A4BZ2R8B4C_PREFLIGHT_OK`;
-- `P117W_R45B2A4BZ2R8B4C_REPO_CHANGES_VERIFIED`;
-- `P117W_R45B2A4BZ2R8B4C_APPLIED`;
-- `baseline_head=4043702f4bc6b190fd51f2acc1fe6d939e3c19c1`;
-- `changed_paths=4`;
-- front/back Security source markers.
-
-Do not commit/push after application until CLI and runtime acceptance pass.
-
-## Acceptance after apply
-
-CLI:
-
-- `composer opus:validate-site -- owasys-front` => valid;
-- `composer opus:validate-site -- owasys-back` => valid;
-- `composer opus:validate-site -- essai` => valid;
-- Git status exactly four expected paths.
-
-Runtime through OWASYS-front `:8000`:
-
-1. select `owasys-front`, open `/fr-FR/sécurité`;
-   - no source-unresolved error;
-   - authority `owasys-front / security / config/security.fsm.json`;
-2. select `owasys-back`, open `/fr-FR/sécurité`;
-   - no source-unresolved error;
-   - authority `owasys-back / security / config/security.fsm.json`;
-3. select `essai`;
-   - accepted `essai / security / config/security.fsm.json` remains unchanged;
-4. Structure remains bound to each application's navigation source.
-
-Only after these gates may the owner commit/push OPUS.
-
-## Next slice
-
-After R8B4C acceptance, continue the planned architecture from the then-current GitHub HEAD: explicit SecurityContext runtime ownership plus the first Security/Navigation inter-EFSM COMMAND/EVENT cooperation. Generic generated-application PHP ACTION/GUARD source authoring remains subsequent.
+The next differential must be designed from the **post-R8B4C GitHub HEAD**, not reconstructed from memory or an uncommitted local tree. Until that HEAD exists on GitHub, next-patch generation is intentionally blocked by the source-of-truth contract.
