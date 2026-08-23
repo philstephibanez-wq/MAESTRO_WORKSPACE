@@ -57,7 +57,7 @@ Pure EFSM STATE objects do not implicitly create application modules. A module p
 
 ## Generated Security micro-EFSM
 
-The scaffold generates `config/security.fsm.json` with contract `OPUS_SECURITY_EFSM_V1`.
+The scaffold generates `config/security.fsm.json` with runtime-compatible contract `OPUS_SECURITY_FSM_V1`. The architecture remains a Security micro-EFSM; the contract suffix deliberately follows the canonical OPUS runtime FSM contract grammar accepted by `FsmProcessor`.
 
 Initial skeleton:
 
