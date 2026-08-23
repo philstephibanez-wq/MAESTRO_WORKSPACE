@@ -1,6 +1,6 @@
 # P117W R45B2A4BZ2R8B4A1 — Applicator anchor repair handoff
 
-State: OWNER VALIDATION BLOCKED — CLEAN WORKTREE CONTRADICTS EXPECTED R8B4A1 DIFFERENTIAL
+State: PROVENANCE RESOLVED — R8B4A1 NOT YET APPLIED; OWNER APPLY GATE OPEN
 
 ## Baseline
 
@@ -106,60 +106,61 @@ R8B4A1 preserves:
 - same 14 modified tracked paths + 1 new path;
 - no JavaScript/TypeScript/Node artifact under `sites/owasys-back`.
 
-## New owner evidence — 2026-08-23
+## Owner site-validation evidence — 2026-08-23
 
-The owner ran the post-application site validations and reported:
+The owner ran site validations before R8B4A1 had actually been applied:
 
 - `composer opus:validate-site -- owasys-front` -> valid `true`, routes `12`, modules `10`, singleton `true`, dispatch `fsm-module-first`, role `standard-opus-application`, FSM `config/fsm.json`;
 - `composer opus:validate-site -- owasys-back` -> valid `true`, routes `2`, modules `3`, singleton `true`, dispatch `fsm-module-first`, role `standard-opus-application`, FSM `config/fsm.json`;
-- `composer opus:validate-site -- essai` -> valid `true`, routes `1`, modules `1`, singleton `true`, dispatch `fsm-module-first`, role `generated-opus-application`, profile `frontend`, FSM `config/application.fsm.json`;
-- immediately afterward `git status --short` was empty.
+- `composer opus:validate-site -- essai` -> valid `true`, routes `1`, modules `1`, singleton `true`, dispatch `fsm-module-first`, role `generated-opus-application`, profile `frontend`, FSM `config/application.fsm.json`.
 
-The three site validations are accepted as positive structural evidence only. They do **not** prove R8B4A1 integration because the required R8B4A differential must leave 14 tracked modifications plus one new file visible before any owner commit.
+These results prove only that the R8B2 baseline sites remain structurally valid. They are not R8B4A1 acceptance evidence and must be rerun after application.
 
-GitHub `origin/master` is independently confirmed still at exact R8B2 commit `76b59191492f4efabf343e85be841f4832fe0ced`; no R8B4A/R8B4A1 commit has been pushed.
+## Provenance resolution — 2026-08-23
 
-Therefore the empty local worktree is contradictory and is a blocking provenance gate. Possible states are limited to:
+The owner then executed the non-destructive provenance gate from `H:\OPUS`.
 
-1. R8B4A1 was not actually applied to the current checkout;
-2. the applicator applied then rolled back/failed before persistent changes;
-3. the owner created a local commit that has not been pushed;
-4. commands were executed from a different local repository/worktree than the one patched.
+Observed facts:
 
-No new functional patch may be prepared until this provenance is resolved.
+- repository root: `H:/OPUS`;
+- local HEAD: `76b59191492f4efabf343e85be841f4832fe0ced`;
+- local branch and `origin/master` both point to R8B2;
+- unstaged diff: empty;
+- staged diff: empty;
+- `76b5919..HEAD` diff: empty;
+- `sites/essai/config/security.fsm.json`: missing;
+- `sites/essai/config/site.json`: no `efsms` registry;
+- `fsm-designer.js`: `handlerSourceEditor` surface validation is at line 50 while the declaration remains later at line 79.
 
-## Immediate non-destructive provenance gate
+One command was mistyped as `t status --short --branch`; that typo is immaterial because all other independent provenance checks are conclusive.
 
-Required owner evidence from `H:\OPUS`:
+Conclusion: **R8B4A1 has not been applied to the current `H:\OPUS` checkout.** There is no local commit, no uncommitted differential, no alternate-state ambiguity, and no need for a new patch.
 
-- `git rev-parse --show-toplevel`;
-- `git rev-parse HEAD`;
-- `git log -1 --oneline`;
-- `git status --short --branch`;
-- `git diff --stat 76b59191492f4efabf343e85be841f4832fe0ced..HEAD`;
-- existence/content evidence for `sites/essai/config/security.fsm.json`;
-- `site.json` evidence for the `efsms` registry;
-- `fsm-designer.js` evidence locating `handlerSourceEditor` relative to the surface validation.
+The exact clean R8B2 baseline required by R8B4A1 is still present, so the existing corrected applicator is the correct next action.
 
-Until those checks resolve the contradiction, do not restart runtime acceptance, do not commit, and do not push OPUS/OWASYS.
+## Immediate owner apply gate
 
-## Owner acceptance sequence after provenance is resolved
+From `H:\OPUS`, apply the existing R8B4A1 artifact and require, in order:
 
-Only if the local checkout demonstrably contains the R8B4A1 differential:
+- `P117W_R45B2A4BZ2R8B4A_PREFLIGHT_OK`
+- `P117W_R45B2A4BZ2R8B4A_REPO_CHANGES_VERIFIED`
+- `P117W_R45B2A4BZ2R8B4A_APPLIED`
 
-1. Require the applicator markers:
-   - `P117W_R45B2A4BZ2R8B4A_PREFLIGHT_OK`
-   - `P117W_R45B2A4BZ2R8B4A_REPO_CHANGES_VERIFIED`
-   - `P117W_R45B2A4BZ2R8B4A_APPLIED`
-2. Confirm the expected 15-path differential.
-3. Retain the already positive PHP/JS/Composer/site-validation evidence where applicable.
-4. Restart OWASYS front and back.
-5. Select `essai`.
-6. Security must project `essai / security` from `config/security.fsm.json`, not the OWASYS host monolith.
-7. Structure must project `essai / navigation` from `config/application.fsm.json`.
-8. Security Conception STATE create must persist and survive reload.
-9. SSO view must expose real provider/default-provider metadata without secrets.
-10. Sources + Git must remain functionally unchanged.
+Then `git status --short` must expose the expected 14 tracked modifications plus new `sites/essai/config/security.fsm.json` before any commit.
+
+If the applicator fails, capture the exact output and leave OPUS uncommitted/unpushed. If it succeeds, proceed to lint, JS syntax, Composer autoload and all three site validations again.
+
+## Runtime acceptance sequence after successful application
+
+Only after the 15-path differential is visible and CLI validation passes:
+
+1. Restart OWASYS front and back.
+2. Select `essai`.
+3. Security must project `essai / security` from `config/security.fsm.json`, not the OWASYS host monolith.
+4. Structure must project `essai / navigation` from `config/application.fsm.json`.
+5. Security Conception STATE create must persist and survive reload.
+6. SSO view must expose real provider/default-provider metadata without secrets.
+7. Sources + Git must remain functionally unchanged.
 
 Do not commit/push OPUS/OWASYS until all R8B4A runtime gates pass.
 
