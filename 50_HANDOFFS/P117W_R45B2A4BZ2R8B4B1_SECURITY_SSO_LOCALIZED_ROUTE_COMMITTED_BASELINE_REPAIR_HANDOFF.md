@@ -1,6 +1,6 @@
 # P117W R45B2A4BZ2R8B4B1 — Security SSO localized route committed-baseline repair handoff
 
-State: DELIVERY PREPARED — OWNER VALIDATION REQUIRED
+State: REPOSITORY GATE PASS — RUNTIME VALIDATION REQUIRED
 
 ## Same-cycle GitHub verification
 
@@ -11,7 +11,7 @@ Current mandatory control sources were re-read before artifact construction:
 - OPUS current master commit history;
 - current route catalog, front site config, Security controller and generic localized-route resolver.
 
-Current OPUS master:
+Current OPUS master at artifact construction:
 
 `c5e7de78f70d14efc3b8c42f4ec53026b47253cf`
 
@@ -29,7 +29,7 @@ and `git status --short` was empty.
 
 Cause: R8B4B had been built against obsolete pre-commit HEAD `76b5919...` even though R8B4A2 had already been committed/pushed. No source write occurred. The failed artifact is retained for history but must not be executed again.
 
-## Current exact input contract
+## Exact input contract used by R8B4B1
 
 R8B4B1 requires:
 
@@ -105,11 +105,11 @@ Completed before delivery:
 - post-write rollback path strengthened so validation exceptions are rollback-capable;
 - ZIP inspected: exactly one applicator file.
 
-The assistant does not claim execution against the owner's Windows checkout.
+## Owner repository validation — 2026-08-24
 
-## Required owner markers
+Owner executed R8B4B1 from `H:\OPUS` and supplied the complete success output:
 
-In order:
+`P117W_R45B2A4BZ2R8B4B1_PREFLIGHT_BEGIN`
 
 `P117W_R45B2A4BZ2R8B4B1_PREFLIGHT_OK`
 
@@ -117,19 +117,22 @@ In order:
 
 `P117W_R45B2A4BZ2R8B4B1_APPLIED`
 
-Then:
+with:
 
 - `baseline_head=c5e7de78f70d14efc3b8c42f4ec53026b47253cf`;
 - `changed_path=sites/owasys-front/config/routes.localized.json`;
 - `localized_route=security/sso`;
 - `localized_route_languages=25`;
-- `localized_route_locales=37`.
+- `localized_route_locales=37`;
+- `runtime_gate=/fr-FR/sécurité`.
 
-Expected `git status --short` after success:
+Owner then ran `git status --short`, which showed exactly one changed path:
 
-only `sites/owasys-front/config/routes.localized.json` modified.
+`M sites/owasys-front/config/routes.localized.json`
 
-## Runtime gates after successful application
+Therefore the R8B4B1 repository/preflight/write gate is PASS. No other local modification is evidenced by the supplied status.
+
+## Remaining runtime gates
 
 1. Reload `/fr-FR/sécurité` and require no localized-route 500.
 2. Require Security authority `essai / security / config/security.fsm.json`.
