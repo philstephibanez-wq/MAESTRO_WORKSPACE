@@ -1,6 +1,6 @@
 ACTIONS OBLIGATOIRES
 
-1. Relire intégralement les dépôts GitHub et appliquer tous les contrats, conventions et règles de développement en vigueur.
+1. Relire intégralement les dépôts GitHub (pas de sources sortis de ta mémoire !!! JAMAIS !!!!)et appliquer tous les contrats, conventions et règles de développement en vigueur.
 
 2. Mettre à jour directement sur GitHub, les spécifications et handoffs de MAESTRO_WORKSPACE.
 
