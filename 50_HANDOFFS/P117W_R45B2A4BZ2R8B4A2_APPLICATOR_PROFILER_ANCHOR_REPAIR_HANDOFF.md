@@ -1,6 +1,6 @@
 # P117W R45B2A4BZ2R8B4A2 — Applicator profiler anchor repair handoff
 
-State: DELIVERY PREPARED — OWNER VALIDATION REQUIRED
+State: DIFFERENTIAL INTEGRATED — CLI AND RUNTIME VALIDATION PENDING
 
 ## Exact OPUS baseline
 
@@ -14,7 +14,7 @@ Owner evidence after the R8B4A1 failure:
 - applicator aborted on `named-efsm-profiler-received:2`;
 - `git status --short` remained empty.
 
-Therefore R8B4A1 wrote nothing and the same exact clean R8B2 baseline remains the required input.
+Therefore R8B4A1 wrote nothing and the same exact clean R8B2 baseline remained the required R8B4A2 input.
 
 ## Failure evidence
 
@@ -35,7 +35,7 @@ The exact R8B2 backend source contains that prefix in both profiler events:
 - `designer.draft_command.received`;
 - `designer.draft_command.validated`.
 
-The count `2` is therefore correct. No OPUS source mismatch exists.
+The count `2` was therefore correct. No OPUS source mismatch existed.
 
 ## R8B4A2 correction
 
@@ -80,24 +80,46 @@ Completed before delivery:
 - remaining transformations after the failed point were statically reviewed for the same ambiguity class;
 - ZIP inspection: exactly one file.
 
-The assistant does not claim execution against the owner's Windows checkout. Owner execution remains the integration gate.
+## Owner integration evidence — 2026-08-24
 
-## Owner acceptance
+The owner applied R8B4A2 to `H:\OPUS` and then reported `git status --short` with exactly the expected 15-path differential:
 
-From `H:\OPUS`, exact clean R8B2:
+Modified tracked paths:
 
-1. Extract R8B4A2.
-2. Execute `apply_a4bz2r8b4a2.php`.
-3. Require in order:
-   - `P117W_R45B2A4BZ2R8B4A_PREFLIGHT_OK`
-   - `P117W_R45B2A4BZ2R8B4A_REPO_CHANGES_VERIFIED`
-   - `P117W_R45B2A4BZ2R8B4A_APPLIED`
-4. Confirm `git status --short` exposes the expected 15 paths.
-5. Do not commit/push yet.
-6. Then run lint, JavaScript syntax, Composer autoload and three site validations.
-7. Only after CLI acceptance, restart front/back and run the contextual Security/Structure runtime gates.
+1. `Opus/Fsm/FsmSiteLoader.php`
+2. `Opus/Scaffold/ProfilerEnvironmentScaffoldPolicy.php`
+3. `Opus/Scaffold/SiteScaffoldPlan.php`
+4. `sites/essai/config/application.fsm.json`
+5. `sites/essai/config/site.json`
+6. `sites/owasys-back/application/fsm/services/OwasysFsmDraftCommandProvider.php`
+7. `sites/owasys-front/application/default/services/FsmDesignerGateway.php`
+8. `sites/owasys-front/application/default/services/FsmDiagramBuilder.php`
+9. `sites/owasys-front/application/default/services/ScorePageRenderer.php`
+10. `sites/owasys-front/application/default/templates/partials/fsm-diagram.score`
+11. `sites/owasys-front/application/fsm/models/ApplicationFsmModel.php`
+12. `sites/owasys-front/application/security/controllers/SecurityController.php`
+13. `sites/owasys-front/application/security/templates/index.score`
+14. `sites/owasys-front/www/asset/js/fsm-designer.js`
 
-## Runtime gates after successful application
+New path:
+
+15. `sites/essai/config/security.fsm.json`
+
+This exactly matches the normative R8B4 product differential. The applicator integration gate is therefore satisfied at the repository-differential level.
+
+The owner has not yet supplied the complete applicator success-marker output in the current evidence. CLI validation and runtime acceptance therefore remain pending. No commit/push is authorized yet.
+
+## Required CLI validation
+
+Run PHP lint on all modified PHP files, JavaScript syntax validation on `fsm-designer.js`, Composer optimized autoload, then validate the three sites:
+
+- `owasys-front`;
+- `owasys-back`;
+- `essai`.
+
+The 15-path differential must remain present after those checks.
+
+## Runtime gates after CLI acceptance
 
 - Security for selected `essai` must project `essai / security` from `config/security.fsm.json`.
 - Structure must project `essai / navigation` from `config/application.fsm.json`.
