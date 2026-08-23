@@ -1,6 +1,6 @@
 # P117W R45B2A4BZ2R8B4A1 — Applicator anchor repair handoff
 
-State: DELIVERY PREPARED — OWNER VALIDATION REQUIRED
+State: OWNER VALIDATION BLOCKED — CLEAN WORKTREE CONTRADICTS EXPECTED R8B4A1 DIFFERENTIAL
 
 ## Baseline
 
@@ -15,7 +15,7 @@ The owner confirmed immediately before the failed R8B4A execution:
 - `git rev-parse HEAD` = exact baseline above;
 - `git status --short` = empty.
 
-The failed applicator wrote nothing, so the same exact clean baseline remains the required R8B4A1 input.
+The failed applicator wrote nothing, so the same exact clean baseline remained the required R8B4A1 input.
 
 ## Failed R8B4A evidence
 
@@ -29,11 +29,11 @@ Observed output:
 
 `P117W_R45B2A4BZ2R8B4A_REPLACEMENT_ANCHOR_INVALID:sites/owasys-front/www/asset/js/fsm-designer.js:remove-late-handler-editor-declaration:2`
 
-Immediately after the failure, `git status --short` remained empty. No OPUS/OWASYS tracked file was modified and no rollback is required.
+Immediately after the failure, `git status --short` remained empty. No OPUS/OWASYS tracked file was modified and no rollback was required.
 
 ## Root cause
 
-This is an applicator-construction defect, not a repository-baseline mismatch and not an OPUS runtime failure.
+This was an applicator-construction defect, not a repository-baseline mismatch and not an OPUS runtime failure.
 
 R8B2 `fsm-designer.js` contains the known temporal-dead-zone defect: `handlerSourceEditor` is referenced by surface validation before its later declaration. R8B4A intends to move that declaration earlier.
 
@@ -42,7 +42,7 @@ The failed R8B4A applicator staged those two operations in the wrong order:
 1. insert the early declaration;
 2. remove the late declaration with a uniqueness check.
 
-After step 1 the staged buffer contains two identical declarations, so step 2 correctly rejects occurrence count `2` before any write.
+After step 1 the staged buffer contained two identical declarations, so step 2 correctly rejected occurrence count `2` before any write.
 
 R8B4A1 fixes the cause by reversing only those two transformations:
 
@@ -106,24 +106,60 @@ R8B4A1 preserves:
 - same 14 modified tracked paths + 1 new path;
 - no JavaScript/TypeScript/Node artifact under `sites/owasys-back`.
 
-## Owner acceptance sequence
+## New owner evidence — 2026-08-23
 
-From exact clean R8B2:
+The owner ran the post-application site validations and reported:
 
-1. Execute `apply_a4bz2r8b4a1.php`.
-2. Require, in order:
+- `composer opus:validate-site -- owasys-front` -> valid `true`, routes `12`, modules `10`, singleton `true`, dispatch `fsm-module-first`, role `standard-opus-application`, FSM `config/fsm.json`;
+- `composer opus:validate-site -- owasys-back` -> valid `true`, routes `2`, modules `3`, singleton `true`, dispatch `fsm-module-first`, role `standard-opus-application`, FSM `config/fsm.json`;
+- `composer opus:validate-site -- essai` -> valid `true`, routes `1`, modules `1`, singleton `true`, dispatch `fsm-module-first`, role `generated-opus-application`, profile `frontend`, FSM `config/application.fsm.json`;
+- immediately afterward `git status --short` was empty.
+
+The three site validations are accepted as positive structural evidence only. They do **not** prove R8B4A1 integration because the required R8B4A differential must leave 14 tracked modifications plus one new file visible before any owner commit.
+
+GitHub `origin/master` is independently confirmed still at exact R8B2 commit `76b59191492f4efabf343e85be841f4832fe0ced`; no R8B4A/R8B4A1 commit has been pushed.
+
+Therefore the empty local worktree is contradictory and is a blocking provenance gate. Possible states are limited to:
+
+1. R8B4A1 was not actually applied to the current checkout;
+2. the applicator applied then rolled back/failed before persistent changes;
+3. the owner created a local commit that has not been pushed;
+4. commands were executed from a different local repository/worktree than the one patched.
+
+No new functional patch may be prepared until this provenance is resolved.
+
+## Immediate non-destructive provenance gate
+
+Required owner evidence from `H:\OPUS`:
+
+- `git rev-parse --show-toplevel`;
+- `git rev-parse HEAD`;
+- `git log -1 --oneline`;
+- `git status --short --branch`;
+- `git diff --stat 76b59191492f4efabf343e85be841f4832fe0ced..HEAD`;
+- existence/content evidence for `sites/essai/config/security.fsm.json`;
+- `site.json` evidence for the `efsms` registry;
+- `fsm-designer.js` evidence locating `handlerSourceEditor` relative to the surface validation.
+
+Until those checks resolve the contradiction, do not restart runtime acceptance, do not commit, and do not push OPUS/OWASYS.
+
+## Owner acceptance sequence after provenance is resolved
+
+Only if the local checkout demonstrably contains the R8B4A1 differential:
+
+1. Require the applicator markers:
    - `P117W_R45B2A4BZ2R8B4A_PREFLIGHT_OK`
    - `P117W_R45B2A4BZ2R8B4A_REPO_CHANGES_VERIFIED`
    - `P117W_R45B2A4BZ2R8B4A_APPLIED`
-3. Confirm `git status --short` lists the expected R8B4A changes.
-4. Run PHP lint / JS syntax / Composer optimized autoload / site validations.
-5. Restart OWASYS front and back.
-6. Select `essai`.
-7. Security must project `essai / security` from `config/security.fsm.json`, not the OWASYS host monolith.
-8. Structure must project `essai / navigation` from `config/application.fsm.json`.
-9. Security Conception STATE create must persist and survive reload.
-10. SSO view must expose real provider/default-provider metadata without secrets.
-11. Sources + Git must remain functionally unchanged.
+2. Confirm the expected 15-path differential.
+3. Retain the already positive PHP/JS/Composer/site-validation evidence where applicable.
+4. Restart OWASYS front and back.
+5. Select `essai`.
+6. Security must project `essai / security` from `config/security.fsm.json`, not the OWASYS host monolith.
+7. Structure must project `essai / navigation` from `config/application.fsm.json`.
+8. Security Conception STATE create must persist and survive reload.
+9. SSO view must expose real provider/default-provider metadata without secrets.
+10. Sources + Git must remain functionally unchanged.
 
 Do not commit/push OPUS/OWASYS until all R8B4A runtime gates pass.
 
