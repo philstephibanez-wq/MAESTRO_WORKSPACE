@@ -104,7 +104,7 @@ Then expect:
 
 - `localized_route=security/sso`;
 - `localized_route_languages=25`;
-- `localized_route_locales=36`.
+- `localized_route_locales=37`.
 
 ## Runtime acceptance after application
 
