@@ -1,125 +1,34 @@
 # P117W R45B2A4BZ2R8B2 — Actual graphical PHP GUARD/ACTION authoring handoff
 
-State: DELIVERY PREPARED — OWNER VALIDATION REQUIRED
+State: OWNER COMMITTED/PUSHED — VALIDATION FAILED — SUPERSEDED BY R8B3
 
-## Exact baseline
+## Landed OPUS baseline
 
-OPUS HEAD/master:
+`76b59191492f4efabf343e85be841f4832fe0ced`
 
-`707b1acce1c05dda9751b4b04979b68dc5b2f1f0`
+`opus_p117w_r45b2a4bz2r8b2_actual_graphical_handler_authoring`
 
-Message:
+## Owner validation result
 
-`opus_p117w_r45b2a4bz2r8b1_actual_r8b_boot_repair`
+After recreating generated application `essai`, the owner reports:
 
-The owner has pushed R8B1 and supplied a normal rendered OWASYS applications page after the boot repair.
+- the diagram shown by Conception is not `essai`'s FSM;
+- a new STATE cannot be created.
 
-## Artifact
+## Confirmed causes
 
-`opus_p117w_r45b2a4bz2r8b2_actual_graphical_handler_authoring.zip`
+The current design surface still sources topology from the OWASYS host FSM. The front designer command gateway still targets `owasys-front`, while the backend draft provider still assumes `config/fsm.json` instead of resolving the selected application's canonical FSM path.
 
-ZIP SHA-256:
+R8B2 also introduced a JavaScript initialization blocker: `handlerSourceEditor` is tested before its `const` declaration, so design initialization can stop before STATE handlers are registered.
 
-`3160068c579429a54e60f2b83e3be2b55c9b6f16780b9e74ded49e26e9e228f9`
+The fresh generated `essai` FSM exposes two generic scaffold defects: no declared signal registry despite validator requirements, and dangling profiler transitions after the profiler state is removed by environment normalization.
 
-Applicator SHA-256:
+Finally, generic `FsmSiteLoader` still treats a pure state without a module field as an implicit module with the same ID, which prevents persistent pure STATE authoring.
 
-`02e0c6ab8d63175b1dba54e195618957e48718bdc5920f313beedc8fd9ae51fe`
+## Required recovery
 
-Contents:
+Apply and owner-validate R8B3 before further handler evolution.
 
-- `apply_a4bz2r8b2.php`
+R8B3 makes the selected application the designer authority, targets its canonical FSM through front -> secured REST -> back -> Composer, persists STATE create/rename/delete atomically, repairs generated signal/profiler contracts, and separates pure STATE identity from application-module ownership.
 
-The assistant does not commit/push OPUS or OWASYS.
-
-## Why this slice exists
-
-The actual R8B commit landed the handler source infrastructure but did not land the graphical authoring UI described by the earlier R8B handoff.
-
-The current template still has disabled GUARD/ACTION authoring buttons, the current JavaScript has no source-editor workflow, and the current CSS has no source-editor surface. R8B also accidentally added three zero-byte root files named `certutil`, `findstr`, and `git`.
-
-R8B2 treats those actual landing defects.
-
-## R8B2 changes
-
-Modified:
-
-- `sites/owasys-front/application/default/services/ScorePageRenderer.php`;
-- `sites/owasys-front/application/default/templates/partials/fsm-diagram.score`;
-- `sites/owasys-front/www/asset/css/fsm-native.css`;
-- `sites/owasys-front/www/asset/js/fsm-designer.js`.
-
-Deleted:
-
-- `certutil`;
-- `findstr`;
-- `git`.
-
-Total changed paths: 7.
-
-## Runtime semantics
-
-GUARD/ACTION Create/Edit use the already-landed R8A/R8B source authority.
-
-Managed catalog fields retained by the browser now include `managed`, `code`, `handler_sha256`, and `source_sha256`.
-
-Create uses real PHP callable skeletons matching the current runtime signatures. Update only exposes managed source handlers. Dynamic ACL guards remain non-editable.
-
-Mutation request fields are exactly the already-landed gateway contract:
-
-- `owasys_fsm_designer_handler=1`;
-- `csrf_token`;
-- `handler_kind`;
-- `handler_id`;
-- `handler_mode`;
-- `handler_code`.
-
-The browser requires `OWASYS_EFSM_HANDLER_WRITE_RESULT_V1`, adopts the rotated CSRF token, reloads the real catalog and makes the newly programmed handler available to transition binding.
-
-## Safety/preflight
-
-Applicator is bound to exact HEAD `707b1acc...` and a clean working tree.
-
-It checks the audited Git blobs for renderer/template/CSS/JS, the committed R8B1 guard repair, and all three zero-byte accidental files before making any change.
-
-Transformations are staged before writes and write/delete failure restores original bytes.
-
-## Verification performed before delivery
-
-- final applicator `php -l`: OK;
-- ZIP contains exactly the applicator;
-- deterministic clean Git fixture exercised the complete applicator transaction;
-- resulting fixture changed exactly seven paths: four modified plus three deleted;
-- transformed JavaScript passed `node --check`;
-- transformed renderer passed `php -l`;
-- expected handler-write contract/request field markers were verified in the transformed JavaScript;
-- delete scope was verified to be exactly `certutil`, `findstr`, `git`.
-
-The connector-only private OPUS checkout is not materialized in the assistant container, so live SCORE rendering and the real front -> REST -> back -> Composer execution remain owner acceptance gates. The applicator itself verifies the exact audited Git blobs before applying to the owner checkout.
-
-## Expected applicator markers
-
-`P117W_R45B2A4BZ2R8B2_APPLIED`
-
-- `baseline_head=707b1acce1c05dda9751b4b04979b68dc5b2f1f0`
-- `handler_authoring=graphical_real_php_create_update`
-- `handler_transport=front_rest_back_composer`
-- `handler_catalog=managed_code_preserved_and_refreshed`
-- `dynamic_acl=read_only_reserved_namespace`
-- `transition_binding=new_handler_immediately_available`
-- `repository_hygiene=certutil_findstr_git_removed`
-- `changed_paths=7`
-
-## Owner validation order
-
-1. apply R8B2;
-2. lint renderer and JavaScript;
-3. regenerate optimized Composer autoload;
-4. validate both sites;
-5. inspect `git status --short` for exactly seven paths;
-6. restart front/back;
-7. verify normal applications page;
-8. open Conception;
-9. create/edit a temporary GUARD and ACTION;
-10. verify immediate transition binding and correlated logs/profiler;
-11. only then commit/push.
+No claim of R8B2 acceptance remains.
