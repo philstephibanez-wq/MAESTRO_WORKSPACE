@@ -1,6 +1,6 @@
 # P117W R45B2A4BZ2R8B4A2 — Applicator profiler anchor repair handoff
 
-State: DIFFERENTIAL INTEGRATED — CLI AND RUNTIME VALIDATION PENDING
+State: DIFFERENTIAL INTEGRATED — RUNTIME PARTIAL — SECURITY ROUTE REPAIR MOVED TO R8B4B
 
 ## Exact OPUS baseline
 
@@ -8,47 +8,18 @@ State: DIFFERENTIAL INTEGRATED — CLI AND RUNTIME VALIDATION PENDING
 
 `opus_p117w_r45b2a4bz2r8b2_actual_graphical_handler_authoring`
 
-Owner evidence after the R8B4A1 failure:
+R8B4A2 was applied by the owner to `H:\OPUS` on top of that exact HEAD, without commit/push.
 
-- preflight began;
-- applicator aborted on `named-efsm-profiler-received:2`;
-- `git status --short` remained empty.
+## R8B4A2 applicator repair
 
-Therefore R8B4A1 wrote nothing and the same exact clean R8B2 baseline remained the required R8B4A2 input.
-
-## Failure evidence
-
-`P117W_R45B2A4BZ2R8B4A_PREFLIGHT_BEGIN`
-
-`P117W_R45B2A4BZ2R8B4A_REPLACEMENT_ANCHOR_INVALID:sites/owasys-back/application/fsm/services/OwasysFsmDraftCommandProvider.php:named-efsm-profiler-received:2`
-
-## Root cause
-
-The failed R8B4A1 applicator used this payload prefix as a uniqueness anchor:
-
-`'site_id' => $siteId,`
-
-`'operation' => $operation,`
-
-The exact R8B2 backend source contains that prefix in both profiler events:
+R8B4A2 repaired only the ambiguous backend profiler anchors from R8B4A1. The two semantic anchors are qualified by their profiler event names:
 
 - `designer.draft_command.received`;
 - `designer.draft_command.validated`.
 
-The count `2` was therefore correct. No OPUS source mismatch existed.
+No occurrence-count relaxation or global replacement was introduced.
 
-## R8B4A2 correction
-
-R8B4A2 changes only the applicator anchoring for the two backend profiler injections:
-
-- `named-efsm-profiler-received` is anchored by the full semantic `designer.draft_command.received` event prefix;
-- `named-efsm-profiler-validated` is anchored by the full semantic `designer.draft_command.validated` event prefix.
-
-The uniqueness requirement remains exactly one occurrence. No global replacement and no relaxed occurrence count are used.
-
-All R8B4 functional transformations, target paths, expected Git blobs, runtime validation, transactional write/rollback logic, success markers and architecture remain unchanged.
-
-## Artifact
+Artifact:
 
 `opus_p117w_r45b2a4bz2r8b4a2_applicator_profiler_anchor_repair.zip`
 
@@ -56,33 +27,13 @@ ZIP SHA-256:
 
 `633fc827ec76df3244f495a92a5e20519ffcdc7348e2e023e47f6d292fad79bc`
 
-Contents exactly:
-
-- `apply_a4bz2r8b4a2.php`
-
 Applicator SHA-256:
 
 `9565f7a1c057089e7328878e432346f49edef338d8f71f26973ece61263f1dfc`
 
-Applicator length: `81990` bytes.
+## Owner integration evidence
 
-## Assistant-side validation
-
-Completed before delivery:
-
-- source R8B4A1 applicator SHA verified as `5bea0c21d78db31ca0eacea96eb311f93152f7e6577252efc8029aaada5a8538`;
-- exact R8B2 backend file fetched and inspected;
-- exact baseline confirms the ambiguous payload prefix exists in both `received` and `validated` profiler events;
-- R8B4A1 -> R8B4A2 diff inspected: only the two profiler anchor definitions changed;
-- PHP lint of `apply_a4bz2r8b4a2.php`: OK;
-- deterministic profiler-anchor simulation: old ambiguous count `2`, new qualified counts `received=1`, `validated=1`;
-- marker: `R8B4A2_PROFILER_ANCHOR_SIMULATION_OK`;
-- remaining transformations after the failed point were statically reviewed for the same ambiguity class;
-- ZIP inspection: exactly one file.
-
-## Owner integration evidence — 2026-08-24
-
-The owner applied R8B4A2 to `H:\OPUS` and then reported `git status --short` with exactly the expected 15-path differential:
+After application, `git status --short` contained exactly the normative R8B4 differential:
 
 Modified tracked paths:
 
@@ -105,30 +56,76 @@ New path:
 
 15. `sites/essai/config/security.fsm.json`
 
-This exactly matches the normative R8B4 product differential. The applicator integration gate is therefore satisfied at the repository-differential level.
+No commit/push is authorized yet.
 
-The owner has not yet supplied the complete applicator success-marker output in the current evidence. CLI validation and runtime acceptance therefore remain pending. No commit/push is authorized yet.
+## Runtime evidence — 2026-08-24
 
-## Required CLI validation
+### Structure gate: PASS
 
-Run PHP lint on all modified PHP files, JavaScript syntax validation on `fsm-designer.js`, Composer optimized autoload, then validate the three sites:
+With current application `essai`, the OWASYS Structure page renders the contextual authority:
 
-- `owasys-front`;
-- `owasys-back`;
-- `essai`.
+- application: `essai`;
+- EFSM: `navigation`;
+- source: `config/application.fsm.json`;
+- visible canonical source SHA;
+- graphical states `begin` and `home` from the selected application definition.
 
-The 15-path differential must remain present after those checks.
+This validates the selected-application navigation micro-EFSM projection in VIEW for this slice.
 
-## Runtime gates after CLI acceptance
+### Security REST/back gate: PASS
 
-- Security for selected `essai` must project `essai / security` from `config/security.fsm.json`.
-- Structure must project `essai / navigation` from `config/application.fsm.json`.
+For the same front trace `bc0c3e165f29f831cb53eb2fba151758`, owasys-back received:
+
+`GET /api/v1/applications/essai/security`
+
+The secured REST operation `security.snapshot` invoked allow-listed Composer script `owasys:security-snapshot`; Composer succeeded and REST returned HTTP 200. The backend is therefore not the cause of the Security page failure.
+
+### Security front/render gate: FAIL
+
+The front received `/fr-FR/sécurité`, correctly resolved the public route to canonical `security`, then failed later with:
+
+`OPUS_LOCALIZED_ROUTE_CANONICAL_UNKNOWN`
+
+at `Opus/Http/LocalizedRouteResolver.php` during rendering/navigation URL construction.
+
+The failure reproduces on repeated Security requests while other pages continue to render.
+
+## Root cause of the runtime failure
+
+R8B4 added a dedicated Security view `sso` and made the Security renderer build:
+
+`securityUrl($locale, 'sso')`
+
+`securityUrl()` delegates non-overview views to canonical route:
+
+`security/sso`
+
+The OWASYS-front localized-route catalog contains explicit canonical routes for:
+
+- `security/identities`;
+- `security/roles`;
+- `security/permissions`;
+- `security/assignments`;
+- `security/resources`;
+
+but contains no `security/sso` route.
+
+`LocalizedRouteResolver::localize()` therefore correctly throws `OPUS_LOCALIZED_ROUTE_CANONICAL_UNKNOWN` when the Security page model builds the SSO URL. This is an application route-catalog omission introduced by R8B4, not a REST, accent/Unicode, ACL, SSO-provider, or selected-EFSM failure.
+
+## Resolution
+
+The route-catalog repair is isolated into follow-up slice:
+
+`P117W_R45B2A4BZ2R8B4B_SECURITY_SSO_LOCALIZED_ROUTE_REPAIR`
+
+R8B4B must add only the missing localized canonical route and preserve all current R8B4A2 modifications.
+
+## Remaining R8B4 runtime gates after R8B4B
+
+- Security must render `essai / security` from `config/security.fsm.json`.
+- Security VIEW and DESIGN must use the same canonical selected-application definition.
 - Security Conception STATE create must persist and survive reload.
 - SSO view must expose real provider/default-provider metadata without secrets.
 - Sources + Git must remain functionally unchanged.
 
-Only after those runtime gates may the owner commit/push OPUS/OWASYS.
-
-## Next slice after acceptance
-
-SecurityContext ownership plus first Security/Navigation inter-EFSM COMMAND/EVENT cooperation, followed by generic generated-application PHP ACTION/GUARD source authoring.
+Only after those gates may the owner commit/push OPUS/OWASYS.
