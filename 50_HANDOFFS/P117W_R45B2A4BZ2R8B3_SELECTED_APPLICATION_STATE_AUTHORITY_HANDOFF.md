@@ -130,3 +130,11 @@ The private owner checkout is not materialized in the assistant runtime, so live
 Apply, lint the changed PHP/JS, regenerate autoload and validate all three applications. Then restart OWASYS front/back, select `essai`, enter Conception, create one temporary STATE and confirm it survives the automatic reload.
 
 Do not commit/push R8B3 until that runtime gate succeeds.
+
+## Mandatory dependency for the next architecture slice
+
+R8B3 is now the blocking prerequisite for the first generated-application micro-EFSM vertical slice documented in `P117W_SECURITY_MICRO_EFSM_FIRST_SLICE_SPEC.md` and its handoff.
+
+After owner acceptance of R8B3, the next slice is **Security + minimal Navigation**, with separate canonical diagrams, plus the Security management views for **Users**, **Roles & authorizations**, and **SSO/providers**. SSO remains a provider/service domain consumed by Security ACTIONS, not a separate EFSM by default.
+
+No Security/Navigation/SSO implementation ZIP is to be layered over the unvalidated R8B2 designer authority. The selected-application canonical EFSM authority and persistent STATE CRUD provided by R8B3 must first be demonstrated live.
