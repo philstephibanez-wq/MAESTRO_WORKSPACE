@@ -13,6 +13,7 @@ Security couvre le domaine complet :
 - login / logout ;
 - identification de l'utilisateur ;
 - authentification via provider configuré ;
+- SSO et providers d'identité ;
 - établissement et renouvellement de l'identité/session ;
 - utilisateurs ;
 - rôles ;
@@ -53,6 +54,24 @@ Au minimum :
 
 Les autres micro-EFSM consomment une vue read-only injectée de ce contexte.
 
+### SSO possède l'authentification déléguée/provider
+
+Le SSO n'est pas une EFSM séparée par défaut. Il est un ensemble de providers/services d'identité consommés par les ACTION de la Security EFSM.
+
+Le contrat SSO doit au minimum couvrir :
+
+- provider par défaut ;
+- providers activés ;
+- capabilities de chaque provider ;
+- authentification locale lorsqu'elle est activée ;
+- Auth0/proxy/bastion conformément au contrat OPUS ;
+- mapping du subject, label et des rôles/claims ;
+- paramètres de confiance du proxy ;
+- politique de changement/réinitialisation de mot de passe uniquement lorsque le provider le permet ;
+- aucun secret affiché, journalisé ou renvoyé dans SCORE/Profiler.
+
+Le provider authentifie et produit une identité normalisée. La Security EFSM orchestre quand cette authentification est demandée, réussit, échoue, expire ou doit être renouvelée.
+
 ### ACL possède
 
 La décision pure :
@@ -83,7 +102,7 @@ STATE de base proposés :
 - `reauthenticating` ;
 - `locked` seulement si le provider/policy le nécessite.
 
-Le squelette ne doit pas créer une combinaison d'états par rôle. Les rôles sont des données du SecurityContext, pas des STATE.
+Le squelette ne doit pas créer une combinaison d'états par rôle ou provider. Les rôles et le provider sont des données du SecurityContext, pas des STATE.
 
 SIGNALS de base :
 
@@ -124,19 +143,20 @@ Exemple de coopération :
 
 `Security(session_expired|logout) -> EVENT security_session_expired|security_logged_out -> Navigation(login)`
 
-La page login est une vue SCORE servie dans le domaine Navigation ; l'authentification elle-même appartient exclusivement à Security.
+La page login est une vue SCORE servie dans le domaine Navigation lorsqu'un formulaire local est requis ; l'authentification elle-même appartient exclusivement à Security. Avec un provider SSO/proxy, le point d'entrée peut être une redirection/identité déléguée sans formulaire local.
 
-## Vue Sécurité : EFSM + utilisateurs + rôles
+## Vue Sécurité : EFSM + utilisateurs + rôles + SSO
 
 La section `Sécurité` de l'application n'est pas limitée au diagramme EFSM. Elle doit fournir au développeur une vue complète du domaine Security, sans mélanger les responsabilités.
 
-Au minimum, la section comporte trois vues/sous-vues cohérentes :
+Au minimum, la section comporte quatre vues/sous-vues cohérentes :
 
 1. **EFSM Security** : diagramme éditable du workflow login/authentication/logout/reauthentication ;
 2. **Utilisateurs** : définition et administration des identités/utilisateurs de l'application ;
-3. **Rôles & autorisations** : définition des rôles et des droits sur les RESSOURCES.
+3. **Rôles & autorisations** : définition des rôles et des droits sur les RESSOURCES ;
+4. **SSO** : configuration, inspection et capabilities des providers d'identité/authentification.
 
-Ces vues utilisent les mêmes services Security/ACL réels ; elles ne dupliquent pas la logique de sécurité dans SCORE.
+Ces vues utilisent les mêmes services Security/SSO/ACL réels ; elles ne dupliquent pas la logique de sécurité dans SCORE.
 
 ### Définition des utilisateurs
 
@@ -171,15 +191,35 @@ Le modèle architectural reste :
 
 Les rôles ne deviennent jamais des STATE de la Security EFSM.
 
+### Définition du SSO
+
+La vue SSO doit être une vue de configuration/inspection des providers réels de l'application. Elle doit permettre, uniquement selon les capabilities exposées par OPUS :
+
+- voir le provider par défaut ;
+- voir les providers activés/désactivés ;
+- choisir le provider par défaut lorsque la configuration le permet ;
+- inspecter le type/capabilities d'un provider sans exposer de secret ;
+- configurer les paramètres non secrets du provider local ;
+- configurer pour Auth0/proxy les adresses de proxy de confiance, noms de headers subject/roles/label/secret et la référence au nom de variable d'environnement contenant le secret ;
+- visualiser le mapping des claims/roles vers l'identité OPUS normalisée ;
+- indiquer clairement si un formulaire login local est requis ou si l'identité est déléguée ;
+- tester/valider la configuration par les services OPUS appropriés sans jamais afficher la valeur d'un secret.
+
+Les secrets restent hors SCORE, hors Git, hors logs et hors Profiler. La vue peut afficher qu'un secret est configuré/absent uniquement si cette information est disponible sans divulgation.
+
+SSO n'est pas un STATE et un provider n'est pas une EFSM : les providers sont des services d'authentification appelés par des ACTION de la Security EFSM.
+
 ### Relation avec l'EFSM
 
-Les mutations Utilisateurs/Rôles peuvent déclencher des SIGNALS/EVENTS Security pertinents, par exemple :
+Les mutations Utilisateurs/Rôles/SSO peuvent déclencher des SIGNALS/EVENTS Security pertinents, par exemple :
 
 - `security_roles_changed` ;
 - `security_identity_disabled` ;
-- `security_authorization_changed`.
+- `security_authorization_changed` ;
+- `security_provider_changed` ;
+- `security_session_invalidated` si une mutation exige de révoquer/revalider le contexte courant.
 
-Mais l'édition d'un utilisateur ou d'un rôle n'est pas elle-même un STATE de l'EFSM. L'EFSM orchestre les changements temporels de sécurité ; les utilisateurs/rôles sont des données/ressources administrées par les services Security/ACL.
+Mais l'édition d'un utilisateur, d'un rôle ou d'un provider n'est pas elle-même un STATE de l'EFSM. L'EFSM orchestre les changements temporels de sécurité ; utilisateurs/rôles/providers sont des données et services administrés par le domaine Security.
 
 ## ACTION PHP
 
@@ -187,8 +227,9 @@ Le développeur doit pouvoir ouvrir les ACTION depuis le diagramme et éditer le
 
 Le squelette/framework peut fournir des ACTION techniques standards telles que :
 
+- demander l'authentification au provider SSO configuré ;
+- matérialiser l'identité normalisée depuis un provider ;
 - démarrer/renouveler/détruire la session ;
-- matérialiser l'identité depuis un provider ;
 - mettre à jour le SecurityContext ;
 - publier un EVENT de sécurité.
 
@@ -204,7 +245,7 @@ Selon la configuration de génération :
 
 - une page SCORE login est générée si login local/UI est requis ;
 - le mode SSO/Auth0 proxy peut ne pas nécessiter de formulaire local ;
-- la surface Security affiche au minimum le diagramme Security, les utilisateurs et les rôles/autorisations selon capabilities ;
+- la surface Security affiche au minimum le diagramme Security, les utilisateurs, les rôles/autorisations et le SSO selon capabilities ;
 - les transitions réelles Security pilotent le parcours ;
 - la Navigation EFSM minimale rend le login/home réellement parcourables ;
 - le mock reste navigable avant toute ACTION métier spécifique.
@@ -230,7 +271,8 @@ Security publie ensuite des EVENTS :
 - `security_logged_out` ;
 - `security_roles_changed` ;
 - `security_session_expired` ;
-- `security_reauthenticated`.
+- `security_reauthenticated` ;
+- `security_provider_changed` lorsque pertinent.
 
 Les autres micro-EFSM décident elles-mêmes comment réagir à ces événements.
 
@@ -240,7 +282,7 @@ Dans un fullstack, front et back restent deux applications OPUS autonomes.
 
 Le front possède sa Security EFSM de présentation/session utilisateur et sa Navigation EFSM. Le back possède sa propre Security EFSM/API de validation des requêtes et du contexte délégué ; il n'a pas de Navigation UI.
 
-La coopération inter-bastions passe exclusivement par REST sécurisé et identité déléguée/contrats signés existants ; aucune lecture directe de session front par le back.
+La coopération inter-bastions passe exclusivement par REST sécurisé et identité déléguée/contrats signés existants ; aucune lecture directe de session front par le back. Le SSO/proxy doit préserver cette séparation : l'identité de confiance transmise au back suit le contrat REST sécurisé et n'autorise aucun partage implicite de session/front filesystem.
 
 ## Designer contextuel
 
@@ -266,13 +308,14 @@ Le développeur doit pouvoir :
 - sauvegarder de façon persistante ;
 - recharger sans perdre les changements.
 
-Les vues Utilisateurs et Rôles restent des vues de gestion Security distinctes du diagramme, mais intégrées dans la même section fonctionnelle Sécurité.
+Les vues Utilisateurs, Rôles et SSO restent des vues de gestion Security distinctes du diagramme, mais intégrées dans la même section fonctionnelle Sécurité.
 
 ## Réutilisation de l'existant OPUS/OWASYS
 
 La cible doit réutiliser plutôt que dupliquer :
 
-- SSO manager/providers existants ;
+- SSO manager/providers existants, notamment local-password et Auth0 proxy lorsqu'ils sont présents ;
+- configuration SSO existante et ses contrats ;
 - session/identity existante ;
 - `AclPolicy`/décision ACL existante ;
 - REST sécurisé front/back ;
@@ -291,14 +334,16 @@ Le premier livrable devra démontrer sur une application générée fraîche :
 2. présence d'une Navigation EFSM canonique minimale propre au front ;
 3. diagramme Security correct et éditable dans la vue Sécurité ;
 4. diagramme Navigation correct et éditable dans une vue Navigation séparée ;
-5. mock login -> authentification -> home réellement navigable ;
-6. logout/expiration -> retour login selon policy ;
+5. mock login/point d'entrée SSO -> authentification -> home réellement navigable ;
+6. logout/expiration -> retour login ou reprise SSO selon policy ;
 7. vue Sécurité avec gestion réelle des utilisateurs selon provider/capabilities ;
 8. vue Sécurité avec gestion réelle des rôles et droits CRUD par RESSOURCE ;
-9. identité et rôles matérialisés dans un SecurityContext injecté ;
-10. ACL deny-by-default consultable par GUARD ;
-11. ACTION PHP techniques réelles derrière le workflow ;
-12. événements Security/Navigation corrélés et observables par Profiler ;
-13. aucune dépendance JavaScript dans `owasys-back` ;
-14. aucune régression de Sources + Git, qui sera traité ensuite avec sa propre micro-EFSM ;
-15. application générée toujours exploitable comme squelette/mock avant ajout du métier.
+9. vue SSO avec providers/capabilities/configuration non secrète réels, provider par défaut et Auth0/proxy/local selon configuration ;
+10. identité, provider et rôles matérialisés dans un SecurityContext injecté ;
+11. ACL deny-by-default consultable par GUARD ;
+12. ACTION PHP techniques réelles derrière le workflow Security/Navigation ;
+13. événements Security/Navigation corrélés et observables par Profiler ;
+14. aucun secret exposé par SCORE, logs ou Profiler ;
+15. aucune dépendance JavaScript dans `owasys-back` ;
+16. aucune régression de Sources + Git, qui sera traité ensuite avec sa propre micro-EFSM ;
+17. application générée toujours exploitable comme squelette/mock avant ajout du métier.
