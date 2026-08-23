@@ -1,122 +1,36 @@
 # P117W R45B2A4BZ2R8B2 — Actual graphical PHP GUARD/ACTION authoring
 
-State: DELIVERY PREPARED — OWNER VALIDATION REQUIRED
+State: OWNER COMMITTED/PUSHED — VALIDATION FAILED — SUPERSEDED BY R8B3
 
-## Baseline
+## Landed OPUS commit
 
-Exact OPUS baseline:
+`76b59191492f4efabf343e85be841f4832fe0ced`
 
-`707b1acce1c05dda9751b4b04979b68dc5b2f1f0`
+`opus_p117w_r45b2a4bz2r8b2_actual_graphical_handler_authoring`
 
-`opus_p117w_r45b2a4bz2r8b1_actual_r8b_boot_repair`
+The owner recreated the generated application `essai` and reported two blocking failures:
 
-R8B1 is owner-committed/pushed and the owner supplied a rendered OWASYS applications page after the boot repair.
+- Conception still displays the OWASYS host FSM instead of the selected `essai` FSM;
+- STATE Create does not operate.
 
-## Cause treated
+## Post-landing root-cause audit
 
-The original R8B handoff claimed graphical GUARD/ACTION authoring, but the actual R8B Git landing did not contain that UI.
+The failures are not presentation-only.
 
-Current baseline facts:
+1. `OwasysFsmDiagramBuilder` is still host-bound. In design mode it loads `owasys-front/config/site.json` and then the host `navigation.fsm`, so the graph source remains OWASYS rather than the current selected application.
+2. `OwasysFsmDesignerGateway` still hardcodes semantic draft and handler endpoints to `owasys-front`, so even a visually corrected graph would mutate the wrong application.
+3. `OwasysFsmDraftCommandProvider` still hardcodes `/config/fsm.json`; generated applications canonically use `config/application.fsm.json`.
+4. R8B2 JavaScript references `handlerSourceEditor` before its `const` declaration. The resulting temporal-dead-zone `ReferenceError` aborts designer initialization before STATE event listeners are installed.
+5. Freshly generated `sites/essai/config/application.fsm.json` contains no `signals` registry although the generic EFSM validator requires every transition signal to be declared.
+6. The same freshly generated FSM has the `profiler` state removed but retains profiler-related transitions. `ProfilerEnvironmentScaffoldPolicy::withoutProfilerFsm()` removes only transition ID exactly `open.profiler`, while actual transition IDs are `open.profiler.from.*` and normal application transitions can still originate from `profiler`.
+7. `FsmSiteLoader` currently interprets an EFSM state without `module` as if `module == state.id`; that re-couples a pure STATE created by the designer to an application module directory.
 
-- `fsm-diagram.score` is still the R7R2 surface with GUARD/ACTION Create/Edit disabled;
-- `fsm-native.css` is unchanged from the previous designer shell;
-- `fsm-designer.js` contains the R8A handler catalog and CSRF rotation but no PHP source editor/write workflow;
-- the secured handler-write pipeline already exists in `FsmDesignerGateway` and `OwasysFsmDraftCommandProvider`;
-- managed catalog entries already expose the exact PHP callable source, managed/dynamic ownership and hashes;
-- R8B accidentally committed three zero-byte root files: `certutil`, `findstr`, `git`.
+## Consequence
 
-R8B2 completes the missing UI against the existing secured pipeline instead of creating a second write path.
+R8B2 remains useful for the graphical PHP GUARD/ACTION source editor, but its owner acceptance is invalid. No further handler-authoring evolution should be stacked until selected-application EFSM authority and STATE creation are corrected.
 
-## Delivered behavior
+## Superseding slice
 
-### GUARD source authoring
+`P117W R45B2A4BZ2R8B3 — Selected application EFSM authority + persistent STATE CRUD`
 
-In EFSM design mode:
-
-- GUARD Create opens a real PHP callable source editor;
-- GUARD Edit opens only developer-managed GUARD handlers;
-- dynamic `acl:*` guards remain visible to transition binding but are excluded from source editing;
-- new GUARD IDs beginning with `acl:` are rejected client-side and remain rejected server-side.
-
-### ACTION source authoring
-
-- ACTION Create opens a real PHP callable source editor;
-- ACTION Edit loads the exact managed PHP callable source;
-- default skeleton uses the real `FsmActionDispatcher` callback signature.
-
-### Trusted write flow
-
-The browser submits only handler kind/id/mode/code plus CSRF to the existing front gateway.
-
-The authoritative source hash remains server-derived from the trusted handler catalog.
-
-Write flow remains:
-
-`owasys-front -> secured REST -> owasys-back -> allow-listed Composer -> SiteSourceWorkspace -> FsmDeveloperHandlers.php`
-
-No direct browser filesystem write, no `eval`, and no backend JavaScript are introduced.
-
-### Post-write behavior
-
-After a successful `OWASYS_EFSM_HANDLER_WRITE_RESULT_V1` response:
-
-- the rotated CSRF token is adopted;
-- the real handler catalog is reloaded;
-- managed source/hash metadata are refreshed;
-- the newly programmed handler becomes immediately available to transition GUARD/ACTION binding.
-
-### Repository hygiene
-
-Delete the accidental tracked zero-byte root files:
-
-- `certutil`;
-- `findstr`;
-- `git`.
-
-## Differential scope
-
-Exactly seven paths change relative to `707b1acc...`:
-
-Modified:
-
-- `sites/owasys-front/application/default/services/ScorePageRenderer.php`;
-- `sites/owasys-front/application/default/templates/partials/fsm-diagram.score`;
-- `sites/owasys-front/www/asset/css/fsm-native.css`;
-- `sites/owasys-front/www/asset/js/fsm-designer.js`.
-
-Deleted:
-
-- `certutil`;
-- `findstr`;
-- `git`.
-
-No backend file changes in this slice.
-
-## Applicator preflight
-
-The applicator refuses unless:
-
-- HEAD is exactly `707b1acce1c05dda9751b4b04979b68dc5b2f1f0`;
-- the working tree is clean;
-- renderer/template/CSS/JS Git blob IDs match the audited baseline;
-- R8B1 `FsmGuardHandlers.php` blob matches the committed repair;
-- the three accidental root files are still the exact empty Git blobs.
-
-All transformations are staged in memory before any write. A failed transformation writes nothing. A write/delete failure triggers restoration of all original bytes.
-
-## Acceptance
-
-Owner validation must verify:
-
-1. both sites validate;
-2. normal `/fr-FR/applications` still renders;
-3. Conception opens design mode;
-4. GUARD Create/Edit and ACTION Create/Edit are enabled after catalog load;
-5. editing a managed handler shows its actual PHP callable;
-6. `acl:*` cannot be source-edited;
-7. creating a temporary GUARD succeeds through front/back/Composer and it immediately appears in transition binding;
-8. the equivalent ACTION flow succeeds;
-9. fresh front/back logs and Profiler show the correlated handler write;
-10. `git status --short` shows exactly the four modified UI paths and three deleted accidental root files before commit.
-
-No push before these runtime checks pass.
+R8B3 is bound to the real R8B2 owner baseline `76b5919...` and treats the causes above.
