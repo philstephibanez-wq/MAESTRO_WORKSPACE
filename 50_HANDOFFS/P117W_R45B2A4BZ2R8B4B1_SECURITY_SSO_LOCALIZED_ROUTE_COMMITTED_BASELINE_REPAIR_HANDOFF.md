@@ -1,57 +1,28 @@
 # P117W R45B2A4BZ2R8B4B1 — Security SSO localized route committed-baseline repair handoff
 
-State: REPOSITORY GATE PASS — RUNTIME VALIDATION REQUIRED
+State: COMMITTED/PUSHED — CLI PASS — SECURITY RUNTIME PASS — DESIGN PERSISTENCE PASS — DIRECT SSO SUBVIEW GATE PENDING
 
-## Same-cycle GitHub verification
+## Current source of truth — 2026-08-24
 
-Current mandatory control sources were re-read before artifact construction:
+Current `README-FIRST.md` was re-read from GitHub immediately before this update.
 
-- `README-FIRST.md` blob `43564921659d743ec86c2fa4886841af4fc13aeb`;
-- MAESTRO development/patch/Git/clean-workspace contracts;
-- OPUS current master commit history;
-- current route catalog, front site config, Security controller and generic localized-route resolver.
+Blob:
 
-Current OPUS master at artifact construction:
+`007fa44f52522e5f3c6084502f17924a48918628`
 
-`c5e7de78f70d14efc3b8c42f4ec53026b47253cf`
+It explicitly requires reading GitHub repositories and forbids using memorized source state.
 
-`opus_p117w_r45b2a4bz2r8b4a2_applicator_profiler_anchor_repair`
+Current OPUS `master` was re-read from GitHub and remains:
 
-## Superseded R8B4B evidence
+`4043702f4bc6b190fd51f2acc1fe6d939e3c19c1`
 
-Owner execution of the previous artifact returned:
+`opus_p117w_r45b2a4bz2r8b4b1_security_sso_localized_route_committed_baseline_repair`
 
-`P117W_R45B2A4BZ2R8B4B_PREFLIGHT_BEGIN`
+The commit parent is `c5e7de78f70d14efc3b8c42f4ec53026b47253cf` and its only changed file is:
 
-`P117W_R45B2A4BZ2R8B4B_HEAD_INVALID`
+`sites/owasys-front/config/routes.localized.json`
 
-and `git status --short` was empty.
-
-Cause: R8B4B had been built against obsolete pre-commit HEAD `76b5919...` even though R8B4A2 had already been committed/pushed. No source write occurred. The failed artifact is retained for history but must not be executed again.
-
-## Exact input contract used by R8B4B1
-
-R8B4B1 requires:
-
-- HEAD exactly `c5e7de78f70d14efc3b8c42f4ec53026b47253cf`;
-- clean tracked worktree;
-- clean index;
-- no untracked files.
-
-Exact dependency blobs:
-
-- routes localized: `1ace98302b62a10fb2f817f60063fdfd3f08180c`;
-- OWASYS-front site config: `0c705f40b05128ab0f7197b99310c5d14c6f79da`;
-- Security controller: `3a13204eb4177f0638f6c1eb7c98449cf8a86597`;
-- LocalizedRouteResolver: `5c302833b1f597210d0b4c7044cb18d672871fbf`.
-
-## Runtime diagnosis preserved
-
-Structure already renders `essai / navigation / config/application.fsm.json`.
-
-Security back flow succeeds through secured REST -> `owasys:security-snapshot` -> HTTP 200. The front later fails with `OPUS_LOCALIZED_ROUTE_CANONICAL_UNKNOWN`.
-
-Current Security controller contains dedicated `sso` view and builds canonical `security/sso`. Current route catalog has no `security/sso`. The generic resolver is correctly fail-closed on undeclared canonical routes.
+with the explicit localized `security/sso` route addition.
 
 ## Artifact
 
@@ -61,84 +32,147 @@ ZIP SHA-256:
 
 `a8befc98a50b8c372cd69f449a74a0d36d6cdb4582b32f80108606c0070c8eef`
 
-Contents exactly:
-
-- `apply_a4bz2r8b4b1.php`
-
 Applicator SHA-256:
 
 `201fc474ec05f0bf70d1ad4d2bf80841de0fe3d6b2eafa982f012b6fc2ca8e3b`
 
-Applicator length: `10488` bytes.
+R8B4B1 was constructed against OPUS HEAD `c5e7de78...`, passed all owner applicator markers, and was subsequently committed/pushed by the owner as current OPUS HEAD `4043702...`.
 
-## Applicator behavior
+## Repository validation
 
-The applicator:
+Owner applicator execution passed:
 
-1. requires exact committed R8B4A2 HEAD `c5e7de78...`;
-2. requires a fully clean worktree/index with no untracked files;
-3. validates the four current Git blobs above;
-4. verifies current Security SSO view/url markers;
-5. reads route/site configuration through OPUS `StructuredFileLoader` and source bytes through OPUS `File`;
-6. rejects an already-declared `security/sso`;
-7. derives exactly 25 base-language SSO paths from canonical `security`;
-8. serializes with OPUS `Json`;
-9. validates staged routing with the real OPUS `LocalizedRouteResolver` over all 37 locales using `localize`, `resolve` and `isLocalized`;
-10. writes only `sites/owasys-front/config/routes.localized.json` via `File::writeAtomic()`;
-11. requires French `sécurité/sso` and English `security/sso` after reload;
-12. reruns resolver validation on the written file;
-13. requires HEAD unchanged, exactly one tracked diff, no staged/untracked files, and clean `git diff --check`;
-14. restores original route-catalog bytes on any post-write exception before reporting failure.
+- `P117W_R45B2A4BZ2R8B4B1_PREFLIGHT_OK`;
+- `P117W_R45B2A4BZ2R8B4B1_REPO_CHANGES_VERIFIED`;
+- `P117W_R45B2A4BZ2R8B4B1_APPLIED`;
+- localized route `security/sso`;
+- 25 base languages;
+- 37 regional locales.
 
-## Assistant-side validation
+After application, the only local change was `sites/owasys-front/config/routes.localized.json`.
 
-Completed before delivery:
+The owner later committed/pushed it; current OPUS master confirms only that route-catalog change.
 
-- current GitHub source-of-truth gate completed in the same cycle;
-- previous R8B4B stale-baseline cause confirmed from GitHub current master;
-- current target/dependency blob SHAs verified from GitHub;
-- current route catalog inspected and `security/sso` confirmed absent;
-- current Security controller inspected and SSO view/url confirmed present;
-- generic resolver fail-closed behavior inspected;
-- applicator PHP lint: OK;
-- old pre-commit worktree expectations removed;
-- post-write rollback path strengthened so validation exceptions are rollback-capable;
-- ZIP inspected: exactly one applicator file.
+Repository gate: PASS.
 
-## Owner repository validation — 2026-08-24
+## CLI validation
 
-Owner executed R8B4B1 from `H:\OPUS` and supplied the complete success output:
+Owner supplied successful validation for:
 
-`P117W_R45B2A4BZ2R8B4B1_PREFLIGHT_BEGIN`
+- `owasys-front`: valid, 12 routes, 10 modules, Singleton, `fsm-module-first`;
+- `owasys-back`: valid, 2 routes, 3 modules, Singleton, `fsm-module-first`;
+- `essai`: valid, 1 route, 1 module, generated frontend profile, FSM `config/application.fsm.json`.
 
-`P117W_R45B2A4BZ2R8B4B1_PREFLIGHT_OK`
+CLI gate: PASS.
 
-`P117W_R45B2A4BZ2R8B4B1_REPO_CHANGES_VERIFIED`
+## Security runtime validation
 
-`P117W_R45B2A4BZ2R8B4B1_APPLIED`
+### Localized Security route
 
-with:
+`/fr-FR/sécurité` renders normally. The previous `OPUS_LOCALIZED_ROUTE_CANONICAL_UNKNOWN` HTTP 500 is absent.
 
-- `baseline_head=c5e7de78f70d14efc3b8c42f4ec53026b47253cf`;
-- `changed_path=sites/owasys-front/config/routes.localized.json`;
-- `localized_route=security/sso`;
-- `localized_route_languages=25`;
-- `localized_route_locales=37`;
-- `runtime_gate=/fr-FR/sécurité`.
+Gate: PASS.
 
-Owner then ran `git status --short`, which showed exactly one changed path:
+### Contextual Security micro-EFSM
 
-`M sites/owasys-front/config/routes.localized.json`
+The selected application `essai` renders the dedicated Security micro-EFSM from canonical source `config/security.fsm.json`.
 
-Therefore the R8B4B1 repository/preflight/write gate is PASS. No other local modification is evidenced by the supplied status.
+Visible states:
 
-## Remaining runtime gates
+- `anonymous`;
+- `authenticating`;
+- `authenticated`;
+- `reauthenticating`.
 
-1. Reload `/fr-FR/sécurité` and require no localized-route 500.
-2. Require Security authority `essai / security / config/security.fsm.json`.
-3. Open the SSO subview and verify real provider/default-provider metadata with no secrets.
-4. Require Structure still `essai / navigation / config/application.fsm.json`.
-5. Require Sources + Git functional.
-6. Create one temporary STATE in Security Conception and require persistence after reload.
+Visible signals/transitions include:
 
-Do not commit/push R8B4B1 until these runtime gates pass.
+- `login_requested`;
+- `authentication_succeeded`;
+- `authentication_failed`;
+- `logout_requested`;
+- `session_expired`;
+- `reauth_required`;
+- `reauthentication_succeeded`;
+- `reauthentication_failed`.
+
+Contextual Security graph gate: PASS.
+
+### Security data / SSO snapshot
+
+Rendered selected-application Security metadata includes:
+
+- application `essai`;
+- type `frontend`;
+- ACL `OPUS_GENERATED_APPLICATION_ACL_V1`;
+- SSO `OPUS_GENERATED_APPLICATION_SSO_V1`;
+- default policy `deny`;
+- default provider `session`.
+
+Visible provider metadata:
+
+- `auth0-proxy` disabled;
+- `local-password` disabled;
+- `session` enabled.
+
+No secret material is visible in supplied evidence.
+
+Security snapshot/data gate: PASS.
+
+## Security Conception STATE persistence — PASS
+
+Owner supplied direct graphical evidence for the missing persistence gate.
+
+### Create + reload
+
+First supplied Conception capture shows selected authority:
+
+- application `essai`;
+- EFSM `security`;
+- source `config/security.fsm.json`;
+
+and shows a fifth temporary STATE:
+
+`test_temp`
+
+present alongside the four canonical Security states after reload.
+
+This directly proves the temporary STATE survived reload and was therefore persisted to the canonical selected-application Security EFSM rather than existing only in browser/UI memory.
+
+### Delete + reload
+
+Second supplied Conception capture shows the same selected authority after deletion and reload, with `test_temp` absent and only the four canonical Security states remaining.
+
+Owner also supplied after cleanup:
+
+- empty `git status --short`;
+- empty `git diff -- sites\essai\config\security.fsm.json`.
+
+This proves the supported STATE CRUD is reversible and the source returned exactly to committed state after graphical deletion.
+
+Security graphical STATE create -> persist -> reload -> delete -> persist -> reload gate: PASS.
+
+## Previously validated Structure / Sources evidence
+
+Structure had already rendered selected application `essai`, EFSM `navigation`, source `config/application.fsm.json`.
+
+Sources + Git had already rendered and source REST reads/listing completed successfully in the same R8B4 series.
+
+## Remaining acceptance gate
+
+Only one explicit runtime check remains before declaring the whole R8B4 slice fully accepted:
+
+Open the dedicated localized SSO subview directly and require it to render without routing/runtime error:
+
+`/fr-FR/sécurité/sso`
+
+The route resolver and overview SSO data are already validated, but direct navigation into that dedicated subview has not yet been supplied as runtime evidence.
+
+No patch is justified for the current evidence.
+
+If the direct SSO subview passes, R8B4 is fully accepted and the next development slice starts from OPUS HEAD:
+
+`4043702f4bc6b190fd51f2acc1fe6d939e3c19c1`
+
+## Next slice after full R8B4 acceptance
+
+SecurityContext ownership plus first Security/Navigation inter-EFSM COMMAND/EVENT cooperation, followed by generic generated-application PHP ACTION/GUARD source authoring.
