@@ -1,89 +1,50 @@
 # P117W R45B2A4BZ2 R8B5D2 — External Composer validation runner repair — HANDOFF
 
-State: DELIVERED — OWNER APPLY/RUNTIME ACCEPTANCE PENDING
+State: APPLIED LOCALLY — RUNTIME PARTIAL PASS — NOT ACCEPTED — NOT PUSHED — SUPERSEDED BY R8B5D3
 
 ## Source of truth
 
 - README-FIRST blob: `1d7c00ade6521a5fe3fcb83139ce18d98033e810`.
-- OPUS baseline/master: `f053f5693e0e65fe807564a2bfd6d52fc28ba4e2`.
-- CSS blob: `085e6a9e68b775461f18e5276e4b4c95d5b76d29`.
-- ScorePageRenderer blob: `0512c3427a190f4a6184710372d78e21f758b39f`.
-- R8B5D1 is recorded FAILED/ROLLED BACK and MUST NOT be retried.
+- OPUS baseline/master remains `f053f5693e0e65fe807564a2bfd6d52fc28ba4e2`.
+- CSS blob at baseline: `085e6a9e68b775461f18e5276e4b4c95d5b76d29`.
+- ScorePageRenderer blob at baseline: `0512c3427a190f4a6184710372d78e21f758b39f`.
+- R8B5D1 is FAILED/ROLLED BACK and MUST NOT be retried.
 - R8B5D2 spec commit: `5a16a154fbe4387751549fb0b86c494b44ca824e`.
 
-## Failure repaired
+## Runner repair achieved
 
-R8B5D1 reached preflight success but its internal post-write Composer validation failed with:
+R8B5D2 removed internal Composer execution from the applicator. The source transform could therefore be applied without the R8B5D1 `composer.phar` runner failure.
 
-`OWASYS_FRONT_VALIDATE_FAILED:Could not open input file: H:\OPUS\composer.phar`
+## Runtime evidence after R8B5D2
 
-Owner showed empty `git status --short` and empty `git diff --check`; rollback restored the baseline.
+Owner supplied VIEW and DESIGN screenshots for `owasys-front / security`.
 
-Current OPUS root contains a tracked zero-byte file named `composer`. R8B5D2 therefore removes bare Composer subprocess execution from the applicator instead of adding a platform-specific hidden fallback.
+Pixel comparison of the four STATE rectangles gives:
 
-## Functional correction retained
+- VIEW rectangles: `(374,643)`, `(636,736)`, `(859,621)`, `(1350,643)`;
+- DESIGN rectangles: `(209,380)`, `(471,475)`, `(694,358)`, `(1185,380)`.
 
-Exactly the same two-file source transformation as R8B5D1:
+Every X coordinate differs by exactly `+165 px` VIEW versus DESIGN while pairwise STATE spacing remains identical. Y differences are page/header placement only. Therefore:
 
-1. `sites/owasys-front/www/asset/css/fsm-native.css` — three FSM SVG `max-width: 100%` shrink rules become `max-width: none`, canvas remains scrollable;
-2. `sites/owasys-front/application/default/services/ScorePageRenderer.php` — FSM CSS cache-buster becomes `p117w-r45b2a4bz2r8b5d1`.
+- persisted EFSM geometry is being reused;
+- R8B5D storage/read path is operational;
+- R8B5D2 successfully removes scale distortion;
+- remaining defect is whole-SVG origin placement, not persistence or geometry.
 
-No backend, FSM definition, persisted layout data, REST catalog, ACL, Composer registry or JS change.
+## Remaining root cause
 
-## Artifact
+The CSS keeps `margin-inline: auto` on the FSM SVG. VIEW has a wider canvas and centers the intrinsic SVG. DESIGN reserves an inspector column; when the intrinsic SVG is wider than its reduced canvas, auto margins resolve differently and the SVG becomes left-aligned. The same persisted coordinates therefore appear globally translated between modes.
 
-- ZIP: `opus_p117w_r45b2a4bz2r8b5d2_external_composer_validation_runner_repair.zip`;
-- ZIP SHA-256: `a3185cf0a5ea546dcf8147536081c356415debad779e38df4f67ad2c21d5db22`;
-- ZIP contains exactly `apply_a4bz2r8b5d2.php`;
-- applicator SHA-256: `dd4decc9c8c5cfbb576d9d8a03cff5e8b0bca08847f6dc2a77112372343c3e98`;
-- applicator size: 9899 bytes;
-- applicator PHP lint: PASS;
-- ZIP re-extraction byte comparison: PASS.
+A second cascade defect is also present: the final `P117W_R45B2A4BG` rule overrides earlier canvas scrolling with `overflow-x: hidden`. After removing SVG shrink, wide diagrams must instead expose horizontal scrolling.
 
-## Deterministic test
+## Supersession
 
-The applicator logic was replayed end-to-end in a temporary Git repository with synthetic files containing the exact replacement anchors. The test passed:
+R8B5D2 is not to be committed or pushed. R8B5D3 is cumulative from the clean GitHub baseline and will:
 
-- PREFLIGHT_OK;
-- REPO_CHANGES_VERIFIED;
-- APPLIED;
-- exactly two modified paths;
-- zero untracked files;
-- clean index;
-- `git diff --check` PASS;
-- no `composer`, `composer.phar` or `validate-site` invocation remains in the applicator.
+1. keep intrinsic SVG scale (`max-width: none`);
+2. make SVG origin stable (`margin-inline: 0`);
+3. restore final horizontal canvas overflow to `auto`;
+4. bump the FSM CSS cache-buster;
+5. keep Composer validation external to the applicator.
 
-## Applicator gates
-
-Before write:
-
-- exact OPUS HEAD `f053f5693e0e65fe807564a2bfd6d52fc28ba4e2`;
-- clean tracked/index/untracked state;
-- exact target blob SHAs;
-- exact replacement anchors;
-- generated renderer PHP lint;
-- CSS fixed-geometry contract.
-
-After write:
-
-- renderer PHP lint;
-- CSS contract revalidation;
-- exact two-file differential;
-- no untracked files;
-- clean index;
-- `git diff --check`;
-- unchanged HEAD.
-
-Success emits `composer_validation=external_terminal`.
-
-## Owner controls after successful application
-
-Run interactively from `H:\OPUS`:
-
-1. `composer opus:validate-site -- owasys-front`;
-2. inspect `git status --short` and `git diff --check`;
-3. runtime DESIGN -> VIEW -> DESIGN and F5 in both modes;
-4. STATE/SIGNAL geometry must keep identical intrinsic scale;
-5. wide diagrams must scroll inside the canvas rather than shrink differently.
-
-Do not commit/push until those gates pass.
+Because OPUS master is still the clean R8B5D baseline, the owner must restore the two R8B5D2 target files before applying R8B5D3. No persisted layout file is to be restored by this cleanup.
