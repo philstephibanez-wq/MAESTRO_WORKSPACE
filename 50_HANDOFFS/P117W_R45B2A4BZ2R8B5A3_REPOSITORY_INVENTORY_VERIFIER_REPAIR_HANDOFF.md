@@ -1,82 +1,72 @@
 # P117W R45B2A4BZ2 R8B5A3 — Repository inventory verifier repair handoff
 
-State: READY FOR OWNER APPLY — NOT YET APPLIED
+State: OWNER ACCEPTED — COMMITTED/PUSHED — CLOSED
 
-## Baseline
+## Accepted OPUS baseline
 
-Current OPUS GitHub `master` re-read in this work cycle:
+Owner reported R8B5A3 `c'est ok`.
+
+OPUS GitHub `master` was re-read after that report and now points to:
+
+`97e437c954efd2ee9aeddabaeaad56dc41b391a9`
+
+`opus_p117w_r45b2a4bz2r8b5a3_repository_inventory_verifier_repair`
+
+The previous baseline was:
 
 `9031967e6f57929208b950920cd665d6ee6b749c`
 
-`opus_p117w_r45b2a4bz2r8b4c_system_security_micro_efsm_registry_repair`
+GitHub comparison confirms one commit and exactly the intended R8B5A3 functional differential:
 
-R8B5A2 failed only in its post-write repository inventory verifier and rolled back. Owner `git status --short` was empty afterward.
+Modified:
 
-## Artifact
+- `sites/owasys-front/application/default/bootstrap.php`
+- `sites/owasys-front/application/security/controllers/SecurityController.php`
+- `sites/owasys-front/config/fsm.json`
+- `sites/owasys-front/config/security.fsm.json`
 
-ZIP:
+Added:
 
-`opus_p117w_r45b2a4bz2r8b5a3_repository_inventory_verifier_repair.zip`
+- `Opus/Fsm/FsmSignalBus.php`
+- `Opus/Fsm/FsmSignalBusInterface.php`
+- `sites/owasys-front/application/security/services/SecurityContext.php`
+- `sites/owasys-front/application/security/services/SecurityContextInterface.php`
+- `sites/owasys-front/application/security/services/SecurityContextWriterInterface.php`
+- `sites/owasys-front/application/security/services/SecurityRuntimeCoordinator.php`
+- `sites/owasys-front/application/security/services/SecurityRuntimeCoordinatorInterface.php`
 
-ZIP SHA-256:
+Total: 11 paths. No `sites/owasys-back` path.
 
-`8cbeb1de329a90294027ed9a2ef31db41b89c3b991b7b11fc19915764b7d438b`
+## Closed failure history
 
-Contained applicator:
+R8B5A failed in PHP staging due applicator nowdoc construction.
 
-`apply_a4bz2r8b5a3.php`
+R8B5A1 repeated the staging failure and is superseded.
 
-Applicator SHA-256:
+R8B5A2 passed staging but its post-write verifier incorrectly relied on compact `git status --porcelain` output and rolled back.
 
-`5780ddebcba10337155b2ec00d640e2b5c9714816c983501db9fd5016304b300`
+R8B5A3 repaired repository inventory by separately reading tracked modifications and individual untracked files. It is the accepted implementation.
 
-Applicator PHP lint: PASS.
+## Accepted architecture
 
-## Functional differential
+R8B5A3 establishes:
 
-Identical to R8B5A2: 11 paths, 4 modified + 7 new, no backend path.
+- independent OWASYS-front Navigation and Security EFSM session snapshots;
+- request-local `SecurityContext` writer/read-only contracts;
+- generic OPUS bounded in-process `FsmSignalBus` foundation;
+- COMMAND `enter_security_context` Navigation -> Security;
+- EVENT `security_context_ready` Security -> Navigation;
+- correlation/causation metadata;
+- Navigation remains `security` while Security is `authenticated` after the context handshake;
+- no selected-application filesystem access from OWASYS-front;
+- no backend JavaScript or backend change.
 
-R8B5A3 changes only applicator version markers/temp suffix and the post-write exact-path verifier.
+## Next slice
 
-A normalized A2→A3 applicator diff was checked and confirms no embedded functional payload or source transformation changed.
+R8B5B owns the existing real fresh-auth mutation lifecycle with the Security EFSM:
 
-## Verifier repair
-
-R8B5A2 used `git status --porcelain`, whose default behavior collapses untracked directory trees.
-
-R8B5A3 now validates separately:
-
-- modified tracked files with `git diff --name-only`;
-- new files with `git ls-files --others --exclude-standard`;
-- staged index remains empty with `git diff --cached --name-only`.
-
-No compact-status parser participates in post-write acceptance.
-
-## Deterministic Git reproduction
-
-A temporary Git repository with the exact four modified-path names and seven new-path names was used.
-
-Default porcelain reproduced:
-
-- four ` M` file lines;
-- `?? Opus/`;
-- `?? sites/owasys-front/application/security/services/`.
-
-The replacement inventory returned exactly four modified paths and all seven individual new paths.
-
-## Required success markers
-
-- `P117W_R45B2A4BZ2R8B5A3_PREFLIGHT_OK`
-- `P117W_R45B2A4BZ2R8B5A3_REPO_CHANGES_VERIFIED`
-- `P117W_R45B2A4BZ2R8B5A3_APPLIED`
-- `baseline_head=9031967e6f57929208b950920cd665d6ee6b749c`
-- `changed_paths=11`
-- `runtime_security_fsm=owasys-front/security`
-- `navigation_command=enter_security_context`
-- `security_event=security_context_ready`
-
-## Owner gate
-
-Apply R8B5A3 directly on the clean R8B4C baseline. Do not reset or alter OPUS first.
-
-After successful apply, do not commit/push. Proceed to PHP lint, `git diff --check`, Composer autoload, three `opus:validate-site` commands and runtime Security/SignalBus validation.
+- `authenticated --reauth_required--> reauthenticating` before the real credential/fresh-auth operation;
+- real success -> `reauthentication_succeeded` -> `authenticated`;
+- real failure -> `reauthentication_failed` -> `authenticated` and rethrow the real failure;
+- Navigation must remain `security` throughout;
+- existing ACL, CSRF, REST, preview/commit/rollback and fresh-auth proof semantics remain authoritative.
