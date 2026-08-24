@@ -12,6 +12,7 @@ This specification is based on a fresh same-cycle read of:
 - `DEVELOPMENT_CONTRACT.md`, `ZERO_FALLBACK_CONTRACT.md`, `PATCH_DELIVERY_CONTRACT.md`, `GIT_AND_BRANCH_CONTRACT.md`;
 - active `P117W_MICRO_EFSM_APPLICATION_SKELETON_ARCHITECTURE_SPEC.md`;
 - current `OPUS_FSM_Diagram`, `FsmDiagramLayoutStore`, `FsmSiteLoader`;
+- current OPUS REST `RestServer`, `ComposerCommandRegistry`, root `composer.json`;
 - current OWASYS-front `FsmDiagramBuilder`, `FsmDesignerGateway`, `ScorePageRenderer`, `SecurityController` and ACL;
 - current OWASYS-back REST/Composer catalogs, FSM provider registry and ACL.
 
@@ -135,8 +136,9 @@ The gateway:
 4. requires existing `fsm:update` capability;
 5. validates semantic `efsm_id`, definition SHA, layout action and bounded geometry payload;
 6. validates the existing designer CSRF token;
-7. forwards through secured REST;
-8. returns JSON plus a rotated designer CSRF token.
+7. emits only action-specific optional transport fields: STATE sends `state_id/x/y`, MARKER sends `marker_id`, SIGNAL sends neither; this is required by the strict Composer request argument validator;
+8. forwards through secured REST;
+9. returns JSON plus a rotated designer CSRF token.
 
 No site id or source path from the browser is authoritative. Current application remains server-owned session context; `efsm_id` is only the permitted semantic selector and the backend resolves its source through `FsmSiteLoader::resolveEfsm()`.
 
@@ -149,7 +151,12 @@ REST resources:
 - `GET /api/v1/applications/{site_id}/fsm/layouts/{efsm_id}` -> `fsm.layout.read`;
 - `PUT /api/v1/applications/{site_id}/fsm/layouts/{efsm_id}` -> `fsm.layout.write`.
 
-Composer aliases/commands:
+Composer public scripts in root `composer.json`:
+
+- `owasys:fsm-layout-read` -> `Opus\Composer\ComposerScripts::run`;
+- `owasys:fsm-layout-write` -> `Opus\Composer\ComposerScripts::run`.
+
+Application aliases/commands:
 
 - `owasys:fsm-layout-read` -> `owasys:fsm:layout-read`;
 - `owasys:fsm-layout-write` -> `owasys:fsm:layout-write`.
@@ -189,6 +196,32 @@ An existing companion direction is preserved. This matters for `owasys-front/con
 
 Current OPUS commit `0a0805ae0a9e0981c80f1304ea167bab4740afe1` contains the intended R8B5C `NavigationBuilder.php` change plus a committed `sites/owasys-front/config/fsm.layout.json` update. R8B5D treats both as authoritative baseline and does not reset them.
 
+## Exact R8B5D source surface
+
+Expected differential: 16 paths = 12 modified + 4 new.
+
+Modified:
+
+1. `Opus/Fsm/Diagram.class.php`;
+2. `Opus/Fsm/FsmDiagramLayoutStore.php`;
+3. `composer.json`;
+4. `sites/owasys-front/application/default/bootstrap.php`;
+5. `sites/owasys-front/application/default/services/ScorePageRenderer.php`;
+6. `sites/owasys-front/application/default/services/FsmDiagramBuilder.php`;
+7. `sites/owasys-front/application/default/services/FsmDesignerGateway.php`;
+8. `sites/owasys-back/config/backend.rest.json`;
+9. `sites/owasys-back/config/backend.resources.json`;
+10. `sites/owasys-back/config/backend.operations.json`;
+11. `sites/owasys-back/config/composer.commands.json`;
+12. `sites/owasys-back/config/acl.json`.
+
+New:
+
+13. `sites/owasys-front/application/fsm/models/ApplicationFsmLayoutModel.php`;
+14. `sites/owasys-back/application/fsm/layout.console.php`;
+15. `sites/owasys-back/application/fsm/services/OwasysFsmLayoutCommandProviderInterface.php`;
+16. `sites/owasys-back/application/fsm/services/OwasysFsmLayoutCommandProvider.php`.
+
 ## Acceptance gates
 
 ### Static/repository
@@ -198,13 +231,14 @@ Current OPUS commit `0a0805ae0a9e0981c80f1304ea167bab4740afe1` contains the inte
 - clean worktree/index and no untracked paths before apply;
 - PHP parse/lint all changed/new PHP before write and after write;
 - changed JSON loaded with `StructuredFileLoader`;
-- exact differential inventory;
+- exact differential inventory = 12 tracked modified + 4 new;
 - `git diff --check` PASS;
 - no JS/TS/Node/package artifact under `sites/owasys-back`;
 - no new layout-specific ACL permission;
 - admin/developer write path uses `fsm:update`;
 - viewer layout read only;
 - no deletion-policy change for OWASYS;
+- a temporary out-of-repository smoke executes the new source-bound `FsmDiagramLayoutStore` and persists one STATE then one SIGNAL geometry;
 - `composer dump-autoload -o` PASS;
 - `composer opus:validate-site -- owasys-front` PASS;
 - `composer opus:validate-site -- owasys-back` PASS;
