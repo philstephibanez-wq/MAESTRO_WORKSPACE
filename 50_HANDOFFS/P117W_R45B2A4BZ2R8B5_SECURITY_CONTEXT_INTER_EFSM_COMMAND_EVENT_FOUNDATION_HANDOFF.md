@@ -1,84 +1,64 @@
 # P117W R45B2A4BZ2 R8B5 — SecurityContext + inter-EFSM COMMAND/EVENT foundation handoff
 
-State: SPEC FROZEN — WAITING FOR OWNER R8B4C OPUS COMMIT/PUSH
+State: ACTIVE — IMPLEMENTATION SPLIT INTO R8B5A THEN R8B5B
 
-## Current OPUS source-of-truth
+## Current authoritative OPUS baseline
 
-GitHub `master` was re-read after owner reported R8B4C `réglé`.
+GitHub `master` was re-read after owner R8B4C acceptance and push.
 
-It still points to:
+Current HEAD:
 
-`4043702f4bc6b190fd51f2acc1fe6d939e3c19c1`
+`9031967e6f57929208b950920cd665d6ee6b749c`
 
-`opus_p117w_r45b2a4bz2r8b4b1_security_sso_localized_route_committed_baseline_repair`
+`opus_p117w_r45b2a4bz2r8b4c_system_security_micro_efsm_registry_repair`
 
-Therefore the accepted R8B4C system Security micro-EFSM registry repair is not yet part of the OPUS GitHub baseline.
+Compare against the prior HEAD confirms R8B4C contains exactly the expected four system Security registry/source paths.
 
-Per `README-FIRST.md`, the assistant does not commit or push OPUS/OWASYS. The owner must commit/push the accepted R8B4C differential.
+## Parent design
 
-## R8B4C acceptance recorded
+The R8B5 parent specification remains the architectural target:
 
-Owner report:
+- autonomous Security runtime ownership;
+- read-only/writer SecurityContext split;
+- generic inter-EFSM SignalBus;
+- COMMAND/EVENT distinction and causality;
+- Navigation and Security current states remain private;
+- real Security reauthentication lifecycle ownership.
 
-`réglé`
+## Delivery split
 
-The R8B4C handoff has been updated to `OWNER RUNTIME ACCEPTED — OPUS COMMIT/PUSH REQUIRED BEFORE NEXT DIFFERENTIAL`.
+To keep one validation concern per differential, implementation is split:
 
-## R8B5 source diagnosis completed
+### R8B5A — READY FOR OWNER APPLY
 
-Current OPUS sources were re-read before specification.
+Delivers:
 
-Key facts:
+- `FsmSignalBusInterface` + `FsmSignalBus`;
+- additive `FsmProcessorInterface::transition()` declaration;
+- SecurityContext read-only/writer contracts;
+- independent OWASYS-front Security EFSM session/runtime;
+- COMMAND `enter_security_context` Navigation -> Security;
+- EVENT `security_context_ready` Security -> Navigation;
+- correlation/causation and Logger/Profiler metadata instrumentation.
 
-- `FsmSiteLoader` already resolves named EFSMs and can create a processor for one named EFSM.
-- `FsmProcessor` supports deterministic transitions, guards, runtime memory/stack and Profiler events.
-- `FsmProcessorInterface` does not yet declare the existing `transition()` operation.
-- `FsmActionDispatcher` executes only explicitly registered PHP actions.
-- `FsmSessionStore` persists one independent processor snapshot under an explicit session key.
-- OWASYS-front `SecurityController` still uses the host Navigation processor and Navigation session key as its runtime FSM.
-- the active micro-EFSM architecture explicitly requires private EFSM states, inter-EFSM signal cooperation, COMMAND/EVENT distinction and SecurityContext writer/read-only ownership.
-- selected-application source access from OWASYS-front already crosses secured REST; R8B5 must not introduce cross-application filesystem access.
+Authoritative child spec:
 
-## R8B5 design decision
+`40_SPECS/P117W_R45B2A4BZ2R8B5A_SECURITY_CONTEXT_SIGNAL_BUS_FOUNDATION_SPEC.md`
 
-R8B5 is the first runtime-ownership/network slice after definition-authority R8B4/R8B4C.
+Authoritative child handoff:
 
-It will establish:
+`50_HANDOFFS/P117W_R45B2A4BZ2R8B5A_SECURITY_CONTEXT_SIGNAL_BUS_FOUNDATION_HANDOFF.md`
 
-1. generic OPUS `FsmSignalBusInterface` + `FsmSignalBus` foundation;
-2. additive `FsmProcessorInterface::transition()` contract alignment;
-3. independent OWASYS-front SecurityContext runtime using its own `security` EFSM and session snapshot;
-4. Navigation remains owner of Navigation state;
-5. first bounded unicast COMMAND Navigation -> Security when entering Security context;
-6. causally linked EVENT Security -> Navigation confirming Security context readiness;
-7. real reauthentication state transitions owned by Security while Navigation remains in its own state.
+### R8B5B — GATED BY R8B5A OWNER ACCEPTANCE
 
-The selected application's Security EFSM remains the design/diagnostic subject. OWASYS-front runtime Security state is `owasys-front/security`, not the selected application's runtime.
+Will bind the real fresh-auth path to Security EFSM transitions:
 
-## No code ZIP yet — reason
+- `reauth_required`;
+- `reauthentication_succeeded`;
+- `reauthentication_failed`.
 
-Generating a differential before R8B4C is committed/pushed would violate the explicit source-of-truth gate: the assistant would have to target an uncommitted local state that cannot be re-read from GitHub.
+Navigation must remain independently in its own `security` state during that lifecycle.
 
-This is an intentional blocking condition, not a deferred implementation choice.
+## Rule
 
-Once the owner push is visible:
-
-1. re-read exact OPUS HEAD and all candidate target blobs;
-2. compare post-R8B4C against delivery baseline;
-3. fix the exact R8B5 differential paths;
-4. build the direct differential ZIP/applicator;
-5. run deterministic construction/preflight tests;
-6. update this handoff with artifact hashes and owner apply gates.
-
-## Owner gate now
-
-Commit/push only the already accepted R8B4C four-path differential. Do not mix R8B5 or unrelated changes into that commit.
-
-Expected R8B4C concern remains:
-
-- `sites/owasys-front/config/site.json`;
-- `sites/owasys-front/config/security.fsm.json`;
-- `sites/owasys-back/config/site.json`;
-- `sites/owasys-back/config/security.fsm.json`.
-
-After the push, R8B5 code delivery is unblocked.
+Do not generate or apply R8B5B before R8B5A runtime acceptance. Do not mix the two concerns into one owner commit.
