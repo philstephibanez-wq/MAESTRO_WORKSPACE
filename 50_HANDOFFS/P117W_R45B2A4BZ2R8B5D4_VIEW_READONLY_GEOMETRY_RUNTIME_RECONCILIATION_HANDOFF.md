@@ -1,56 +1,45 @@
 # P117W R45B2A4BZ2 R8B5D4 — VIEW read-only geometry runtime reconciliation — HANDOFF
 
-State: OWNER RUNTIME PARTIAL PASS — INTERNAL GEOMETRY PASS — WHOLE-GRAPH ORIGIN FAIL — SUPERSEDED BY R8B5D5
+State: ACCEPTED/PUSHED — INTERNAL GRAPH GEOMETRY PASS — INSPECTOR OFFSET ACCEPTED NON-BLOCKING
 
 ## Source of truth
 
 - README-FIRST blob: `1d7c00ade6521a5fe3fcb83139ce18d98033e810`.
-- OPUS baseline/master: `f053f5693e0e65fe807564a2bfd6d52fc28ba4e2`.
-- Renderer target baseline: `Opus/Fsm/Diagram.class.php` blob `255ce381932be8796f6a80d1a09228c001255d80`.
-- Contextual builder: `sites/owasys-front/application/default/services/FsmDiagramBuilder.php` blob `0f17ee29537603b09911fe0f7acd7fb136b46128`.
+- Accepted OPUS commit: `56d4293f21f0a049cfe7cbe968916896de47dc41`.
+- Commit message: `opus_p117w_r45b2a4bz2r8b5d4_view_readonly_geometry_runtime_reconciliation`.
+- Generic renderer blob at accepted commit: `1c307116bd6da961f9afcab62b47bc1a87131c64`.
 
-## Contract
+## Accepted contract
 
-`VIEW = DESIGN - modification capability`.
+`VIEW = DESIGN - modification capability` for the graph itself.
 
-R8B5D4 makes the existing renderer geometry reconciliation execute in VIEW and DESIGN while leaving drag, CSRF rotation and persistence POST writable-only.
-
-## Delivered artifact
-
-- ZIP: `opus_p117w_r45b2a4bz2r8b5d4_view_readonly_geometry_runtime_reconciliation.zip`;
-- ZIP SHA-256: `96b426f5e34db3a3399e9eb13bface7c82d9129a5143bcb58e082459d63745db`;
-- applicator: `apply_a4bz2r8b5d4.php`;
-- applicator SHA-256: `c83cc1acc3dfb13b2210d13242adffb143e911563528ea00a6fcf86c7b23822a`.
+R8B5D4 makes the existing transition/leader/initial-marker geometry reconciliation execute in VIEW and DESIGN while leaving drag, CSRF rotation and persistence POST writable-only.
 
 ## Owner runtime evidence — 2026-08-24
 
-Two captures of the same `owasys-front / security` EFSM were compared:
+Comparison of the same `owasys-front / security` EFSM in VIEW and DESIGN established:
 
-- VIEW `/fr-FR/sécurité?operation=read`;
-- DESIGN `/fr-FR/sécurité?fsm_design=1`.
+- STATE geometry is preserved;
+- SIGNAL cards are preserved;
+- transition paths/arrows and label leaders are correctly reconciled in VIEW;
+- initial marker reconciliation is preserved;
+- DESIGN remains editable and its layout persistence remains operational;
+- the inspector column in DESIGN changes available viewport width and therefore produces a whole-surface horizontal visual offset relative to VIEW.
 
-R8B5D4 result:
+The owner explicitly classified this inspector-induced offset as **not very annoying / non-blocking** and requested continuation of functional EFSM decomposition instead of further cosmetic correction.
 
-- relative STATE/SIGNAL geometry is stable;
-- transition paths/arrows, label leaders and initial marker are reconciled in VIEW as intended;
-- DESIGN remains the editable projection;
-- however the complete graph is still shifted to the right in VIEW relative to DESIGN.
+## Push evidence
 
-Image registration shows scale approximately `1.000` and horizontal translation approximately `145 px`. This isolates the remaining failure to whole-surface origin/centering rather than FSM coordinates or scaling.
+OPUS HEAD is now `56d4293f21f0a049cfe7cbe968916896de47dc41` and contains the R8B5D4 generic renderer correction. The owner commit also contains the accepted current Security layout companion; that layout is part of the new baseline and must not be rewritten by later slices unless explicitly required.
 
-## Non-regression boundary for successor
+## Successor rule
 
-R8B5D5 must preserve byte-for-byte:
+Do not reopen VIEW/DESIGN origin cosmetics while implementing the next functional slices. Preserve:
 
-- the local R8B5D4 `Opus/Fsm/Diagram.class.php` correction;
-- every `*.fsm.layout.json` file;
-- REST/back/Composer persistence flow;
-- ACL/Security/SecurityContext/SignalBus;
-- DESIGN right-button drag/persistence behavior;
-- EFSM definitions.
+- `Opus/Fsm/Diagram.class.php` R8B5D4 behavior;
+- all current `*.fsm.layout.json` companions;
+- DESIGN right-button drag/persistence;
+- Security and Structure contextual EFSM behavior;
+- REST/back/Composer layout persistence.
 
-No fixed pixel translation is allowed. R8B5D5 must remove the responsive centering authority so the graph origin is invariant when the DESIGN inspector changes the available canvas width.
-
-## Supersession
-
-R8B5D4 remains useful and must be retained, but its full runtime acceptance is closed as partial. R8B5D5 owns the final exact-origin correction.
+The next active series is R8B6: decomposition of the remaining OWASYS-front global-FSM views into dedicated communicating micro-EFSMs.
