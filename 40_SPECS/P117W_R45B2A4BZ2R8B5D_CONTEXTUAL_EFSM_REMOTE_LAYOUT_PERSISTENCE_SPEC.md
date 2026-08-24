@@ -1,10 +1,10 @@
 # P117W R45B2A4BZ2 R8B5D — Contextual EFSM remote layout persistence
 
-State: DESIGN FROZEN — IMPLEMENTATION IN CURRENT WORK CYCLE
+State: DELIVERED — OWNER APPLY/RUNTIME ACCEPTANCE PENDING
 
 ## Source-of-truth gate
 
-This specification is based on a fresh same-cycle read of:
+Final delivery is based on a fresh same-cycle read of:
 
 - `README-FIRST.md` blob `1d7c00ade6521a5fe3fcb83139ce18d98033e810`;
 - current OPUS GitHub `master` = `0a0805ae0a9e0981c80f1304ea167bab4740afe1`;
@@ -12,9 +12,10 @@ This specification is based on a fresh same-cycle read of:
 - `DEVELOPMENT_CONTRACT.md`, `ZERO_FALLBACK_CONTRACT.md`, `PATCH_DELIVERY_CONTRACT.md`, `GIT_AND_BRANCH_CONTRACT.md`;
 - active `P117W_MICRO_EFSM_APPLICATION_SKELETON_ARCHITECTURE_SPEC.md`;
 - current `OPUS_FSM_Diagram`, `FsmDiagramLayoutStore`, `FsmSiteLoader`;
-- current OPUS REST `RestServer`, `ComposerCommandRegistry`, root `composer.json`;
-- current OWASYS-front `FsmDiagramBuilder`, `FsmDesignerGateway`, `ScorePageRenderer`, `SecurityController` and ACL;
-- current OWASYS-back REST/Composer catalogs, FSM provider registry and ACL.
+- current OPUS REST `RestClient`, `RestServer`, `RestResourceCatalog`, `ComposerCommandRegistry`, `ApplicationCommandDispatcher`, `ComposerScripts`, root `composer.json`;
+- current OWASYS-front `rest-api.json`, `rest.resources.json`, `FsmDiagramBuilder`, `FsmDesignerGateway`, `ScorePageRenderer`, `SecurityController` and ACL;
+- current OWASYS-back REST/Composer catalogs, FSM provider registry and ACL;
+- current `SiteCommandService`, which already rejects deletion of `owasys-front` and `owasys-back` with `OPUS_DELETE_SITE_PROTECTED`.
 
 ## Runtime report
 
@@ -28,12 +29,12 @@ Selected-application contextual diagrams currently come from `OwasysApplicationF
 
 The local `FsmDiagramLayoutStore::discover()` cannot be enabled blindly because it resolves ownership from the current web `DOCUMENT_ROOT`, which is OWASYS-front. The selected application can be another application/bastion. Selected-application layout authority must therefore remain remote and explicit.
 
-## Authorization contract — clarified by owner
+## Authorization contract — owner clarified
 
 No new layout-specific permission is introduced.
 
 - `admin` has all development rights and may modify every application, including `owasys-front` and `owasys-back`;
-- `admin` may never delete `owasys-front` or `owasys-back`; that deletion prohibition is a separate structural backend invariant and is not weakened by R8B5D;
+- `admin` may never delete `owasys-front` or `owasys-back`; this is a structural backend invariant already enforced by `SiteCommandService` and is not weakened by R8B5D;
 - `developer` may fully develop an existing application for which development access is granted: sources, configuration, SCORE, EFSM, STATE, SIGNAL, TRANSITION, GUARD, ACTION and diagram layout are all development operations;
 - `viewer` is read-only.
 
@@ -65,22 +66,13 @@ Existing public setters are reused for externally supplied persisted geometry:
 - `setPersistedMarkerGeometry()`;
 - `setLayoutPersistence()`.
 
-Only the existing layout client metadata/transport is extended so a contextual writable diagram can declare:
-
-- semantic `efsm_id`;
-- canonical definition SHA-256.
-
-The generic right-drag script sends those two bounded values with its existing layout request. It keeps the existing local layout path intact. Token rotation accepts both existing HTML responses and secured OWASYS JSON responses.
+Only the existing layout client metadata/transport is extended so a contextual writable diagram can declare semantic `efsm_id` and canonical definition SHA-256. The generic right-drag script sends these bounded values with its existing layout request. It keeps the existing local layout path intact. Token rotation accepts both existing HTML responses and secured OWASYS JSON responses.
 
 ### `FsmDiagramLayoutStore`
 
 The generic store gains an explicit source-bound factory for trusted backend code. This bypasses `DOCUMENT_ROOT` discovery without guessing ownership.
 
-It also gains a transport-neutral mutation method using its existing state/coordinate/geometry normalization rules for:
-
-- `save-state`;
-- `save-signal`;
-- `save-marker`.
+It also gains a transport-neutral mutation method using its existing state/coordinate/geometry normalization rules for `save-state`, `save-signal` and `save-marker`.
 
 The existing local HTTP/CSRF behavior remains unchanged.
 
@@ -92,53 +84,35 @@ A dedicated read-only `OwasysApplicationFsmLayoutModel` requests the selected EF
 
 It never receives or invents a filesystem root. The browser does not choose a source path.
 
-The backend response carries:
-
-- application id;
-- semantic EFSM id;
-- canonical source path/hash;
-- derived layout path;
-- layout direction;
-- normalized `OPUS_FSM_DIAGRAM_LAYOUT_V4` snapshot;
-- whether the companion file already exists.
+The backend response carries application id, semantic EFSM id, canonical source path/hash, derived layout path, layout direction, normalized `OPUS_FSM_DIAGRAM_LAYOUT_V4` snapshot and whether the companion file already exists.
 
 If the companion file does not yet exist, the backend returns deterministic automatic geometry without creating a file. The first successful drag creates it.
+
+### REST client catalog parity
+
+`sites/owasys-front/config/rest-api.json` points to the front-owned `config/rest.resources.json`; therefore the layout GET/PUT routes must be declared there as well as in the two backend resource declarations.
+
+R8B5D modifies all three resource catalogs and the applicator requires exact resource-list parity before any write:
+
+- `sites/owasys-front/config/rest.resources.json`;
+- `sites/owasys-back/config/backend.rest.json` inline resources;
+- `sites/owasys-back/config/backend.resources.json` external catalog.
+
+This guarantees that `RestClient::assertRequest()` accepts the new resources and that the front/back catalog fingerprints stay identical.
 
 ### `OwasysFsmDiagramBuilder`
 
 The contextual builder combines the already-resolved canonical EFSM definition with the REST layout projection and renders the same generic `OPUS_FSM_Diagram` in VIEW and DESIGN.
 
-VIEW:
-
-- applies saved layout;
-- no writable layout client configuration;
-- no right-drag persistence.
-
-DESIGN with existing `fsm:update`:
-
-- applies the same saved layout;
-- sets writable layout client configuration;
-- uses the existing designer CSRF token;
-- exposes semantic `efsm_id` and definition SHA only;
-- generic STATE/SIGNAL right-drag becomes available again.
+VIEW applies saved layout but is not writable. DESIGN with existing `fsm:update` applies the same saved layout, sets writable layout client configuration, uses the existing designer CSRF token, exposes semantic `efsm_id` and definition SHA only, and restores generic STATE/SIGNAL right-drag.
 
 ### `OwasysFsmDesignerGateway`
 
-The gateway gains one mutually-exclusive layout-request kind identified by the existing `owasys_action=persist-fsm-layout` plus contextual `efsm_id`.
+The gateway gains one mutually-exclusive layout-request kind identified by existing `owasys_action=persist-fsm-layout` plus contextual `efsm_id`.
 
-This interception occurs before Security/Structure controllers. This is mandatory because current SecurityController treats every unmatched POST as a security mutation.
+This interception occurs before Security/Structure controllers because current SecurityController treats every unmatched POST as a security mutation.
 
-The gateway:
-
-1. starts session;
-2. requires an authenticated identity;
-3. requires current selected application;
-4. requires existing `fsm:update` capability;
-5. validates semantic `efsm_id`, definition SHA, layout action and bounded geometry payload;
-6. validates the existing designer CSRF token;
-7. emits only action-specific optional transport fields: STATE sends `state_id/x/y`, MARKER sends `marker_id`, SIGNAL sends neither; this is required by the strict Composer request argument validator;
-8. forwards through secured REST;
-9. returns JSON plus a rotated designer CSRF token.
+The gateway requires authentication, current selected application, `fsm:update`, valid semantic `efsm_id`, definition SHA, layout action, bounded geometry and existing designer CSRF token. It sends only action-specific optional fields: STATE sends `state_id/x/y`, MARKER sends `marker_id`, SIGNAL sends neither. This is required by the strict Composer request argument validator, which treats a present null field as an invalid supplied argument.
 
 No site id or source path from the browser is authoritative. Current application remains server-owned session context; `efsm_id` is only the permitted semantic selector and the backend resolves its source through `FsmSiteLoader::resolveEfsm()`.
 
@@ -153,44 +127,27 @@ REST resources:
 
 Composer public scripts in root `composer.json`:
 
-- `owasys:fsm-layout-read` -> `Opus\Composer\ComposerScripts::run`;
-- `owasys:fsm-layout-write` -> `Opus\Composer\ComposerScripts::run`.
+- `owasys:fsm-layout-read` -> `Opus\\Composer\\ComposerScripts::run`;
+- `owasys:fsm-layout-write` -> `Opus\\Composer\\ComposerScripts::run`.
 
 Application aliases/commands:
 
 - `owasys:fsm-layout-read` -> `owasys:fsm:layout-read`;
 - `owasys:fsm-layout-write` -> `owasys:fsm:layout-write`.
 
-Read roles: admin/developer/viewer.
-Write roles: admin/developer.
+Read roles: admin/developer/viewer. Write roles: admin/developer.
 
-The provider:
-
-1. validates the REST/Composer request actor;
-2. enforces backend `fsm:read` for read and `fsm:update` for write;
-3. resolves `site_id + efsm_id` with `FsmSiteLoader::resolveEfsm()`;
-4. reads the canonical definition through `File` / `StructuredFileLoader`;
-5. derives the companion layout path from the canonical source;
-6. preserves an existing valid layout direction; otherwise uses the contextual default `horizontal`;
-7. binds `FsmDiagramLayoutStore` explicitly to that source;
-8. computes deterministic automatic geometry using generic `OPUS_FSM_Diagram`;
-9. on read, returns normalized layout without creating a missing file;
-10. on write, checks optimistic definition SHA and applies only the bounded presentation mutation;
-11. atomically writes the derived companion file;
-12. returns source/layout hashes and normalized layout;
-13. emits metadata-only Profiler events.
+The provider validates actor/ACL, resolves `site_id + efsm_id` through `FsmSiteLoader::resolveEfsm()`, reads the canonical definition through File/StructuredFileLoader, derives the companion layout path, preserves an existing valid layout direction, binds `FsmDiagramLayoutStore` explicitly to that source, computes deterministic geometry using generic `OPUS_FSM_Diagram`, returns missing layout without creating it on read, checks optimistic source SHA before writes, mutates only bounded presentation geometry, atomically writes the companion file, returns source/layout hashes, and emits metadata-only Profiler events.
 
 ## Portable file naming
 
-The companion path is derived only on the backend from the canonical EFSM source:
+The companion path is derived only on the backend from canonical EFSM source:
 
 - `config/application.fsm.json` -> `config/application.fsm.layout.json`;
 - `config/security.fsm.json` -> `config/security.fsm.layout.json`;
 - `config/fsm.json` -> `config/fsm.layout.json`.
 
-No browser-authored source path is accepted.
-
-An existing companion direction is preserved. This matters for `owasys-front/config/fsm.layout.json`, whose committed host layout is currently vertical; R8B5D must not silently rewrite it as horizontal.
+No browser-authored source path is accepted. An existing companion direction is preserved; this prevents the committed vertical `owasys-front/config/fsm.layout.json` from being silently rewritten horizontal.
 
 ## R8B5C baseline observation
 
@@ -198,7 +155,7 @@ Current OPUS commit `0a0805ae0a9e0981c80f1304ea167bab4740afe1` contains the inte
 
 ## Exact R8B5D source surface
 
-Expected differential: 16 paths = 12 modified + 4 new.
+Expected differential: **17 paths = 13 modified + 4 new**.
 
 Modified:
 
@@ -209,29 +166,42 @@ Modified:
 5. `sites/owasys-front/application/default/services/ScorePageRenderer.php`;
 6. `sites/owasys-front/application/default/services/FsmDiagramBuilder.php`;
 7. `sites/owasys-front/application/default/services/FsmDesignerGateway.php`;
-8. `sites/owasys-back/config/backend.rest.json`;
-9. `sites/owasys-back/config/backend.resources.json`;
-10. `sites/owasys-back/config/backend.operations.json`;
-11. `sites/owasys-back/config/composer.commands.json`;
-12. `sites/owasys-back/config/acl.json`.
+8. `sites/owasys-front/config/rest.resources.json`;
+9. `sites/owasys-back/config/backend.rest.json`;
+10. `sites/owasys-back/config/backend.resources.json`;
+11. `sites/owasys-back/config/backend.operations.json`;
+12. `sites/owasys-back/config/composer.commands.json`;
+13. `sites/owasys-back/config/acl.json`.
 
 New:
 
-13. `sites/owasys-front/application/fsm/models/ApplicationFsmLayoutModel.php`;
-14. `sites/owasys-back/application/fsm/layout.console.php`;
-15. `sites/owasys-back/application/fsm/services/OwasysFsmLayoutCommandProviderInterface.php`;
-16. `sites/owasys-back/application/fsm/services/OwasysFsmLayoutCommandProvider.php`.
+14. `sites/owasys-front/application/fsm/models/ApplicationFsmLayoutModel.php`;
+15. `sites/owasys-back/application/fsm/layout.console.php`;
+16. `sites/owasys-back/application/fsm/services/OwasysFsmLayoutCommandProviderInterface.php`;
+17. `sites/owasys-back/application/fsm/services/OwasysFsmLayoutCommandProvider.php`.
+
+## Final delivery artifact
+
+- ZIP: `opus_p117w_r45b2a4bz2r8b5d_contextual_efsm_remote_layout_persistence.zip`;
+- ZIP SHA-256: `502d26a7113ef874f3af9452d2349f2b3c88f39976e82b55ed76222394d66dab`;
+- applicator: `apply_a4bz2r8b5d.php`;
+- applicator SHA-256: `beb4b65f17abadcc9410de6d6f77cc569b3eba12efcacd80e49d9c4023b50ac7`;
+- applicator size: 72890 bytes;
+- ZIP contains exactly one applicator.
+
+The earlier pre-final artifact with ZIP SHA `3159708ab154e9e27757cbd3e56e4fdeea2dc762e505b0b0a1e4fb171fffde9e` is superseded and must not be delivered/applied because it omitted the front REST client resource catalog.
 
 ## Acceptance gates
 
-### Static/repository
+### Static/repository enforced by applicator
 
 - exact baseline `0a0805ae0a9e0981c80f1304ea167bab4740afe1`;
-- exact target blobs checked;
+- exact target blobs checked, including front REST client catalog blob `16f7286df9bd105a17b0c3e5a963e48a94413b6a`;
 - clean worktree/index and no untracked paths before apply;
 - PHP parse/lint all changed/new PHP before write and after write;
-- changed JSON loaded with `StructuredFileLoader`;
-- exact differential inventory = 12 tracked modified + 4 new;
+- changed JSON parsed before write and loaded through `StructuredFileLoader` after write;
+- exact differential inventory = 13 tracked modified + 4 new;
+- front/back REST resource catalog parity before write;
 - `git diff --check` PASS;
 - no JS/TS/Node/package artifact under `sites/owasys-back`;
 - no new layout-specific ACL permission;
@@ -242,22 +212,23 @@ New:
 - `composer dump-autoload -o` PASS;
 - `composer opus:validate-site -- owasys-front` PASS;
 - `composer opus:validate-site -- owasys-back` PASS;
-- `composer opus:validate-site -- essai` PASS.
+- `composer opus:validate-site -- essai` PASS;
+- post-write failure rolls source differential back and exits non-zero.
 
-### Runtime
+### Runtime owner acceptance
 
 Using a selected generated application such as `essai`:
 
 1. open Structure DESIGN (`efsm_id=navigation`);
-2. right-button drag one STATE; geometry moves live and persists without browser reload;
+2. right-button drag one STATE; geometry moves live and persists;
 3. reload; STATE remains at saved position;
 4. right-button drag one SIGNAL card; geometry moves live and persists;
 5. reload; SIGNAL remains at saved position;
 6. repeat in Security DESIGN (`efsm_id=security`);
 7. companion files are created only in the selected application with canonical derived names;
 8. VIEW uses the saved layout but is not writable;
-9. viewer can read the saved layout but cannot persist a drag;
-10. admin can perform the same layout modifications when `owasys-front` or `owasys-back` is selected;
+9. viewer can read saved layout but cannot persist a drag;
+10. admin can perform the same layout modifications when `owasys-front` or `owasys-back` is selected where the contextual EFSM exists;
 11. Sources + Git remains functional and sees created companion files;
 12. front/back Logger/Profiler show secured REST/Composer layout operations without secrets;
 13. no selected-application filesystem access occurs from OWASYS-front;
