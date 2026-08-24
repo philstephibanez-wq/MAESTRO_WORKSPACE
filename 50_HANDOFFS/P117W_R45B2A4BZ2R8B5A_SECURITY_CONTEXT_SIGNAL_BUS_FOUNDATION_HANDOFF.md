@@ -1,38 +1,20 @@
 # P117W R45B2A4BZ2 R8B5A — SecurityContext + SignalBus foundation handoff
 
-State: READY FOR OWNER APPLY — NOT YET APPLIED
+State: FAILED PREFLIGHT — SUPERSEDED BY R8B5A1
 
-## Baseline
+## Authoritative baseline
 
-OPUS GitHub `master` was re-read in the same work cycle and is:
+OPUS GitHub `master`:
 
 `9031967e6f57929208b950920cd665d6ee6b749c`
 
 `opus_p117w_r45b2a4bz2r8b4c_system_security_micro_efsm_registry_repair`
 
-R8B4C is therefore now committed/pushed and is the authoritative baseline.
+## Intended R8B5A concern
 
-## Artifact
+R8B5A was intended to establish the first autonomous OWASYS-front Security runtime and bounded inter-EFSM COMMAND/EVENT transport foundation.
 
-ZIP:
-
-`opus_p117w_r45b2a4bz2r8b5a_security_context_signal_bus_foundation.zip`
-
-ZIP SHA-256:
-
-`7f0f61e02bacb966f0a2a548f1a3cbc380bb3963b2b5ff237971656af4236d94`
-
-Contained applicator only:
-
-`apply_a4bz2r8b5a.php`
-
-Applicator SHA-256:
-
-`5cbd07c070c201a678053925138537dc5eff0414a47f856f49d31570b320686f`
-
-Applicator PHP lint: PASS.
-
-## Exact intended repository differential
+Intended differential: 10 paths, with no `sites/owasys-back` change.
 
 Modified:
 
@@ -50,99 +32,50 @@ New:
 - `sites/owasys-front/application/security/services/SecurityContextWriterInterface.php`
 - `sites/owasys-front/application/security/services/SecurityContext.php`
 
-Total: 10 paths.
+## Failed artifact
 
-No `sites/owasys-back` path is changed.
+ZIP:
 
-## Functionality
+`opus_p117w_r45b2a4bz2r8b5a_security_context_signal_bus_foundation.zip`
 
-R8B5A establishes the first real autonomous Security runtime and inter-EFSM transport foundation.
+ZIP SHA-256:
 
-- Navigation keeps `opus.fsm.owasys-front`.
-- Security gains `opus.fsm.owasys-front.security`.
-- Security is loaded from named EFSM id `security`.
-- authenticated OWASYS session synchronizes Security through actual transitions to `authenticated`.
-- Navigation sends COMMAND `enter_security_context`.
-- Security stays `authenticated` and returns EVENT `security_context_ready`.
-- Navigation stays `security`.
-- COMMAND and EVENT share correlation id.
-- EVENT causation id is the COMMAND message id.
-- Logger and Profiler receive metadata-only network events.
-- sensitive bus context keys are rejected.
+`7f0f61e02bacb966f0a2a548f1a3cbc380bb3963b2b5ff237971656af4236d94`
 
-This slice deliberately does not yet bind fresh-auth reauthentication transitions; that is R8B5B after acceptance.
+Applicator:
 
-## Applicator safety
+`apply_a4bz2r8b5a.php`
 
-Required baseline HEAD:
+Applicator SHA-256:
 
-`9031967e6f57929208b950920cd665d6ee6b749c`
+`5cbd07c070c201a678053925138537dc5eff0414a47f856f49d31570b320686f`
 
-The applicator requires:
+## Owner evidence
 
-- clean worktree;
-- clean index;
-- exact tracked blobs;
-- all five new paths absent;
-- valid vendor autoload;
-- structural JSON mutation;
-- Navigation/Security definition validation;
-- processor construction for both definitions;
-- TOKEN_PARSE for staged PHP;
-- framework interface contract check;
-- exact ten-path post-write status;
-- rollback on post-write failure.
+Owner execution stopped during preflight before any repository write:
 
-Required success markers:
+`P117W_R45B2A4BZ2R8B5A_PHP_PARSE_INVALID:sites/owasys-front/application/security/controllers/SecurityController.php:syntax error, unexpected token ","`
 
-- `P117W_R45B2A4BZ2R8B5A_PREFLIGHT_OK`
-- `P117W_R45B2A4BZ2R8B5A_REPO_CHANGES_VERIFIED`
-- `P117W_R45B2A4BZ2R8B5A_APPLIED`
-- `baseline_head=9031967e6f57929208b950920cd665d6ee6b749c`
-- `changed_paths=10`
-- `runtime_security_fsm=owasys-front/security`
-- `navigation_command=enter_security_context`
-- `security_event=security_context_ready`
+Owner `git status --short` was empty immediately afterwards.
 
-## Construction tests already executed
+Therefore OPUS remained unchanged at the authoritative R8B4C baseline.
 
-- new framework/interface PHP lint: PASS;
-- new SecurityContext PHP lint: PASS;
-- applicator PHP lint: PASS;
-- framework four-parent interface check: PASS;
-- isolated FsmSignalBus COMMAND/EVENT test: `R8B5A_SIGNAL_BUS_RUNTIME_TEST_OK`;
-- correlation/causation check: PASS;
-- sensitive context rejection check: PASS.
+## Root cause
 
-## Owner validation after apply
+The applicator used two consecutive nowdoc replacements in the SecurityController transform.
 
-Do not commit/push yet.
+The main replacement opened its replacement body with nowdoc identifier `NEW` but incorrectly closed that body with identifier `OLD`.
 
-CLI:
+Because the applicator itself was still syntactically valid, PHP treated the following applicator source — including the second `replaceOnceR8B5A(...)` call — as literal contents of the first `NEW` nowdoc until a later `NEW` terminator was reached.
 
-1. `git status --short` must show exactly ten intended paths.
-2. lint changed/new PHP.
-3. `git diff --check`.
-4. `composer dump-autoload -o`.
-5. `composer opus:validate-site -- owasys-front`.
-6. `composer opus:validate-site -- owasys-back`.
-7. `composer opus:validate-site -- essai`.
+That applicator source was therefore staged inside `SecurityController.php`, where TOKEN_PARSE correctly rejected it with `unexpected token ","`.
 
-Runtime:
+This is an applicator-construction defect. It is not an OPUS runtime/source defect.
 
-1. start/restart OWASYS front/back development servers;
-2. log into OWASYS-front and select an application;
-3. open Security;
-4. selected-application contextual Security diagram must remain unchanged;
-5. inspect Profiler/Logger `fsm.network` events;
-6. verify COMMAND Navigation -> Security `enter_security_context`;
-7. verify EVENT Security -> Navigation `security_context_ready`;
-8. verify same correlation id and event causation id = command message id;
-9. handshake event must report Navigation=`security`, Security=`authenticated`;
-10. verify Structure and Sources + Git remain functional.
+## Supersession
 
-Only after these gates may owner commit/push R8B5A.
+R8B5A is not to be reused.
 
-## Next
+R8B5A1 repairs only the applicator construction/provenance layer. Functional R8B5A intent and the exact 10-path repository differential are unchanged.
 
-R8B5B: real fresh-auth reauthentication lifecycle owned by Security EFSM while Navigation remains autonomous.
+R8B5A1 additionally checks that no applicator-source fragment leaked into staged SecurityController content and reports PHP parse line numbers on any future parse failure.
