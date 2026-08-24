@@ -1,6 +1,6 @@
 # P117W R45B2A4BZ2 R8B5D1 — View/Design intrinsic geometry scale repair — HANDOFF
 
-State: DELIVERED — OWNER APPLY/RUNTIME ACCEPTANCE PENDING
+State: FAILED POST-WRITE VALIDATION — ROLLED BACK — SUPERSEDED BY R8B5D2
 
 ## Source of truth
 
@@ -9,72 +9,39 @@ State: DELIVERED — OWNER APPLY/RUNTIME ACCEPTANCE PENDING
 - Parent R8B5D is pushed and contains real `security.fsm.layout.json` persisted geometry.
 - R8B5D1 spec commit: `63a46b4847ac5f02da41e402124cb10858390310`.
 
-## Runtime qualification
+## Functional target
 
-Owner initially reported persistence KO, then clarified that the moved geometry returns when graph DESIGN is reopened.
+Owner clarified that persisted geometry returns when graph DESIGN is reopened. R8B5D storage therefore works. R8B5D1 targets visual parity between VIEW and DESIGN by removing SVG shrink-to-fit and forcing a CSS cache refresh.
 
-This proves the R8B5D storage path is operational. The pushed baseline itself contains the generated companion layout. The remaining defect is visual parity between VIEW and DESIGN.
+## Attempted differential
 
-## Root cause
+Exactly two front files:
 
-`fsm-native.css` contradicts its own fixed-geometry viewport contract. The SVG is constrained by `max-width: 100%` while DESIGN and VIEW use different container widths because DESIGN reserves the inspector column. Identical persisted coordinates are therefore visually rescaled between modes.
-
-## Correction
-
-R8B5D1 changes exactly two front files:
-
-1. `sites/owasys-front/www/asset/css/fsm-native.css` — all three FSM-SVG shrink-to-fit constraints become `max-width: none`; canvas overflow remains `auto`;
+1. `sites/owasys-front/www/asset/css/fsm-native.css` — three FSM SVG `max-width: 100%` constraints become `max-width: none`; canvas overflow remains `auto`;
 2. `sites/owasys-front/application/default/services/ScorePageRenderer.php` — FSM CSS cache-buster becomes `p117w-r45b2a4bz2r8b5d1`.
 
 No FSM definition, layout data, REST route, Composer command, ACL, backend code or JS is changed.
 
-## Artifact
+## Failed applicator
 
 - ZIP: `opus_p117w_r45b2a4bz2r8b5d1_view_design_intrinsic_geometry_scale_repair.zip`;
 - ZIP SHA-256: `e2ab433bdbf09108c6c28204bd0fbf5ca172e19b7cfb05519a4965d1788e04c8`;
-- ZIP contains exactly `apply_a4bz2r8b5d1.php`;
-- applicator SHA-256: `ad04bc2a77bce8169fdac74959dffbd73f28b37cd5effff35e3326275566f12e`;
-- applicator size: 10209 bytes;
-- applicator PHP lint: PASS;
-- ZIP re-extraction and byte comparison: PASS.
+- applicator SHA-256: `ad04bc2a77bce8169fdac74959dffbd73f28b37cd5effff35e3326275566f12e`.
 
-## Applicator gates
+Owner execution reached `PREFLIGHT_OK` then failed post-write with:
 
-Before write:
+`OWASYS_FRONT_VALIDATE_FAILED:Could not open input file: H:\OPUS\composer.phar`
 
-- exact HEAD `f053f5693e0e65fe807564a2bfd6d52fc28ba4e2`;
-- clean tracked/index/untracked state;
-- exact CSS blob `085e6a9e68b775461f18e5276e4b4c95d5b76d29`;
-- exact renderer blob `0512c3427a190f4a6184710372d78e21f758b39f`;
-- each CSS replacement anchor exactly once;
-- cache-buster anchor exactly once;
-- generated renderer PHP lint before write.
+The applicator rolled both source files back. Owner then showed empty `git status --short` and empty `git diff --check`; baseline remained unchanged.
 
-After write:
+## Runner root cause
 
-- renderer PHP lint;
-- fixed-geometry CSS contract;
-- exact two-file differential;
-- zero untracked and clean index;
-- `git diff --check`;
-- unchanged HEAD;
-- `composer opus:validate-site -- owasys-front`.
+The applicator launched bare `composer` through PHP `proc_open` from repository root. The current OPUS repository contains a tracked zero-byte root file named exactly `composer`. Bare command resolution from an applicator is therefore not a safe validation primitive on this baseline, even though the owner's interactive terminal Composer command works.
 
-Post-write failure restores both original files.
+This is an applicator/tooling failure, not a functional R8B5D1 source failure.
 
-## Expected markers
+## Supersession
 
-- `P117W_R45B2A4BZ2R8B5D1_PREFLIGHT_BEGIN`;
-- `P117W_R45B2A4BZ2R8B5D1_PREFLIGHT_OK`;
-- `P117W_R45B2A4BZ2R8B5D1_REPO_CHANGES_VERIFIED`;
-- `P117W_R45B2A4BZ2R8B5D1_APPLIED`;
-- `baseline_head=f053f5693e0e65fe807564a2bfd6d52fc28ba4e2`;
-- `changed_paths=2`;
-- `layout_storage=unchanged`;
-- `view_design_geometry_scale=intrinsic`;
-- `canvas_overflow=scroll`;
-- `fsm_css_revision=p117w-r45b2a4bz2r8b5d1`.
+R8B5D2 keeps the exact same two-file functional transformation but removes Composer execution from inside the applicator. Source application remains deterministic through Git SHA/blob gates, PHP lint, CSS contract, exact differential inventory and `git diff --check`. `composer opus:validate-site -- owasys-front` is executed explicitly by the owner after successful application in the known-good interactive terminal.
 
-## Runtime acceptance pending
-
-Switch DESIGN -> VIEW -> DESIGN and F5 in both modes. STATE/SIGNAL positions must keep the same intrinsic geometry. Wide diagrams must scroll inside the canvas instead of shrinking differently between modes.
+R8B5D1 MUST NOT be retried.
