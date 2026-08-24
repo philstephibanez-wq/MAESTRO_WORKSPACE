@@ -1,6 +1,6 @@
 # P117W R45B2A4BZ2 R8B5D5 — VIEW/DESIGN exact graph-origin invariance — SPEC
 
-State: ACTIVE — DELIVERY BUILD/OWNER RUNTIME ACCEPTANCE PENDING
+State: READY FOR OWNER APPLY — RUNTIME ACCEPTANCE PENDING
 
 ## Source gate
 
@@ -70,18 +70,20 @@ There is no hard-coded `145px`, transform, left offset, viewBox translation or J
 
 ## Delivery gate
 
-The applicator must:
+The applicator:
 
-- require HEAD `f053f5693e0e65fe807564a2bfd6d52fc28ba4e2` and clean Git index;
-- derive the exact R8B5D4 expected renderer from the HEAD renderer and require the local renderer to equal it byte-for-byte;
-- derive exact R8B5D3 CSS/cache-buster from HEAD and accept only either the clean baseline pair or the exact canonical D3 pair;
-- normalize either accepted CSS starting state to one cumulative D3+D5 CSS result;
-- permit only presentation layout companions as additional pre-existing local changes and preserve them byte-for-byte;
-- modify exactly `fsm-native.css` and `ScorePageRenderer.php` in addition to the already-present D4 differential;
-- PHP-lint `ScorePageRenderer.php` before and after write;
-- run `git diff --check`;
-- rollback only the two D5 targets on post-write failure;
-- invoke no Composer subprocess.
+- requires HEAD `f053f5693e0e65fe807564a2bfd6d52fc28ba4e2` and clean Git index;
+- derives the exact R8B5D4 expected renderer from the HEAD renderer and requires the local renderer to equal it byte-for-byte;
+- derives exact R8B5D3 CSS/cache-buster from HEAD and accepts only either the clean baseline pair or the exact canonical D3 pair;
+- normalizes either accepted CSS starting state to one cumulative D3+D5 CSS result;
+- permits only presentation layout companions as additional pre-existing local changes and preserves them byte-for-byte;
+- modifies exactly `fsm-native.css` and `ScorePageRenderer.php` in addition to the already-present D4 differential;
+- PHP-lints `ScorePageRenderer.php` before and after write;
+- runs `git diff --check`;
+- rolls back only the two D5 targets on post-write failure;
+- invokes no Composer subprocess.
+
+Deterministic replay was executed twice: once from D4 + baseline presentation and once from D4 + exact D3 presentation. Both runs PASS and produce identical final D5 CSS/renderer bytes. An untracked Security layout companion was preserved byte-for-byte in both runs.
 
 ## Owner runtime acceptance
 
