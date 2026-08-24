@@ -54,7 +54,7 @@ States:
 - `deleting`;
 - `failed`.
 
-Runtime signals include context entry plus real selection/deletion request and outcome lifecycle.
+The host machine records the real context-entry, application-selection request/success and application-deletion request. Selection failure is also recorded when the Registry request is rejected. The irreversible application-deletion completion remains owned by the existing global workflow in this slice; no synthetic `deletion_succeeded` host event is declared. Re-entering Registry reconciles `selecting`, `deleting` or `failed` to `browsing` before the new request cycle.
 
 ### Application
 
@@ -134,7 +134,7 @@ Navigation receives six automatic EVENT self-transitions:
 - `git_context_ready` in `source`;
 - `build_context_ready` in `build`.
 
-Context-entry transitions are defined for every state of each host EFSM so re-entering a page does not erase an in-progress or diagnostic state solely to satisfy the handshake.
+Context-entry transitions exist from every host state. Application/Data/Source/Git/Build preserve the meaningful current host state when re-entered. Registry is intentionally different: re-entry reconciles transient request/diagnostic states to `browsing` because deletion completion still belongs to the global workflow in this migration slice.
 
 ## Runtime state persistence and diagram truth
 
@@ -154,7 +154,7 @@ R8B6B does not delete the existing global operation transitions yet. That would 
 
 Instead, real controller operations additionally advance their host EFSM lifecycle:
 
-- Registry selection/deletion;
+- Registry selection lifecycle and deletion request/re-entry reconciliation; deletion completion remains in the current global workflow;
 - Source open/preview/write/conflict/failure;
 - Git status/stage/unstage/commit/restore/failure;
 - Build preview start/success/failure.
@@ -204,20 +204,21 @@ Modified existing paths:
 6. `sites/owasys-front/application/default/services/FsmDesignerGateway.php`;
 7. `sites/owasys-front/application/default/controllers/RuntimeController.php`;
 8. `sites/owasys-front/application/source/controllers/SourceController.php`;
-9. `sites/owasys-back/application/fsm/services/OwasysFsmDraftCommandProvider.php`;
-10. `sites/owasys-back/application/fsm/services/OwasysFsmLayoutCommandProvider.php`.
+9. `sites/owasys-front/application/default/Application.php`;
+10. `sites/owasys-back/application/fsm/services/OwasysFsmDraftCommandProvider.php`;
+11. `sites/owasys-back/application/fsm/services/OwasysFsmLayoutCommandProvider.php`.
 
 New paths:
 
-11. `sites/owasys-front/application/default/services/ContextEfsmRegistry.php`;
-12. `sites/owasys-front/application/default/services/ContextRuntimeCoordinatorInterface.php`;
-13. `sites/owasys-front/application/default/services/ContextRuntimeCoordinator.php`;
-14. `sites/owasys-front/config/registry.fsm.json`;
-15. `sites/owasys-front/config/application.fsm.json`;
-16. `sites/owasys-front/config/data.fsm.json`;
-17. `sites/owasys-front/config/source.fsm.json`;
-18. `sites/owasys-front/config/git.fsm.json`;
-19. `sites/owasys-front/config/build.fsm.json`.
+12. `sites/owasys-front/application/default/services/ContextEfsmRegistry.php`;
+13. `sites/owasys-front/application/default/services/ContextRuntimeCoordinatorInterface.php`;
+14. `sites/owasys-front/application/default/services/ContextRuntimeCoordinator.php`;
+15. `sites/owasys-front/config/registry.fsm.json`;
+16. `sites/owasys-front/config/application.fsm.json`;
+17. `sites/owasys-front/config/data.fsm.json`;
+18. `sites/owasys-front/config/source.fsm.json`;
+19. `sites/owasys-front/config/git.fsm.json`;
+20. `sites/owasys-front/config/build.fsm.json`.
 
 ## Delivery gate
 
@@ -225,14 +226,14 @@ The applicator must:
 
 - require exact OPUS HEAD `56d4293f21f0a049cfe7cbe968916896de47dc41`;
 - require clean tracked/untracked worktree before application;
-- verify exact baseline Git blob SHA for all ten existing targets;
+- verify exact baseline Git blob SHA for all eleven existing targets;
 - require all nine new targets absent;
 - transform PHP through unique exact anchors only;
 - mutate JSON structurally and reject duplicate IDs/registrations;
 - lint all generated/modified PHP before write;
 - parse/validate all generated/modified JSON before write;
 - write atomically;
-- verify exact 19-path repository inventory;
+- verify exact 20-path repository inventory;
 - run `git diff --check`;
 - rollback only its own writes on post-write failure;
 - never invoke Composer internally.
