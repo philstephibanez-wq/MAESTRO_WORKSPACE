@@ -1,106 +1,56 @@
 # P117W R45B2A4BZ2 R8B5D4 — VIEW read-only geometry runtime reconciliation — HANDOFF
 
-State: DELIVERED — OWNER APPLY/RUNTIME ACCEPTANCE PENDING
+State: OWNER RUNTIME PARTIAL PASS — INTERNAL GEOMETRY PASS — WHOLE-GRAPH ORIGIN FAIL — SUPERSEDED BY R8B5D5
 
 ## Source of truth
 
 - README-FIRST blob: `1d7c00ade6521a5fe3fcb83139ce18d98033e810`.
 - OPUS baseline/master: `f053f5693e0e65fe807564a2bfd6d52fc28ba4e2`.
-- Renderer target: `Opus/Fsm/Diagram.class.php` blob `255ce381932be8796f6a80d1a09228c001255d80`.
+- Renderer target baseline: `Opus/Fsm/Diagram.class.php` blob `255ce381932be8796f6a80d1a09228c001255d80`.
 - Contextual builder: `sites/owasys-front/application/default/services/FsmDiagramBuilder.php` blob `0f17ee29537603b09911fe0f7acd7fb136b46128`.
-- D3 is owner-runtime rejected and superseded by D4.
 
 ## Contract
 
 `VIEW = DESIGN - modification capability`.
 
-R8B5D4 changes generic `Opus/Fsm/Diagram.class.php` only. The same existing geometry reconciliation executes in VIEW and DESIGN. Only drag, CSRF rotation and persistence POST remain writable-only.
+R8B5D4 makes the existing renderer geometry reconciliation execute in VIEW and DESIGN while leaving drag, CSRF rotation and persistence POST writable-only.
 
-## Exact correction
-
-- geometry runtime emission is no longer equivalent to writability; it also activates when persisted state/canvas/transition/marker geometry exists;
-- renderer runtime entry records `writable` instead of returning immediately for read-only diagrams;
-- SIGNAL and initial-marker runtime registries use their always-rendered geometry attributes rather than draggable-only selectors;
-- existing `repairLocalTransition()` and `updateInitialMarker()` execute in both modes;
-- `if (!writable) return;` is placed immediately after geometry reconciliation and before CSRF/persistence/drag/event-handler code.
-
-No second renderer or alternate geometry path is introduced.
-
-## Non-regression boundary
-
-R8B5D4 does not modify or restore:
-
-- `sites/owasys-front/www/asset/css/fsm-native.css`;
-- `sites/owasys-front/application/default/services/ScorePageRenderer.php`;
-- any `*.fsm.layout.json` companion;
-- any EFSM definition;
-- OWASYS REST/back/Composer source;
-- ACL/security rules;
-- SecurityContext/SignalBus;
-- working DESIGN right-button drag/persistence semantics.
-
-The applicator accepts the two known local R8B5D3 paths and `sites/*/config/*.fsm.layout.json` companions as pre-existing local state only. It SHA-256 snapshots each such file before work and proves it remains byte-for-byte unchanged after application.
-
-Any other local changed/untracked path blocks preflight. The renderer target itself must be clean and match the exact GitHub blob. The Git index must be clean.
-
-## Artifact
+## Delivered artifact
 
 - ZIP: `opus_p117w_r45b2a4bz2r8b5d4_view_readonly_geometry_runtime_reconciliation.zip`;
 - ZIP SHA-256: `96b426f5e34db3a3399e9eb13bface7c82d9129a5143bcb58e082459d63745db`;
-- ZIP contains exactly `apply_a4bz2r8b5d4.php`;
-- applicator SHA-256: `c83cc1acc3dfb13b2210d13242adffb143e911563528ea00a6fcf86c7b23822a`;
-- applicator size: `16745` bytes;
-- applicator PHP lint: PASS;
-- ZIP re-extraction byte comparison: PASS;
-- extracted applicator PHP lint: PASS;
-- no internal Composer invocation.
+- applicator: `apply_a4bz2r8b5d4.php`;
+- applicator SHA-256: `c83cc1acc3dfb13b2210d13242adffb143e911563528ea00a6fcf86c7b23822a`.
 
-## Deterministic replay
+## Owner runtime evidence — 2026-08-24
 
-A temporary Git repository reproduced all six exact transformation anchors and included three pre-existing dirty files:
+Two captures of the same `owasys-front / security` EFSM were compared:
 
-- R8B5D3 CSS target;
-- R8B5D3 `ScorePageRenderer.php` target;
-- Security `*.fsm.layout.json` companion.
+- VIEW `/fr-FR/sécurité?operation=read`;
+- DESIGN `/fr-FR/sécurité?fsm_design=1`.
 
-Replay result:
+R8B5D4 result:
 
-- `PREFLIGHT_OK`;
-- `REPO_CHANGES_VERIFIED`;
-- `APPLIED`;
-- exactly one additional modified path: `Opus/Fsm/Diagram.class.php`;
-- all three pre-existing files retained identical SHA-256 values;
-- clean index;
-- no new untracked path;
-- `git diff --check` PASS;
-- transformed PHP lint PASS.
+- relative STATE/SIGNAL geometry is stable;
+- transition paths/arrows, label leaders and initial marker are reconciled in VIEW as intended;
+- DESIGN remains the editable projection;
+- however the complete graph is still shifted to the right in VIEW relative to DESIGN.
 
-Static ordering checks also prove the read-only gate occurs after transition/marker reconciliation and before persistence/drag installation.
+Image registration shows scale approximately `1.000` and horizontal translation approximately `145 px`. This isolates the remaining failure to whole-surface origin/centering rather than FSM coordinates or scaling.
 
-## Expected markers
+## Non-regression boundary for successor
 
-- `P117W_R45B2A4BZ2R8B5D4_PREFLIGHT_BEGIN`;
-- `P117W_R45B2A4BZ2R8B5D4_PREFLIGHT_OK`;
-- `P117W_R45B2A4BZ2R8B5D4_REPO_CHANGES_VERIFIED`;
-- `P117W_R45B2A4BZ2R8B5D4_APPLIED`;
-- `baseline_head=f053f5693e0e65fe807564a2bfd6d52fc28ba4e2`;
-- `changed_paths=1`;
-- `view_geometry=design-equivalent-readonly`;
-- `geometry_reconciliation=view+design`;
-- `editing_gate=writable-only`;
-- `design_drag_persistence=unchanged`;
-- `layout_storage=unchanged`;
-- `rest_backend_change=none`;
-- `preexisting_local_state=preserved`;
-- `composer_validation=external_terminal`.
+R8B5D5 must preserve byte-for-byte:
 
-## Owner runtime acceptance
+- the local R8B5D4 `Opus/Fsm/Diagram.class.php` correction;
+- every `*.fsm.layout.json` file;
+- REST/back/Composer persistence flow;
+- ACL/Security/SecurityContext/SignalBus;
+- DESIGN right-button drag/persistence behavior;
+- EFSM definitions.
 
-1. apply without restoring the working R8B5D3/layout files;
-2. externally run `composer opus:validate-site -- owasys-front`;
-3. compare the same Security EFSM in DESIGN and VIEW;
-4. STATE, SIGNAL cards, transition arrows/paths, label leaders and initial marker must be graph-geometry equivalent;
-5. VIEW must remain read-only with no right-button drag/persistence;
-6. DESIGN right-button drag/persistence must remain operational;
-7. F5 in both modes must preserve the same geometry;
-8. only after those gates pass may owner commit/push OPUS.
+No fixed pixel translation is allowed. R8B5D5 must remove the responsive centering authority so the graph origin is invariant when the DESIGN inspector changes the available canvas width.
+
+## Supersession
+
+R8B5D4 remains useful and must be retained, but its full runtime acceptance is closed as partial. R8B5D5 owns the final exact-origin correction.
