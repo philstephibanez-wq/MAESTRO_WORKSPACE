@@ -1,102 +1,43 @@
 # P117W R45B2A4BZ2 R8B5D3 — Stable VIEW/DESIGN origin repair — HANDOFF
 
-State: DELIVERED — OWNER APPLY/RUNTIME ACCEPTANCE PENDING
+State: OWNER RUNTIME REJECTED — SUPERSEDED BY R8B5D4
 
 ## Source of truth
 
 - README-FIRST blob: `1d7c00ade6521a5fe3fcb83139ce18d98033e810`.
 - OPUS baseline/master: `f053f5693e0e65fe807564a2bfd6d52fc28ba4e2`.
-- CSS blob: `085e6a9e68b775461f18e5276e4b4c95d5b76d29`.
-- ScorePageRenderer blob: `0512c3427a190f4a6184710372d78e21f758b39f`.
-- R8B5D2 handoff is now runtime partial / not accepted / superseded.
-- R8B5D3 spec commit: `59463aef4c4a872b67ebfdb3d065676b2700b111`.
+- R8B5D3 artifact remains historical and must not be reused as the active correction.
 
-## Runtime diagnosis
+## Runtime evidence
 
-Owner supplied VIEW and DESIGN screenshots of `owasys-front / security` after the R8B5D2 visual scale repair.
+Owner comparison of the same `owasys-front / security` EFSM in VIEW and DESIGN shows:
 
-Measured STATE rectangles:
+- STATE geometry is effectively the same;
+- DESIGN renders the SIGNAL transition paths/arrows and label leaders correctly;
+- VIEW renders several of those arrows/leaders incorrectly.
 
-- VIEW: `(374,643)`, `(636,736)`, `(859,621)`, `(1350,643)`;
-- DESIGN: `(209,380)`, `(471,475)`, `(694,358)`, `(1185,380)`.
+The runtime conclusion is therefore: persistence/readback works, but VIEW and DESIGN still differ in transition presentation.
 
-All X positions differ by exactly `165 px`, while relative spacing is unchanged. The same persisted layout is therefore consumed in both modes. The defect is whole-SVG placement.
+## Corrected root cause
 
-## Root cause
+Current generic OPUS `OPUS_FSM_Diagram::renderHtml()` appends `layoutInteractionScript()` only for writable diagrams. The same script also performs read-time `repairLocalTransition()` and label/marker reconciliation before installing editing handlers.
 
-With intrinsic SVG width restored, `margin-inline: auto` yields two different origins:
+DESIGN receives this reconciliation because it is writable. VIEW does not.
 
-- VIEW canvas is wider and centers the SVG;
-- DESIGN canvas is reduced by the inspector and can no longer center the same intrinsic SVG.
+## Supersession contract
 
-The final CSS cascade also uses `overflow-x: hidden`, which clips an intrinsic-width diagram instead of scrolling it.
+R8B5D4 must implement the generic invariant:
 
-## Correction
+`VIEW = DESIGN - modification capability`
 
-Cumulative from clean GitHub baseline:
+The same persisted graph and the same geometry reconciliation are used in both modes. Only right-button drag, CSRF and persistence POST behavior remain writable-only.
 
-1. `sites/owasys-front/www/asset/css/fsm-native.css`
-   - FSM SVG `max-width: none` in all three relevant historical rules;
-   - base and vertical SVG `margin-inline: 0`;
-   - final canvas `overflow-x: auto`, `overflow-y: visible`.
-2. `sites/owasys-front/application/default/services/ScorePageRenderer.php`
-   - FSM CSS cache-buster `p117w-r45b2a4bz2r8b5d3`.
+R8B5D4 must not modify or restore:
 
-No layout JSON, FSM definition, JS, REST, Composer registry, ACL or backend source changes.
+- R8B5D3 local CSS/cache-buster changes if present;
+- any `*.fsm.layout.json` file;
+- REST/back/Composer persistence flow;
+- ACL or Security runtime;
+- working DESIGN drag/persistence behavior.
 
-## Local-state prerequisite
-
-R8B5D2 is currently applied locally but not pushed. OPUS GitHub remains on `f053f569...`.
-
-Before R8B5D3, restore only the two R8B5D2 target files to GitHub baseline. Do not restore any `*.fsm.layout.json` file.
-
-## Artifact
-
-- ZIP: `opus_p117w_r45b2a4bz2r8b5d3_stable_view_design_origin_repair.zip`;
-- ZIP SHA-256: `dc87b203c2b69701827cbde4929389baa6f8afd9f838711466a561acc5f06700`;
-- ZIP contains exactly `apply_a4bz2r8b5d3.php`;
-- applicator SHA-256: `d0b6f6701a41b0952245abf50d95139f93d286e759b14e4556aad280360efa93`;
-- applicator size: `10683` bytes;
-- applicator PHP lint: PASS;
-- ZIP re-extraction byte comparison: PASS;
-- no `composer.phar` and no internal `composer` subprocess invocation.
-
-## Deterministic replay
-
-Applicator logic was replayed end-to-end in a temporary Git repository with exact transformation anchors.
-
-Observed:
-
-- PREFLIGHT_OK;
-- REPO_CHANGES_VERIFIED;
-- APPLIED;
-- exactly two modified paths;
-- zero untracked files;
-- clean index;
-- `git diff --check` PASS;
-- final CSS has `max-width:none`, stable `margin-inline:0`, and final `overflow-x:auto`.
-
-## Expected markers
-
-- `P117W_R45B2A4BZ2R8B5D3_PREFLIGHT_BEGIN`;
-- `P117W_R45B2A4BZ2R8B5D3_PREFLIGHT_OK`;
-- `P117W_R45B2A4BZ2R8B5D3_REPO_CHANGES_VERIFIED`;
-- `P117W_R45B2A4BZ2R8B5D3_APPLIED`;
-- `baseline_head=f053f5693e0e65fe807564a2bfd6d52fc28ba4e2`;
-- `changed_paths=2`;
-- `layout_storage=unchanged`;
-- `view_design_geometry_scale=intrinsic`;
-- `view_design_origin=stable-left`;
-- `relative_geometry=unchanged`;
-- `canvas_overflow_x=auto`;
-- `fsm_css_revision=p117w-r45b2a4bz2r8b5d3`;
-- `composer_validation=external_terminal`.
-
-## Owner runtime acceptance
-
-1. externally run `composer opus:validate-site -- owasys-front`;
-2. open the same Security EFSM in VIEW and DESIGN;
-3. inspector appearance/disappearance must not translate or rescale STATE/SIGNAL geometry;
-4. F5 in both modes must keep geometry;
-5. if DESIGN canvas is narrower than intrinsic graph width, horizontal scrolling must appear instead of clipping/shrink;
-6. only after these gates pass, commit/push OPUS.
+The only intended source target is generic `Opus/Fsm/Diagram.class.php`.
