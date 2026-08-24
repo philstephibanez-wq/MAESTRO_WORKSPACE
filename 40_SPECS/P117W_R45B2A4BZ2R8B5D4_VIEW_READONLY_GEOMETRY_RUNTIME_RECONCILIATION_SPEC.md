@@ -1,6 +1,6 @@
 # P117W R45B2A4BZ2 R8B5D4 — VIEW read-only geometry runtime reconciliation — SPEC
 
-State: ACTIVE — DELIVERY BUILD/OWNER RUNTIME ACCEPTANCE PENDING
+State: READY FOR OWNER APPLY — RUNTIME ACCEPTANCE PENDING
 
 ## Source gate
 
@@ -36,9 +36,7 @@ Because VIEW is read-only, it does not execute this reconciliation. DESIGN does.
 
 Change only `Opus/Fsm/Diagram.class.php`.
 
-1. Emit the existing diagram geometry runtime when either:
-   - layout is writable; or
-   - persisted state/canvas/transition/marker geometry is present.
+1. Emit the existing diagram geometry runtime when either layout is writable or persisted state/canvas/transition/marker geometry is present.
 2. Do not return early merely because `writable=false`.
 3. Build runtime STATE/SIGNAL/marker registries from rendered geometry attributes, not from draggable-only selectors.
 4. Always execute the existing transition/leader/initial-marker reconciliation.
@@ -62,19 +60,13 @@ R8B5D3 local CSS/cache-buster changes and any local presentation layout changes 
 
 ## Delivery gate
 
-The applicator must:
+The applicator requires HEAD `f053f5693e0e65fe807564a2bfd6d52fc28ba4e2`, exact renderer HEAD blob `255ce381932be8796f6a80d1a09228c001255d80`, an unmodified renderer worktree file and a clean Git index.
 
-- require HEAD `f053f5693e0e65fe807564a2bfd6d52fc28ba4e2`;
-- require target HEAD blob `255ce381932be8796f6a80d1a09228c001255d80` and an unmodified target worktree file;
-- require a clean Git index;
-- tolerate only known local R8B5D3 files and `sites/*/config/*.fsm.layout.json` presentation companions outside the target;
-- snapshot every tolerated dirty/untracked file and prove it remains byte-for-byte unchanged;
-- stage the transformed renderer in a temporary file and run `PHP_BINARY -l` before writing;
-- apply atomically to the single target;
-- require exact target-only new differential in addition to pre-existing tolerated local state;
-- run `git diff --check`;
-- rollback only the target on post-write failure;
-- never invoke Composer internally.
+It tolerates only the two known local R8B5D3 files plus `sites/*/config/*.fsm.layout.json` presentation companions. Every tolerated file is SHA-256 snapshotted and must remain byte-for-byte unchanged.
+
+The transformed renderer is PHP-linted in a temporary file before writing, then linted again post-write. Post-write inventory must equal the exact pre-existing tolerated differential plus the single renderer target. `git diff --check` is applied to the renderer. Any post-write failure rolls back only the renderer. No Composer subprocess is invoked.
+
+A deterministic replay in a temporary Git repository included dirty local copies of both R8B5D3 files and a dirty Security layout companion. Result: PREFLIGHT_OK, REPO_CHANGES_VERIFIED, APPLIED, target-only added differential, pre-existing files SHA-256 unchanged, clean index, no new untracked file and diff-check PASS.
 
 ## Runtime acceptance
 
