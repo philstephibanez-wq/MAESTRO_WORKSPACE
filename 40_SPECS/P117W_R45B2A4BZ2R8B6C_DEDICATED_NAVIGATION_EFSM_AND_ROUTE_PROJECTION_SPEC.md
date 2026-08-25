@@ -1,6 +1,6 @@
 # P117W R45B2A4BZ2 R8B6C — Dedicated Navigation EFSM and route projection — SPEC
 
-State: ACTIVE — DELIVERY IN PREPARATION
+State: DELIVERED — OWNER APPLY/RUNTIME ACCEPTANCE PENDING
 
 ## Baseline
 
@@ -269,3 +269,25 @@ After owner application:
 18. `git diff --check` PASS.
 
 No commit/push until the full matrix passes.
+
+## Delivery validation
+
+R8B6C was built against the exact baseline above and packaged as one differential applicator only.
+
+- artifact: `opus_p117w_r45b2a4bz2r8b6c_dedicated_navigation_efsm_and_route_projection.zip`;
+- ZIP SHA-256: `3ff1a96bf00e97f9071b1e4d307f2f738cb0468778da4c7c89904fbf592c8861`;
+- applicator: `apply_a4bz2r8b6c.php`;
+- applicator SHA-256: `c93ff5ab9965c14d2d9f5ece42ba0b3846f5b9f972b3a85ac5c50542348d1c14`;
+- ZIP contains exactly one file;
+- applicator PHP lint: PASS;
+- ZIP re-extraction byte comparison: PASS;
+- extracted applicator PHP lint: PASS;
+- deterministic synthetic replay with one pre-existing tracked layout companion: PASS;
+- deterministic synthetic replay with one tracked plus one untracked layout companion: PASS;
+- functional inventory in both replays: 32 modified + 3 new = 35 paths;
+- `config/fsm.json` byte preservation: PASS;
+- layout companion byte preservation: PASS;
+- candidate/post-write PHP lint: PASS in replay;
+- candidate/post-write JSON validation: PASS in replay;
+- `git diff --check`: PASS in replay;
+- no Composer subprocess is invoked by the applicator.
