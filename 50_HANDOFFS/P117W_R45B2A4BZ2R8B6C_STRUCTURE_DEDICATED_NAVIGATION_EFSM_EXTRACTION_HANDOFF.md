@@ -1,134 +1,60 @@
 # P117W R45B2A4BZ2 R8B6C — Structure dedicated Navigation EFSM extraction — HANDOFF
 
-State: DELIVERED — OWNER APPLY/RUNTIME ACCEPTANCE PENDING
+State: OWNER RUNTIME ACCEPTED — PUSHED — SUPERSEDED BY R8B6D RUNTIME AUTHORITY EXTRACTION
 
 ## Source gate
 
-- README-FIRST blob revalidated immediately before delivery: `1d7c00ade6521a5fe3fcb83139ce18d98033e810`.
-- OPUS baseline/master revalidated immediately before delivery: `d3a6cfc53e021dba0d5c2c60b9b9761b421dd76d`.
-- R8B6B4 is owner runtime accepted and pushed.
+- README-FIRST blob at delivery: `1d7c00ade6521a5fe3fcb83139ce18d98033e810`.
+- Delivery baseline: `d3a6cfc53e021dba0d5c2c60b9b9761b421dd76d`.
+- Owner pushed R8B6C as OPUS commit `d30893de2a89cccda0c2702b4d2e5440cd7cb202`.
 - Spec: `40_SPECS/P117W_R45B2A4BZ2R8B6C_STRUCTURE_DEDICATED_NAVIGATION_EFSM_EXTRACTION_SPEC.md`.
 
 ## Root cause
 
-Structure remained the only accepted OWASYS view rendering the legacy global host FSM because `sites/owasys-front/config/site.json` used `config/fsm.json` for both host dispatch and `efsms.navigation`.
+Structure/Navigation was the remaining OWASYS view whose canonical contextual diagram still originated from the legacy host FSM. OPUS already distinguished host dispatch resolution from named EFSM resolution, so the dedicated Navigation source could be extracted without a framework change.
 
-OPUS already separates these concerns:
+## Accepted runtime result
 
-- `FsmSiteLoader::resolve()` follows `site.json.navigation.fsm`;
-- `FsmSiteLoader::resolveEfsm(..., 'navigation')` follows `site.json.efsms.navigation`.
+The pushed application now exposes:
 
-No framework change is needed.
+- `site.json.navigation.fsm = config/fsm.json` for legacy HTTP dispatch still not fully extracted;
+- `site.json.efsms.navigation = config/navigation.fsm.json` for the canonical Navigation VIEW/DESIGN EFSM;
+- runtime session `opus.fsm.owasys-front.navigation` through `OwasysNavigationRuntime`;
+- Navigation rendering from `config/navigation.fsm.json`.
 
-## Delivered architecture
+Owner runtime evidence on 2026-08-25 shows `/fr-FR/structure` completing successfully and the backend reading `config/navigation.fsm.json` and the `navigation` layout through secured REST/Composer.
 
-Host dispatch remains:
+The owner screenshot shows `application: owasys-front`, `efsm: navigation`, `source: config/navigation.fsm.json` and the seven-state Navigation graph.
 
-`site.json.navigation.fsm = config/fsm.json`
+## Canonical state-name correction
 
-Structure contextual EFSM becomes:
+The delivered handoff text previously listed the central state as `structure`. The actual pushed canonical definition uses `navigation`.
 
-`site.json.efsms.navigation = config/navigation.fsm.json`
+Canonical state set at OPUS commit `d30893de...`:
 
-New source:
+`registry, application, data, navigation, security, source, build`.
 
-`sites/owasys-front/config/navigation.fsm.json`
+This correction documents the pushed source; it does not rewrite historical patch artifacts.
 
-The dedicated definition contains seven application-structure states:
+## Owner commit reconciliation
 
-`registry, application, data, structure, security, source, build`
+The actual owner commit is broader than the original two-file extraction artifact. Compare `d3a6cfc...` → `d30893de...` shows the pushed R8B6C state also contains the runtime integration required to synchronize the dedicated Navigation EFSM, including:
 
-and fifteen transitions: eight navigation/context-selection transitions plus seven existing cross-EFSM readiness acknowledgement events.
+- `NavigationRuntime.php` and `NavigationRuntimeInterface.php`;
+- `ContextRuntimeCoordinator.php`;
+- `SecurityRuntimeCoordinator.php`;
+- `RuntimeController.php`;
+- `FsmDiagramBuilder.php`;
+- localized Navigation naming and routes;
+- `site.json` and `navigation.fsm.json`;
+- the owner-persisted `fsm.layout.json` runtime layout.
 
-The definition deliberately excludes CRUD internals, Source editor lifecycle, Git operations, Build execution, Security authentication internals, creation wizard internals and account/password workflows.
+The pushed commit, not the earlier artifact inventory, is now the OPUS source of truth.
 
-## Runtime boundary
+## Remaining architectural boundary
 
-R8B6C does not rewire the existing context SignalBus. `config/fsm.json` remains the runtime dispatch/orchestration authority for this slice.
+`OwasysNavigationRuntime::synchronize()` at `d30893de...` still restores the legacy global session `opus.fsm.owasys-front` and requires its current state before moving the dedicated Navigation EFSM. Therefore the dedicated EFSM is canonical for VIEW/DESIGN and has its own session, but legacy `config/fsm.json` still participates in Navigation runtime authority.
 
-The dedicated Navigation EFSM is the canonical Structure VIEW/DESIGN source. Runtime bus authority extraction is deferred until after Structure acceptance.
+This is why the owner correctly reports no material visible behavioral difference after extraction.
 
-## Exact OPUS source surface
-
-Modified:
-
-- `sites/owasys-front/config/site.json`.
-
-New:
-
-- `sites/owasys-front/config/navigation.fsm.json`.
-
-No PHP, backend, CSS, JavaScript, layout or generated-site source modification.
-
-## Applicator gates
-
-The runner requires:
-
-- exact HEAD `d3a6cfc53e021dba0d5c2c60b9b9761b421dd76d`;
-- canonical site blob `0df0e1de0f04d56509b27a382844532ad4d611b9`;
-- canonical dispatch blob `c846dd6295dcaa7fc70d5a34513dc5059345aa80`;
-- no staged changes;
-- no unrelated dirty paths;
-- `navigation.fsm.json` absent before application;
-- current site pointers both still at `config/fsm.json` before extraction.
-
-Existing layout runtime companions are allowed only under the established `sites/*/config/fsm.layout.json` or `sites/*/config/<efsm>.fsm.layout.json` forms. Each is JSON-validated, SHA-256 snapshotted and required byte-identical after application.
-
-The runner validates the embedded Navigation EFSM identity, exact seven-state set, fifteen-signal registry, fifteen transitions and every state/signal reference before any write.
-
-After writing it proves:
-
-- `site.json.navigation.fsm` is still `config/fsm.json`;
-- `site.json.efsms.navigation` is `config/navigation.fsm.json`;
-- `config/fsm.json` SHA-256 is unchanged;
-- every pre-existing layout companion is unchanged;
-- final tracked/untracked inventory is exact;
-- `git diff --check` passes for the tracked source change.
-
-Rollback on post-write failure restores only `site.json` and removes only the newly created `navigation.fsm.json`.
-
-## Replay validation
-
-Replay A with one tracked runtime `fsm.layout.json` companion: PASS.
-
-Replay B with one tracked runtime `fsm.layout.json` plus one untracked `security.fsm.layout.json`: PASS.
-
-Both replays produced:
-
-- `P117W_R45B2A4BZ2R8B6C_PREFLIGHT_OK`;
-- `P117W_R45B2A4BZ2R8B6C_REPO_CHANGES_VERIFIED`;
-- `changed_source_paths=2`;
-- `navigation_states=7`;
-- `navigation_signals=15`;
-- `navigation_transitions=15`;
-- `dispatch_fsm=preserved-byte-for-byte`;
-- `runtime_bus_rewire=deferred`;
-- `P117W_R45B2A4BZ2R8B6C_APPLIED`.
-
-## Artifact
-
-- ZIP: `opus_p117w_r45b2a4bz2r8b6c_structure_dedicated_navigation_efsm_extraction.zip`;
-- ZIP SHA-256: `9f9bcd3bd158ae722ca37b0877b36e2654c9daa43f44180da283847bd211813c`;
-- ZIP size: 4384 bytes;
-- ZIP contains exactly `apply_a4bz2r8b6c.php`;
-- applicator size: 19306 bytes;
-- applicator SHA-256: `d5cc80567e1b195c1a2415f6a80a2f086ab6cbb56af369e9b31de41d2b7a38dc`;
-- applicator PHP lint: PASS;
-- ZIP re-extraction byte comparison: PASS;
-- extracted applicator PHP lint: PASS;
-- no internal Composer invocation.
-
-## Owner validation
-
-Apply from a temporary directory outside `H:\OPUS`.
-
-Then validate `owasys-front`, `owasys-back` and `essai`, inspect `git status --short`, and run `git diff --check`.
-
-Runtime acceptance requires:
-
-1. Structure selected on `owasys-front` displays `owasys-front / navigation` with source `config/navigation.fsm.json`.
-2. The graph contains seven states and fifteen transitions, not the historical global workflow.
-3. Normal OWASYS navigation still works because dispatch remains `config/fsm.json`.
-4. Applications/Application/Data/Source-Git/Build/Security remain unchanged on their dedicated EFSMs.
-5. DESIGN persistence on Structure creates/updates only `config/navigation.fsm.layout.json`; existing `config/fsm.layout.json` must remain unchanged.
-6. No commit/push until these gates pass.
+R8B6D owns the next boundary: remove the legacy-global-state dependency from `OwasysNavigationRuntime` while preserving `config/fsm.json` strictly as the HTTP dispatch FSM until the remaining legacy business transitions are extracted.
