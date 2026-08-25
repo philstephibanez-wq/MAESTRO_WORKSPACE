@@ -10,7 +10,21 @@ State: DELIVERED — OWNER APPLY/RUNTIME ACCEPTANCE PENDING
 - R8B6C handoff reconciled to the actual owner commit before this delivery.
 - Spec: `40_SPECS/P117W_R45B2A4BZ2R8B6D_NAVIGATION_RUNTIME_AUTHORITY_EXTRACTION_SPEC.md`.
 
-## Why no visible diff after R8B6C
+## Owner observation — duplicate R8B6C application
+
+On 2026-08-25 the owner attempted to run the R8B6C applicator again from `H:\OPUS` while the worktree already contained the R8B6C Navigation extraction files.
+
+Observed preflight failure:
+
+`P117W_R45B2A4BZ2R8B6C_NAVIGATION_TARGET_ALREADY_EXISTS`
+
+The failure occurred during preflight before any mutation. Therefore no additional diff from that invocation is expected. The subsequent owner checks remained valid for `owasys-front`, `owasys-back` and `essai`, and `git diff --check` returned clean.
+
+The owner-reported worktree still displayed the R8B6C source set as modified/untracked locally. Before R8B6D is applied, the local clone must therefore prove that `HEAD` is exactly `d30893de2a89cccda0c2702b4d2e5440cd7cb202`; R8B6D intentionally refuses any other HEAD instead of guessing or layering over an ambiguous local baseline.
+
+Do not restore or reapply R8B6C.
+
+## Why no visible runtime-authority diff after R8B6C
 
 R8B6C created and rendered the dedicated `config/navigation.fsm.json`, but its `OwasysNavigationRuntime::synchronize()` still restored the legacy global `opus.fsm.owasys-front` session and required its current state before changing the dedicated Navigation EFSM. Therefore source ownership changed, but runtime authority was still chained to the old global FSM.
 
@@ -24,7 +38,7 @@ R8B6D removes that legacy state-authority dependency.
 - `FsmSessionStore('opus.fsm.owasys-front.navigation')`;
 - `owasys-front/navigation` as SignalBus identity.
 
-Existing caller inputs remain compatible; `structure` is normalized to the canonical Navigation state `navigation`.
+Existing caller inputs remain compatible; both `structure` and `navigation` normalize to the canonical Navigation state `navigation`.
 
 `config/fsm.json` is deliberately preserved as HTTP dispatch FSM because remaining legacy operations have not all been extracted yet. This slice does not pretend that the global dispatch FSM is removable.
 
@@ -43,36 +57,32 @@ Applicator requires exact HEAD `d30893de2a89cccda0c2702b4d2e5440cd7cb202` and no
 
 Only pre-existing runtime layout companions are allowed to be dirty. They are JSON-validated and SHA-256 snapshotted before write, then verified byte-identical afterward.
 
-Both target HEAD blobs are checked canonically. Candidate and final PHP lint are mandatory. Final inventory and `git diff --check` are mandatory. Rollback is limited to the two targets.
+Both target HEAD blobs are checked canonically. Unique baseline anchors are checked. Candidate and final PHP lint are mandatory. Final inventory and `git diff --check` are mandatory. Rollback is limited to the two targets.
 
-## Replay evidence
+## Replay / artifact verification
 
-Replay used byte-exact source files whose Git blobs were verified to equal the two current OPUS HEAD blobs. A tracked modified `sites/owasys-front/config/fsm.layout.json` companion was included.
+The current regenerated owner artifact was built from the two canonical OPUS HEAD source blobs recorded above.
 
-Result:
+Verification performed before delivery:
 
-- preflight PASS;
-- candidate lint PASS;
-- apply PASS;
-- layout preservation PASS;
-- final inventory PASS;
-- `git diff --check` PASS;
-- no remaining `LEGACY_SESSION_KEY`;
-- no remaining call to `FsmSiteLoader::processorForSiteRoot(` in NavigationRuntime;
-- no remaining `legacy_state` / `$legacyState` runtime dependency;
-- authority marker `dedicated-navigation-efsm` present.
+- applicator PHP lint PASS;
+- ZIP contains exactly `apply_a4bz2r8b6d.php`;
+- ZIP re-extraction byte comparison PASS;
+- extracted applicator PHP lint PASS.
 
-## Artifact
+## Current artifact
 
 - ZIP: `opus_p117w_r45b2a4bz2r8b6d_navigation_runtime_authority_extraction.zip`;
-- ZIP SHA-256: `c4e67c2ddbb63b94293a6b9dea1637cd9b6298ab19709ea0ddc22311f5e0e898`;
+- ZIP SHA-256: `d19b024c28fc23759bb4a29489933fa0bbef8fd56115a4a16a83137b527b84f2`;
 - ZIP contains exactly `apply_a4bz2r8b6d.php`;
-- ZIP size: `3876` bytes;
-- applicator SHA-256: `c31589acfb0b88ad8245fb385a64b813e3d3616cb8f055ab3be23755b65cadf3`;
-- applicator size: `12750` bytes;
+- ZIP size: `4281` bytes;
+- applicator SHA-256: `33442da78b4bbf364242ebad3f4496c31e0b9f86b73dc5ce1fbd61e00459eeb9`;
+- applicator size: `16228` bytes;
 - applicator PHP lint PASS;
 - ZIP re-extraction byte comparison PASS;
 - extracted applicator PHP lint PASS.
+
+This current artifact supersedes the earlier transport checksum recorded for R8B6D; the semantic source slice and baseline remain R8B6D unchanged.
 
 ## Expected markers
 
@@ -89,7 +99,7 @@ Result:
 
 ## Owner acceptance
 
-Apply only from HEAD `d30893de...`. Do not restore or reapply R8B6C.
+Apply only from HEAD `d30893de2a89cccda0c2702b4d2e5440cd7cb202`. Do not restore or reapply R8B6C.
 
 Then run external Composer validation for `owasys-front`, `owasys-back`, and `essai`, plus `git status --short` and `git diff --check`.
 
