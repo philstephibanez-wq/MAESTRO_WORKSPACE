@@ -1,6 +1,6 @@
 # P117W R45B2A4BZ2 R8B6I — Finite-global source-node EFSM — HANDOFF
 
-State: DELIVERED — OWNER APPLY/RUNTIME ACCEPTANCE PENDING
+State: OWNER APPLIED — LOGIC ACCEPTED — MOVE/REROUTE REJECTED — SUPERSEDED BY R8B6J
 
 ## Baseline
 
@@ -55,3 +55,7 @@ The diagram must show:
 - unchanged state positions after View/Conception switching and reload.
 
 Do not commit/push OPUS until this visual and persistence gate passes.
+
+## Owner runtime result — 2026-08-26
+
+The explicit finite source-set node and the seven canonical paths are materially accepted as an improvement. Runtime movement is rejected: a global transition group was still anchored to its target state and translated as one SVG object, so moving the target also displaced the finite-source endpoint. R8B6J supersedes only this live geometry behavior.
