@@ -1,13 +1,12 @@
 # P117W R45B2A4BZ2 R8B6B4 — Layout companion inventory gate repair — HANDOFF
 
-State: DELIVERED — OWNER APPLY/RUNTIME ACCEPTANCE PENDING
+State: OWNER RUNTIME ACCEPTED — PUSHED
 
 ## Source gate
 
-- README-FIRST revalidated immediately before delivery: `1d7c00ade6521a5fe3fcb83139ce18d98033e810`.
-- OPUS HEAD/master revalidated immediately before delivery: `56d4293f21f0a049cfe7cbe968916896de47dc41`.
-- R8B6B2 remains applied locally and uncommitted.
-- R8B6B3 owner preflight failed before write and is superseded.
+- README-FIRST at delivery: `1d7c00ade6521a5fe3fcb83139ce18d98033e810`.
+- Delivery baseline: `56d4293f21f0a049cfe7cbe968916896de47dc41`.
+- Owner accepted and pushed the cumulative R8B6B2/B3/B4 result as OPUS commit `d3a6cfc53e021dba0d5c2c60b9b9761b421dd76d` (`opus_p117w_r45b2a4bz2r8b6b4_layout_companion_inventory_gate_repair`).
 - Spec: `40_SPECS/P117W_R45B2A4BZ2R8B6B4_LAYOUT_COMPANION_INVENTORY_GATE_REPAIR_SPEC.md`.
 
 ## B3 failure treated
@@ -51,7 +50,22 @@ Replay B: same tracked layout plus one untracked `source.fsm.layout.json` compan
 - final inventory: 23 worktree paths = 21 functional + 2 preserved layouts;
 - `git diff --check`: PASS.
 
-## Artifact
+## Owner runtime acceptance
+
+Owner screenshots after application show dedicated contextual EFSM rendering for:
+
+- `registry` / Applications;
+- `application` / Application;
+- `data` / Sources de données;
+- `source` / Sources et Git;
+- `build` / Construction et validation;
+- Security remains on its dedicated `security` EFSM.
+
+The prior `OWASYS_APPLICATION_EFSM_CONTRACT_INVALID` rendering failure is no longer present on those accepted views. The owner then pushed commit `d3a6cfc53e021dba0d5c2c60b9b9761b421dd76d`.
+
+The Structure view still renders the historical global `config/fsm.json`; this was outside B4's correction and is explicitly the next extraction slice, not a B4 regression.
+
+## Artifact history
 
 - ZIP: `opus_p117w_r45b2a4bz2r8b6b4_layout_companion_inventory_gate_repair.zip`;
 - ZIP SHA-256: `fe08b286df6c03fafc16d2fcc5fecb936889a1de188e7ca9de82f6aeeed87be6`;
@@ -63,31 +77,8 @@ Replay B: same tracked layout plus one untracked `source.fsm.layout.json` compan
 - extracted applicator PHP lint: PASS;
 - no internal Composer invocation.
 
-## Expected markers for current owner state
+## Closure
 
-- `P117W_R45B2A4BZ2R8B6B4_PREFLIGHT_BEGIN`;
-- `P117W_R45B2A4BZ2R8B6B4_PREFLIGHT_OK`;
-- `r8b6b2_state=preserved`;
-- `projection_validator=Opus\Fsm\Definition\FsmDefinitionValidator`;
-- `layout_companion_gate=sites/*/config/*.fsm.layout.json`;
-- `preserved_layout_paths=1`;
-- `P117W_R45B2A4BZ2R8B6B4_REPO_CHANGES_VERIFIED`;
-- `preexisting_r8b6b2_paths=20`;
-- `additional_changed_paths=1`;
-- `functional_changed_paths=21`;
-- `total_worktree_paths=22`;
-- `hardcoded_contract_whitelist=removed`;
-- `r8b6b2_byte_preservation=verified`;
-- `P117W_R45B2A4BZ2R8B6B4_APPLIED`.
+R8B6B4 is closed. Do not reapply B2/B3/B4 over `d3a6cfc53e021dba0d5c2c60b9b9761b421dd76d`.
 
-If additional legitimate layout companions exist when owner applies, `preserved_layout_paths` and `total_worktree_paths` increase accordingly; all non-layout source inventory remains strict.
-
-## Owner validation
-
-Do not restore R8B6B2 and do not restore/delete `fsm.layout.json`.
-
-After B4 application run external site validation for `owasys-front`, `owasys-back`, and `essai`, then `git status --short` and `git diff --check`.
-
-Then repeat runtime navigation through Applications, Application, Data, Source/Git and Build. Existing correlated COMMAND/EVENT handshakes must remain, and the host views must render the dedicated EFSMs instead of failing on `OWASYS_APPLICATION_EFSM_CONTRACT_INVALID`.
-
-Structure/Security and persisted layout geometry must remain unchanged. Do not commit/push OPUS until full runtime acceptance passes.
+Next slice: dedicated Navigation EFSM extraction for the Structure context while preserving the legacy host dispatch FSM until its remaining orchestration responsibilities are separately extracted.
