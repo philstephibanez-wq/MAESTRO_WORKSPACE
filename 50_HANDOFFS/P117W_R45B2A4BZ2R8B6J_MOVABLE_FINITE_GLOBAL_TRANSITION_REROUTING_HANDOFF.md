@@ -1,6 +1,6 @@
 # P117W R45B2A4BZ2 R8B6J — Movable finite-global transition rerouting — HANDOFF
 
-State: DELIVERED — OWNER APPLY/RUNTIME ACCEPTANCE PENDING
+State: OWNER APPLIED — VISUAL MOVE/REROUTE ACCEPTED — OWNER COMMIT/PUSH PENDING
 
 ## Baseline
 
@@ -47,3 +47,7 @@ git status --short
 ## Runtime acceptance
 
 Move each state while observing its global transition. Both endpoints must remain connected throughout the drag. Then move at least one signal card, reload, switch View/Conception, and verify that state/card positions persist and paths remain attached. Do not commit OPUS before these gates pass.
+
+## Owner runtime evidence — 2026-08-26
+
+The supplied post-R8B6J runtime capture proves the finite source-set node, seven canonical named paths, seven target attachments and existing context-ready self-loops remain coherent after the states were rearranged. The previously observed group-translation defect is no longer visible. Visual move/reroute acceptance is recorded. Final source acceptance now requires owner PHP/Composer gates, a clean intended inventory, commit and push; the pushed SHA becomes the mandatory baseline for the next architectural slice.
