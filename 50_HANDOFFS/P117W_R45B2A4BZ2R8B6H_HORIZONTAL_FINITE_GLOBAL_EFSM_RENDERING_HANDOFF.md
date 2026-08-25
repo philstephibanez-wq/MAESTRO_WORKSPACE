@@ -1,6 +1,6 @@
 # P117W R45B2A4BZ2 R8B6H — Horizontal finite-global EFSM rendering — HANDOFF
 
-State: DELIVERED — OWNER APPLY/RUNTIME ACCEPTANCE PENDING
+State: OWNER APPLIED — RUNTIME REJECTED — SUPERSEDED BY R8B6I
 
 ## Source gate
 
@@ -75,3 +75,7 @@ In `owasys-front` Navigation:
 - saving a moved transition card writes only its canonical `navigation.open.*` key.
 
 Do not commit or push OPUS until these runtime gates pass.
+
+## Owner runtime rejection — 2026-08-26
+
+R8B6H restored the seven canonical `open_*` signal cards, but the supplied runtime captures prove that it still did not draw the logical finite source relation. Short target-ingress arrows and tiny source captions are not an acceptable EFSM representation. R8B6H must not be committed. R8B6I supersedes it with one explicit finite source-set node and seven canonical source-to-target transitions.
