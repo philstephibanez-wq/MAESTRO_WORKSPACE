@@ -106,3 +106,13 @@ Then run external Composer validation for `owasys-front`, `owasys-back`, and `es
 Runtime acceptance must cover Applications, Application, Data, Navigation, Security, Source/Git and Build. Existing COMMAND/EVENT correlations must remain. Navigation must still render `config/navigation.fsm.json`, but its runtime no longer depends on the global session.
 
 Do not commit/push until these gates pass.
+
+
+## Owner runtime result — 2026-08-25
+
+- R8B6D was applied successfully and pushed by the owner as OPUS commit `1f94204116ad4ea26df6a040ad9a37b8134fb745`.
+- Repository and structural gates passed.
+- Runtime acceptance is REJECTED: the horizontal Navigation diagram still omits every finite global `open_*` relation and renders only the `*_context_ready` self-loops.
+- Root cause is generic OPUS rendering, not Navigation data: after the vertical branch, `OPUS_FSM_Diagram::renderTransition()` has no horizontal `scope=global` branch; projected transitions use `from=@global`, fail the local-position lookup, and are silently returned as empty SVG.
+- Next slice baseline: `1f94204116ad4ea26df6a040ad9a37b8134fb745`.
+- Next slice owns a generic `Opus/Fsm/Diagram.class.php` correction. No local OWASYS workaround, no config rewrite, and no R8B6D reapply.
