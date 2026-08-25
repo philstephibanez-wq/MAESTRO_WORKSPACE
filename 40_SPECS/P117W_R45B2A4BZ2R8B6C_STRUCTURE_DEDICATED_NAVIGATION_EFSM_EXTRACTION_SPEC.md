@@ -1,11 +1,11 @@
 # P117W R45B2A4BZ2 R8B6C — Structure dedicated Navigation EFSM extraction — SPEC
 
-State: ACTIVE — DELIVERY BUILD
+State: DELIVERED — OWNER APPLY/RUNTIME ACCEPTANCE PENDING
 
 ## Source gate
 
-- README-FIRST revalidated in this work cycle: blob `1d7c00ade6521a5fe3fcb83139ce18d98033e810`.
-- OPUS accepted baseline/master: `d3a6cfc53e021dba0d5c2c60b9b9761b421dd76d` (`opus_p117w_r45b2a4bz2r8b6b4_layout_companion_inventory_gate_repair`).
+- README-FIRST revalidated immediately before delivery: blob `1d7c00ade6521a5fe3fcb83139ce18d98033e810`.
+- OPUS accepted baseline/master revalidated immediately before delivery: `d3a6cfc53e021dba0d5c2c60b9b9761b421dd76d` (`opus_p117w_r45b2a4bz2r8b6b4_layout_companion_inventory_gate_repair`).
 - R8B6B4 is owner runtime accepted and pushed.
 - Applicable MAESTRO development, patch-delivery and Git/branch contracts were reread.
 
@@ -99,19 +99,34 @@ New:
 
 No PHP, CSS, JS, backend, layout or generated-application source modification.
 
-## Preservation requirements
+## Delivery verification
 
-R8B6C must prove:
+Applicator replay A: pre-existing tracked `fsm.layout.json` runtime companion.
 
-- exact accepted OPUS HEAD at preflight;
-- `site.json.navigation.fsm` remains `config/fsm.json`;
-- `config/fsm.json` is byte-identical before/after;
-- existing `sites/*/config/*.fsm.layout.json` runtime companions may be present and are byte-identical before/after;
-- no staged changes;
-- no unrelated dirty paths;
-- new navigation definition passes structural deterministic checks;
-- final Git inventory contains only the two R8B6C source paths plus any pre-existing allowed layout companions;
-- `git diff --check` passes.
+- preflight PASS;
+- layout companion preserved byte-for-byte;
+- dispatch `config/fsm.json` preserved byte-for-byte;
+- final source inventory exact;
+- `git diff --check` PASS.
+
+Applicator replay B: tracked `fsm.layout.json` plus untracked `security.fsm.layout.json` runtime companion.
+
+- preflight PASS;
+- both layout companions preserved byte-for-byte;
+- final source inventory exact;
+- `git diff --check` PASS.
+
+Artifact:
+
+- ZIP `opus_p117w_r45b2a4bz2r8b6c_structure_dedicated_navigation_efsm_extraction.zip`;
+- ZIP SHA-256 `9f9bcd3bd158ae722ca37b0877b36e2654c9daa43f44180da283847bd211813c`;
+- applicator `apply_a4bz2r8b6c.php`;
+- applicator SHA-256 `d5cc80567e1b195c1a2415f6a80a2f086ab6cbb56af369e9b31de41d2b7a38dc`;
+- applicator PHP lint PASS;
+- ZIP re-extraction byte comparison PASS;
+- extracted applicator PHP lint PASS;
+- ZIP contains exactly one applicator;
+- no internal Composer invocation.
 
 ## Runtime acceptance
 
