@@ -1,6 +1,6 @@
 # P117W R45B2A4BZ2 R8B6M — Browser-measured EFSM signal cards — HANDOFF
 
-State: DELIVERED — OWNER APPLY/RUNTIME ACCEPTANCE PENDING
+State: OWNER RUNTIME ACCEPTED — PUSHED
 
 ## Baseline
 
@@ -25,26 +25,10 @@ The generic renderer now reconciles each signal-card frame with the browser-meas
 - `git diff --check`: PASS
 - ZIP round-trip: PASS
 
-PHP is unavailable in the delivery environment; owner lint is mandatory.
+## Owner acceptance
 
-## Commands
+- owner report: “cartes Ok”;
+- owner-pushed OPUS HEAD: `40b28ad8c939236b2af4f9bec77b242ed4325eed`;
+- accepted Diagram blob: `86c56e0d1d59e604064f491b392ce7890ea194ae`.
 
-```cmd
-cd /d H:\OPUS
-git rev-parse HEAD
-git status --short
-tar -xf "%USERPROFILE%\Downloads\R8B6M.zip" -C H:\OPUS
-php -l Opus\Fsm\Diagram.class.php
-git diff --check
-composer dump-autoload -o
-composer opus:validate-site -- owasys-front
-composer opus:validate-site -- owasys-back
-composer opus:validate-site -- essai
-git status --short
-```
-
-## Runtime gate
-
-Open the `essai` Navigation diagram in View and Conception. The complete `open_home [route_exists] / render_route()` text must be inside its card with visible padding. Move the signal card, reload, and confirm persistence.
-
-Do not commit/push until these gates pass.
+R8B6M is closed. R8B6N continues with semantic signal and local-transition creation.
