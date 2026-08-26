@@ -49,4 +49,6 @@ owasys-front → REST sécurisé → owasys-back → Composer.
 13. Flux: owasys-front -> REST (sécurisé) -> owasys-back -> composer -> owasys-back -> response -> owasys-front
 Eventuellement genre de full duplex si back a besoin de notifier front (comme par exemple un scheduler)
 
+14. Pour les livraisons: interdiction de changer les méthodes qui ont fait leure preuve !
+
 et GO pour livrable systématique sauf exception !
