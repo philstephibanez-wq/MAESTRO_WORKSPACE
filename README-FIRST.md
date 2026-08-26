@@ -49,6 +49,6 @@ owasys-front → REST sécurisé → owasys-back → Composer.
 13. Flux: owasys-front -> REST (sécurisé) -> owasys-back -> composer -> owasys-back -> response -> owasys-front
 Eventuellement genre de full duplex si back a besoin de notifier front (comme par exemple un scheduler)
 
-14. Pour les livraisons: interdiction de changer les méthodes qui ont fait leure preuve !
+14. Interdiction de changer une méthode de livraison qui a fait ses preuves. Tout livrable OPUS/OWASYS est remis directement dans la conversation comme pièce jointe ZIP native téléchargeable, avec un nom court. Ne jamais la remplacer par un lien ChatGPT Library, GitHub/raw, site externe ou par une récupération depuis un dépôt. Le bloc CMD séparé applique explicitement le ZIP avec `tar -xf "%USERPROFILE%\Downloads\<ZIP>" -C H:\OPUS`. Appliquer intégralement `00_COMMON_CONTRACTS/PATCH_DELIVERY_CONTRACT.md`.
 
 et GO pour livrable systématique sauf exception !
