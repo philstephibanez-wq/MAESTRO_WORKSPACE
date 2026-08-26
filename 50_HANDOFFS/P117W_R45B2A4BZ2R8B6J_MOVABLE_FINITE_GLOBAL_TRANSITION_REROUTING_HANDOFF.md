@@ -1,6 +1,6 @@
 # P117W R45B2A4BZ2 R8B6J — Movable finite-global transition rerouting — HANDOFF
 
-State: OWNER APPLIED — VISUAL MOVE/REROUTE ACCEPTED — OWNER COMMIT/PUSH PENDING
+State: OWNER RUNTIME ACCEPTED — PUSHED — SUPERSEDED BY R8B6K
 
 ## Baseline
 
@@ -51,3 +51,7 @@ Move each state while observing its global transition. Both endpoints must remai
 ## Owner runtime evidence — 2026-08-26
 
 The supplied post-R8B6J runtime capture proves the finite source-set node, seven canonical named paths, seven target attachments and existing context-ready self-loops remain coherent after the states were rearranged. The previously observed group-translation defect is no longer visible. Visual move/reroute acceptance is recorded. Final source acceptance now requires owner PHP/Composer gates, a clean intended inventory, commit and push; the pushed SHA becomes the mandatory baseline for the next architectural slice.
+
+## Owner push reconciliation — 2026-08-26
+
+R8B6J and the accepted Navigation layout companion were pushed by the owner as OPUS commit `636b3cc9d98e33cfbac5dcea58a2188e4e77c8de`. This is the exact baseline for R8B6K. The intermediate R8B6I commit `195125050cc7898e5c21bdce9098c8965c40102a` is historical only.
