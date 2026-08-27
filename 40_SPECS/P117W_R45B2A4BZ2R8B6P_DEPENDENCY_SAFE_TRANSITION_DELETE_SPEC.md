@@ -1,6 +1,6 @@
 # P117W R45B2A4BZ2 R8B6P — Dependency-safe transition delete — SPEC
 
-State: DELIVERED — OWNER APPLY/RUNTIME ACCEPTANCE PENDING
+State: OWNER FUNCTIONALLY ACCEPTED AND PUSHED — FRESH RESPONSE-TIME LOGS PENDING
 
 ## Gate
 
@@ -105,3 +105,15 @@ No backend JavaScript and no application-specific EFSM workaround are added.
 Transition rename, signal rename/delete, Validate/Publish and Undo/Redo remain
 separate architecture slices. R8B6P removes the observed deletion dead-end; it
 does not pretend that the remaining disabled controls are implemented.
+## Owner functional acceptance — 2026-08-27
+
+- OPUS owner commit: `3c67eeeec81ae0a1fb9c057308d43a6eb17cf604`.
+- The owner reports that the remaining R8B6P toolbar behavior is correct.
+- Transition deletion, state deletion after dependency removal, active Bézier
+  handles and persistence are functionally accepted.
+- A separate presentation-identity defect was then isolated: renaming a state
+  leaves its layout coordinate under the old state ID, so the new ID receives
+  an automatic coordinate. That root cause is assigned to R8B6Q.
+- No profiler/log bundle produced after owner commit `3c67eee...` was supplied.
+  R8B6P is therefore not declared response-time-accepted; fresh class-separated
+  timings are carried into the R8B6Q owner gate.
