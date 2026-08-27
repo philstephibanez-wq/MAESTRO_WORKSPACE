@@ -1,6 +1,6 @@
 # P117W R45B2A4BZ2 R8B6P — Dependency-safe transition delete — HANDOFF
 
-State: DELIVERED — OWNER APPLY/RUNTIME ACCEPTANCE PENDING
+State: OWNER FUNCTIONALLY ACCEPTED AND PUSHED — FRESH RESPONSE-TIME LOGS PENDING
 
 ## Baseline
 
@@ -60,3 +60,11 @@ Apply the native ZIP only on the exact clean baseline. Delete `transac`, confirm
 that `test` becomes deletable, and verify that unrelated transition geometry
 and R8B6O handles remain stable. Return fresh front/back JSONL and logs so the
 four response-time classes can be compared before acceptance.
+## Owner checkpoint — 2026-08-27
+
+- Accepted owner OPUS HEAD: `3c67eeeec81ae0a1fb9c057308d43a6eb17cf604`.
+- Owner result: the R8B6P toolbar behavior is otherwise OK.
+- Follow-up defect: state rename does not preserve the state layout coordinate;
+  remediation continues as R8B6Q.
+- No fresh post-commit profiler/log bundle is available. Functional acceptance
+  is recorded separately from the still-pending response-time acceptance.
