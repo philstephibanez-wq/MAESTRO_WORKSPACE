@@ -1,6 +1,6 @@
 # P117W R45B2A4BZ2 R8B6O — Active persisted Bézier handles — HANDOFF
 
-State: DELIVERED — OWNER APPLY/RUNTIME ACCEPTANCE PENDING
+State: OWNER RUNTIME ACCEPTED — PUSHED
 
 ## Baseline
 
@@ -75,3 +75,12 @@ git status --short
 Select the owner-created local transition, drag both controls, reload, switch View/Design, then move each attached state. The manual curve must remain persisted and attached throughout. Repeat on a finite-global cubic if available. Curve-only editing must change only the applicable layout JSON, never the canonical FSM JSON.
 
 Do not commit/push until all gates pass.
+
+## Owner closure
+
+- Both Bézier handles are functional.
+- Relative control geometry persists after reload and View/Design switching.
+- Owner commit pushed: `23be733f401ff526ff4d32a64277e6af1778f024`.
+- The next toolbar defect is separate: STATE deletion is correctly blocked by
+  a dependent transition, while TRANSITION deletion is still an inactive
+  toolbar stub. That dependency dead-end is owned by R8B6P.
