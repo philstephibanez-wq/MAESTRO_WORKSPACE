@@ -1,6 +1,6 @@
 # P117W R45B2A4BZ2 R8B6N — Semantic signal and local transition creation — SPEC
 
-State: DELIVERED — OWNER APPLY/RUNTIME ACCEPTANCE PENDING
+State: OWNER RUNTIME ACCEPTED — PUSHED
 
 ## Gate
 
@@ -49,3 +49,10 @@ In `essai` Navigation Conception:
 3. confirm reload renders the transition and card;
 4. confirm `config/application.fsm.json` contains exactly one new signal and transition;
 5. confirm site validation for owasys-front, owasys-back and essai.
+
+## Owner closure
+
+- Accepted semantic signal and local-transition creation in View and Design flows.
+- Owner commit pushed: `9fbcb714d5113e32f881a13bff8925b9dcc29159`.
+- Owner worktree reported clean.
+- The remaining inactive Bézier controls are presentation-only and continue in R8B6O; they do not reopen R8B6N semantics.
