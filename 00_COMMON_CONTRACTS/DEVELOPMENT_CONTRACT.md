@@ -15,3 +15,18 @@ This contract is the shared baseline for every project controlled from MAESTRO_W
 - No silent fallback.
 - No hidden alternate path.
 - No automatic deletion of historical material.
+
+## Systematic response-time verification
+
+- Every runtime-validated delivery must inspect fresh front and back Profiler
+  JSONL plus correlated application logs when those artifacts are available.
+- Measurements must remain separated by request class; page loads, successful
+  mutations, rejected mutations and presentation/layout writes are never
+  collapsed into one misleading average.
+- For every populated class, record sample count, minimum, median (p50), p95
+  and maximum duration from the measured traces.
+- Correlate the same trace identifier through front, REST, back and
+  BDD/Composer before assigning latency to a layer.
+- Compare the new figures with the latest owner-accepted baseline and flag any
+  material regression. Never invent missing timing data or infer browser time
+  from server timestamps with insufficient precision.
