@@ -1,6 +1,6 @@
 # P117W R45B2A4BZ2 R8B6N — Semantic signal and local transition creation — HANDOFF
 
-State: DELIVERED — OWNER APPLY/RUNTIME ACCEPTANCE PENDING
+State: OWNER RUNTIME ACCEPTED — PUSHED
 
 ## Baseline
 
@@ -67,3 +67,10 @@ git status --short
 Create `open_test` (user/navigation), then create a local transition from `home` through `open_test` to `test`. Confirm canonical JSON persistence, reload rendering, selection and card movement.
 
 Do not commit/push until all gates pass.
+
+## Owner closure
+
+- Canonical OPUS commit: `9fbcb714d5113e32f881a13bff8925b9dcc29159`.
+- Owner reported a clean worktree at that commit.
+- Signal creation, transition creation, canonical persistence and View rendering are accepted.
+- Inactive Bézier preview handles are transferred to R8B6O as a separate presentation-layout defect.
