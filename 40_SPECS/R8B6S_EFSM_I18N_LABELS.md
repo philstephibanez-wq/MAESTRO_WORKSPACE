@@ -14,6 +14,8 @@ Technical IDs remain ASCII and immutable under label editing. Visible labels may
 
 The state toolbar action previously presented as `Modifier le nom` must edit the human/localizable label, never the state ID. A technical identity refactor remains a distinct operation and must not be triggered by label editing.
 
+State and transition label authoring use the same UI semantics: the technical ID is visible read-only and the active-locale label is the editable human value.
+
 ## Required behavior
 
 - State, signal and transition retain their canonical IDs.
@@ -21,10 +23,12 @@ The state toolbar action previously presented as `Modifier le nom` must edit the
 - Label editing leaves `state.id`, transition `from` / `next_state`, initial/final state references and persisted diagram geometry identities unchanged.
 - Each visible label resolves from an I18n message key.
 - The active locale displays its exact translated UTF-8 message.
-- The state label editor is prefilled with the current human label for the active locale, not with the technical ID.
-- Saving a state label writes through the secured `owasys-front -> REST -> owasys-back` authority path; the browser never writes a catalog directly.
-- If the active locale has no message, the UI explicitly reports `traduction à renseigner`; it must never silently fall back to another locale or to the technical ID.
-- The diagram, inspector and label editor use the same resolved value.
+- State and transition label editors are prefilled with the current human label for the active locale, never with the technical ID.
+- Saving a label writes through the secured `owasys-front -> REST -> owasys-back` authority path; the browser never writes a catalog directly.
+- If the active locale has no message, the diagram and inspector render a locale-neutral visual missing-translation marker instead of French text, another locale, or the technical ID.
+- A missing translation leaves the editable label value empty; the visual marker must never be persisted as an I18n message.
+- Missing-translation behavior is identical for states and transitions.
+- No `inherits` locale may be used as a silent EFSM-label fallback.
 - Translation changes do not modify IDs, routing, guards, actions, FSM runtime semantics or layout geometry.
 
 ## Architectural requirement
@@ -33,7 +37,7 @@ The implementation must use or add a generic OPUS semantic label mutation rather
 
 ## Scope boundary
 
-This slice adds the generic label/I18n model and secure authoring path needed by the state label editor, while keeping the model extensible to signal and transition labels. It preserves SCORE-only rendering and the front -> REST -> back authority chain. The backend remains PHP-only. No owner FSM/configuration data is packaged.
+This slice adds the generic label/I18n model and secure authoring path needed by state and transition label editors. It preserves SCORE-only rendering and the front -> REST -> back authority chain. The backend remains PHP-only. No owner FSM/configuration data is packaged.
 
 ## Response-time evidence
 
