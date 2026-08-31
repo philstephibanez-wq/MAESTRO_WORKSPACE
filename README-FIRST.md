@@ -12,7 +12,7 @@ ACTIONS OBLIGATOIRES
 - OpusProfilerAwareInterface
 - OpusSelfDocumentingInterface
 
-5. Livrer toute correction ou évolution OPUS/OWASYS sous forme de ZIP différentiel direct (scripts ou fichiers complets), contenant uniquement les fichiers complets à leurs chemins finaux.
+5. Livrer toute correction ou évolution OPUS/OWASYS sous forme de ZIP différentiel direct (scripts ou fichiers complets), contenant uniquement les fichiers complets à leurs chemins finaux. C'est la méthode de livraison standard.
 
 L’assistant ne committe et ne pousse jamais OPUS ni OWASYS. L’owner applique le ZIP, valide, committe et pousse OPUS/OWASYS. L’assistant écrit directement uniquement dans MAESTRO_WORKSPACE.
 
@@ -50,5 +50,9 @@ owasys-front → REST sécurisé → owasys-back → Composer.
 Eventuellement genre de full duplex si back a besoin de notifier front (comme par exemple un scheduler)
 
 14. Interdiction de changer une méthode de livraison qui a fait ses preuves. Tout livrable OPUS/OWASYS est remis directement dans la conversation comme pièce jointe ZIP native téléchargeable, avec un nom court. Ne jamais la remplacer par un lien ChatGPT Library, GitHub/raw, site externe ou par une récupération depuis un dépôt. Le bloc CMD séparé applique explicitement le ZIP avec `tar -xf "%USERPROFILE%\Downloads\<ZIP>" -C H:\OPUS`. Appliquer intégralement `00_COMMON_CONTRACTS/PATCH_DELIVERY_CONTRACT.md`.
+
+Codex VS Code assiste normalement le diagnostic, les contrôles locaux et les validations qui précèdent ou suivent ce ZIP. Il ne modifie pas OPUS/OWASYS dans ce mode standard. Une exécution locale mutante par Codex VS Code est une exception qui exige une autorisation explicite de l'owner pour un slice et une baseline déterminés ; elle ne peut jamais être déduite d'une instruction de diagnostic ou de validation.
+
+15. Appliquer intégralement `00_COMMON_CONTRACTS/CHAT_CODEX_VSCODE_STEPWISE_WORKFLOW_CONTRACT.md`. Le chat MAESTRO pilote et donne exactement une étape à la fois ; Codex VS Code examine, contrôle et valide localement ; l'owner transmet la sortie ; le chat vérifie avant de donner l'étape suivante. Aucun run ne saute une gate, ne poursuit sur une sortie incomplète ou inattendue, ni ne fait modifier simultanément les mêmes fichiers par le chat et Codex VS Code. La livraison standard reste le ZIP natif ; toute exception d'exécution locale mutante doit être explicitement autorisée par l'owner.
 
 et GO pour livrable systématique sauf exception !
