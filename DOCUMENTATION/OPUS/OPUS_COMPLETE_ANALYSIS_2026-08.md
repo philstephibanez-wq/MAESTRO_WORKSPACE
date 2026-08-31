@@ -1,3 +1,16 @@
+> [!CAUTION]
+> **STATUT : REJETÉ — NON AUTORITATIF — NE PAS UTILISER POUR MODIFIER OPUS/OWASYS.**
+>
+> Audit de réconciliation du 2026-08-31 : ce document a été généré sans
+> validation suffisante contre le HEAD OPUS canonique. Il contient notamment
+> des signatures inexistantes (`listFiles`, `readFile`, `previewWrite`,
+> `writeFile`), un constructeur `SiteSourceWorkspace()` invalide, des nombres
+> de lignes inventés et l'affirmation fausse que `sites/owasys-front` est
+> absent. Les commandes et la roadmap ci-dessous sont donc rejetées.
+>
+> Sources autoritatives : `README-FIRST.md`, les contrats de
+> `00_COMMON_CONTRACTS`, les SPEC/HANDOFF actifs et le HEAD GitHub OPUS.
+> Le contenu original reste conservé uniquement comme incident historique.
 # 📚 OPUS Framework - Analyse Complète de l'Architecture
 *Généré le 2026-08 - Pour OWASYS / A4BR / E1 / R8B6Q*
 
