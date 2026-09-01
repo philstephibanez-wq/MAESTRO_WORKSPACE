@@ -21,46 +21,71 @@ Audit relancé depuis les sources GitHub réelles après relecture de `README-FI
 - propriété stricte application / EFSM / source;
 - validité JSON.
 
-## Constats GitHub déjà établis avant le run local
+## Run local propriétaire validé
 
-### BLOCKER — politique I18n encore fondée sur des fallbacks
+Le propriétaire a exécuté le runner canonique sur `H:\OPUS` propre.
 
-`sites/owasys-front/config/site.json` contient encore `fallback_locale`, `regional_overlay_policy=explicit-empty-overlay-inherits-base-language`, `bare_language_policy=map-to-default-regional-locale`, `language_defaults` et `catalog_base_locales`.
+Résultat:
 
-Ces mécanismes contredisent le contrat NO-FALLBACK: une locale sélectionnée doit être résolue exactement, sans substitution vers une langue de base ni vers une locale régionale par défaut.
+- `HEAD=1034e0b7cc0bb323219458dbf08b07cf8843c316`
+- `WORKTREE=CLEAN`
+- `PHP_FILES=644`
+- `FRAMEWORK_CONCRETE_CLASSES=249`
+- `SELECTABLE_LOCALES=38`
+- `BLOCKER=101`
+- `ERROR=2`
+- `WARN=0`
+- `INFO=0`
 
-### BLOCKER — substitution des langues nues
+Le premier lancement était invalide à cause d'une concaténation accidentelle de commandes dans l'argument du chemin. Le second lancement est valide et constitue l'évidence d'audit.
 
-`OwasysLocaleRegistry::resolveExplicit()` transforme encore une langue nue non sélectionnable en locale régionale via `languageDefaults`. Cette substitution doit disparaître.
+## Findings confirmés
 
-### BLOCKER — héritage des catalogues régionaux
+### BLOCKER — coeur OPUS encore orienté fallback
 
-Une grande partie des catalogues régionaux contient encore `inherits: <langue-base>`. R8B7C a matérialisé `menu.application`, mais n'a pas encore rendu chaque catalogue régional autonome.
+`Opus/I18n/CatalogLoader.php` parcourt encore `Locale::fallbackChain()`. Même si R8B6Y a temporairement réduit cette chaîne à la locale active seule, le mécanisme de fallback subsiste dans le coeur.
 
-### BLOCKER — routes localisées par héritage de langue de base
+### ERROR — surface de fallback encore publique
 
-`config/routes.localized.json` contient `regional_policy: inherit-base-language` et les chemins sont indexés par langues de base (`fr`, `en`, `de`, etc.) au lieu des 38 locales sélectionnables exactes.
+`Opus/I18n/Locale.php` et `LocaleInterface.php` conservent `parent()` et `fallbackChain()`. Cette API n'est plus admissible sous le contrat NO-FALLBACK.
 
-### BLOCKER — CatalogLoader conserve une boucle de fallback
+### BLOCKER — politique OWASYS front encore fondée sur substitution/héritage
 
-`Opus/I18n/CatalogLoader.php` charge encore via `Locale::fallbackChain()`. R8B6Y avait neutralisé la chaîne à un seul élément, mais l'API et le mécanisme de fallback demeurent dans l'architecture. Ils doivent être supprimés, pas neutralisés.
+`sites/owasys-front/config/site.json` conserve les clés interdites `fallback_locale`, `regional_overlay_policy`, `bare_language_policy`, `language_defaults`, `catalog_base_locales` et `catalog_base_locales_visible`.
 
-### ERROR — API de fallback encore présente dans Locale
+`OwasysLocaleRegistry` conserve également le mécanisme `languageDefaults` qui transforme une langue nue en locale régionale.
 
-`Opus/I18n/Locale.php` conserve `parent()` et `fallbackChain()`. Le contrat strict interdit de conserver une surface fonctionnelle conçue pour le fallback.
+### BLOCKER — catalogues régionaux non autonomes
 
-### Conforme sur le point critique EFSM Application
+37 catalogues régionaux contiennent encore `inherits=<langue-base>`. Le contrat exige un catalogue régional autonome pour chaque locale sélectionnable.
 
-`ContextEfsmRegistry` ne classe plus `application` comme EFSM hôte et mappe le module Application vers `navigation`, propriété de l'application sélectionnée. Ce point doit néanmoins être contrôlé par le runner à chaque audit.
+### BLOCKER — routes régionalisées encore héritées
 
-## Runner reproductible
+`config/routes.localized.json` déclare encore `regional_policy=inherit-base-language`, et chaque route manque les 38 clés régionales exactes attendues.
 
-Le runner canonique est désormais placé dans le workspace, et non dans OPUS:
+## Qualification du finding `I18N_EXACT_MESSAGES_INCOMPLETE`
 
-`60_TOOLS/p117w_opus_owasys_compliance_audit.py`
+Le finding est utile pour détecter les catalogues régionaux réduits à des overlays, mais son algorithme V2 utilise l'union globale de toutes les clés rencontrées. Cette union inclut aussi des clés dynamiques ou spécifiques à une application/EFSM, par exemple `fsm.application.state.essai.label`.
 
-Il agrège les constats par criticité et vérifie notamment que chaque locale sélectionnable possède son propre catalogue exact sans `inherits`, ainsi que des routes régionales exactes.
+Conséquence: il ne faut pas remplir aveuglément les 38 catalogues avec toutes les clés de cette union. La correction doit d'abord matérialiser les messages statiques hérités réellement applicables à chaque locale, puis traiter les clés dynamiques par leur mécanisme d'affichage `⚠ <id>` lorsqu'elles sont absentes.
+
+Le runner devra être raffiné après la suppression du fallback structurel afin de distinguer:
+
+- catalogue statique OWASYS attendu pour chaque locale;
+- clés EFSM/application dynamiques, non obligatoires globalement.
+
+## Point conforme confirmé
+
+`ContextEfsmRegistry` ne classe plus `application` comme EFSM hôte et mappe le module Application vers `navigation` de l'application sélectionnée.
+
+## Ordre de correction retenu
+
+1. **R8B7E** — supprimer la surface fallback du coeur OPUS (`Locale`, `LocaleInterface`, `CatalogLoader`) sans modifier encore les catalogues ni les routes.
+2. **R8B7F** — supprimer la substitution locale/configuration OWASYS front.
+3. **R8B7G** — matérialiser les catalogues régionaux autonomes et raffiner le runner sur les clés statiques/dynamiques.
+4. **R8B7H** — matérialiser les routes exactes pour les 38 locales et supprimer l'héritage régional.
+5. relancer l'audit complet et traiter tout finding résiduel.
 
 ## Gate
 
-Aucune correction R8B7D+ ne doit être fabriquée avant le run local complet sur un worktree OPUS propre et sur le HEAD GitHub attendu.
+Chaque lot est livré et validé séparément. Aucun lot suivant n'est appliqué avant retour de l'évidence complète du lot précédent.
