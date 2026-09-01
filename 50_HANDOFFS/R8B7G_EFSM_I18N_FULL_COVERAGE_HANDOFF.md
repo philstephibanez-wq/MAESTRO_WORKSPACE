@@ -4,32 +4,41 @@ Date: 2026-09-01
 
 ## Baseline
 
-GitHub OPUS relu: `1034e0b7cc0bb323219458dbf08b07cf8843c316` (`R8B7C`).
+GitHub OPUS relu: `6f4ed3c5e1dbd8cda3c9da2c7a459b367963227e` (`R8B7F`).
 
 ## État validé avant tranche
 
 - runtime OWASYS front déclaré OK après R8B7F;
-- géométrie `sites/owasys-front/config/navigation.fsm.layout.json` modifiée localement par l'owner et à préserver;
-- R8B7E/R8B7F ont supprimé l'API générique de fallback OPUS et le caller résiduel du designer, mais ne sont pas encore confirmés comme commit/push GitHub dans ce handoff;
-- l'audit NO-FALLBACK reste ouvert pour les politiques/catalogues/routes.
+- worktree déclaré propre par l'owner;
+- R8B7F est poussé sur GitHub;
+- les géométries EFSM restent propriété de l'owner et sont hors périmètre;
+- l'audit NO-FALLBACK global reste ouvert pour les métadonnées/politiques I18n historiques hors résolution EFSM.
 
-## Prochaine tranche
+## Livrable R8B7G
 
-R8B7G doit fournir les catalogues exacts nécessaires aux labels visibles des states/transitions EFSM de `owasys-front` et `owasys-back`.
+R8B7G matérialise les labels visibles de tous les states/transitions des micro-EFSM OWASYS inventoriées.
 
-Aucun layout ne fait partie du ZIP.
-Aucun fallback/inherits ne doit être introduit.
-Les IDs techniques restent inchangés.
+Couverture:
+- owasys-front: 8 EFSM, 146 clés exactes par locale;
+- owasys-back: EFSM navigation/exécution + security, 26 clés exactes par locale;
+- 38 locales régionales, y compris `en-EN`;
+- 76 fichiers JSON au total;
+- aucun fichier `*.fsm.json` ni `*.fsm.layout.json` modifié.
 
-## Gate obligatoire
+Les IDs techniques ne sont jamais traduits. Les valeurs visibles sont traduites.
+La projection utilise les catalogues régionaux exacts; aucun fallback de locale n'est requis pour ces clés.
 
-Le workflow stepwise impose de fermer le lot local déjà validé avant d'appliquer R8B7G. Le prochain échange doit donc établir le HEAD et l'état Git locaux après R8B7E/R8B7F et la modification de géométrie. Si le worktree est dirty, l'owner doit revoir/committer/pousser le lot validé avant application du nouveau ZIP.
+## Validation attendue
 
-## Critères runtime R8B7G
+1. extraction ZIP sur HEAD R8B7F propre;
+2. validation JSON des 76 catalogues;
+3. `git diff --check`;
+4. contrôle que seuls `sites/owasys-front/application/default/local/*.json` et `sites/owasys-back/application/default/local/*.json` changent;
+5. runtime: Navigation et Security front, puis au moins une projection EFSM back;
+6. absence de `⚠ <id>` sur les states/transitions couverts;
+7. absence de 500;
+8. commit/push owner uniquement après validation.
 
-- Navigation front: aucun `⚠` sur state/transition traduit;
-- Security front: idem;
-- Registry/Application/Data/Source/Git/Build front: idem;
-- projection des EFSM de `owasys-back`: idem;
-- absence de 500;
-- géométrie propriétaire inchangée.
+## Suite
+
+Après acceptation R8B7G, reprendre l'audit général NO-FALLBACK pour supprimer les métadonnées/politiques historiques (`inherits`, `fallback_locale`, `language_defaults`, routes héritées) sans régression UI.
