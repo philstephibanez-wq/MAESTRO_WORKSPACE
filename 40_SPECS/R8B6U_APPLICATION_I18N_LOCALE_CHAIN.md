@@ -6,7 +6,9 @@ R8B6U corrects the OWASYS contextual EFSM label lookup used on pages such as Nav
 
 ## Baseline
 
-OPUS baseline: `2e46a95d6aa259e47f31cc7e610b34d1e54a1136`.
+OPUS `master` baseline: `57e79e6b4a6eb5733ce62b1ebf483c350064507a` (`opus_r8b6s5_full_site_i18n_missing_marker`).
+
+The replacement `FsmDiagramBuilder.php` is derived exactly from Git blob `092909fd4cf52e65ca76fdc52ee1330d4bb191dd` at that baseline; integrity reconstruction must reproduce this blob before R8B6U changes are applied.
 
 ## Proven failure
 
@@ -29,7 +31,9 @@ The source boundary MUST remain exact and strict. R8B6U MUST NOT weaken `SiteSou
 
 ## Implementation direction
 
-The repair belongs at the contextual EFSM label resolver/caller. It may use the secured application source listing to establish which catalog paths exist, then read only existing candidates from `Locale::fallbackChain()`. The generic source workspace must not be weakened.
+The repair belongs at the contextual EFSM label resolver/caller. It uses the secured application source listing to establish which catalog paths exist, then reads only existing candidates from `Locale::fallbackChain()`. The generic source workspace remains unchanged.
+
+State and transition labels share one merged catalog message map per contextual EFSM rendering; this avoids duplicate listing and duplicate catalog reads.
 
 ## Acceptance
 
