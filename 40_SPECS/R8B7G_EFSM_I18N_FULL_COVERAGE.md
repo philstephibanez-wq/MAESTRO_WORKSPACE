@@ -1,7 +1,7 @@
 # R8B7G — Couverture I18n complète des EFSM OWASYS front + back
 
 Date: 2026-09-01
-Baseline GitHub OPUS relue: `1034e0b7cc0bb323219458dbf08b07cf8843c316` (`R8B7C`).
+Baseline GitHub OPUS relue: `6f4ed3c5e1dbd8cda3c9da2c7a459b367963227e` (`R8B7F`).
 
 ## Autorités
 
@@ -17,16 +17,18 @@ Toutes les traductions visibles des états et transitions EFSM de `owasys-front`
 2. Les IDs techniques restent strictement inchangés et ne sont jamais traduits.
 3. La clé canonique d'état est `fsm.<efsm_id>.state.<state_id>.label`, sauf `label_key` explicite dans la définition.
 4. La clé canonique de transition est `fsm.<efsm_id>.transition.<transition_id>.label`, sauf `label_key` explicite.
-5. Les catalogues sont exacts par locale régionale. Aucun fallback, aucun `inherits`, aucune langue de base substituée, aucun fallback français.
-6. Une traduction manquante doit rester explicitement visible sous forme `⚠ <id>`; le livrable R8B7G doit faire disparaître ces marqueurs pour toutes les clés EFSM livrées.
-7. Les géométries `*.fsm.layout.json` sont hors périmètre et ne doivent jamais être écrasées.
-8. `owasys-back` reste PHP-only absolu; le livrable I18n n'ajoute aucun artefact JavaScript.
+5. Les 38 locales régionales exposées par `owasys-front`, y compris `en-EN`, matérialisent explicitement toutes les clés EFSM du front.
+6. Les mêmes 38 locales matérialisent explicitement les clés EFSM de `owasys-back` afin qu'une projection du back depuis le front utilise toujours la locale exacte active.
+7. La résolution EFSM est strictement locale exacte: aucun parent, aucune langue de base, aucun fallback français. Les métadonnées `inherits` historiques des catalogues UI front sont hors périmètre de cette tranche et ne sont ni utilisées ni ajoutées par la résolution EFSM; leur suppression globale reste dans l'audit NO-FALLBACK.
+8. Une traduction EFSM manquante reste visible sous forme `⚠ <id>`; R8B7G doit éliminer ces marqueurs pour toutes les clés couvertes.
+9. Les géométries `*.fsm.layout.json` sont hors périmètre et ne doivent jamais être modifiées.
+10. `owasys-back` reste PHP-only absolu; le livrable I18n n'ajoute aucun artefact JavaScript.
 
 ## Inventaire GitHub relu
 
 ### owasys-front
 
-EFSMs contractuels relus:
+EFSMs contractuels:
 - `config/navigation.fsm.json`
 - `config/security.fsm.json`
 - `config/registry.fsm.json`
@@ -36,29 +38,31 @@ EFSMs contractuels relus:
 - `config/git.fsm.json`
 - `config/build.fsm.json`
 
-La navigation hôte contient les états `registry`, `application`, `data`, `navigation`, `security`, `source`, `build` et leurs transitions `navigation.open.*` / `navigation.context.*.ready`.
+Couverture calculée: **146 clés EFSM** (states + transitions) par locale exacte.
 
 ### owasys-back
 
-EFSMs contractuels relus:
-- `config/fsm.json` (EFSM navigation/exécution backend)
-- `config/security.fsm.json`
+EFSMs contractuels:
+- `config/fsm.json` projeté comme EFSM `navigation`;
+- `config/security.fsm.json`.
 
-L'EFSM backend principale contient les états `begin`, `api`, `security`, `composer`; l'EFSM sécurité contient `anonymous`, `authenticating`, `authenticated`, `reauthenticating`.
+Couverture calculée: **26 clés EFSM** (states + transitions) par locale exacte.
 
-## Locales
+## Locales et fichiers
 
-`owasys-front` expose actuellement 38 locales régionales, incluant `en-EN`.
-`owasys-back` déclare actuellement 37 locales et n'inclut pas encore `en-EN`; cette divergence est une non-conformité à traiter dans la séquence NO-FALLBACK, sans créer de fallback.
-
-Pour R8B7G, les traductions exactes nécessaires à l'affichage des EFSM devront exister pour toutes les locales front exposées, y compris lorsqu'une EFSM de `owasys-back` est projetée depuis le front.
+- 38 catalogues régionaux front mis à jour;
+- 38 catalogues régionaux back livrés, y compris `en-EN` pour la projection exacte depuis le front;
+- total du ZIP R8B7G: **76 fichiers JSON**;
+- aucun fichier FSM ou layout dans le ZIP.
 
 ## Critères d'acceptation
 
-- aucune clé EFSM state/transition du périmètre ne manque dans les catalogues exacts livrés;
-- aucun `inherits` ajouté;
-- aucune modification de layout;
+- 146/146 clés front présentes et non vides dans chacun des 38 catalogues front;
+- 26/26 clés back présentes et non vides dans chacun des 38 catalogues back;
 - JSON valide;
+- aucun layout modifié;
+- aucun ID technique traduit;
 - runtime front sans 500;
-- projection EFSM front et back sans marqueur `⚠ <id>` pour les éléments couverts;
+- Navigation/Security/Registry/Application/Data/Source/Git/Build sans `⚠ <id>` pour les éléments OWASYS couverts;
+- projection EFSM du back sans `⚠ <id>` dans les locales couvertes;
 - `git diff --check` propre.
