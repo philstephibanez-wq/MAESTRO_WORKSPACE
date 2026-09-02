@@ -2,7 +2,7 @@
 
 ## Baseline
 
-OPUS/OWASYS baseline validated by owner: R8B7G functional, derived from pushed R8B7F `6f4ed3c5e1dbd8cda3c9da2c7a459b367963227e`. Final local HEAD must be re-gated before ZIP creation.
+OPUS/OWASYS baseline re-gated by owner on 2026-09-02: local `HEAD` and `origin/master` are both `f17c063671ff3387645b32d0149d84d4741d7cc8` (R8B7G), worktree clean and no untracked files.
 
 ## Evidence
 
@@ -26,6 +26,27 @@ The exact-locale / NO-FALLBACK correction is semantically correct, but catalog e
 8. Source browser behavior may retain full listing where a list is actually the requested resource.
 9. Preserve ACL, SSO, request signing, logging, profiler correlation, application ownership, exact source path validation, and REST resource semantics.
 10. No FSM definition or persisted layout geometry changes.
+
+## Prepared implementation
+
+R8B7H is prepared from the clean authoritative baseline `f17c063671ff3387645b32d0149d84d4741d7cc8` as a native differential ZIP. The generic framework capability is implemented as `Opus\Application\Source\SiteSourceProbe` with homonymous `SiteSourceProbeInterface`, satisfying the OPUS framework component interface contract. The probe performs an exact bounded source-path existence check without recursive enumeration and emits Logger/Profiler observation under `source.probe` without source contents.
+
+OWASYS exposure is end-to-end:
+
+- secured REST resource `GET /api/v1/applications/{site_id}/source-probes/{*path}`;
+- REST operation `source.probe` mapped to Composer script `owasys:source-probe`;
+- application command `owasys:source:probe` in the owasys-back source provider;
+- ACL action remains `source/read` for the read-only probe;
+- `OwasysSourceModel::probe()` validates `OPUS_SITE_SOURCE_PROBE_V1`;
+- `FsmDiagramBuilder::applicationCatalogMessages()` computes the exact active-locale catalog path, performs one exact probe, returns no messages when absent, and performs the existing exact read only when present.
+
+The source-browser listing path is unchanged. No cache, fallback, EFSM definition, layout geometry or SCORE rendering change is included.
+
+## Static construction checks
+
+Before ZIP creation, all changed PHP files pass `php -l`; all changed JSON files parse successfully; REST resource/operation names are unique and fully wired; `backend.rest.json` and `backend.resources.json` expose the same resource set; `source.probe` is present through REST → operation catalog → Composer alias → provider; and `applicationCatalogMessages()` contains no `source.list()` call.
+
+These checks are construction evidence only. Local owner application and runtime acceptance remain pending.
 
 ## Acceptance
 
