@@ -96,7 +96,7 @@ Narrow viewport: the core row may stack vertically, with topology connector deco
 ## Acceptance
 
 - ZIP contains only the two complete final files above.
-- ZIP SHA-256: `ef6f0945889338dc08cc524e08ce8fec453965ec5132967644c15b3cff1ad545`.
+- ZIP SHA-256: `93e8ac324d76dacd4f48ac541850802fdd5b685115e38f6aa2c662d40849ec9c`.
 - SCORE structural directives are balanced.
 - `composer opus:validate-site -- owasys-front` must pass after owner apply.
 - Runtime `/applications` must show front/back side-by-side as OWASYS core and generated applications in a distinct connected group.
