@@ -30,6 +30,18 @@ Complete final files in the ZIP:
 - Applications-view labels use existing translated I18n keys covered by supported locale chains.
 - No new backend, REST, FSM, ACL, controller or configuration behavior.
 
+## Mandatory missing-I18n diagnostic rule
+
+A warning triangle for an unresolved translation is never sufficient by itself.
+
+If an unresolved I18n key is visibly surfaced, the visible presentation must be:
+
+`⚠ <exact unresolved I18n key>`
+
+The key is diagnostic data and must remain exact and visible next to the triangle. A triangle alone, a generic warning without the key, or a key available only in a tooltip is non-conformant.
+
+This diagnostic rule does not relax the normal requirement: expected UI labels must resolve in every supported locale.
+
 ## Important local-state rule
 
 The owner may currently have R8B7L applied locally to `sites/owasys-front/application/registry/templates/index.score`. Therefore R8B7M must not assume a clean worktree silently. The first owner action is the contractual preflight and archive verification only. If the only local modification is the known superseded R8B7L presentation file, the next step can explicitly replace it with R8B7M. Any other dirty path or unexpected HEAD is a stop condition.
