@@ -8,11 +8,15 @@ Status: READY FOR OWNER PREFLIGHT / APPLY
 - `README-FIRST.md`, `PATCH_DELIVERY_CONTRACT.md` and `CHAT_NATIVE_ZIP_STEPWISE_WORKFLOW_CONTRACT.md` are authoritative.
 - R8B7O supersedes R8B7N and all earlier uncommitted Applications presentation candidates.
 
+## Fresh evidence
+
+The 2026-09-03 owner screenshots show anonymous `⚠` placeholders on Applications, Data sources and Navigation. Fresh front logs show those page requests completing without a dedicated missing-I18n log event, and the corresponding profiler traces report zero warnings. This is the exact defect targeted by R8B7O.
+
 ## Delivery
 
 Native ZIP: `R8B7O.zip`
 
-SHA-256: `37cb538bfe206a48be29073c3afbbad46dcbca4406a713e97ca3affbb6a3b27a`
+SHA-256: `24955fbd5a888a1eefa6f015831d64b55f064cb5a43b38a52f17e0c53ab38c88`
 
 Complete final files:
 
@@ -44,7 +48,7 @@ Return complete output of:
 - ZIP member listing
 
 Expected baseline: `ec3586496acdac83f155a248c46013e3001cbef4`.
-Expected ZIP SHA-256: `37cb538bfe206a48be29073c3afbbad46dcbca4406a713e97ca3affbb6a3b27a`.
+Expected ZIP SHA-256: `24955fbd5a888a1eefa6f015831d64b55f064cb5a43b38a52f17e0c53ab38c88`.
 
 ## Gate 2 after preflight acceptance
 
@@ -53,5 +57,7 @@ Rooted extraction:
 `tar -xf "%USERPROFILE%\\Downloads\\R8B7O.zip" -C H:\\OPUS`
 
 Then lint both PHP files, run `git diff --check`, `composer opus:validate-site -- owasys-front`, inspect status/diff, and only then proceed to runtime verification.
+
+Runtime acceptance requires a visible missing key to appear simultaneously as `⚠ <exact key>` in the UI, `translation.missing` in `owasys-front.log`, and an `i18n/translation.missing` warning in the OPUS Profiler under the same trace ID.
 
 No commit/push before runtime acceptance.
