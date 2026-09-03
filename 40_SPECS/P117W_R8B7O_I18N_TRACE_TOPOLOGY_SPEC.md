@@ -8,11 +8,21 @@ Status: DELIVERY CANDIDATE
 - OPUS baseline: `ec3586496acdac83f155a248c46013e3001cbef4` (`R8B7I`).
 - R8B7O supersedes R8B7N/R8B7M/R8B7L/R8B7K.
 
+## Fresh runtime evidence — 2026-09-03
+
+Owner screenshots on `/en-EN/applications`, Data sources and Navigation show multiple anonymous `⚠` placeholders with no adjacent key.
+
+Fresh `owasys-front(20260903-194327).log` shows successful requests for `/en-EN/applications`, `/en-EN/data-sources` and `/en-EN/navigation`, but no structured `OPUS_I18N_MESSAGE_MISSING` / `translation.missing` event for the visible anonymous placeholders. The only errors in that short run are the separate `/favicon.ico` BrowserLocaleNegotiator failure.
+
+Fresh `owasys-front(20260903-194340).jsonl` records the corresponding page traces with `warning=0`; therefore the visible missing-I18n conditions are not currently duplicated into the OPUS Profiler.
+
+This confirms the observability defect: the local translation runtime converts the missing-message exception into a lone marker before the exact key can reach UI/log/profiler diagnostics.
+
 ## Root causes
 
 1. OWASYS currently shadows the framework `Opus\\I18n\\ApplicationTranslationRuntime` with an OWASYS-local class that converts `OPUS_I18N_MESSAGE_MISSING` to a lone `⚠`; this destroys the exact missing-key identity in the rendered UI.
-2. Historical OWASYS logs record `OPUS_I18N_MESSAGE_MISSING` and `trace_id` but omit the exact missing key.
-3. Missing-I18n defects must be duplicated into the OPUS Profiler and structured application logs under the same trace identity.
+2. Missing-I18n defects are not emitted as dedicated structured log records with the exact key.
+3. Missing-I18n defects are not emitted as OPUS Profiler `i18n` warning events under the active request trace.
 4. The Applications topology must show OWASYS core (`owasys-front` + `owasys-back`) side-by-side and generated applications in a distinct connected group below.
 5. Discovery/Singleton/SQLite/recent-event diagnostic cards and raw registry metadata must not dominate the primary Applications workspace.
 
@@ -29,7 +39,7 @@ The key is diagnostic identity and must remain exact, visible, untranslated and 
 For each missing key in OWASYS runtime, emit:
 
 - structured log channel `opus.i18n`, message `translation.missing`;
-- OPUS Profiler category `i18n`, event `translation.missing`;
+- OPUS Profiler category `i18n`, event `translation.missing`, status `warning`;
 - context containing `error_code=OPUS_I18N_MESSAGE_MISSING`, `i18n_key`, `locale`, `module`, `path`;
 - current `OPUS_TRACE_ID` when valid.
 
@@ -66,11 +76,11 @@ No REST, Composer command, FSM, ACL/SSO or owasys-back change.
 
 Native ZIP: `R8B7O.zip`
 
-SHA-256: `37cb538bfe206a48be29073c3afbbad46dcbca4406a713e97ca3affbb6a3b27a`
+SHA-256: `24955fbd5a888a1eefa6f015831d64b55f064cb5a43b38a52f17e0c53ab38c88`
 
 ## Pre-delivery validation
 
-- both changed PHP files pass `php -l` under PHP 8.4.23;
+- both changed PHP files pass `php -l` under the build environment;
 - SCORE structure: 21 `if` / 21 `endif`, 2 `foreach` / 2 `endforeach`;
 - ZIP contains exactly the four complete final files listed above;
 - ZIP read-back matches generated file bytes;
