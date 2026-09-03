@@ -12,89 +12,109 @@ Status: DELIVERY CANDIDATE
 
 Owner screenshots on `/en-EN/applications`, Data sources and Navigation show multiple anonymous `⚠` placeholders with no adjacent key.
 
-Fresh `owasys-front(20260903-194327).log` shows successful requests for `/en-EN/applications`, `/en-EN/data-sources` and `/en-EN/navigation`, but no structured `OPUS_I18N_MESSAGE_MISSING` / `translation.missing` event for the visible anonymous placeholders. The only errors in that short run are the separate `/favicon.ico` BrowserLocaleNegotiator failure.
+Fresh `owasys-front(20260903-194327).log` shows `/en-EN/applications`, `/en-EN/data-sources` and `/en-EN/navigation` completing without a dedicated missing-I18n event. The visible missing-key condition is therefore swallowed before structured logging. The separate `/favicon.ico` `BrowserLocaleNegotiator.php:74` failure is out of scope.
 
-Fresh `owasys-front(20260903-194340).jsonl` records the corresponding page traces with `warning=0`; therefore the visible missing-I18n conditions are not currently duplicated into the OPUS Profiler.
+Fresh `owasys-front(20260903-194340).jsonl` contains no `i18n`/missing-key event for those visible placeholders. The same defect is therefore absent from the Profiler.
 
-This confirms the observability defect: the local translation runtime converts the missing-message exception into a lone marker before the exact key can reach UI/log/profiler diagnostics.
+## Root cause
 
-## Root causes
+`sites/owasys-front/application/default/bootstrap.php` explicitly loads an OWASYS-local class named `Opus\\I18n\\ApplicationTranslationRuntime` before framework consumers. That local shadow catches `OPUS_I18N_MESSAGE_MISSING` and reduces the exception to a lone `⚠`. It both destroys the exact key in the UI and bypasses generic OPUS I18n observability.
 
-1. OWASYS currently shadows the framework `Opus\\I18n\\ApplicationTranslationRuntime` with an OWASYS-local class that converts `OPUS_I18N_MESSAGE_MISSING` to a lone `⚠`; this destroys the exact missing-key identity in the rendered UI.
-2. Missing-I18n defects are not emitted as dedicated structured log records with the exact key.
-3. Missing-I18n defects are not emitted as OPUS Profiler `i18n` warning events under the active request trace.
-4. The Applications topology must show OWASYS core (`owasys-front` + `owasys-back`) side-by-side and generated applications in a distinct connected group below.
-5. Discovery/Singleton/SQLite/recent-event diagnostic cards and raw registry metadata must not dominate the primary Applications workspace.
+The correction is generic OPUS behavior, not another OWASYS-local translation workaround.
 
-## I18n presentation contract
+## Canonical OPUS missing-I18n contract
 
-For `OPUS_I18N_MESSAGE_MISSING` only, the visible value is exactly:
+For `OPUS_I18N_MESSAGE_MISSING` only:
 
-`⚠ <exact.i18n.key>`
+- visible UI value: `⚠ <exact.i18n.key>`;
+- structured log channel: `opus.i18n`;
+- structured log message: `message.missing`;
+- Profiler category: `i18n`;
+- Profiler event: `message.missing`;
+- Profiler status: `warning`;
+- diagnostic context: `error_code`, exact `i18n_key`, `locale`, `module`;
+- use current valid `OPUS_TRACE_ID` for log and Profiler correlation.
 
-The key is diagnostic identity and must remain exact, visible, untranslated and adjacent to the warning symbol. Other translation failures remain exceptions.
+Other `TranslationException` failures remain exceptions.
 
-## I18n observability contract
+The diagnostic safety net does not relax the primary requirement that expected UI labels exist in every supported locale.
 
-For each missing key in OWASYS runtime, emit:
+## Generic implementation
 
-- structured log channel `opus.i18n`, message `translation.missing`;
-- OPUS Profiler category `i18n`, event `translation.missing`, status `warning`;
-- context containing `error_code=OPUS_I18N_MESSAGE_MISSING`, `i18n_key`, `locale`, `module`, `path`;
-- current `OPUS_TRACE_ID` when valid.
+`Opus/I18n/ApplicationTranslationRuntime.php` becomes the single runtime authority. On a genuinely missing message it:
 
-The Profiler diagnostic uses the same trace ID and the existing runtime profiler journal so it is available in the OPUS trace view. No secret/user credential is recorded.
+1. keeps the exact requested key;
+2. writes the visible `⚠ <key>` marker;
+3. writes one structured warning through OPUS `Logger` into the application log configured by `config/site.json` (`development_server.diagnostics.log`, with `var/logs/opus.log` only as safe fallback);
+4. appends an OPUS Profiler warning record to the existing application runtime profiler journal under the current trace ID.
 
-## Generic framework behavior
+Configuration is read through `StructuredFileLoader` as required by the framework contract.
 
-`Opus/I18n/ApplicationTranslationRuntime.php` adopts the canonical visible missing-key marker so OPUS applications do not reduce missing messages to anonymous warnings.
+`sites/owasys-front/application/default/bootstrap.php` no longer preloads the local I18n shadow.
 
-The existing OWASYS-local runtime remains the current OWASYS wiring boundary for this delivery and adds the required logger/profiler duplication. This is a bounded compatibility bridge; it uses OPUS `Logger` and `Profiler`, not custom logging/profiling formats.
+The obsolete file `sites/owasys-front/application/default/services/ApplicationTranslationRuntime.php` is removed by the owner with `git rm` during apply. It is intentionally not represented by an empty tombstone in the differential ZIP.
 
 ## Applications topology
 
+The Applications SCORE/theme candidate remains included:
+
 - one OWASYS root;
-- core row: protected/system applications including `owasys-front` and `owasys-back`, side-by-side on desktop;
-- generated applications in a separate connected row below;
-- no generated application ID is hard-coded;
-- existing `entry.deletable` remains the discriminator.
+- protected/system core row with `owasys-front` and `owasys-back` side-by-side on desktop;
+- generated applications in a distinct connected row below;
+- no generated application ID hard-coded;
+- existing `entry.deletable` remains the discriminator;
+- discovery/Singleton/SQLite/recent-event diagnostic cards and raw registry metadata are removed from the primary workspace.
 
-## UI compaction
-
-The primary Applications workspace omits the discovery audit, Singleton audit, SQLite runtime and recent-events cards. Raw technical registry metadata is removed from the primary cards.
-
-## Changed files
+## Changed files in ZIP
 
 1. `Opus/I18n/ApplicationTranslationRuntime.php`
-2. `sites/owasys-front/application/default/services/ApplicationTranslationRuntime.php`
+2. `sites/owasys-front/application/default/bootstrap.php`
 3. `sites/owasys-front/application/registry/templates/index.score`
 4. `sites/owasys-front/www/asset/themes/owasys/css/theme.css`
 
+Required tracked deletion after extraction:
+
+- `sites/owasys-front/application/default/services/ApplicationTranslationRuntime.php`
+
 No REST, Composer command, FSM, ACL/SSO or owasys-back change.
+
+## Baseline verification
+
+- framework I18n runtime baseline blob: `61fb1682731331f2dffbe82451ae5c2162828771`;
+- OWASYS bootstrap baseline blob: `050f76893890cd642dc060bc4ff11c740bb6f552`;
+- Applications SCORE baseline blob: `77de59c341bb62c0dc294dff949a4203795aa655`;
+- theme baseline blob: `3916533c66b6fadf2914f037c8651682964e7790`.
+
+The reconstructed framework runtime and bootstrap baselines were verified byte-for-byte against these Git blobs before modification.
 
 ## Delivery
 
 Native ZIP: `R8B7O.zip`
 
-SHA-256: `24955fbd5a888a1eefa6f015831d64b55f064cb5a43b38a52f17e0c53ab38c88`
+SHA-256:
+`de0d82d4c988ac126ddcc1c2152bec65ec436ee43df2710c5bd05e9311126293`
 
 ## Pre-delivery validation
 
-- both changed PHP files pass `php -l` under the build environment;
-- SCORE structure: 21 `if` / 21 `endif`, 2 `foreach` / 2 `endforeach`;
+- `php -l Opus/I18n/ApplicationTranslationRuntime.php`: pass in build environment;
+- `php -l sites/owasys-front/application/default/bootstrap.php`: pass in build environment;
+- SCORE: 21 `if` / 21 `endif`, 2 `foreach` / 2 `endforeach`;
 - ZIP contains exactly the four complete final files listed above;
-- ZIP read-back matches generated file bytes;
-- SHA-256 verified after creation.
+- ZIP read-back matches generated bytes;
+- archive integrity test passes;
+- SHA-256 verified after final archive creation.
 
 ## Owner acceptance
 
-After apply:
+After preflight and apply:
 
+- tracked local I18n shadow is removed;
 - `git diff --check` passes;
 - both changed PHP files pass `php -l`;
 - `composer opus:validate-site -- owasys-front` passes;
-- `/applications` shows front/back side-by-side as core and generated apps below in the connected OWASYS topology;
-- normal labels are translated through I18n;
-- any actually missing key displays `⚠ <exact key>`;
-- the same missing key is visible in `owasys-front.log` and the OPUS Profiler trace with `i18n_key`, locale, module, path and correlated trace ID;
+- `/applications` shows front/back side-by-side as OWASYS core and generated apps below;
+- normal labels remain translated through I18n;
+- each actually missing key displays `⚠ <exact key>`;
+- the same key appears in `owasys-front.log` as `opus.i18n/message.missing` with exact `i18n_key` and trace ID;
+- the same trace contains an `i18n/message.missing` warning in the OPUS Profiler;
 - create/select/clear/delete behavior remains functional.
