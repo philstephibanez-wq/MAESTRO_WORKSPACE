@@ -13,7 +13,7 @@ Status: READY FOR OWNER PREFLIGHT / APPLY
 Native ZIP: `R8B7M.zip`
 
 SHA-256:
-`ef6f0945889338dc08cc524e08ce8fec453965ec5132967644c15b3cff1ad545`
+`93e8ac324d76dacd4f48ac541850802fdd5b685115e38f6aa2c662d40849ec9c`
 
 Complete final files in the ZIP:
 
@@ -45,6 +45,6 @@ Return complete output for:
 
 Expected remote baseline HEAD: `ec3586496acdac83f155a248c46013e3001cbef4`.
 
-Expected ZIP SHA-256: `ef6f0945889338dc08cc524e08ce8fec453965ec5132967644c15b3cff1ad545`.
+Expected ZIP SHA-256: `93e8ac324d76dacd4f48ac541850802fdd5b685115e38f6aa2c662d40849ec9c`.
 
 After this gate passes, the next owner step is the standard rooted extraction to `H:\OPUS`, followed by diff/site/runtime validation. No owner commit/push occurs before runtime acceptance.
