@@ -1,47 +1,76 @@
-# R8B7H handoff — view-switch performance / exact source probe
+# R8B7H handoff — view-switch performance / exact source stat
 
 ## Status
 
-NATIVE ZIP PREPARED AFTER CLEAN LOCAL BASELINE GATE — OWNER APPLY/STATIC VALIDATION PENDING.
+OWNER STATIC VALIDATION PASSED. FIRST RUNTIME ATTEMPT BLOCKED BY REST CATALOG FINGERPRINT DRIFT. CLIENT CATALOG CORRECTION APPLIED LOCALLY; FINAL RUNTIME REVALIDATION PENDING.
 
 ## Owner evidence
 
-R8B7G is functional. Fresh 2026-09-02 profiler captures show slow view changes, with representative OWASYS front requests reaching multiple seconds while SCORE rendering consumes only milliseconds.
+Baseline gate passed on 2026-09-02 with local OPUS `HEAD == origin/master == f17c063671ff3387645b32d0149d84d4741d7cc8` and a clean worktree.
 
-The mandatory baseline gate passed on 2026-09-02: local OPUS `HEAD` and `origin/master` are both `f17c063671ff3387645b32d0149d84d4741d7cc8`; branch is clean and `git status --porcelain=v1 -uall` is empty.
+The main R8B7H differential was applied and the owner returned:
 
-## Confirmed code cause
+- exactly the expected changed source/configuration files;
+- no residual bootstrap files after cleanup;
+- clean `git diff --check`;
+- PHP lint success on all changed PHP files;
+- valid `composer.json` with only the existing version-field warning;
+- optimized Composer autoload regenerated successfully with 561 classes.
 
-`sites/owasys-front/application/default/services/FsmDiagramBuilder.php` calls `OwasysSourceModel::list()` in `applicationCatalogMessages()` to decide whether one exact locale catalog exists, then performs `read()` for that exact catalog. `OwasysSourceModel::list()` maps to `GET /api/v1/applications/{site_id}/sources`; the backend REST catalog maps this endpoint to `source.list`.
+## Actual implementation
 
-The generic `SiteSourceWorkspace` and `SiteSourceInspector` baseline expose list/read operations but no exact existence probe, so no existing generic primitive can replace the recursive list without framework evolution.
+The final design uses the existing generic OPUS source workspace:
 
-## R8B7H implementation
+- `SiteSourceWorkspaceInterface::stat()`;
+- `SiteSourceWorkspace::stat()` returning `OPUS_SITE_SOURCE_STAT_V1`;
+- owasys-back `owasys:source:stat` / `owasys:source-stat`;
+- REST operation `source.stat`;
+- resource `GET /api/v1/applications/{site_id}/source-stats/{*path}`;
+- owasys-front `OwasysSourceModel::stat()`;
+- `FsmDiagramBuilder::applicationCatalogMessages()` uses exact stat plus conditional exact read and no longer uses `source.list` for contextual label existence.
 
-The prepared differential introduces a generic exact source probe and wires it end-to-end:
+NO-FALLBACK, source-browser listing, EFSM definitions, persisted layouts and SCORE rendering remain unchanged.
 
-- `Opus/Application/Source/SiteSourceProbeInterface.php`;
-- `Opus/Application/Source/SiteSourceProbe.php`;
-- owasys-back source command provider support for `owasys:source:probe`;
-- secured REST resource `GET /api/v1/applications/{site_id}/source-probes/{*path}`;
-- REST operation `source.probe` → Composer script `owasys:source-probe`;
-- owasys-front `OwasysSourceModel::probe()`;
-- `FsmDiagramBuilder::applicationCatalogMessages()` exact probe replacing full source listing.
+## Invalid direct CLI test
 
-The probe is read-only, preserves source ACL read authorization, validates application ownership and exact source paths, and is instrumented through Logger/Profiler as `source.probe`. Absence is an explicit `exists=false` result, while malformed/forbidden requests remain errors. Source contents are not logged or profiled.
+A direct owner invocation of `composer owasys:source-stat -- ...` returned `OWASYS_SOURCE_COMMAND_REQUEST_CONTRACT_INVALID`. This is expected for application source commands because their provider requires the secured `OPUS_REST_API_COMPOSER_COMMAND_REQUEST_V1` envelope. It is not a runtime acceptance test and is not evidence of a defect in `source.stat`.
 
-NO-FALLBACK remains unchanged. Missing exact catalog returns no catalog messages and therefore preserves visible `⚠ <id>` labels. Source-browser listing, EFSM definitions, persisted layouts and SCORE rendering are unchanged.
+## Runtime incident
 
-## Construction validation
+The first real front → REST → back run failed before R8B7H performance could be measured.
 
-All prepared PHP files pass `php -l`. All modified JSON files parse successfully. REST/resource catalogs are synchronized, route and operation keys are unique, and the chain REST → operation catalog → Composer alias → application provider is complete. `applicationCatalogMessages()` contains no `source.list()` call and performs exact probe plus conditional exact read.
+Fresh owner logs show the same correlated trace reaching the back as `source.read` and failing with `OPUS_REST_API_CATALOG_MISMATCH`. The front then returned HTTP 500 and visible translations/menu labels degraded to missing-translation markers.
 
-This is construction evidence only; no local OPUS mutation or runtime success is claimed yet.
+Root cause is deterministic: the back external catalog and inline server resources had the new `source.stat` route, while `sites/owasys-front/config/rest.resources.json` initially did not. OPUS REST fingerprints the complete normalized resource catalog and rejects every request when peer fingerprints differ.
 
-## Next owner gate
+The corrective local differential updates `sites/owasys-front/config/rest.resources.json` with the same `source.stat` resource. Owner evidence after extraction showed that file as modified and `git diff --check` clean.
 
-Apply the native R8B7H ZIP to the already validated clean baseline, regenerate Composer autoload metadata, run syntax/JSON/diff checks, and return the complete output. Any unexpected diff or validation failure is a stop condition.
+## Development-server contract confirmation
 
-## Runtime acceptance after static gate
+The authoritative OPUS site configurations already define the canonical development bindings:
 
-Re-run the same view-switch sequence with fresh front/back profiler files. `source.list` must disappear from contextual EFSM label resolution, `source.probe` must be correlated front/back, and total view latency must materially decrease. Existing exact catalogs must retain correct labels; missing exact catalogs must still render `⚠ <id>` without fallback or 500.
+- `owasys-front`: `OPUS_DEV_SERVER_PORT=8000`;
+- `owasys-back`: `OPUS_DEV_SERVER_PORT=8080`.
+
+Therefore the canonical owner commands remain:
+
+`composer opus:dev-server -- owasys-front`
+
+`composer opus:dev-server -- owasys-back`
+
+No CLI port override is part of R8B7H or R8B7I.
+
+## Final R8B7H acceptance pending
+
+After restarting through the canonical commands, fresh runtime evidence must confirm:
+
+- no `OPUS_REST_API_CATALOG_MISMATCH`;
+- translated menu and contextual EFSM labels restored for an existing exact locale catalog;
+- no `source.list` from `applicationCatalogMessages()`;
+- correlated `source.stat` followed by `source.read` only when the exact file exists;
+- missing exact locale remains `⚠ <id>` without fallback or 500;
+- material view-switch latency improvement versus the supplied pre-R8B7H profiler baseline.
+
+## Next delivery R8B7I
+
+R8B7I addresses the systemic cause exposed by this incident: OPUS validation must detect REST peer catalog fingerprint drift before runtime. The generic validator must use the site `exchange` contract and local peer configuration when both peers are present, preserve separate-deployment compatibility, and fail validation explicitly on catalog mismatch.
