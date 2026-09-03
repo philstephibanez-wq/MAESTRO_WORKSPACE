@@ -52,6 +52,23 @@ The candidate uses the existing translated keys:
 - `registry.sync_total`
 - `registry.work_on_this_app`
 
+### Missing-I18n diagnostic presentation — mandatory
+
+A missing-I18n warning must never render as a warning triangle alone.
+
+Whenever a translation key is unresolved and the runtime chooses to expose a visible warning, the visible warning must contain both:
+
+- the warning triangle/indicator;
+- the exact unresolved I18n key, rendered adjacent to that indicator.
+
+Canonical visible form:
+
+`⚠ <exact.i18n.key>`
+
+The exact key is diagnostic data and must not itself be translated, shortened, replaced by a generic message, hidden in a tooltip only, or omitted.
+
+This rule is independent from the primary requirement that every supported locale provide the expected translation. It exists so that any residual or future missing translation is immediately identifiable by its exact key instead of producing an anonymous triangle.
+
 ## Scope
 
 Changed files only:
@@ -100,5 +117,6 @@ Narrow viewport: the core row may stack vertically, with topology connector deco
 - SCORE structural directives are balanced.
 - `composer opus:validate-site -- owasys-front` must pass after owner apply.
 - Runtime `/applications` must show front/back side-by-side as OWASYS core and generated applications in a distinct connected group.
-- No missing-I18n warning placeholder must be visible on the Applications view while switching through supported locales.
+- All expected Applications-view presentation labels must resolve in every supported locale.
+- If any unresolved I18n key is deliberately surfaced as a visible diagnostic, its warning triangle must be immediately accompanied by the exact unresolved key; triangle-only warning presentation is non-conformant.
 - Create/select/clear/delete workflows must remain functional.
