@@ -1,62 +1,7 @@
 # P117W R8B7M — I18N TOPOLOGY CLEANUP HANDOFF
 
-Status: READY FOR OWNER PREFLIGHT / APPLY
+Status: SUPERSEDED BY R8B7N
 
-## Authority
+R8B7M is historical only and must not be applied as the active candidate. The active native delivery is `R8B7N.zip`, documented by `50_HANDOFFS/P117W_R8B7N_GENERIC_I18N_DIAGNOSTIC_TOPOLOGY_HANDOFF.md`.
 
-- OPUS remote baseline: `ec3586496acdac83f155a248c46013e3001cbef4` (`R8B7I`).
-- `README-FIRST.md`, `PATCH_DELIVERY_CONTRACT.md` and `CHAT_NATIVE_ZIP_STEPWISE_WORKFLOW_CONTRACT.md` remain authoritative.
-- R8B7M supersedes the uncommitted R8B7K/R8B7L Applications-registry presentation candidates.
-
-## Delivery
-
-Native ZIP: `R8B7M.zip`
-
-SHA-256:
-`93e8ac324d76dacd4f48ac541850802fdd5b685115e38f6aa2c662d40849ec9c`
-
-Complete final files in the ZIP:
-
-1. `sites/owasys-front/application/registry/templates/index.score`
-2. `sites/owasys-front/www/asset/themes/owasys/css/theme.css`
-
-## Result targeted
-
-- One OWASYS topology.
-- `owasys-front` + `owasys-back` form the core and render side-by-side on desktop.
-- Generated applications render below in a distinct group, with a continuous visual relationship to OWASYS.
-- Main Applications workspace no longer shows discovery/Singleton/SQLite/events diagnostic panels.
-- Raw technical registry metadata no longer acts as user-facing text.
-- Applications-view labels use existing translated I18n keys covered by supported locale chains.
-- No new backend, REST, FSM, ACL, controller or configuration behavior.
-
-## Mandatory missing-I18n diagnostic rule
-
-A warning triangle for an unresolved translation is never sufficient by itself.
-
-If an unresolved I18n key is visibly surfaced, the visible presentation must be:
-
-`⚠ <exact unresolved I18n key>`
-
-The key is diagnostic data and must remain exact and visible next to the triangle. A triangle alone, a generic warning without the key, or a key available only in a tooltip is non-conformant.
-
-This diagnostic rule does not relax the normal requirement: expected UI labels must resolve in every supported locale.
-
-## Important local-state rule
-
-The owner may currently have R8B7L applied locally to `sites/owasys-front/application/registry/templates/index.score`. Therefore R8B7M must not assume a clean worktree silently. The first owner action is the contractual preflight and archive verification only. If the only local modification is the known superseded R8B7L presentation file, the next step can explicitly replace it with R8B7M. Any other dirty path or unexpected HEAD is a stop condition.
-
-## Stepwise next gate
-
-Return complete output for:
-
-- `git rev-parse HEAD`
-- `git status --porcelain=v1 -uall`
-- SHA-256 of downloaded `R8B7M.zip`
-- ZIP member listing
-
-Expected remote baseline HEAD: `ec3586496acdac83f155a248c46013e3001cbef4`.
-
-Expected ZIP SHA-256: `93e8ac324d76dacd4f48ac541850802fdd5b685115e38f6aa2c662d40849ec9c`.
-
-After this gate passes, the next owner step is the standard rooted extraction to `H:\OPUS`, followed by diff/site/runtime validation. No owner commit/push occurs before runtime acceptance.
+Historical R8B7M ZIP SHA-256: `93e8ac324d76dacd4f48ac541850802fdd5b685115e38f6aa2c662d40849ec9c`.
