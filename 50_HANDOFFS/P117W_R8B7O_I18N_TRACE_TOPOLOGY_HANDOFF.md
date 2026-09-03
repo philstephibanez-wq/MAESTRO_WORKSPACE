@@ -10,54 +10,59 @@ Status: READY FOR OWNER PREFLIGHT / APPLY
 
 ## Fresh evidence
 
-The 2026-09-03 owner screenshots show anonymous `⚠` placeholders on Applications, Data sources and Navigation. Fresh front logs show those page requests completing without a dedicated missing-I18n log event, and the corresponding profiler traces report zero warnings. This is the exact defect targeted by R8B7O.
+The owner screenshots show anonymous `⚠` placeholders on Applications, Data sources and Navigation. Fresh front logs contain no dedicated missing-I18n event for those successful page requests, and fresh Profiler JSONL contains no corresponding I18n warning event. The existing OWASYS-local translation runtime is the cause: it catches `OPUS_I18N_MESSAGE_MISSING` and returns only `⚠`.
 
 ## Delivery
 
 Native ZIP: `R8B7O.zip`
 
-SHA-256: `24955fbd5a888a1eefa6f015831d64b55f064cb5a43b38a52f17e0c53ab38c88`
+SHA-256:
+`de0d82d4c988ac126ddcc1c2152bec65ec436ee43df2710c5bd05e9311126293`
 
-Complete final files:
+Complete files in ZIP:
 
 1. `Opus/I18n/ApplicationTranslationRuntime.php`
-2. `sites/owasys-front/application/default/services/ApplicationTranslationRuntime.php`
+2. `sites/owasys-front/application/default/bootstrap.php`
 3. `sites/owasys-front/application/registry/templates/index.score`
 4. `sites/owasys-front/www/asset/themes/owasys/css/theme.css`
 
+Required tracked deletion after extraction:
+
+`sites/owasys-front/application/default/services/ApplicationTranslationRuntime.php`
+
 ## Target result
 
-- Missing I18n renders `⚠ <exact.i18n.key>`, never an anonymous triangle.
-- Missing key is duplicated to structured log and OPUS Profiler with `i18n_key`, locale, module, path and current trace ID.
-- OWASYS core front/back is side-by-side on desktop.
-- Generated applications are underneath in a distinct connected group.
-- Diagnostic clutter is removed from the primary Applications workspace.
-- No REST/back/FSM/ACL behavior change.
+- one framework I18n runtime authority; OWASYS local shadow removed;
+- missing message renders `⚠ <exact.i18n.key>`;
+- same missing key is duplicated to `owasys-front.log` with `channel=opus.i18n`, `message=message.missing`, exact `i18n_key`, locale, module and current trace ID;
+- same trace receives OPUS Profiler `category=i18n`, `name=message.missing`, `status=warning`;
+- OWASYS core front/back side-by-side on desktop;
+- generated applications below in a distinct connected group;
+- diagnostic clutter removed from the primary Applications workspace;
+- no REST/back/FSM/ACL change.
 
-## Local-state rule
+## Pre-delivery verification
 
-The owner may have R8B7L/R8B7M-style presentation changes applied locally. Gate 1 is therefore preflight and archive verification only. Any HEAD other than the baseline or any dirty file outside the known presentation/I18n candidate paths is a stop condition.
+- framework runtime baseline reconstructed and matched Git blob `61fb1682731331f2dffbe82451ae5c2162828771`;
+- OWASYS bootstrap baseline reconstructed and matched Git blob `050f76893890cd642dc060bc4ff11c740bb6f552`;
+- both modified PHP files lint successfully in build environment;
+- SCORE structure balanced: 21/21 if, 2/2 foreach;
+- archive contains exactly four final files;
+- archive read-back and integrity test pass;
+- final SHA-256 verified.
 
-## Gate 1
+## Stepwise owner workflow
 
-Return complete output of:
+Gate 1 is preflight and archive verification. The owner may still have an earlier presentation candidate applied locally. Any unexpected HEAD or dirty path outside the known I18n/presentation candidate paths is a stop condition.
 
-- `git rev-parse HEAD`
-- `git status --porcelain=v1 -uall`
-- SHA-256 of `R8B7O.zip`
-- ZIP member listing
+Expected baseline HEAD: `ec3586496acdac83f155a248c46013e3001cbef4`.
 
-Expected baseline: `ec3586496acdac83f155a248c46013e3001cbef4`.
-Expected ZIP SHA-256: `24955fbd5a888a1eefa6f015831d64b55f064cb5a43b38a52f17e0c53ab38c88`.
+After Gate 1 is accepted, Gate 2 applies the ZIP, removes the obsolete tracked local runtime with `git rm`, runs PHP lint, `git diff --check`, site validation, status and diff inspection. Runtime verification comes only after these checks pass.
 
-## Gate 2 after preflight acceptance
+Runtime acceptance requires one real missing key to appear simultaneously as:
 
-Rooted extraction:
-
-`tar -xf "%USERPROFILE%\\Downloads\\R8B7O.zip" -C H:\\OPUS`
-
-Then lint both PHP files, run `git diff --check`, `composer opus:validate-site -- owasys-front`, inspect status/diff, and only then proceed to runtime verification.
-
-Runtime acceptance requires a visible missing key to appear simultaneously as `⚠ <exact key>` in the UI, `translation.missing` in `owasys-front.log`, and an `i18n/translation.missing` warning in the OPUS Profiler under the same trace ID.
+- `⚠ <exact key>` in UI;
+- `opus.i18n / message.missing` in `owasys-front.log` with the exact key and trace ID;
+- `i18n / message.missing` warning in the OPUS Profiler under the same trace ID.
 
 No commit/push before runtime acceptance.
