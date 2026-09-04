@@ -32,6 +32,19 @@ The obsolete OWASYS-local framework shadow must be removed after ZIP extraction:
 
 The generic OPUS runtime becomes authoritative. Bootstrap no longer preloads the local duplicate.
 
+## Fresh runtime evidence — 2026-09-04
+
+Owner runtime evidence after the diagnostic-only stage confirms that exact missing-message identity is now observable, but catalog resolution remains broken and runtime performance is unacceptable:
+
+- `/en-EN/build-and-validation` emits structured `opus.i18n` warnings with exact `i18n_key`, locale, module and trace ID;
+- keys such as `menu.operation.create`, `menu.operation.read`, `menu.operation.update` and `menu.operation.delete` are reported missing for locale `en-EN` / module `menu` even though the authoritative base catalog `application/menu/local/en.json` contains those translations;
+- the same missing-key diagnostics are duplicated into OPUS Profiler events under category `i18n`;
+- one request generates many repeated missing-message diagnostics for the same keys;
+- fresh profiler traces show multi-second front requests, with large time gaps outside the useful FSM/SCORE/REST spans, so the unresolved-I18n path is also a performance regression surface;
+- UI screenshots show exact-key warnings in some menus and anonymous triangle remnants elsewhere; this is not accepted.
+
+This evidence confirms R8B7P's root-cause target: repair regional/base catalog resolution first. Do not paper over the warnings by adding local literals or hiding diagnostics.
+
 ## Functional target
 
 - regional default catalogs compose explicit base-language inheritance;
@@ -55,8 +68,8 @@ The generic OPUS runtime becomes authoritative. Bootstrap no longer preloads the
 
 ## Stepwise owner state
 
-Local OPUS state is not known after the previous uncommitted presentation attempts. Therefore the next owner action is the contractual preflight and archive verification only.
+Local OPUS state is not known after the diagnostic-only runtime run. Therefore the next owner action is the contractual preflight only.
 
-Expected HEAD: `ec3586496acdac83f155a248c46013e3001cbef4`.
+Expected HEAD: `ec3586496acdac83f155a248c46013e3001cbef4` unless the owner has committed an intermediate diagnostic stage. Any different HEAD or dirty state must be examined explicitly before extraction; no automatic restore/reset is allowed.
 
-Any unexpected HEAD or dirty path other than a known superseded Applications presentation file is a stop condition. After the preflight passes, the next owner step is rooted extraction to `H:\OPUS`, deliberate deletion of the obsolete local runtime shadow, syntax/diff/site validation, then runtime/I18n trace validation. No commit/push occurs before runtime acceptance.
+After the preflight passes, the next owner step is rooted extraction to `H:\OPUS`, deliberate deletion of the obsolete local runtime shadow, syntax/diff/site validation, then runtime/I18n trace validation. No commit/push occurs before runtime acceptance.
