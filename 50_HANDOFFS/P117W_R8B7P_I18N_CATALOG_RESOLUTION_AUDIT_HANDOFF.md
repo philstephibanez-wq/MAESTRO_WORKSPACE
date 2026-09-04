@@ -13,14 +13,14 @@ Status: READY FOR OWNER PREFLIGHT / APPLY
 Native ZIP: `R8B7P.zip`
 
 SHA-256:
-`61f4e925f8b684cae2f9d5dfb3b1d0f8ca9919baef377f34a9b400b1d68b2ced`
+`933fee5e50c44c11be65e202a4b26646b77d7213f3f777c75a154372276510b9`
 
 Complete files in archive:
 
 1. `Opus/I18n/CatalogLoader.php`
-2. `Opus/I18n/Translator.php`
-3. `Opus/I18n/ApplicationTranslationRuntime.php`
-4. `sites/owasys-front/application/default/bootstrap.php`
+2. `Opus/I18n/ApplicationTranslationRuntime.php`
+3. `sites/owasys-front/application/default/bootstrap.php`
+4. `sites/owasys-front/application/default/services/ScorePageRenderer.php`
 5. `sites/owasys-front/application/registry/templates/index.score`
 6. `sites/owasys-front/www/asset/themes/owasys/css/theme.css`
 
@@ -30,26 +30,33 @@ The obsolete OWASYS-local framework shadow must be removed after ZIP extraction:
 
 `sites/owasys-front/application/default/services/ApplicationTranslationRuntime.php`
 
-The replacement is now the generic OPUS runtime. The bootstrap no longer preloads the local duplicate.
+The generic OPUS runtime becomes authoritative. Bootstrap no longer preloads the local duplicate.
 
 ## Functional target
 
-- regional default catalogs compose their explicit base-language inheritance;
-- regional module requests can resolve existing base-language module catalogs such as `application/menu/local/<language>.json`;
+- regional default catalogs compose explicit base-language inheritance;
+- regional module requests resolve existing base-language module catalogs such as `application/menu/local/<language>.json`;
 - regional override wins over inherited base value;
 - normal `menu.operation.*` dropdown labels translate instead of anonymous triangles;
-- a genuinely unresolved message after full chain renders `⚠ <exact.i18n.key>`;
-- same unresolved key is written to structured Logger and OPUS Profiler with locale/module and the active trace ID;
-- Applications view keeps OWASYS core front/back side-by-side and generated applications in a connected row below.
+- a genuinely unresolved message after the complete chain renders `⚠ <exact.i18n.key>`;
+- the same unresolved key is emitted to structured Logger and OPUS Profiler with `error_code`, exact `i18n_key`, locale, module and active trace ID;
+- the Profiler I18n panel receives the warning through the generic `i18n` category;
+- Applications view keeps OWASYS CORE front/back side-by-side and generated applications in a connected row below.
 
 ## Pre-delivery checks completed
 
-- authoritative GitHub baseline blobs verified for the generic I18n files and OWASYS bootstrap;
-- four changed PHP files lint successfully in build environment;
-- SCORE directive balance verified;
+- authoritative GitHub baseline blobs verified for all four modified PHP sources and the Applications presentation baselines;
+- four changed PHP files lint successfully in the build environment;
+- catalog resolver fixture passed exact regional inheritance, base-module resolution, child override, missing-key and cycle gates;
+- diagnostic fixture passed visible key + Logger + Profiler duplication with trace context and non-missing error propagation;
+- SCORE directive balance verified: 21/21 `if`, 2/2 `foreach`;
 - ZIP member list and byte read-back verified;
-- final SHA-256 verified.
+- final ZIP SHA-256 verified: `933fee5e50c44c11be65e202a4b26646b77d7213f3f777c75a154372276510b9`.
 
 ## Stepwise owner state
 
-Because local OPUS state is not currently known, the next owner action is preflight only. Expected HEAD is `ec3586496acdac83f155a248c46013e3001cbef4`. Any unexpected HEAD or dirty path is a stop condition. After a clean preflight, the next step is rooted ZIP extraction, deliberate deletion of the obsolete local runtime shadow, syntax/diff/site validation, then runtime/I18n trace validation. No commit/push occurs before runtime acceptance.
+Local OPUS state is not known after the previous uncommitted presentation attempts. Therefore the next owner action is the contractual preflight and archive verification only.
+
+Expected HEAD: `ec3586496acdac83f155a248c46013e3001cbef4`.
+
+Any unexpected HEAD or dirty path other than a known superseded Applications presentation file is a stop condition. After the preflight passes, the next owner step is rooted extraction to `H:\OPUS`, deliberate deletion of the obsolete local runtime shadow, syntax/diff/site validation, then runtime/I18n trace validation. No commit/push occurs before runtime acceptance.
