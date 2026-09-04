@@ -1,120 +1,21 @@
 # P117W R8B7O — I18N TRACE + APPLICATION TOPOLOGY SPEC
 
-Status: DELIVERY CANDIDATE
+Status: REJECTED — SUPERSEDED BY R8B7P
 
-## Authority
+R8B7O is retained for traceability only and MUST NOT be applied.
 
-- `README-FIRST.md`, `PATCH_DELIVERY_CONTRACT.md` and `CHAT_NATIVE_ZIP_STEPWISE_WORKFLOW_CONTRACT.md` are authoritative.
-- OPUS baseline: `ec3586496acdac83f155a248c46013e3001cbef4` (`R8B7I`).
-- R8B7O supersedes R8B7N/R8B7M/R8B7L/R8B7K.
+The diagnosis was incomplete: removing the OWASYS-local missing-message marker and adding diagnostics would improve observability, but would not repair the systematic menu translation failure.
 
-## Fresh runtime evidence — 2026-09-03
+Fresh exhaustive source audit on OPUS GitHub baseline `ec3586496acdac83f155a248c46013e3001cbef4` established the deeper root cause:
 
-Owner screenshots on `/en-EN/applications`, Data sources and Navigation show multiple anonymous `⚠` placeholders with no adjacent key.
+1. `config/site.json` declares regional overlays and base-language inheritance (`regional_overlay_policy`, `language_defaults`, `catalog_base_locales`).
+2. Regional catalogs themselves declare `inherits`, e.g. `de-DE.json` -> `de`.
+3. Generic `Opus/I18n/CatalogLoader.php` loads only the exact active locale file and does not resolve `inherits` or a base-language parent.
+4. OWASYS exposes regional locales only.
+5. `application/menu/local` contains base-language catalogs only, while the menu runtime is instantiated with a regional active locale.
+6. Consequently the menu operation keys cannot resolve for any selectable regional locale through the current runtime path.
+7. The OWASYS-local `Opus\I18n\ApplicationTranslationRuntime` then converts each missing key into a lone `⚠`, hiding the key and preventing the existing exception context from reaching structured diagnostics.
 
-Fresh `owasys-front(20260903-194327).log` shows `/en-EN/applications`, `/en-EN/data-sources` and `/en-EN/navigation` completing without a dedicated missing-I18n event. The visible missing-key condition is therefore swallowed before structured logging. The separate `/favicon.ico` `BrowserLocaleNegotiator.php:74` failure is out of scope.
+Active exhaustive audit/specification:
 
-Fresh `owasys-front(20260903-194340).jsonl` contains no `i18n`/missing-key event for those visible placeholders. The same defect is therefore absent from the Profiler.
-
-## Root cause
-
-`sites/owasys-front/application/default/bootstrap.php` explicitly loads an OWASYS-local class named `Opus\\I18n\\ApplicationTranslationRuntime` before framework consumers. That local shadow catches `OPUS_I18N_MESSAGE_MISSING` and reduces the exception to a lone `⚠`. It both destroys the exact key in the UI and bypasses generic OPUS I18n observability.
-
-The correction is generic OPUS behavior, not another OWASYS-local translation workaround.
-
-## Canonical OPUS missing-I18n contract
-
-For `OPUS_I18N_MESSAGE_MISSING` only:
-
-- visible UI value: `⚠ <exact.i18n.key>`;
-- structured log channel: `opus.i18n`;
-- structured log message: `message.missing`;
-- Profiler category: `i18n`;
-- Profiler event: `message.missing`;
-- Profiler status: `warning`;
-- diagnostic context: `error_code`, exact `i18n_key`, `locale`, `module`;
-- use current valid `OPUS_TRACE_ID` for log and Profiler correlation.
-
-Other `TranslationException` failures remain exceptions.
-
-The diagnostic safety net does not relax the primary requirement that expected UI labels exist in every supported locale.
-
-## Generic implementation
-
-`Opus/I18n/ApplicationTranslationRuntime.php` becomes the single runtime authority. On a genuinely missing message it:
-
-1. keeps the exact requested key;
-2. writes the visible `⚠ <key>` marker;
-3. writes one structured warning through OPUS `Logger` into the application log configured by `config/site.json` (`development_server.diagnostics.log`, with `var/logs/opus.log` only as safe fallback);
-4. appends an OPUS Profiler warning record to the existing application runtime profiler journal under the current trace ID.
-
-Configuration is read through `StructuredFileLoader` as required by the framework contract.
-
-`sites/owasys-front/application/default/bootstrap.php` no longer preloads the local I18n shadow.
-
-The obsolete file `sites/owasys-front/application/default/services/ApplicationTranslationRuntime.php` is removed by the owner with `git rm` during apply. It is intentionally not represented by an empty tombstone in the differential ZIP.
-
-## Applications topology
-
-The Applications SCORE/theme candidate remains included:
-
-- one OWASYS root;
-- protected/system core row with `owasys-front` and `owasys-back` side-by-side on desktop;
-- generated applications in a distinct connected row below;
-- no generated application ID hard-coded;
-- existing `entry.deletable` remains the discriminator;
-- discovery/Singleton/SQLite/recent-event diagnostic cards and raw registry metadata are removed from the primary workspace.
-
-## Changed files in ZIP
-
-1. `Opus/I18n/ApplicationTranslationRuntime.php`
-2. `sites/owasys-front/application/default/bootstrap.php`
-3. `sites/owasys-front/application/registry/templates/index.score`
-4. `sites/owasys-front/www/asset/themes/owasys/css/theme.css`
-
-Required tracked deletion after extraction:
-
-- `sites/owasys-front/application/default/services/ApplicationTranslationRuntime.php`
-
-No REST, Composer command, FSM, ACL/SSO or owasys-back change.
-
-## Baseline verification
-
-- framework I18n runtime baseline blob: `61fb1682731331f2dffbe82451ae5c2162828771`;
-- OWASYS bootstrap baseline blob: `050f76893890cd642dc060bc4ff11c740bb6f552`;
-- Applications SCORE baseline blob: `77de59c341bb62c0dc294dff949a4203795aa655`;
-- theme baseline blob: `3916533c66b6fadf2914f037c8651682964e7790`.
-
-The reconstructed framework runtime and bootstrap baselines were verified byte-for-byte against these Git blobs before modification.
-
-## Delivery
-
-Native ZIP: `R8B7O.zip`
-
-SHA-256:
-`ec95da17b9e2481ce78367fcd99cd65e37d92d3662f152f0dfbe7d4e77e7ff84`
-
-## Pre-delivery validation
-
-- `php -l Opus/I18n/ApplicationTranslationRuntime.php`: pass in build environment;
-- `php -l sites/owasys-front/application/default/bootstrap.php`: pass in build environment;
-- SCORE: 21 `if` / 21 `endif`, 2 `foreach` / 2 `endforeach`;
-- ZIP contains exactly the four complete final files listed above;
-- ZIP read-back matches generated bytes;
-- archive integrity test passes;
-- SHA-256 verified after final archive creation.
-
-## Owner acceptance
-
-After preflight and apply:
-
-- tracked local I18n shadow is removed;
-- `git diff --check` passes;
-- both changed PHP files pass `php -l`;
-- `composer opus:validate-site -- owasys-front` passes;
-- `/applications` shows front/back side-by-side as OWASYS core and generated apps below;
-- normal labels remain translated through I18n;
-- each actually missing key displays `⚠ <exact key>`;
-- the same key appears in `owasys-front.log` as `opus.i18n/message.missing` with exact `i18n_key` and trace ID;
-- the same trace contains an `i18n/message.missing` warning in the OPUS Profiler;
-- create/select/clear/delete behavior remains functional.
+`40_SPECS/P117W_R8B7P_I18N_CATALOG_RESOLUTION_AUDIT_SPEC.md`
