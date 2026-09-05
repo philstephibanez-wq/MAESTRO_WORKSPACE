@@ -55,4 +55,6 @@ L’assistant prépare et remet le ZIP dans cette conversation. L’owner l’ap
 
 15. Appliquer intégralement `00_COMMON_CONTRACTS/CHAT_NATIVE_ZIP_STEPWISE_WORKFLOW_CONTRACT.md`. Le chat MAESTRO pilote et donne exactement une étape à la fois ; l’owner exécute les commandes CMD, transmet la sortie complète et le chat vérifie avant l’étape suivante. Aucun run ne saute une gate, ne poursuit sur une sortie incomplète ou inattendue, ni ne fait modifier simultanément les mêmes fichiers. La livraison standard reste le ZIP natif.
 
+16. Appliquer intégralement `00_COMMON_CONTRACTS/SECURITY_BASELINE_CONTRACT.md`. Toute application OPUS applique une défense en profondeur fail-closed. Toute violation de sécurité qualifiée déclenche une NMI vers une quarantaine persistante qui survit aux relances et ne peut être levée que par une action administrative manuelle, explicitement autorisée et auditée. Les protections contre injections, XSS, CSRF, traversal, SSRF, abus, compromission de session, falsification, fuite de secrets et supply-chain sont des exigences framework génériques, jamais de simples corrections locales OWASYS.
+
 et GO pour livrable systématique sauf exception !
