@@ -121,3 +121,17 @@ Le contrat est global mais son implémentation se fait par livrables bornés et 
 6. matrice complète de tests sécurité.
 
 Aucune phase intermédiaire ne peut affaiblir les protections déjà en vigueur.
+
+## 12. États EFSM de contrôle et absence de pollution applicative
+
+`security_quarantine`, `security_recovery`, `fault` et tout autre état de contrôle pur sont des états du moteur EFSM. Ils ne deviennent jamais implicitement des modules applicatifs et ne justifient jamais la création de répertoires ou de classes factices.
+
+Règles impératives :
+
+1. un état EFSM sans champ explicite `module` est un état moteur pur et ne participe pas au contrat de répertoire `application/<module>` ;
+2. seul un champ `module` explicitement déclaré rattache un état EFSM à un module applicatif ;
+3. validateur, loader runtime, scaffold et outils Composer doivent appliquer exactement cette même règle ;
+4. une correction de validation ne peut jamais créer un faux module `security`, `system`, `fault`, `security_quarantine` ou équivalent ;
+5. aucun PHP, JavaScript, template, asset ou autre artefact ne doit être généré uniquement pour matérialiser un état EFSM pur ;
+6. les états de quarantaine et de faute restent visibles et adressables par le moteur et le diagramme sans polluer l'arborescence applicative ;
+7. toute divergence entre validation et runtime sur la classification module/état pur est une non-conformité framework bloquante.
