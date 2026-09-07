@@ -1,7 +1,7 @@
 # P117W R8NMI15 — NMI LAYOUT PERSISTENCE HANDOFF
 
 Date: 2026-09-07
-Status: DELIVERED — OWNER RUNTIME VALIDATION PENDING
+Status: ACCEPTED — OWNER COMMITTED AND PUSHED
 
 ## Root cause targeted
 
@@ -13,10 +13,18 @@ Differential ZIP delivered in chat: backend `sites/owasys-back/application/fsm/s
 
 The backend layout path receives a layout-only host NMI projection for the five host context EFSMs (`registry`, `data`, `source`, `git`, `build`) while canonical semantic source/hash authority remains unchanged.
 
-## Acceptance status
+## Acceptance evidence
 
-No local/runtime success is claimed. Owner must validate from a clean expected OPUS baseline, apply the native ZIP, run syntax/Composer/site validations, then perform the NMI geometry reload test and return complete evidence.
+Owner runtime feedback: NMI geometry persistence is OK after reload. Owner then committed and pushed the accepted OPUS change.
+
+Authoritative OPUS commit: `a352a984f246dbdf1213e9cf26b3b9bf4a6e6b61` (`opus_p117w_r8nmi15_nmi_layout_persistence`).
+
+## Newly observed defect
+
+All native NMI Bézier handles are exposed/interactive simultaneously in writable designer mode. Current `OPUS_FSM_Diagram` creates one control overlay per NMI transition during initialization without any exclusive activation state.
+
+This is a generic OPUS diagram interaction defect, not an OWASYS-local semantic defect.
 
 ## Next tranche
 
-R8NMI16 addresses remaining I18N and measured performance defects. The current master source must be used; no local-only `source.stat` route may be assumed.
+R8NMI16A makes native NMI Bézier controls exclusively active for one selected NMI transition at a time. R8NMI16 I18N/performance remains open after that bounded correction.
